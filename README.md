@@ -47,7 +47,7 @@ Both of them branch off from master and must merge back into master branch throu
 
 ##  License
 
-Nextcloud Android Library is available under MIT license. See the file LICENSE.md with the full license text. 
+Nextcloud Android Library is available under MIT license. See [LICENSE.md](https://github.com/nextcloud/android-library/blob/master/LICENSE.md) with the full license text. 
 
 ### Third party libraries
 ```
