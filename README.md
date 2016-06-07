@@ -1,4 +1,5 @@
 # [Nextcloud](https://nextcloud.com) Android Library 
+**Build status:** master ![](https://api.travis-ci.org/nextcloud/android-library.svg?branch=master)
 
 ## Introduction
 Using Nextcloud Android library it will be the easiest way to communicate with Nextcloud servers.
