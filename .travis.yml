@@ -41,9 +41,9 @@ env:
 addons:
   coverity_scan:
     project:
-      name: owncloud/android-library
+      name: nextcloud/android-library
       description: Build submitted via Travis CI
-    notification_email: lukas@owncloud.com
+    notification_email: lukas@nextcloud.com
     build_command_prepend: gradle clean
     build_command: gradle build
     branch_pattern: coverity_scan

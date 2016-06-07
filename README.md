@@ -1,8 +1,8 @@
-# ownCloud Android Library 
+# Nextcloud Android Library 
 
 ### Introduction
-Using ownCloud Android library it will be the easiest way to communicate with ownCloud servers.
-Add this library in your project and integrate your application with ownCloud seamlessly.
+Using Nextcloud Android library it will be the easiest way to communicate with Nextcloud servers.
+Add this library in your project and integrate your application with Nextcloud seamlessly.
 
 ### Install Library
 #### 2.1. Information how to get the library
@@ -12,8 +12,8 @@ Get this code and compile it. In the repository it is not only the library proje
 #### 2.2. Add library to your project
 There are different ways of adding this library to your code, then it is described one of them
 
-__Step 1.__ Compile the ownCloud Android Library
-__Step 2.__ Define a dependency within your project. For that, access to Properties > Android > Library and click on add and select the ownCloud Android library
+__Step 1.__ Compile the Nextcloud Android Library
+__Step 2.__ Define a dependency within your project. For that, access to Properties > Android > Library and click on add and select the Nextcloud Android library
 
 ###  Branching strategy
 
@@ -40,17 +40,17 @@ Both of them branch off from master and must merge back into master branch throu
 
 ###  License
 
-ownCloud Android Library is available under MIT license. See the file LICENSE.md with the full license text. 
+Nextcloud Android Library is available under MIT license. See the file LICENSE.md with the full license text. 
 
 #### Third party libraries
 
-ownCloud Android Library uses Apache JackRabbit, version 2.2.5. Copyright (C) 2004-2010 The Apache Software Foundation. Licensed under Apache License, Version 2.0.
+Nextcloud Android Library uses Apache JackRabbit, version 2.2.5. Copyright (C) 2004-2010 The Apache Software Foundation. Licensed under Apache License, Version 2.0.
 
 Apache JackRabbit depends on Commons HTTPClient version 3.1 and SLF4j version 1.7.5; both included also. Copyright (C) 2004-2010 The Apache Software Foundation. Licensed under Apache License, Version 2.0.
    
 
 ### Compatibility
 
-ownCloud Android Library is valid for Android systems from version Android 2.2 (android:minSdkVersion="8" android:targetSdkVersion="19").
+Nextcloud Android Library is valid for Android systems from version Android 2.2 (android:minSdkVersion="8" android:targetSdkVersion="23").
 
-ownCloud Android library supports ownCloud server from version 4.5.
+Nextcloud Android library supports Nextcloud server from version 4.5.
