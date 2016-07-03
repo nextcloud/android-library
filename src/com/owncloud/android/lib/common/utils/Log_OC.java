@@ -1,14 +1,13 @@
 package com.owncloud.android.lib.common.utils;
 
+import android.util.Log;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import android.os.Environment;
-import android.util.Log;
 
 
 public class Log_OC {
@@ -113,7 +112,7 @@ public class Log_OC {
 
     synchronized public static void stopLogging() {
         try {
-			if (mBuf != null)
+            if (mBuf != null)
                 mBuf.close();
             isEnabled = false;
 
