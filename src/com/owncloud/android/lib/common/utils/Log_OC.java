@@ -15,7 +15,9 @@ public class Log_OC {
     private static final String LOG_FOLDER_NAME = "log";
     private static final long MAX_FILE_SIZE = 1000000; // 1MB
 
-    private static String mOwncloudDataFolderLog = "owncloud_log";
+    private static final String TAG = Log_OC.class.getSimpleName();
+
+    private static String mNextcloudDataFolderLog = "nextcloud_log";
 
     private static File mLogFile;
     private static File mFolder;
@@ -27,7 +29,7 @@ public class Log_OC {
     private static boolean isEnabled = false;
 
     public static void setLogDataFolder(String logFolder){
-    	mOwncloudDataFolderLog = logFolder;
+        mNextcloudDataFolderLog = logFolder;
     }
 
     public static void i(String TAG, String message){
@@ -74,7 +76,7 @@ public class Log_OC {
      */
     synchronized public static void startLogging(String storagePath) {
 		String logPath = storagePath + File.separator +
-			mOwncloudDataFolderLog + File.separator + LOG_FOLDER_NAME;
+                mNextcloudDataFolderLog + File.separator + LOG_FOLDER_NAME;
         mFolder = new File(logPath);
         mLogFile = new File(mFolder + File.separator + mLogFileNames[0]);
 
@@ -83,7 +85,7 @@ public class Log_OC {
         if (!mFolder.exists()) {
             mFolder.mkdirs();
             isFileCreated = true;
-            Log.d("LOG_OC", "Log file created");
+            Log.d(TAG, "Log file created");
         }
 
         try { 
@@ -98,13 +100,13 @@ public class Log_OC {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Log initialization failed", e);
         } finally {
             if(mBuf != null) {
                 try {
                     mBuf.close();
                 } catch(IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Initialization finishing failed", e);
                 }
             }
         }
@@ -124,12 +126,12 @@ public class Log_OC {
 
         } catch (IOException e) {
             // Because we are stopping logging, we only log to Android console.
-            Log.e("OC_Log", "Closing log file failed: ", e);
+            Log.e(TAG, "Closing log file failed: ", e);
         } catch (Exception e) {
             // This catch should never fire because we do null check on mBuf.
             // But just for the sake of stability let's log this odd situation.
             // Because we are stopping logging, we only log to Android console.
-            Log.e("OC_Log", "Stopping logging failed: ", e);
+            Log.e(TAG, "Stopping logging failed: ", e);
         }
     }
 
@@ -190,12 +192,12 @@ public class Log_OC {
 	            mBuf.write(text);
 	            mBuf.newLine();
 	        } catch (IOException e) {
-	            e.printStackTrace();
+                Log.e(TAG, "Writing to logfile failed", e);
 	        } finally {
                 try {
                     mBuf.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Cleaning after logging failed", e);
                 }
             }
 
