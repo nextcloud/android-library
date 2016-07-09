@@ -75,7 +75,7 @@ public class Log_OC {
      * @param storagePath : directory for keeping logs
      */
     synchronized public static void startLogging(String storagePath) {
-		String logPath = storagePath + File.separator +
+        String logPath = storagePath + File.separator +
                 mNextcloudDataFolderLog + File.separator + LOG_FOLDER_NAME;
         mFolder = new File(logPath);
         mLogFile = new File(mFolder + File.separator + mLogFileNames[0]);
