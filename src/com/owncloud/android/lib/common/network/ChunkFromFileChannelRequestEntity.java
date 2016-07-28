@@ -117,8 +117,12 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
             mDataTransferListeners.remove(listener);
         }
     }
-    
-    
+
+
+    public void setmTransferred(long value) {
+        mTransferred = value;
+    }
+
     public void writeRequest(final OutputStream out) throws IOException {
         int readCount = 0;
         Iterator<OnDatatransferProgressListener> it = null;
