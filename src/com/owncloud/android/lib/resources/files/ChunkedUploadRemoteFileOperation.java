@@ -91,7 +91,6 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             for (int chunkIndex = 0; chunkIndex < chunkCount ; chunkIndex++, offset += CHUNK_SIZE) {
                 if (successfulChunks.contains(String.valueOf(chunkIndex))){
                     ((ChunkFromFileChannelRequestEntity) mEntity).setmTransferred(offset);
-//                    ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
                     continue;
                 }
 
