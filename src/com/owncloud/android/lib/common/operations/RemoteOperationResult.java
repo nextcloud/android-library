@@ -112,6 +112,7 @@ public class RemoteOperationResult implements Serializable {
         WRONG_SERVER_RESPONSE,
         INVALID_CHARACTER_DETECT_IN_SERVER,
         DELAYED_FOR_WIFI,
+        DELAYED_FOR_CHARGING,
         LOCAL_FILE_NOT_FOUND
     }
 
