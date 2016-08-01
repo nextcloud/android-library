@@ -1,5 +1,6 @@
-/* ownCloud Android Library is available under MIT license
+/* Nextcloud Android Library is available under MIT license
  *
+ *   Copyright (C) 2016 Nextcloud
  *   Copyright (C) 2015 ownCloud Inc.
  *   Copyright (C) 2015 Bartosz Przybylski
  *   Copyright (C) 2014 Marcello Steiner
@@ -136,6 +137,4 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK);
     }
-
-
 }

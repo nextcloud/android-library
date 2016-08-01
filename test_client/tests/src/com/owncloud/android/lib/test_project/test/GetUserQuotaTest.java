@@ -1,5 +1,6 @@
-/* ownCloud Android Library is available under MIT license
+/* Nextcloud Android Library is available under MIT license
  *
+ *   Copyright (C) 2016 Nextcloud
  *   Copyright (C) 2015 ownCloud Inc.
  *   Copyright (C) 2015 Bartosz Przybylski
  *
@@ -40,10 +41,8 @@ import com.owncloud.android.lib.resources.files.*;
  * Class to test Get User Quota
  *
  * @author Bartosz Przybylski
- *
  */
 public class GetUserQuotaTest extends RemoteTest {
-
 
     private static final String LOG_TAG = GetUserQuotaTest.class.getCanonicalName();
 
@@ -57,7 +56,6 @@ public class GetUserQuotaTest extends RemoteTest {
     private String mFullPath2ImageNotFound;
     private String mDownloadedFilePath;
     private TestActivity mActivity;
-
 
     @Override
     protected void setUp() throws Exception {
@@ -77,5 +75,4 @@ public class GetUserQuotaTest extends RemoteTest {
         assertTrue(quota.getUsed() >= 0);
         assertTrue(quota.getTotal() > 0);
     }
-
 }
