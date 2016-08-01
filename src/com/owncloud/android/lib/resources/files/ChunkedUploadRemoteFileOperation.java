@@ -139,8 +139,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                   successfulChunks.add(String.valueOf(chunkIndex));
                 } else {
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet(chunkId, successfulChunks);
-                    editor.commit();
+                    editor.putStringSet(chunkId, successfulChunks).apply();
 
                     break;
                 }
@@ -148,14 +147,12 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
 
             if (isSuccess(status)){
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.remove(chunkId);
-                editor.commit();
+                editor.remove(chunkId).apply();
             }
 
         } finally {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putStringSet(chunkId, successfulChunks);
-            editor.commit();
+            editor.putStringSet(chunkId, successfulChunks).apply();
 
             if (channel != null)
                 channel.close();
