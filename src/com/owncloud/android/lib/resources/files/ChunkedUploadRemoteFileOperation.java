@@ -24,15 +24,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.util.Random;
-
-import org.apache.commons.httpclient.methods.PutMethod;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
@@ -41,6 +34,17 @@ import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.methods.PutMethod;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation {
     
@@ -48,16 +52,13 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private static final String OC_CHUNKED_HEADER = "OC-Chunked";
     private static final String OC_CHUNK_SIZE_HEADER = "OC-Chunk-Size";
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
-
-    public ChunkedUploadRemoteFileOperation(String storagePath, String remotePath, String mimeType){
-        super(storagePath, remotePath, mimeType);
-    }
+    private Context mContext;
 
     public ChunkedUploadRemoteFileOperation(
-            String storagePath, String remotePath, String mimeType, String requiredEtag
-    ){
-		 super(storagePath, remotePath, mimeType, requiredEtag);
-	}
+            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag) {
+        super(storagePath, remotePath, mimeType, requiredEtag);
+        mContext = context;
+    }
     
     @Override
     protected int uploadFile(OwnCloudClient client) throws IOException {
@@ -65,8 +66,13 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
 
         FileChannel channel = null;
         RandomAccessFile raf = null;
+
+        File file = new File(mLocalPath);
+        SharedPreferences sharedPref = mContext.getApplicationContext().getSharedPreferences("com.nextcloud.PREFERENCE_upload", Context.MODE_PRIVATE);
+        String chunkId = String.valueOf(Math.abs(file.getName().hashCode())).substring(0,8);
+        Set<String> successfulChunks = sharedPref.getStringSet(chunkId, new LinkedHashSet<String>());
+
         try {
-            File file = new File(mLocalPath);
             raf = new RandomAccessFile(file, "r");
             channel = raf.getChannel();
             mEntity = new ChunkFromFileChannelRequestEntity(channel, mMimeType, CHUNK_SIZE, file);
@@ -74,15 +80,20 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
 				((ProgressiveDataTransferer)mEntity)
                         .addDatatransferProgressListeners(mDataTransferListeners);
 			}
-            
+
             long offset = 0;
             String uriPrefix = client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath) +
-                    "-chunking-" + Math.abs((new Random()).nextInt(9000)+1000) + "-" ;
+                    "-chunking-" + chunkId + "-" ;
             long totalLength = file.length();
             long chunkCount = (long) Math.ceil((double)totalLength / CHUNK_SIZE);
             String chunkSizeStr = String.valueOf(CHUNK_SIZE);
             String totalLengthStr = String.valueOf(file.length());
             for (int chunkIndex = 0; chunkIndex < chunkCount ; chunkIndex++, offset += CHUNK_SIZE) {
+                if (successfulChunks.contains(String.valueOf(chunkIndex))){
+                    ((ChunkFromFileChannelRequestEntity) mEntity).setmTransferred(offset);
+                    continue;
+                }
+
                 if (chunkIndex == chunkCount - 1) {
                     chunkSizeStr = String.valueOf(CHUNK_SIZE * chunkCount - totalLength);
                 }
@@ -124,11 +135,25 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                         ", chunk index " + chunkIndex + ", count " + chunkCount +
                         ", HTTP result status " + status);
 
-                if (!isSuccess(status))
+                if (isSuccess(status)){
+                  successfulChunks.add(String.valueOf(chunkIndex));
+                } else {
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putStringSet(chunkId, successfulChunks).apply();
+
                     break;
+                }
             }
-            
+
+            if (isSuccess(status)){
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.remove(chunkId).apply();
+            }
+
         } finally {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putStringSet(chunkId, successfulChunks).apply();
+
             if (channel != null)
                 channel.close();
             if (raf != null)
