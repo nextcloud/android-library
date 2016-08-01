@@ -26,6 +26,16 @@ package com.owncloud.android.lib.resources.files;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
+import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
+import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
+import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.methods.PutMethod;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -34,15 +44,6 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.apache.commons.httpclient.methods.PutMethod;
-
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
-import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
-import com.owncloud.android.lib.common.utils.Log_OC;
 
 
 public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation {
@@ -54,10 +55,9 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private Context mContext;
 
     public ChunkedUploadRemoteFileOperation(
-            String storagePath, String remotePath, String mimeType, String requiredEtag, Context context
-    ){
-		 super(storagePath, remotePath, mimeType, requiredEtag);
-         mContext = context;
+            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag) {
+        super(storagePath, remotePath, mimeType, requiredEtag);
+        mContext = context;
     }
     
     @Override

@@ -24,15 +24,6 @@
 
 package com.owncloud.android.lib.test_project;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.GeneralSecurityException;
-
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
@@ -57,6 +48,15 @@ import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
 import com.owncloud.android.lib.resources.shares.GetRemoteSharesOperation;
 import com.owncloud.android.lib.resources.shares.RemoveRemoteShareOperation;
 import com.owncloud.android.lib.resources.shares.ShareType;
+
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
 
 /**
  * Activity to test OC framework
@@ -219,7 +219,8 @@ public class TestActivity extends Activity {
 	
 	/**
 	 * Access to the library method to Download a File
-	 * @param remotePath
+	 * @param remoteFile
+	 * @param temporalFolder
 	 * 
 	 * @return
 	 */
@@ -240,33 +241,37 @@ public class TestActivity extends Activity {
 	 * @param storagePath
 	 * @param remotePath
 	 * @param mimeType
+	 * @param requiredEtag
 	 * 
 	 * @return
 	 */
 	public RemoteOperationResult uploadFile(
-			String storagePath, String remotePath, String mimeType
+			String storagePath, String remotePath, String mimeType, String requiredEtag
 			) {
-		return TestActivity.uploadFile(storagePath, remotePath, mimeType, mClient);
+		return TestActivity.uploadFile(this, storagePath, remotePath, mimeType, mClient, requiredEtag);
 	}
 	
 	
 	/** Access to the library method to Upload a File 
+	 *
+	 * @param context
 	 * @param storagePath
 	 * @param remotePath
 	 * @param mimeType
-	 * @param client			Client instance configured to access the target OC server.
-	 * 
+	 * @param client            Client instance configured to access the target OC server.
+	 *
 	 * @return
 	 */
 	public static RemoteOperationResult uploadFile(
-			String storagePath, String remotePath, String mimeType, OwnCloudClient client
-			) {
+			Context context, String storagePath, String remotePath, String mimeType, OwnCloudClient client,
+			String requiredEtag
+	) {
 		UploadRemoteFileOperation uploadOperation;
-		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE ) {
-            uploadOperation = new ChunkedUploadRemoteFileOperation(
-            		storagePath, remotePath, mimeType
-    		);
-        } else {
+		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
+			uploadOperation = new ChunkedUploadRemoteFileOperation(
+					context, storagePath, remotePath, mimeType, requiredEtag
+			);
+		} else {
             uploadOperation = new UploadRemoteFileOperation(
             		storagePath, remotePath, mimeType
     		);

@@ -65,6 +65,6 @@ Licensed under Apache License, Version 2.0.
 
 ## Compatibility
 
-Nextcloud Android library is valid for Android version 2.2 and up (android:minSdkVersion="8" android:targetSdkVersion="23").
+Nextcloud Android library is valid for Android version 3.0 and up (android:minSdkVersion="11" android:targetSdkVersion="23").
 
 Nextcloud Android library supports Nextcloud server from version 9.
