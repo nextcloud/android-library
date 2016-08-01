@@ -1,5 +1,5 @@
 ###################################################################
-  ownCloud Android Library                                       
+  Nextcloud Android Library                                       
 
   Copyright (C) 2014 ownCloud Inc.
   Copyright (C) 2012 Bartek Przybylski
@@ -27,11 +27,11 @@ that govern this software, for the purposes they are being used.
 
 The third party software included and used by this project is:
 
- * Apache JackRabbit, version 2.2.5.
+ * Apache JackRabbit, version 2.10.1
    Copyright (C) 2004-2010 The Apache Software Foundation.
    Licensed under Apache License, Version 2.0.
-   Placed at libs/jackrabbit-webdav-2.7.2.jar
-   The jar file must be included in projects using the ownCloud Android
+   Placed at libs/jackrabbit-webdav-2.10.1.jar
+   The jar file must be included in projects using the Nextcloud Android
    Library, and those must respect the terms of its license.
    Original license document included at libs/APACHE-2.0.txt
    See http://jackrabbit.apache.org/
@@ -40,7 +40,7 @@ The third party software included and used by this project is:
    Copyright (C) 2001-2011 The Apache Software Foundation.
    Licensed under Apache License, Version 2.0.
    Placed at libs/commons-httpclient-3.1.jar
-   The jar file must be included in projects using the ownCloud Android
+   The jar file must be included in projects using the Nextcloud Android
    Library, and those must respect the terms of its license.
    Original license document included at libs/APACHE-2.0.txt
    See http://hc.apache.org/httpclient-3.x/
@@ -49,7 +49,7 @@ The third party software included and used by this project is:
    Copyright (C) 2004-2013 QOS.ch
    Licensed under the MIT License
    Placed at libs/sl4f-api.1.7.5.jar
-   The jar file must be included in projects using the ownCloud Android
+   The jar file must be included in projects using the Nextcloud Android
    Library, and those must respect the terms of its license.
    Original license document included at libs/sl4j-api-LICENSE.txt
    See http://www.slf4j.org/
