@@ -3,7 +3,7 @@
 ownCloud Android Library is available under MIT license
 
 Copyright (C) 2016 Nextcloud Project
-Copyright (C) 2014-2016 ownCloud Inc.
+Copyright (C) 2014-2016 ownCloud GmbH.
 Copyright (C) 2012 Bartek Przybylski
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
