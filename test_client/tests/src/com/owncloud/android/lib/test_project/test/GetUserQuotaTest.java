@@ -51,10 +51,6 @@ public class GetUserQuotaTest extends RemoteTest {
     private static final String IMAGE_PATH_WITH_SPECIAL_CHARS = "/@file@download.png";
     private static final String IMAGE_NOT_FOUND = "/fileNotFound.png";
 
-    private String mFullPath2Image;
-    private String mFullPath2ImageWitSpecialChars;
-    private String mFullPath2ImageNotFound;
-    private String mDownloadedFilePath;
     private TestActivity mActivity;
 
     @Override

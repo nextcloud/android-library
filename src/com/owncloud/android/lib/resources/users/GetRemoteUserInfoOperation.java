@@ -24,17 +24,16 @@
 
 package com.owncloud.android.lib.resources.users;
 
-import java.util.ArrayList;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.json.JSONObject;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Gets information (id, display name, and e-mail address) about the user logged in.
@@ -42,7 +41,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
  * @author masensio
  * @author David A. Velasco
  */
-
 public class GetRemoteUserInfoOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteUserInfoOperation.class.getSimpleName();
@@ -91,7 +89,6 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 ArrayList<Object> data = new ArrayList<Object>();
                 data.add(userInfo);
                 result.setData(data);
-
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
                 String response = get.getResponseBodyAsString();
@@ -105,13 +102,11 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while getting OC user information", e);
-
         } finally {
             if (get != null) {
                 get.releaseConnection();
             }
         }
-
         return result;
     }
 
@@ -119,11 +114,9 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
         return (status == HttpStatus.SC_OK);
     }
 
-
     public static class UserInfo {
         public String mId = "";
         public String mDisplayName = "";
         public String mEmail = "";
     }
-
 }

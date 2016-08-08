@@ -34,9 +34,9 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.HttpStatus;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -47,8 +47,8 @@ import java.util.ArrayList;
 public class RemoteGetUserQuotaOperation extends RemoteOperation {
 
     static public class Quota {
-        long mFree, mUsed, mTotal;
-        double mRelative;
+        private long mFree, mUsed, mTotal;
+        private double mRelative;
 
         public Quota(long free, long used, long total, double relative) {
             mFree = free;
@@ -57,10 +57,21 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
             mRelative = relative;
         }
 
-        public long getFree() { return mFree; }
-        public long getUsed() { return mUsed; }
-        public long getTotal() { return mTotal; }
-        public double getRelative() { return mRelative; }
+        public long getFree() {
+            return mFree;
+        }
+
+        public long getUsed() {
+            return mUsed;
+        }
+
+        public long getTotal() {
+            return mTotal;
+        }
+
+        public double getRelative() {
+            return mRelative;
+        }
     }
 
     private static final String TAG = RemoteGetUserQuotaOperation.class.getSimpleName();
@@ -74,7 +85,7 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
     private static final String NODE_QUOTA_RELATIVE = "relative";
 
     // OCS Route
-    private static final String OCS_ROUTE ="/ocs/v1.php/cloud/users/";
+    private static final String OCS_ROUTE = "/ocs/v1.php/cloud/users/";
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
@@ -82,37 +93,34 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
         int status;
         GetMethod get = null;
 
-
         //Get the user
         try {
             OwnCloudBasicCredentials credentials = (OwnCloudBasicCredentials) client.getCredentials();
             String url = client.getBaseUri() + OCS_ROUTE + credentials.getUsername();
 
             get = new GetMethod(url);
-            get.setQueryString(new NameValuePair[]{new NameValuePair("format","json")});
+            get.setQueryString(new NameValuePair[]{new NameValuePair("format", "json")});
             status = client.executeMethod(get);
 
-            if(isSuccess(status)) {
+            if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
 
                 // Parse the response
                 JSONObject respJSON = new JSONObject(response);
                 JSONObject respOCS = respJSON.getJSONObject(NODE_OCS);
                 JSONObject respData = respOCS.getJSONObject(NODE_DATA);
-                JSONObject quota    = respData.getJSONObject(NODE_QUOTA);
+                JSONObject quota = respData.getJSONObject(NODE_QUOTA);
                 final Long quotaFree = quota.getLong(NODE_QUOTA_FREE);
                 final Long quotaUsed = quota.getLong(NODE_QUOTA_USED);
                 final Long quotaTotal = quota.getLong(NODE_QUOTA_TOTAL);
                 final Double quotaRelative = quota.getDouble(NODE_QUOTA_RELATIVE);
 
-
                 // Result
                 result = new RemoteOperationResult(true, status, get.getResponseHeaders());
-                //Quota data in data collection
-                ArrayList<Object> data = new ArrayList<Object>();
+                // Quota data in data collection
+                ArrayList<Object> data = new ArrayList<>();
                 data.add(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative));
                 result.setData(data);
-
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
                 String response = get.getResponseBodyAsString();
@@ -126,11 +134,11 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while getting OC user information", e);
-
         } finally {
-            get.releaseConnection();
+            if (get != null) {
+                get.releaseConnection();
+            }
         }
-
         return result;
     }
 
