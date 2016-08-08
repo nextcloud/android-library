@@ -35,6 +35,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.network.NetworkUtils;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ChunkedUploadRemoteFileOperation;
 import com.owncloud.android.lib.resources.files.CreateRemoteFolderOperation;
@@ -48,6 +49,7 @@ import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
 import com.owncloud.android.lib.resources.shares.GetRemoteSharesOperation;
 import com.owncloud.android.lib.resources.shares.RemoveRemoteShareOperation;
 import com.owncloud.android.lib.resources.shares.ShareType;
+import com.owncloud.android.lib.resources.users.RemoteGetUserQuotaOperation;
 
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
@@ -335,6 +337,11 @@ public class TestActivity extends Activity {
 		return result;
 		
 	}
+
+    public RemoteOperationResult getQuota() {
+        RemoteGetUserQuotaOperation getUserQuotaOperation = new RemoteGetUserQuotaOperation();
+        return getUserQuotaOperation.execute(mClient);
+    }
 	
 	
 	/**
