@@ -57,7 +57,7 @@ Nextcloud Android Library is available under MIT license. See [LICENSE.md](https
 
 ### Third party libraries
 ```
-Nextcloud Android Library uses Apache JackRabbit, version 2.2.5. 
+Nextcloud Android Library uses Apache JackRabbit, version 2.12.2. 
 Copyright (C) 2004-2010 The Apache Software Foundation. 
 Licensed under Apache License, Version 2.0.
 ```

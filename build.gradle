@@ -18,12 +18,12 @@ repositories {
 }
 
 dependencies {
-    compile 'org.apache.jackrabbit:jackrabbit-webdav:2.10.1'
+    compile 'org.apache.jackrabbit:jackrabbit-webdav:2.12.2'
 }
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "24.0.1"
 
     sourceSets {
         main {
