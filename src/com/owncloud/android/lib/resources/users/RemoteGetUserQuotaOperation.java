@@ -109,6 +109,11 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
      */
     public static final long SPACE_UNLIMITED = -3;
 
+    /**
+     * Quota return value for quota information not available.
+     */
+    public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
+
     // OCS Route
     private static final String OCS_ROUTE = "/ocs/v1.php/cloud/users/";
 
@@ -144,7 +149,7 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
                     quotaValue = quota.getLong(NODE_QUOTA);
                 } catch (JSONException e) {
                     Log_OC.i(TAG, "Legacy server in use < Nextcloud 9.0.54");
-                    quotaValue = SPACE_UNKNOWN;
+                    quotaValue = QUOTA_LIMIT_INFO_NOT_AVAILABLE;
                 }
 
                 // Result
