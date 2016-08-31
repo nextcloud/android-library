@@ -1,6 +1,7 @@
 /* Nextcloud Android Library is available under MIT license
  *
  *   Copyright (C) 2016 Nextcloud
+ *   Copyright (C) 2016 Andy Scherzinger
  *   Copyright (C) 2015 ownCloud Inc.
  *   Copyright (C) 2015 Bartosz Przybylski
  *   Copyright (C) 2014 Marcello Steiner
@@ -37,24 +38,29 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 /**
+ * Gets a logged in user's quota information (free, used, total and quota).
+ *
  * @author marcello
+ * @author Andy Scherzinger
  */
 public class RemoteGetUserQuotaOperation extends RemoteOperation {
 
     static public class Quota {
-        private long mFree, mUsed, mTotal;
+        private long mFree, mUsed, mTotal, mQuota;
         private double mRelative;
 
-        public Quota(long free, long used, long total, double relative) {
+        public Quota(long free, long used, long total, double relative, long quota) {
             mFree = free;
             mUsed = used;
             mTotal = total;
             mRelative = relative;
+            mQuota = quota;
         }
 
         public long getFree() {
@@ -67,6 +73,10 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
 
         public long getTotal() {
             return mTotal;
+        }
+
+        public long getQuota() {
+            return mQuota;
         }
 
         public double getRelative() {
@@ -83,6 +93,21 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
     private static final String NODE_QUOTA_USED = "used";
     private static final String NODE_QUOTA_TOTAL = "total";
     private static final String NODE_QUOTA_RELATIVE = "relative";
+
+    /**
+     * Quota return value for a not computed space value.
+     */
+    public static final long SPACE_NOT_COMPUTED = -1;
+
+    /**
+     * Quota return value for unknown space value.
+     */
+    public static final long SPACE_UNKNOWN = -2;
+
+    /**
+     * Quota return value for unlimited space.
+     */
+    public static final long SPACE_UNLIMITED = -3;
 
     // OCS Route
     private static final String OCS_ROUTE = "/ocs/v1.php/cloud/users/";
@@ -114,12 +139,20 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
                 final Long quotaUsed = quota.getLong(NODE_QUOTA_USED);
                 final Long quotaTotal = quota.getLong(NODE_QUOTA_TOTAL);
                 final Double quotaRelative = quota.getDouble(NODE_QUOTA_RELATIVE);
+                Long quotaValue;
+                try {
+                    quotaValue = quota.getLong(NODE_QUOTA);
+                } catch (JSONException e) {
+                    Log_OC.i(TAG, "Legacy server in use < Nextcloud 9.0.54");
+                    quotaValue = SPACE_UNKNOWN;
+                }
 
                 // Result
                 result = new RemoteOperationResult(true, status, get.getResponseHeaders());
+
                 // Quota data in data collection
                 ArrayList<Object> data = new ArrayList<>();
-                data.add(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative));
+                data.add(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
                 result.setData(data);
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
