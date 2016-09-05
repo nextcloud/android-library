@@ -66,6 +66,7 @@ public class OCCapability {
     private CapabilityBooleanType mFilesBigFileChuncking;
     private CapabilityBooleanType mFilesUndelete;
     private CapabilityBooleanType mFilesVersioning;
+    private CapabilityBooleanType mFilesFileDrop;
 
     public OCCapability(){
         mId = 0;
@@ -95,6 +96,7 @@ public class OCCapability {
         mFilesBigFileChuncking = CapabilityBooleanType.UNKNOWN;
         mFilesUndelete = CapabilityBooleanType.UNKNOWN;
         mFilesVersioning = CapabilityBooleanType.UNKNOWN;
+        mFilesFileDrop = CapabilityBooleanType.UNKNOWN;
     }
 
 
@@ -285,6 +287,13 @@ public class OCCapability {
         this.mFilesVersioning = filesVersioning;
     }
 
+    public CapabilityBooleanType getFilesFileDrop() {
+        return mFilesFileDrop;
+    }
+
+    public void setFilesFileDrop(CapabilityBooleanType mFilesFileDrop) {
+        this.mFilesFileDrop = mFilesFileDrop;
+    }
 
 
 
