@@ -71,6 +71,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_FILES_SHARING = "files_sharing";
     private static final String NODE_PUBLIC = "public";
     private static final String NODE_PASSWORD = "password";
+    private static final String NODE_FILES_DROP = "upload_files_drop";
     private static final String NODE_EXPIRE_DATE = "expire_date";
     private static final String NODE_USER = "user";
     private static final String NODE_FEDERATION = "federation";
@@ -185,6 +186,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                     capability.setFilesSharingPublicPasswordEnforced(
                                             CapabilityBooleanType.fromBooleanValue(
                                             respPublic.getJSONObject(NODE_PASSWORD).getBoolean(PROPERTY_ENFORCED)));
+                                }
+                                if(respPublic.has(NODE_FILES_DROP)) {
+                                    capability.setFilesFileDrop(
+                                            CapabilityBooleanType.fromBooleanValue(
+                                            respPublic.getBoolean(NODE_FILES_DROP))
+                                    );
                                 }
                                 if(respPublic.has(NODE_EXPIRE_DATE)){
                                     JSONObject respExpireDate = respPublic.getJSONObject(NODE_EXPIRE_DATE);
