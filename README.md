@@ -6,7 +6,7 @@ Using Nextcloud Android library it will be the easiest way to communicate with N
 Add this library in your project and integrate your application with Nextcloud seamlessly.
 
 ## Use Library
-In the repository it is not only the library project but also the example project “sample_client”; 
+In the repository it is not only the library project but also the example project "sample_client"; 
 thanks to it you will learn how to use the library.
 
 *There are different ways of adding this library to your code*
@@ -37,14 +37,19 @@ The repository holds one main branch with an infinite lifetime:
 
 Branch __origin/master__ is considered the main branch where the source code of HEAD always reflects a state with the latest delivered development changes for the next release.
 
-Other branches, some supporting branches are used to aid parallel development between team members, ease tracking of features, prepare for production releases and to assist in quickly fixing live production problems. Unlike the main branches, these branches always have a limited life time, since they will be removed eventually.
+Other branches, some supporting branches are used to aid parallel development between team members, ease tracking of features and to assist in quickly fixing live production problems. Unlike the main branch, these branches always have a limited life time, since they will be removed eventually (feature branching).
 
-The different types of branches we use:
+## Development process
+We are all about quality while not sacrificing speed so we use a very pragmatic workflow.
 
-- Branch __perNewFeature__    
-- Branch  __releaseBranches__
-
-Both of them branch off from master and must merge back into master branch through a [pull requests](https://github.com/nextcloud/android-library/pulls) in Github. Once the PR is approved and merged, the branch may be deleted.
+* create an issue with feature request
+    * discuss it with other developers 
+    * create mockup if necessary
+    * must be approved --> label approved
+    * after that no conceptual changes!
+* develop code
+* create [pull request](https://github.com/nextcloud/android-library/pulls)
+* to assure the quality of the app, any PR gets reviewed, approved and tested by [two developers](https://github.com/nextcloud/android-library/blob/master/MAINTAINERS) before it will be merged to master
 
 ##  License
 
@@ -52,7 +57,7 @@ Nextcloud Android Library is available under MIT license. See [LICENSE.md](https
 
 ### Third party libraries
 ```
-Nextcloud Android Library uses Apache JackRabbit, version 2.2.5. 
+Nextcloud Android Library uses Apache JackRabbit, version 2.12.2. 
 Copyright (C) 2004-2010 The Apache Software Foundation. 
 Licensed under Apache License, Version 2.0.
 ```
@@ -65,6 +70,6 @@ Licensed under Apache License, Version 2.0.
 
 ## Compatibility
 
-Nextcloud Android library is valid for Android version 3.0 and up (android:minSdkVersion="11" android:targetSdkVersion="23").
+Nextcloud Android library is valid for Android version 3.0 and up (with ```android:minSdkVersion="11"``` and ```android:targetSdkVersion="24"```).
 
-Nextcloud Android library supports Nextcloud server from version 9.
+Nextcloud Android library supports Nextcloud server from version 9+.
