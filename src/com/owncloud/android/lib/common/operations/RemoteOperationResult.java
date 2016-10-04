@@ -24,16 +24,6 @@
 
 package com.owncloud.android.lib.common.operations;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountsException;
 
@@ -47,6 +37,17 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavException;
 import org.json.JSONException;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.net.ssl.SSLException;
 
@@ -378,7 +379,7 @@ public class RemoteOperationResult implements Serializable {
                 return "JSON exception";
 
             } else {
-                return "Unexpected exception";
+                return "Unexpected exception: " + mException.toString() + " - " + mException.getMessage();
             }
         }
 
