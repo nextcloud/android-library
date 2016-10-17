@@ -83,7 +83,7 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     
     public long getContentLength() {
         try {
-            return Math.min(mChunkSize, mChannel.size() - mChannel.position());
+            return Math.min(mChunkSize, mChannel.size() - mOffset);
         } catch (IOException e) {
             return mChunkSize;
         }
