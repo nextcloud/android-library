@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 
 
@@ -43,7 +44,7 @@ public class Log_OC {
     }
     public static void d(String TAG, String message, Exception e) {
         Log.d(TAG, message, e);
-        appendLog(TAG + " : " + message + " Exception : "+ e.getStackTrace());
+        appendLog(TAG + " : " + message + " Exception : "+ Arrays.toString(e.getStackTrace()));
     }
     public static void e(String TAG, String message){
         Log.e(TAG, message);
@@ -52,7 +53,7 @@ public class Log_OC {
     
     public static void e(String TAG, String message, Throwable e) {
         Log.e(TAG, message, e);
-        appendLog(TAG+" : " + message +" Exception : " + e.getStackTrace());
+        appendLog(TAG+" : " + message +" Exception : " + Arrays.toString(e.getStackTrace()));
     }
     
     public static void v(String TAG, String message){
