@@ -24,15 +24,6 @@
 
 package com.owncloud.android.lib.resources.status;
 
-import java.util.ArrayList;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.params.HttpParams;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -44,27 +35,35 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.params.HttpParams;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 /**
  * Checks if the server is valid and if the server supports the Share API
  * 
  * @author David A. Velasco
  * @author masensio
- *
  */
-
 public class GetRemoteStatusOperation extends RemoteOperation {
     
     /** 
-     * Maximum time to wait for a response from the server when the connection is being tested, 
-     * in MILLISECONDs.
+     * Maximum time to wait for a response from the server when the connection is being tested, in MILLISECONDs.
      */
-    public static final int TRY_CONNECTION_TIMEOUT = 5000;
-    
+    private static final int TRY_CONNECTION_TIMEOUT = 5000;
+
     private static final String TAG = GetRemoteStatusOperation.class.getSimpleName();
     
     private static final String NODE_INSTALLED = "installed";
     private static final String NODE_VERSION = "version";
-    
+    private static final String PROTOCOL_HTTPS = "https://";
+    private static final String PROTOCOL_HTTP = "http://";
+
     private RemoteOperationResult mLatestResult;
     private Context mContext;
 
@@ -79,9 +78,8 @@ public class GetRemoteStatusOperation extends RemoteOperation {
         try {
             get = new GetMethod(baseUrlSt + AccountUtils.STATUS_PATH);
 
-            HttpParams params = get.getParams().getDefaultParams();
-            params.setParameter(HttpMethodParams.USER_AGENT,
-                    OwnCloudClientManagerFactory.getUserAgent());
+            HttpParams params = HttpMethodParams.getDefaultParams();
+            params.setParameter(HttpMethodParams.USER_AGENT, OwnCloudClientManagerFactory.getUserAgent());
             get.getParams().setDefaults(params);
 
             client.setFollowRedirects(false);
@@ -98,8 +96,8 @@ public class GetRemoteStatusOperation extends RemoteOperation {
 							&& !mLatestResult.isSuccess()) {
         		
         		isRedirectToNonSecureConnection |= (
-        				baseUrlSt.startsWith("https://") && 
-        				redirectedLocation.startsWith("http://")
+        				baseUrlSt.startsWith(PROTOCOL_HTTPS) &&
+        				redirectedLocation.startsWith(PROTOCOL_HTTP)
 				);
         		get.releaseConnection();
         		get = new GetMethod(redirectedLocation);
@@ -134,13 +132,13 @@ public class GetRemoteStatusOperation extends RemoteOperation {
         					);
                     	} else {
                     		mLatestResult = new RemoteOperationResult(
-                    				baseUrlSt.startsWith("https://") ?
+                    				baseUrlSt.startsWith(PROTOCOL_HTTPS) ?
                     						RemoteOperationResult.ResultCode.OK_SSL :
                 							RemoteOperationResult.ResultCode.OK_NO_SSL
 							);
                 		}
 
-						ArrayList<Object> data = new ArrayList<Object>();
+						ArrayList<Object> data = new ArrayList<>();
 						data.add(ocVersion);
 						mLatestResult.setData(data);
 						retval = true;
@@ -190,15 +188,15 @@ public class GetRemoteStatusOperation extends RemoteOperation {
         	return new RemoteOperationResult(RemoteOperationResult.ResultCode.NO_NETWORK_CONNECTION);
         }
         String baseUriStr = client.getBaseUri().toString();
-        if (baseUriStr.startsWith("http://") || baseUriStr.startsWith("https://")) {
+        if (baseUriStr.startsWith(PROTOCOL_HTTP) || baseUriStr.startsWith(PROTOCOL_HTTPS)) {
             tryConnection(client);
             
         } else {
-            client.setBaseUri(Uri.parse("https://" + baseUriStr));
+            client.setBaseUri(Uri.parse(PROTOCOL_HTTPS + baseUriStr));
             boolean httpsSuccess = tryConnection(client); 
 			if (!httpsSuccess && !mLatestResult.isSslRecoverableException()) {
                 Log_OC.d(TAG, "establishing secure connection failed, trying non secure connection");
-                client.setBaseUri(Uri.parse("http://" + baseUriStr));
+                client.setBaseUri(Uri.parse(PROTOCOL_HTTP + baseUriStr));
                 tryConnection(client);
             }
         }
