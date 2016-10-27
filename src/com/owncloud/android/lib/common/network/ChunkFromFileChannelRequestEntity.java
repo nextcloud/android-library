@@ -29,15 +29,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.util.TimeoutController;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import javax.net.ssl.SSLException;
 
 
 /**
@@ -56,8 +61,7 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     private final File mFile;
     private long mOffset;
     private long mTransferred;
-    Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
-    private ByteBuffer mBuffer = ByteBuffer.allocate(4096);
+    private final Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
 
     public ChunkFromFileChannelRequestEntity(
         final FileChannel channel, final String contentType, long chunkSize, final File file
@@ -83,8 +87,9 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     
     public long getContentLength() {
         try {
-            return Math.min(mChunkSize, mChannel.size() - mChannel.position());
+            return Math.min(mChunkSize, mChannel.size() - mOffset);
         } catch (IOException e) {
+            Log_OC.d(TAG, "IOException catched, default chunksize returned", e);
             return mChunkSize;
         }
     }
@@ -124,48 +129,42 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     }
 
     public void writeRequest(final OutputStream out) throws IOException {
-        int readCount = 0;
-        Iterator<OnDatatransferProgressListener> it = null;
+        long transferredBytes = 0;
+        final WritableByteChannel writeableByteChannel = Channels.newChannel(out);
 
         try {
-            mChannel.position(mOffset);
-            long size = mFile.length();
-            if (size == 0) size = -1;
             long maxCount = Math.min(mOffset + mChunkSize, mChannel.size());
-            while (mChannel.position() < maxCount) {
-                readCount = mChannel.read(mBuffer);
-                try {
-                    out.write(mBuffer.array(), 0, readCount);
-                } catch (IOException io) {
-                    // work-around try catch to filter exception in writing
-                    throw new FileRequestEntity.WriteException(io);
-                }
-                mBuffer.clear();
-                if (mTransferred < maxCount) {  // condition to avoid accumulate progress for repeated chunks
-                    mTransferred += readCount;
-                }
-                synchronized (mDataTransferListeners) {
-                    it = mDataTransferListeners.iterator();
-                    while (it.hasNext()) {
-                        it.next().onTransferProgress(readCount, mTransferred, size, mFile.getAbsolutePath());
+            Log_OC.d(TAG, "mOffset is " + mOffset + " and maxCount " + maxCount + " and contentLength: " + getContentLength());
+
+            transferredBytes = mChannel.transferTo(mOffset, getContentLength(), writeableByteChannel);
+
+            // update notification progress bar
+            if (mTransferred < maxCount) { // condition to avoid accumulate progress for repeated chunks
+                mTransferred += transferredBytes;
+            }
+            synchronized (mDataTransferListeners) {
+                for (OnDatatransferProgressListener mDataTransferListener : mDataTransferListeners) {
+                    long size = mFile.length();
+                    if (size == 0) {
+                        size = -1;
                     }
+                    mDataTransferListener.onTransferProgress(transferredBytes, mTransferred, size, mFile.getAbsolutePath());
                 }
             }
 
-        } catch (IOException io) {
+        } catch (final IOException io) {
+            Log_OC.d(TAG, "Woopsie an io ", io);
             // any read problem will be handled as if the file is not there
             if (io instanceof FileNotFoundException) {
                 throw io;
-            } else {
+            } else if (io instanceof  SSLException) {
+                Log_OC.e(TAG, "SSLException, most probably a timeout?", io);
+                throw io;
+            } else { // most...probably.
                 FileNotFoundException fnf = new FileNotFoundException("Exception reading source file");
                 fnf.initCause(io);
                 throw fnf;
             }
-
-        } catch (FileRequestEntity.WriteException we) {
-            throw we.getWrapped();
         }
-            
     }
-
 }

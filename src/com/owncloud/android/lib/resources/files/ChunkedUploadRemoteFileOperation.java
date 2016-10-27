@@ -26,9 +26,11 @@ package com.owncloud.android.lib.resources.files;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
+import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
@@ -42,13 +44,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 
 public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation {
     
-    public static final long CHUNK_SIZE = 1024000;
+    public static final long CHUNK_SIZE = 6144000;
     private static final String OC_CHUNKED_HEADER = "OC-Chunked";
     private static final String OC_CHUNK_SIZE_HEADER = "OC-Chunk-Size";
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
@@ -72,6 +76,8 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         String chunkId = String.valueOf(Math.abs(file.getName().hashCode())).substring(0,8);
         Set<String> successfulChunks = sharedPref.getStringSet(chunkId, new LinkedHashSet<String>());
 
+        Log_OC.d(TAG, "uploadFile, chunkId: " + chunkId + " CHUNK_SIZE: " + CHUNK_SIZE);
+        Log_OC.d(TAG, "uploadFile, successfulChunks[]: " + Arrays.toString(successfulChunks.toArray()));
         try {
             raf = new RandomAccessFile(file, "r");
             channel = raf.getChannel();
@@ -88,9 +94,11 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             long chunkCount = (long) Math.ceil((double)totalLength / CHUNK_SIZE);
             String chunkSizeStr = String.valueOf(CHUNK_SIZE);
             String totalLengthStr = String.valueOf(file.length());
+
             for (int chunkIndex = 0; chunkIndex < chunkCount ; chunkIndex++, offset += CHUNK_SIZE) {
                 if (successfulChunks.contains(String.valueOf(chunkIndex))){
                     ((ChunkFromFileChannelRequestEntity) mEntity).setmTransferred(offset);
+                    Log_OC.d(TAG, "Skipping, sharedPrefs said chunk already there");
                     continue;
                 }
 
@@ -115,6 +123,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                     // next method will throw an exception
                 }
                 status = client.executeMethod(mPutMethod);
+                Log_OC.d(TAG, "executed put method, without throwing up");
 
                 if (status == 400) {
                     InvalidCharacterExceptionParser xmlParser =
