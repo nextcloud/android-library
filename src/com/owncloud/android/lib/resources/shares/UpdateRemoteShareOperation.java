@@ -49,7 +49,6 @@ import java.util.List;
  * <p/>
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-
 public class UpdateRemoteShareOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteShareOperation.class.getSimpleName();
@@ -159,7 +158,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
         }
         if (mExpirationDateInMillis < 0) {
             // clear expiration date
-            parametersToUpdate.add(new Pair(PARAM_EXPIRATION_DATE, ""));
+            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
 
         } else if (mExpirationDateInMillis > 0) {
             // set expiration date
@@ -167,16 +166,16 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
             Calendar expirationDate = Calendar.getInstance();
             expirationDate.setTimeInMillis(mExpirationDateInMillis);
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
-            parametersToUpdate.add(new Pair(PARAM_EXPIRATION_DATE, formattedExpirationDate));
+            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
 
         } // else, ignore - no update
         if (mPermissions > 0) {
             // set permissions
-            parametersToUpdate.add(new Pair(PARAM_PERMISSIONS, Integer.toString(mPermissions)));
+            parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(mPermissions)));
         }
 
         if (mPublicUpload != null) {
-            parametersToUpdate.add(new Pair(PARAM_PUBLIC_UPLOAD, Boolean.toString(mPublicUpload)));
+            parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(mPublicUpload)));
         }
 
         /// perform required PUT requests
