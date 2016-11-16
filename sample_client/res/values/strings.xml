@@ -24,7 +24,7 @@
  -->
  
 <resources>
-    <string name="app_name">ownCloud Sample Client</string>
+    <string name="app_name">Nextcloud Sample Client</string>
     <string name="refresh">Refresh</string>
     <string name="upload">Upload</string>
     <string name="delete_remote_file">Delete remote file</string>

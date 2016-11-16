@@ -9,8 +9,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
 
     sourceSets {
         main {
@@ -42,10 +42,5 @@ android {
 
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
-    }
-    android {
-        lintOptions {
-            abortOnError false
-        }
     }
 }
