@@ -69,7 +69,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
 
         File file = new File(mLocalPath);
         SharedPreferences sharedPref = mContext.getApplicationContext().getSharedPreferences("com.nextcloud.PREFERENCE_upload", Context.MODE_PRIVATE);
-        String chunkId = String.valueOf(Math.abs(file.getName().hashCode())).substring(0,8);
+        String chunkId = String.format("%08d", Math.abs(file.getName().hashCode()));
         Set<String> successfulChunks = sharedPref.getStringSet(chunkId, new LinkedHashSet<String>());
 
         try {
