@@ -27,6 +27,9 @@ package com.owncloud.android.lib.resources.files;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.methods.PutMethod;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
@@ -54,6 +57,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     public static final long CHUNK_SIZE = 1024000;
     private static final String OC_CHUNKED_HEADER = "OC-Chunked";
     private static final String OC_CHUNK_SIZE_HEADER = "OC-Chunk-Size";
+    private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
     private Context mContext;
 
@@ -112,6 +116,12 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 mPutMethod.addRequestHeader(OC_CHUNKED_HEADER, OC_CHUNKED_HEADER);
                 mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
                 mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
+
+                // Tell to the server what is the last modification date of the file to upload
+                Long timeStampLong = System.currentTimeMillis()/1000;
+                String timeStamp = timeStampLong.toString();
+                mPutMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, timeStamp);
+
                 ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
                 mPutMethod.setRequestEntity(mEntity);
                 if (mCancellationRequested.get()) {
@@ -127,6 +137,9 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 }
 
                 status = client.executeMethod(mPutMethod);
+
+                // DELETE NEXT LINE
+                Header[] headers = mPutMethod.getResponseHeaders();
 
                 if (status == 400) {
                     InvalidCharacterExceptionParser xmlParser =
