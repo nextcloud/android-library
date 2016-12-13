@@ -27,7 +27,6 @@ package com.owncloud.android.lib.resources.files;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.methods.PutMethod;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -137,7 +136,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 }
 
                 status = client.executeMethod(mPutMethod);
-                
+
                 if (status == 400) {
                     InvalidCharacterExceptionParser xmlParser =
                             new InvalidCharacterExceptionParser();
