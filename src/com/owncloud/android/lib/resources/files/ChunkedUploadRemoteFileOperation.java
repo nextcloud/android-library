@@ -27,8 +27,6 @@ package com.owncloud.android.lib.resources.files;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.apache.commons.httpclient.methods.PutMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
@@ -68,9 +66,9 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
 
     public ChunkedUploadRemoteFileOperation(
             String storagePath, String remotePath, String mimeType, String requiredEtag, String fileLastModifTimestamp
-    ){
-		 super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
-	}
+    ) {
+        super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
+    }
     
     @Override
     protected int uploadFile(OwnCloudClient client) throws IOException {
