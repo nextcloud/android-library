@@ -61,10 +61,16 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private Context mContext;
 
     public ChunkedUploadRemoteFileOperation(
-            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag) {
-        super(storagePath, remotePath, mimeType, requiredEtag);
+            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag, String fileLastModifTimestamp) {
+        super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
         mContext = context;
     }
+
+    public ChunkedUploadRemoteFileOperation(
+            String storagePath, String remotePath, String mimeType, String requiredEtag, String fileLastModifTimestamp
+    ){
+		 super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
+	}
     
     @Override
     protected int uploadFile(OwnCloudClient client) throws IOException {
@@ -116,10 +122,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
                 mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
 
-                // Tell to the server what is the last modification date of the file to upload
-                Long timeStampLong = System.currentTimeMillis()/1000;
-                String timeStamp = timeStampLong.toString();
-                mPutMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, timeStamp);
+                mPutMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
 
                 ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
                 mPutMethod.setRequestEntity(mEntity);
