@@ -118,7 +118,8 @@ public class RemoteOperationResult implements Serializable {
         DELAYED_FOR_WIFI,
         DELAYED_FOR_CHARGING,
         LOCAL_FILE_NOT_FOUND,
-        NOT_AVAILABLE
+        NOT_AVAILABLE,
+        MAINTENANCE_MODE
     }
 
     private boolean mSuccess = false;
@@ -168,10 +169,12 @@ public class RemoteOperationResult implements Serializable {
 			case HttpStatus.SC_FORBIDDEN:
 				mCode = ResultCode.FORBIDDEN;
                 break;
+            case HttpStatus.SC_SERVICE_UNAVAILABLE:
+                mCode = ResultCode.MAINTENANCE_MODE;
+                break;
             default:
                 mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " +
-                        httpCode);
+                Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " + httpCode);
             }
         }
     }
