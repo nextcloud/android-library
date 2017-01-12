@@ -192,13 +192,13 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 }
 
                 // Result
-                result = new RemoteOperationResult(true, status, get.getResponseHeaders());
+                result = new RemoteOperationResult(true, get);
                 // Username in result.data
                 ArrayList<Object> data = new ArrayList<>();
                 data.add(userInfo);
                 result.setData(data);
             } else {
-                result = new RemoteOperationResult(false, status, get.getResponseHeaders());
+                result = new RemoteOperationResult(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting user information ");
                 if (response != null) {
