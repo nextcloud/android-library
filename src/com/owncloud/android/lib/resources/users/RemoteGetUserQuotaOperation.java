@@ -129,6 +129,7 @@ public class RemoteGetUserQuotaOperation extends RemoteOperation {
             String url = client.getBaseUri() + OCS_ROUTE + credentials.getUsername();
 
             get = new GetMethod(url);
+            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             get.setQueryString(new NameValuePair[]{new NameValuePair("format", "json")});
             status = client.executeMethod(get);
 
