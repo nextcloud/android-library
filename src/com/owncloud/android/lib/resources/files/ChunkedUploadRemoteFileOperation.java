@@ -31,15 +31,13 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.methods.PutMethod;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Calendar;
@@ -70,8 +68,9 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     }
     
     @Override
-    protected int uploadFile(OwnCloudClient client) throws IOException {
+    protected RemoteOperationResult uploadFile(OwnCloudClient client) throws IOException {
         int status = -1;
+        RemoteOperationResult result = null;
 
         FileChannel channel = null;
         RandomAccessFile raf = null;
@@ -136,19 +135,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
 
                 status = client.executeMethod(mPutMethod);
 
-                if (status == 400) {
-                    InvalidCharacterExceptionParser xmlParser =
-                            new InvalidCharacterExceptionParser();
-                    InputStream is = new ByteArrayInputStream(
-                            mPutMethod.getResponseBodyAsString().getBytes());
-                    try {
-                        mForbiddenCharsInServer = xmlParser.parseXMLResponse(is);
-
-                    } catch (Exception e) {
-                        mForbiddenCharsInServer = false;
-                        Log_OC.e(TAG, "Exception reading exception from server", e);
-                    }
-                }
+                result = new RemoteOperationResult(isSuccess(status), mPutMethod);
 
                 client.exhaustResponse(mPutMethod.getResponseBodyAsStream());
                 Log_OC.d(TAG, "Upload of " + mLocalPath + " to " + mRemotePath +
@@ -173,13 +160,22 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             }
 
             if (channel != null)
-                channel.close();
-            if (raf != null)
-                raf.close();
+                try {
+                    channel.close();
+                } catch (IOException e) {
+                    Log_OC.e(TAG, "Error closing file channel!", e);
+                }
+            if (raf != null) {
+                try {
+                    raf.close();
+                } catch (IOException e) {
+                    Log_OC.e(TAG, "Error closing file access!", e);
+                }
+            }
             if (mPutMethod != null)
                 mPutMethod.releaseConnection();    // let the connection available for other methods
         }
-        return status;
+        return result;
     }
 
     private String getDateAsString() {

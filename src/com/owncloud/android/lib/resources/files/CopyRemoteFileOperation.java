@@ -45,7 +45,7 @@ import java.io.IOException;
 /**
  * Remote operation moving a remote file or folder in the ownCloud server to a different folder
  * in the same account.
- * <p/>
+ *
  * Allows renaming the moving file/folder at the same time.
  *
  * @author David A. Velasco
@@ -65,7 +65,7 @@ public class CopyRemoteFileOperation extends RemoteOperation {
 
     /**
      * Constructor.
-     * <p/>
+     *
      * TODO Paths should finish in "/" in the case of folders. ?
      *
      * @param srcRemotePath    Remote path of the file/folder to move.
@@ -134,17 +134,16 @@ public class CopyRemoteFileOperation extends RemoteOperation {
                 client.exhaustResponse(copyMethod.getResponseBodyAsStream());
             }
 
-            Log.i(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " +
-                    result.getLogMessage());
+            Log.i(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage());
 
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log.e(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " +
-                    result.getLogMessage(), e);
+            Log.e(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage(), e);
 
         } finally {
-            if (copyMethod != null)
+            if (copyMethod != null) {
                 copyMethod.releaseConnection();
+            }
         }
 
         return result;
@@ -153,10 +152,10 @@ public class CopyRemoteFileOperation extends RemoteOperation {
 
     /**
      * Analyzes a multistatus response from the OC server to generate an appropriate result.
-     * <p/>
+     *
      * In WebDAV, a COPY request on collections (folders) can be PARTIALLY successful: some
      * children are copied, some other aren't.
-     * <p/>
+     *
      * According to the WebDAV specification, a multistatus response SHOULD NOT include partial
      * successes (201, 204) nor for descendants of already failed children (424) in the response
      * entity. But SHOULD NOT != MUST NOT, so take carefully.
@@ -193,12 +192,9 @@ public class CopyRemoteFileOperation extends RemoteOperation {
         }
 
         return result;
-
     }
-
 
     protected boolean isSuccess(int status) {
         return status == HttpStatus.SC_CREATED || status == HttpStatus.SC_NO_CONTENT;
     }
-
 }

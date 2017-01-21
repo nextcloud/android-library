@@ -24,13 +24,14 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.network.FileRequestEntity;
+import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
+import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
+import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.operations.OperationCancelledException;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpStatus;
@@ -38,16 +39,11 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.FileRequestEntity;
-import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
-import com.owncloud.android.lib.common.network.ProgressiveDataTransferer;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.InvalidCharacterExceptionParser;
-import com.owncloud.android.lib.common.operations.OperationCancelledException;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Remote operation performing the upload of a remote file to the ownCloud server.
@@ -69,7 +65,6 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 	protected String mMimeType;
 	protected String mFileLastModifTimestamp;
 	protected PutMethod mPutMethod = null;
-	protected boolean mForbiddenCharsInServer = false;
 	protected String mRequiredEtag = null;
 
 	protected final AtomicBoolean mCancellationRequested = new AtomicBoolean(false);
@@ -112,14 +107,7 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 
 			} else {
 				// perform the upload
-				int status = uploadFile(client);
-				if (mForbiddenCharsInServer){
-					result = new RemoteOperationResult(
-							RemoteOperationResult.ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER);
-				} else {
-					result = new RemoteOperationResult(isSuccess(status), status,
-							(mPutMethod != null ? mPutMethod.getResponseHeaders() : null));
-				}
+				result = uploadFile(client);
 			}
 
 		} catch (Exception e) {
@@ -144,8 +132,10 @@ public class UploadRemoteFileOperation extends RemoteOperation {
                 status == HttpStatus.SC_NO_CONTENT));
 	}
 
-	protected int uploadFile(OwnCloudClient client) throws IOException {
+	protected RemoteOperationResult uploadFile(OwnCloudClient client) throws IOException {
 		int status = -1;
+		RemoteOperationResult result;
+
 		try {
 			File f = new File(mLocalPath);
 			mEntity  = new FileRequestEntity(f, mMimeType);
@@ -161,25 +151,14 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 			mPutMethod.setRequestEntity(mEntity);
 			status = client.executeMethod(mPutMethod);
 
-			if (status == 400) {
-				InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
-				InputStream is = new ByteArrayInputStream(
-						mPutMethod.getResponseBodyAsString().getBytes());
-				try {
-					mForbiddenCharsInServer = xmlParser.parseXMLResponse(is);
-
-				} catch (Exception e) {
-					mForbiddenCharsInServer = false;
-					Log_OC.e(TAG, "Exception reading exception from server", e);
-				}
-			}
+			result = new RemoteOperationResult(isSuccess(status), mPutMethod);
 
 			client.exhaustResponse(mPutMethod.getResponseBodyAsStream());
 
 		} finally {
 			mPutMethod.releaseConnection(); // let the connection available for other methods
 		}
-		return status;
+		return result;
 	}
 
     public Set<OnDatatransferProgressListener> getDataTransferListeners() {

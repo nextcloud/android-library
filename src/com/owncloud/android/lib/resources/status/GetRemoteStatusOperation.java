@@ -85,11 +85,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
             client.setFollowRedirects(false);
             boolean isRedirectToNonSecureConnection = false;
             int status = client.executeMethod(get, TRY_CONNECTION_TIMEOUT, TRY_CONNECTION_TIMEOUT);
-            mLatestResult = new RemoteOperationResult(
-            		(status == HttpStatus.SC_OK),
-            		status,
-            		get.getResponseHeaders()
-    		);
+            mLatestResult = new RemoteOperationResult((status == HttpStatus.SC_OK), get);
 
         	String redirectedLocation = mLatestResult.getRedirectedLocation();
         	while (redirectedLocation != null && redirectedLocation.length() > 0
@@ -99,16 +95,12 @@ public class GetRemoteStatusOperation extends RemoteOperation {
         				baseUrlSt.startsWith(PROTOCOL_HTTPS) &&
         				redirectedLocation.startsWith(PROTOCOL_HTTP)
 				);
-        		get.releaseConnection();
-        		get = new GetMethod(redirectedLocation);
-        		status = client.executeMethod(get, TRY_CONNECTION_TIMEOUT, TRY_CONNECTION_TIMEOUT);
-        		mLatestResult = new RemoteOperationResult(
-        				(status == HttpStatus.SC_OK), 
-        				status, 
-        				get.getResponseHeaders()
-				); 
-        		redirectedLocation = mLatestResult.getRedirectedLocation();
-        	}
+                get.releaseConnection();
+                get = new GetMethod(redirectedLocation);
+                status = client.executeMethod(get, TRY_CONNECTION_TIMEOUT, TRY_CONNECTION_TIMEOUT);
+                mLatestResult = new RemoteOperationResult((status == HttpStatus.SC_OK), get);
+                redirectedLocation = mLatestResult.getRedirectedLocation();
+            }
 
             String response = get.getResponseBodyAsString();
             if (status == HttpStatus.SC_OK) {
