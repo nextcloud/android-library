@@ -59,7 +59,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
     private static final String NODE_ID = "id";
-    private static final String NODE_DISPLAY_NAME = "displayname";
+    private static final String NODE_DISPLAY_NAME = "display-name";
     private static final String NODE_EMAIL = "email";
     private static final String NODE_ENABLED = "enabled";
     private static final String NODE_PHONE = "phone";
