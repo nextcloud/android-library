@@ -137,7 +137,12 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
 
                 UserInfo userInfo = new UserInfo();
 
-                userInfo.setId(respData.getString(NODE_ID));
+                // we don't really always have the ID
+                if (!respData.has(NODE_ID)) {
+                    userInfo.setId(respData.getString(NODE_ID));
+                } else {
+                    userInfo.setId(credentials.getUsername());
+                }
 
                 // Two endpoints, two different responses
                 if (respData.has(NODE_DISPLAY_NAME)) {
