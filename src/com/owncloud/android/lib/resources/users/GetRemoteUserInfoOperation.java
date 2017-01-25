@@ -43,7 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Gets information (id, display name, and e-mail address) about the user logged in.
+ * Gets information (id, display name, and e-mail address and many other things) about the user logged in.
  *
  * @author masensio
  * @author David A. Velasco
