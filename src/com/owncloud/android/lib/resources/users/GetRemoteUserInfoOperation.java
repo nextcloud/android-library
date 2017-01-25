@@ -153,7 +153,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                     userInfo.setDisplayName(respData.getString(NODE_DISPLAY_NAME_ALT));
                 }
 
-                if (respData.getString(NODE_EMAIL) != null) {
+                if (respData.getString(NODE_EMAIL) != null && !TextUtils.isEmpty(respData.getString(NODE_EMAIL))) {
                     userInfo.setEmail(respData.getString(NODE_EMAIL));
                 }
 
@@ -174,19 +174,19 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
 
                 if (versionWithSelfAPI) {
-                    if (respData.has(NODE_PHONE) && TextUtils.isEmpty(respData.getString(NODE_PHONE))) {
+                    if (respData.has(NODE_PHONE) && !TextUtils.isEmpty(respData.getString(NODE_PHONE))) {
                         userInfo.setPhone(respData.getString(NODE_PHONE));
                     }
 
-                    if (respData.has(NODE_ADDRESS) && TextUtils.isEmpty(respData.getString(NODE_ADDRESS))) {
+                    if (respData.has(NODE_ADDRESS) && !TextUtils.isEmpty(respData.getString(NODE_ADDRESS))) {
                         userInfo.setAddress(respData.getString(NODE_ADDRESS));
                     }
 
-                    if (respData.has(NODE_WEBPAGE) && TextUtils.isEmpty(respData.getString(NODE_WEBPAGE))) {
+                    if (respData.has(NODE_WEBPAGE) && !TextUtils.isEmpty(respData.getString(NODE_WEBPAGE))) {
                         userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
                     }
 
-                    if (respData.has(NODE_TWITTER) && TextUtils.isEmpty(respData.getString(NODE_TWITTER))) {
+                    if (respData.has(NODE_TWITTER) && !TextUtils.isEmpty(respData.getString(NODE_TWITTER))) {
                         userInfo.setTwitter(respData.getString(NODE_TWITTER));
                     }
                 }
