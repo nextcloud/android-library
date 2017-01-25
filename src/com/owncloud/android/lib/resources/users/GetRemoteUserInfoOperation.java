@@ -114,7 +114,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
             if (userId != null) {
                 url = client.getBaseUri() + OCS_ROUTE_SEARCH + userId;
             } else {
-                url = OCS_ROUTE_SELF;
+                url = client.getBaseUri() + OCS_ROUTE_SELF;
             }
 
             get = new GetMethod(url);
