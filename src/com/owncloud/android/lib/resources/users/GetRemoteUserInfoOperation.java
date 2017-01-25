@@ -25,12 +25,14 @@
 
 package com.owncloud.android.lib.resources.users;
 
+import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -60,6 +62,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_ID = "id";
     private static final String NODE_DISPLAY_NAME = "display-name";
+    private static final String NODE_DISPLAY_NAME_ALT = "displayname";
     private static final String NODE_EMAIL = "email";
     private static final String NODE_ENABLED = "enabled";
     private static final String NODE_PHONE = "phone";
@@ -93,13 +96,8 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
      */
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
 
-    private static String userId = null;
 
     public GetRemoteUserInfoOperation() {
-    }
-
-    public GetRemoteUserInfoOperation(String lookupUserId) {
-        userId = lookupUserId;
     }
 
     @Override
@@ -109,10 +107,16 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
         GetMethod get = null;
         String url;
 
+        OwnCloudBasicCredentials credentials = (OwnCloudBasicCredentials) client.getCredentials();
+
+        OwnCloudVersion version = client.getOwnCloudVersion();
+        boolean versionWithSelfAPI =
+                (version != null && version.isSelfSupported());
+
         //Get the user
         try {
-            if (userId != null) {
-                url = client.getBaseUri() + OCS_ROUTE_SEARCH + userId;
+            if (!versionWithSelfAPI) {
+                url = client.getBaseUri() + OCS_ROUTE_SEARCH + credentials.getUsername();
             } else {
                 url = client.getBaseUri() + OCS_ROUTE_SELF;
             }
@@ -134,7 +138,13 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 UserInfo userInfo = new UserInfo();
 
                 userInfo.setId(respData.getString(NODE_ID));
-                userInfo.setDisplayName(respData.getString(NODE_DISPLAY_NAME));
+
+                // Two endpoints, two different responses
+                if (respData.has(NODE_DISPLAY_NAME)) {
+                    userInfo.setDisplayName(respData.getString(NODE_DISPLAY_NAME));
+                } else {
+                    userInfo.setDisplayName(respData.getString(NODE_DISPLAY_NAME_ALT));
+                }
                 userInfo.setEmail(respData.getString(NODE_EMAIL));
 
                 JSONObject quota = respData.getJSONObject(NODE_QUOTA);
@@ -153,7 +163,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
 
                 userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
 
-                // This information will be available in 11 and 12 only
+                // This information will be available in 11 and 12 only, but no point in hardcoding the version
                 if (respData.has(NODE_PHONE)) {
                     userInfo.setPhone(respData.getString(NODE_PHONE));
                 }
