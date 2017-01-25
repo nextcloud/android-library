@@ -138,7 +138,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 UserInfo userInfo = new UserInfo();
 
                 // we don't really always have the ID
-                if (!respData.has(NODE_ID)) {
+                if (respData.has(NODE_ID)) {
                     userInfo.setId(respData.getString(NODE_ID));
                 } else {
                     userInfo.setId(credentials.getUsername());
@@ -168,21 +168,22 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
 
                 userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
 
-                // This information will be available in 11 and 12 only, but no point in hardcoding the version
-                if (respData.has(NODE_PHONE)) {
-                    userInfo.setPhone(respData.getString(NODE_PHONE));
-                }
+                if (versionWithSelfAPI) {
+                    if (respData.has(NODE_PHONE)) {
+                        userInfo.setPhone(respData.getString(NODE_PHONE));
+                    }
 
-                if (respData.has(NODE_ADDRESS)) {
-                    userInfo.setAddress(respData.getString(NODE_ADDRESS));
-                }
+                    if (respData.has(NODE_ADDRESS)) {
+                        userInfo.setAddress(respData.getString(NODE_ADDRESS));
+                    }
 
-                if (respData.has(NODE_WEBPAGE)) {
-                    userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
-                }
+                    if (respData.has(NODE_WEBPAGE)) {
+                        userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
+                    }
 
-                if (respData.has(NODE_TWITTER)) {
-                    userInfo.setTwitter(respData.getString(NODE_TWITTER));
+                    if (respData.has(NODE_TWITTER)) {
+                        userInfo.setTwitter(respData.getString(NODE_TWITTER));
+                    }
                 }
 
                 if (respData.has(NODE_ENABLED)) {
