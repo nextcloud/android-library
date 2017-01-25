@@ -25,6 +25,8 @@
 
 package com.owncloud.android.lib.resources.users;
 
+import android.text.TextUtils;
+
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.Quota;
@@ -150,7 +152,10 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 } else {
                     userInfo.setDisplayName(respData.getString(NODE_DISPLAY_NAME_ALT));
                 }
-                userInfo.setEmail(respData.getString(NODE_EMAIL));
+
+                if (respData.getString(NODE_EMAIL) != null) {
+                    userInfo.setEmail(respData.getString(NODE_EMAIL));
+                }
 
                 JSONObject quota = respData.getJSONObject(NODE_QUOTA);
                 final Long quotaFree = quota.getLong(NODE_QUOTA_FREE);
@@ -169,19 +174,19 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
 
                 if (versionWithSelfAPI) {
-                    if (respData.has(NODE_PHONE)) {
+                    if (respData.has(NODE_PHONE) && TextUtils.isEmpty(respData.getString(NODE_PHONE))) {
                         userInfo.setPhone(respData.getString(NODE_PHONE));
                     }
 
-                    if (respData.has(NODE_ADDRESS)) {
+                    if (respData.has(NODE_ADDRESS) && TextUtils.isEmpty(respData.getString(NODE_ADDRESS))) {
                         userInfo.setAddress(respData.getString(NODE_ADDRESS));
                     }
 
-                    if (respData.has(NODE_WEBPAGE)) {
+                    if (respData.has(NODE_WEBPAGE) && TextUtils.isEmpty(respData.getString(NODE_WEBPAGE))) {
                         userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
                     }
 
-                    if (respData.has(NODE_TWITTER)) {
+                    if (respData.has(NODE_TWITTER) && TextUtils.isEmpty(respData.getString(NODE_TWITTER))) {
                         userInfo.setTwitter(respData.getString(NODE_TWITTER));
                     }
                 }
