@@ -112,8 +112,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
         OwnCloudBasicCredentials credentials = (OwnCloudBasicCredentials) client.getCredentials();
 
         OwnCloudVersion version = client.getOwnCloudVersion();
-        boolean versionWithSelfAPI =
-                (version != null && version.isSelfSupported());
+        boolean versionWithSelfAPI = version != null && version.isSelfSupported();
 
         //Get the user
         try {
