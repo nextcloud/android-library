@@ -22,7 +22,7 @@ package com.owncloud.android.lib.common;
 import org.parceler.Parcel;
 
 /**
- * Created by mdjanic on 24/01/2017.
+ * Quota data model
  */
 
 @Parcel
