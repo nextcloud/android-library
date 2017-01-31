@@ -161,11 +161,10 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             }
 
         } finally {
+            SharedPreferences.Editor editor = sharedPref.edit();
             if (this.isSuccess(status)) {
-                SharedPreferences.Editor editor = sharedPref.edit();
                 editor.remove(chunkId).apply();
             } else {
-                SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putStringSet(chunkId, successfulChunks).apply();
             }
 
