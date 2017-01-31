@@ -50,6 +50,8 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public static final int VERSION_8 = 0x08000000; // 8.0
 
     public static final int MINIMUM_VERSION_CAPABILITIES_API = 0x08010000; // 8.1
+
+    public static final int MINIMUM_SELF_API = 0x11000200;
     
     private static final int MAX_DOTS = 3;
     
@@ -156,4 +158,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public boolean isVersionWithCapabilitiesAPI(){
         return (mVersion>= MINIMUM_VERSION_CAPABILITIES_API);
     }
+
+    public boolean isSelfSupported() {
+        return (mVersion >= MINIMUM_SELF_API);
+    }
+
 }
