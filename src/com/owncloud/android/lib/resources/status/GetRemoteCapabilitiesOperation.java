@@ -76,6 +76,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_USER = "user";
     private static final String NODE_FEDERATION = "federation";
     private static final String NODE_FILES = "files";
+    private static final String NODE_THEMING = "theming";
 
     private static final String PROPERTY_STATUS = "status";
     private static final String PROPERTY_STATUSCODE = "statuscode";
@@ -102,6 +103,8 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String PROPERTY_BIGFILECHUNKING = "bigfilechunking";
     private static final String PROPERTY_UNDELETE = "undelete";
     private static final String PROPERTY_VERSIONING = "versioning";
+    
+    private static final String PROPERTY_SERVERNAME = "name";
 
 
     /**
@@ -246,6 +249,14 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                     respFiles.getBoolean(PROPERTY_VERSIONING)));
                             Log_OC.d(TAG, "*** Added " + NODE_FILES);
                         }
+                        
+                        if (respCapabilities.has(NODE_THEMING)) {
+                            JSONObject respTheming = respCapabilities.getJSONObject(NODE_THEMING);
+                            // Add theming
+                            capability.setServerName(respTheming.getJSONObject(PROPERTY_SERVERNAME));
+                            Log_OC.d(TAG, "*** Added " + NODE_THEMING);
+                        }
+                        
                     }
                     // Result
                     data.add(capability);
