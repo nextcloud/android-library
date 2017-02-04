@@ -40,6 +40,7 @@ public class OCCapability {
     private int mVersionMicro;
     private String mVersionString;
     private String mVersionEdition;
+    private String mServerName;
 
     // Core PollInterval
     private int mCorePollinterval;
@@ -77,6 +78,7 @@ public class OCCapability {
         mVersionMicro = 0;
         mVersionString = "";
         mVersionString = "";
+        mServerName = "Nextcloud";
 
         mCorePollinterval = 0;
 
@@ -149,6 +151,14 @@ public class OCCapability {
         this.mVersionString = versionString;
     }
 
+    public String getServerName() {
+        return mServerName;
+    }
+
+    public void setServerName(String serverName) {
+        this.mServerName = serverName;
+    }
+    
     public String getVersionEdition() {
         return mVersionEdition;
     }
