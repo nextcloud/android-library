@@ -253,7 +253,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                         if (respCapabilities.has(NODE_THEMING)) {
                             JSONObject respTheming = respCapabilities.getJSONObject(NODE_THEMING);
                             // Add theming
-                            capability.setServerName(respTheming.getJSONObject(PROPERTY_SERVERNAME));
+                            capability.setServerName(respTheming.getString(PROPERTY_SERVERNAME));
                             Log_OC.d(TAG, "*** Added " + NODE_THEMING);
                         }
                         
