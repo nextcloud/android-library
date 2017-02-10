@@ -103,8 +103,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String PROPERTY_BIGFILECHUNKING = "bigfilechunking";
     private static final String PROPERTY_UNDELETE = "undelete";
     private static final String PROPERTY_VERSIONING = "versioning";
-    
+
     private static final String PROPERTY_SERVERNAME = "name";
+    private static final String PROPERTY_SERVERSLOGAN = "slogan";
+    private static final String PROPERTY_SERVERCOLOR = "color";
+    private static final String PROPERTY_SERVERLOGO = "logo";
+    private static final String PROPERTY_SERVERBACKGROUND = "background";
 
 
     /**
@@ -188,12 +192,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 if(respPublic.has(NODE_PASSWORD)) {
                                     capability.setFilesSharingPublicPasswordEnforced(
                                             CapabilityBooleanType.fromBooleanValue(
-                                            respPublic.getJSONObject(NODE_PASSWORD).getBoolean(PROPERTY_ENFORCED)));
+                                                    respPublic.getJSONObject(NODE_PASSWORD).getBoolean(PROPERTY_ENFORCED)));
                                 }
                                 if(respPublic.has(NODE_FILES_DROP)) {
                                     capability.setFilesFileDrop(
                                             CapabilityBooleanType.fromBooleanValue(
-                                            respPublic.getBoolean(NODE_FILES_DROP))
+                                                    respPublic.getBoolean(NODE_FILES_DROP))
                                     );
                                 }
                                 if(respPublic.has(NODE_EXPIRE_DATE)){
@@ -228,7 +232,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             if (respFilesSharing.has(NODE_FEDERATION)) {
                                 JSONObject respFederation = respFilesSharing.getJSONObject(NODE_FEDERATION);
                                 capability.setFilesSharingFederationOutgoing(
-                                CapabilityBooleanType.fromBooleanValue(respFederation.getBoolean(PROPERTY_OUTGOING)));
+                                        CapabilityBooleanType.fromBooleanValue(respFederation.getBoolean(PROPERTY_OUTGOING)));
                                 capability.setFilesSharingFederationIncoming(CapabilityBooleanType.fromBooleanValue(
                                         respFederation.getBoolean(PROPERTY_INCOMING)));
                             }
@@ -249,14 +253,18 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                     respFiles.getBoolean(PROPERTY_VERSIONING)));
                             Log_OC.d(TAG, "*** Added " + NODE_FILES);
                         }
-                        
+
                         if (respCapabilities.has(NODE_THEMING)) {
                             JSONObject respTheming = respCapabilities.getJSONObject(NODE_THEMING);
                             // Add theming
                             capability.setServerName(respTheming.getString(PROPERTY_SERVERNAME));
+                            capability.setServerSlogan(respTheming.getString(PROPERTY_SERVERSLOGAN));
+                            capability.setServerColor(respTheming.getString(PROPERTY_SERVERCOLOR));
+                            capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
+                            capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
                             Log_OC.d(TAG, "*** Added " + NODE_THEMING);
                         }
-                        
+
                     }
                     // Result
                     data.add(capability);

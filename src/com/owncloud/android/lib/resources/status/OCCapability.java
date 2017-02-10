@@ -41,6 +41,10 @@ public class OCCapability {
     private String mVersionString;
     private String mVersionEdition;
     private String mServerName;
+    private String mServerSlogan;
+    private String mServerColor;
+    private String mServerLogo;
+    private String mServerBackground;
 
     // Core PollInterval
     private int mCorePollinterval;
@@ -78,7 +82,11 @@ public class OCCapability {
         mVersionMicro = 0;
         mVersionString = "";
         mVersionString = "";
-        mServerName = "Nextcloud";
+        mServerName = "";
+        mServerSlogan = "";
+        mServerColor = "";
+        mServerLogo = "";
+        mServerBackground = "";
 
         mCorePollinterval = 0;
 
@@ -158,7 +166,40 @@ public class OCCapability {
     public void setServerName(String serverName) {
         this.mServerName = serverName;
     }
-    
+
+
+    public String getServerBackground() {
+        return mServerBackground;
+    }
+
+    public void setServerBackground(String mServerBackground) {
+        this.mServerBackground = mServerBackground;
+    }
+
+    public String getServerLogo() {
+        return mServerLogo;
+    }
+
+    public void setServerLogo(String mServerLogo) {
+        this.mServerLogo = mServerLogo;
+    }
+
+    public String getServerColor() {
+        return mServerColor;
+    }
+
+    public void setServerColor(String mServerColor) {
+        this.mServerColor = mServerColor;
+    }
+
+    public String getServerSlogan() {
+        return mServerSlogan;
+    }
+
+    public void setServerSlogan(String mServerSlogan) {
+        this.mServerSlogan = mServerSlogan;
+    }
+
     public String getVersionEdition() {
         return mVersionEdition;
     }
