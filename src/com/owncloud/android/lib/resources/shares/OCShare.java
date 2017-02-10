@@ -53,6 +53,17 @@ public class OCShare implements Parcelable, Serializable {
     public static final int CREATE_PERMISSION_FLAG = 4;
     public static final int DELETE_PERMISSION_FLAG = 8;
     public static final int SHARE_PERMISSION_FLAG = 16;
+    public static final int FEDERATED_PERMISSIONS_FOR_FILE =
+            READ_PERMISSION_FLAG +
+                    UPDATE_PERMISSION_FLAG
+            ;
+    public static final int FEDERATED_PERMISSIONS_FOR_FOLDER =
+            READ_PERMISSION_FLAG +
+                    UPDATE_PERMISSION_FLAG +
+                    CREATE_PERMISSION_FLAG +
+                    DELETE_PERMISSION_FLAG
+            ;
+
     public static final int MAXIMUM_PERMISSIONS_FOR_FILE =
             READ_PERMISSION_FLAG +
                     UPDATE_PERMISSION_FLAG +
