@@ -26,21 +26,21 @@
 
 package com.owncloud.android.lib.resources.users;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 
 /**
@@ -61,12 +61,12 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
      * Etag of current local copy of the avatar; if not null, remote avatar will be downloaded only
      * if its Etag changed.
      */
-    private String mCurrentEtag;
+    //private String mCurrentEtag;
 
 
     public GetRemoteUserAvatarOperation(int dimension, String currentEtag) {
         mDimension = dimension;
-        mCurrentEtag = currentEtag;
+        //mCurrentEtag = currentEtag;
     }
 
     @Override
@@ -78,10 +78,8 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
         ByteArrayOutputStream bos = null;
 
         try {
-            String uri =
-                client.getBaseUri() + NON_OFFICIAL_AVATAR_PATH +
-                client.getCredentials().getUsername() + "/" + mDimension;
-            ;
+            String uri = getAvatarUri(client, mDimension);
+
             Log_OC.d(TAG, "avatar URI: " + uri);
             get = new GetMethod(uri);
             /*  Conditioned call is corrupting the input stream of the connection.
@@ -112,17 +110,13 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
                 String mimeType;
                 Header contentType = get.getResponseHeader("Content-Type");
                 if (contentType == null || !contentType.getValue().startsWith("image")) {
-                    Log_OC.e(
-                        TAG, "Not an image, failing with no avatar"
-                    );
-                    result = new RemoteOperationResult(
-                        RemoteOperationResult.ResultCode.FILE_NOT_FOUND
-                    );
+                    Log_OC.e(TAG, "Not an image, failing with no avatar");
+                    result = new RemoteOperationResult(RemoteOperationResult.ResultCode.FILE_NOT_FOUND);
                     return result;
                 }
                 mimeType = contentType.getValue();
 
-                /// download will be performed to a buffer
+                // download will be performed to a buffer
                 inputStream = get.getResponseBodyAsStream();
                 bis = new BufferedInputStream(inputStream);
                 bos = new ByteArrayOutputStream(totalToTransfer);
@@ -136,18 +130,8 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
                 }
                 // TODO check total bytes transferred?
 
-                // find out etag
-                String etag = WebdavUtils.getEtagFromResponse(get);
-                if (etag.length() == 0) {
-                    Log_OC.w(TAG, "Could not read Etag from avatar");
-                }
-
                 // Result
-                result = new RemoteOperationResult(true, get);
-                ResultData resultData = new ResultData(bos.toByteArray(), mimeType, etag);
-                ArrayList<Object> data = new ArrayList<Object>();
-                data.add(resultData);
-                result.setData(data);
+                result = createResult(get, bos.toByteArray(), mimeType);
 
             } else {
                 result = new RemoteOperationResult(false, get);
@@ -184,6 +168,25 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
         }
 
         return result;
+    }
+
+    private RemoteOperationResult createResult(GetMethod get, byte[] avatarData, String mimeType) throws IOException {
+        // find out etag
+        String etag = WebdavUtils.getEtagFromResponse(get);
+        if (etag.length() == 0) {
+            Log_OC.w(TAG, "Could not read Etag from avatar");
+        }
+
+        RemoteOperationResult result = new RemoteOperationResult(true, get);
+        ResultData resultData = new ResultData(avatarData, mimeType, etag);
+        ArrayList<Object> data = new ArrayList<>();
+        data.add(resultData);
+        result.setData(data);
+        return result;
+    }
+
+    private String getAvatarUri(OwnCloudClient client, int dimension) {
+        return client.getBaseUri() + NON_OFFICIAL_AVATAR_PATH + client.getCredentials().getUsername() + "/" + dimension;
     }
 
     private boolean isSuccess(int status) {
