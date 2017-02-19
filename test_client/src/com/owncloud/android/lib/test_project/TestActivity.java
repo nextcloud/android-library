@@ -250,38 +250,35 @@ public class TestActivity extends Activity {
 			) {
 		return TestActivity.uploadFile(this, storagePath, remotePath, mimeType, mClient, requiredEtag);
 	}
-
-	/**
-	 * Access to the library method to Upload a File
+	
+	
+	/** Access to the library method to Upload a File 
 	 *
 	 * @param context
 	 * @param storagePath
 	 * @param remotePath
 	 * @param mimeType
-	 * @param client       Client instance configured to access the target OC server.
-	 * @param requiredEtag
+	 * @param client            Client instance configured to access the target OC server.
+	 *
 	 * @return
 	 */
 	public static RemoteOperationResult uploadFile(
 			Context context, String storagePath, String remotePath, String mimeType, OwnCloudClient client,
 			String requiredEtag
 	) {
-
-		String fileLastModifTimestamp = getFileLastModifTimeStamp(storagePath);
-
 		UploadRemoteFileOperation uploadOperation;
-
 		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
 			uploadOperation = new ChunkedUploadRemoteFileOperation(
-					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
+					context, storagePath, remotePath, mimeType, requiredEtag
 			);
 		} else {
-			uploadOperation = new UploadRemoteFileOperation(
-					storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
-			);
-		}
-
-		return uploadOperation.execute(client);
+            uploadOperation = new UploadRemoteFileOperation(
+            		storagePath, remotePath, mimeType
+    		);
+        }
+		
+		RemoteOperationResult result = uploadOperation.execute(client);
+		return result;
 	}
 
 	/** Access to the library method to Get Shares 
@@ -289,8 +286,11 @@ public class TestActivity extends Activity {
 	 * @return
 	 */
 	public RemoteOperationResult getShares(){
+		
 		GetRemoteSharesOperation getOperation = new GetRemoteSharesOperation();
-		return getOperation.execute(mClient);
+		RemoteOperationResult result = getOperation.execute(mClient);
+		
+		return result;
 	}
 	
 	/** Access to the library method to Create Share
@@ -316,7 +316,9 @@ public class TestActivity extends Activity {
 			String password, int permissions){
 		
 		CreateRemoteShareOperation createOperation = new CreateRemoteShareOperation(path, shareType, shareWith, publicUpload, password, permissions);
-		return createOperation.execute(mClient);
+		RemoteOperationResult result = createOperation.execute(mClient);
+		
+		return result;
 	}
 	
 	
@@ -328,7 +330,10 @@ public class TestActivity extends Activity {
 	
 	public RemoteOperationResult removeShare(int idShare) {
 		RemoveRemoteShareOperation removeOperation = new RemoveRemoteShareOperation(idShare);
-		return removeOperation.execute(mClient);
+		RemoteOperationResult result = removeOperation.execute(mClient);
+		
+		return result;
+		
 	}
 
 	
@@ -368,9 +373,5 @@ public class TestActivity extends Activity {
 		return extractedFile;
 	}
 
-    private static String getFileLastModifTimeStamp (String storagePath) {
-        File file = new File(storagePath);
-        Long timeStampLong = file.lastModified()/1000;
-        return timeStampLong.toString();
-    }
+
 }
