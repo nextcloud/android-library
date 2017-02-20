@@ -178,7 +178,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
         enableSecureProtocols(socket);
         SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
         SocketAddress remoteaddr = new InetSocketAddress(host, port);
-        socket.setSoTimeout(params.getSoTimeout() * 2);
+        socket.setSoTimeout(params.getSoTimeout() * 5);
         socket.bind(localaddr);
         ServerNameIndicator.setServerNameIndication(host, (SSLSocket)socket);
         socket.connect(remoteaddr, timeout);
