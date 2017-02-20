@@ -25,14 +25,8 @@
 
 package com.owncloud.android.lib.common;
 
-import android.net.Uri;
-
-import com.owncloud.android.lib.common.OwnCloudCredentialsFactory.OwnCloudAnonymousCredentials;
-import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.common.network.RedirectionPath;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
@@ -50,8 +44,14 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.params.HttpParams;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.net.Uri;
+
+import com.owncloud.android.lib.common.OwnCloudCredentialsFactory.OwnCloudAnonymousCredentials;
+import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.common.network.RedirectionPath;
+import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 public class OwnCloudClient extends HttpClient {
 	
