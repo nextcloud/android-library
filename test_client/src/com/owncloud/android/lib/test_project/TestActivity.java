@@ -251,8 +251,8 @@ public class TestActivity extends Activity {
 		return TestActivity.uploadFile(this, storagePath, remotePath, mimeType, mClient, requiredEtag);
 	}
 
-	/**
-	 * Access to the library method to Upload a File
+
+	/** Access to the library method to Upload a File
 	 *
 	 * @param context
 	 * @param storagePath
@@ -276,10 +276,10 @@ public class TestActivity extends Activity {
 					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
 			);
 		} else {
-			uploadOperation = new UploadRemoteFileOperation(
-					storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
-			);
-		}
+            uploadOperation = new UploadRemoteFileOperation(
+                    storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
+    		);
+        }
 
 		return uploadOperation.execute(client);
 	}
@@ -289,6 +289,7 @@ public class TestActivity extends Activity {
 	 * @return
 	 */
 	public RemoteOperationResult getShares(){
+
 		GetRemoteSharesOperation getOperation = new GetRemoteSharesOperation();
 		return getOperation.execute(mClient);
 	}
