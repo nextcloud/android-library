@@ -24,6 +24,28 @@
 
 package com.owncloud.android.lib.sampleclient;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
+import com.owncloud.android.lib.common.OwnCloudClientFactory;
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
+import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
+import com.owncloud.android.lib.resources.files.RemoteFile;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
+import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
+import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
+import com.owncloud.android.lib.resources.files.UploadRemoteFileOperation;
+import com.owncloud.android.lib.resources.files.FileUtils;
+
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.graphics.drawable.BitmapDrawable;
@@ -35,28 +57,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.OwnCloudClientFactory;
-import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
-import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
-import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.FileUtils;
-import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.UploadRemoteFileOperation;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class MainActivity extends Activity implements OnRemoteOperationListener, OnDatatransferProgressListener {
 	
@@ -147,36 +147,36 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
     	}
     }
 
-	private void startRefresh() {
-		ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(FileUtils.PATH_SEPARATOR);
-		refreshOperation.execute(mClient, this, mHandler);
-	}
+    private void startRefresh() {
+    	ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(FileUtils.PATH_SEPARATOR);
+    	refreshOperation.execute(mClient, this, mHandler);
+    }
 
-	private void startUpload() {
-		File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
-		File fileToUpload = upFolder.listFiles()[0];
-		String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
-		String mimeType = getString(R.string.sample_file_mimetype);
+    private void startUpload() {
+    	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
+    	File fileToUpload = upFolder.listFiles()[0];
+    	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
+    	String mimeType = getString(R.string.sample_file_mimetype);
 
 		// Get the last modification date of the file from the file system
 		Long timeStampLong = fileToUpload.lastModified() / 1000;
 		String timeStamp = timeStampLong.toString();
 
-		UploadRemoteFileOperation uploadOperation =
-				new UploadRemoteFileOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType, timeStamp);
-		uploadOperation.addDatatransferProgressListener(this);
-		uploadOperation.execute(mClient, this, mHandler);
-	}
+    	UploadRemoteFileOperation uploadOperation =
+            new UploadRemoteFileOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType, timeStamp);
+    	uploadOperation.addDatatransferProgressListener(this);
+    	uploadOperation.execute(mClient, this, mHandler);
+    }
 
-	private void startRemoteDeletion() {
-		File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
-		File fileToUpload = upFolder.listFiles()[0];
-		String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
-		RemoveRemoteFileOperation removeOperation = new RemoveRemoteFileOperation(remotePath);
-		removeOperation.execute(mClient, this, mHandler);
-	}
+    private void startRemoteDeletion() {
+    	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
+    	File fileToUpload = upFolder.listFiles()[0];
+    	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
+    	RemoveRemoteFileOperation removeOperation = new RemoveRemoteFileOperation(remotePath);
+    	removeOperation.execute(mClient, this, mHandler);
+    }
 
-	private void startDownload() {
+    private void startDownload() {
     	File downFolder = new File(getCacheDir(), getString(R.string.download_folder_path));
     	downFolder.mkdir();
     	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));

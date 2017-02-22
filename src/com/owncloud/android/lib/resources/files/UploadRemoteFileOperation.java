@@ -58,129 +58,129 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 public class UploadRemoteFileOperation extends RemoteOperation {
 
-    private static final String TAG = UploadRemoteFileOperation.class.getSimpleName();
+	private static final String TAG = UploadRemoteFileOperation.class.getSimpleName();
 
-    protected static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
+	protected static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
+	protected static final String IF_MATCH_HEADER = "If-Match";
     protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
-    protected static final String IF_MATCH_HEADER = "If-Match";
 
-    protected String mLocalPath;
-    protected String mRemotePath;
-    protected String mMimeType;
-    protected String mFileLastModifTimestamp;
-    protected PutMethod mPutMethod = null;
-    protected boolean mForbiddenCharsInServer = false;
-    protected String mRequiredEtag = null;
+	protected String mLocalPath;
+	protected String mRemotePath;
+	protected String mMimeType;
+	protected String mFileLastModifTimestamp;
+	protected PutMethod mPutMethod = null;
+	protected boolean mForbiddenCharsInServer = false;
+	protected String mRequiredEtag = null;
 
-    protected final AtomicBoolean mCancellationRequested = new AtomicBoolean(false);
-    protected Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
+	protected final AtomicBoolean mCancellationRequested = new AtomicBoolean(false);
+	protected Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
 
-    protected RequestEntity mEntity = null;
+	protected RequestEntity mEntity = null;
 
-    public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String fileLastModifTimestamp) {
-        mLocalPath = localPath;
-        mRemotePath = remotePath;
-        mMimeType = mimeType;
-        mFileLastModifTimestamp = fileLastModifTimestamp;
-    }
+	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType,
+									 String fileLastModifTimestamp) {
+		mLocalPath = localPath;
+		mRemotePath = remotePath;
+		mMimeType = mimeType;
+		mFileLastModifTimestamp = fileLastModifTimestamp;
+	}
 
-    public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String requiredEtag, String fileLastModifTimestamp) {
-        this(localPath, remotePath, mimeType, fileLastModifTimestamp);
-        mRequiredEtag = requiredEtag;
-    }
+	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String requiredEtag,
+									 String fileLastModifTimestamp) {
+		this(localPath, remotePath, mimeType, fileLastModifTimestamp);
+		mRequiredEtag = requiredEtag;
+	}
 
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        DefaultHttpMethodRetryHandler oldRetryHandler =
-            (DefaultHttpMethodRetryHandler) client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
+	@Override
+	protected RemoteOperationResult run(OwnCloudClient client) {
+		RemoteOperationResult result = null;
+		DefaultHttpMethodRetryHandler oldRetryHandler =
+			(DefaultHttpMethodRetryHandler) client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
 
-        try {
-            // prevent that uploads are retried automatically by network library
-            client.getParams().setParameter(
-                HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(0, false)
-            );
+		try {
+			// prevent that uploads are retried automatically by network library
+			client.getParams().setParameter(
+				HttpMethodParams.RETRY_HANDLER,
+				new DefaultHttpMethodRetryHandler(0, false)
+			);
 
-            mPutMethod = new PutMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
+			mPutMethod = new PutMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
 
-            if (mCancellationRequested.get()) {
-                // the operation was cancelled before getting it's turn to be executed in the queue of uploads
-                result = new RemoteOperationResult(new OperationCancelledException());
+			if (mCancellationRequested.get()) {
+				// the operation was cancelled before getting it's turn to be executed in the queue of uploads
+				result = new RemoteOperationResult(new OperationCancelledException());
 
-            } else {
-                // perform the upload
-                int status = uploadFile(client);
-                if (mForbiddenCharsInServer){
-                    result = new RemoteOperationResult(
-                            RemoteOperationResult.ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER);
-                } else {
-                    result = new RemoteOperationResult(isSuccess(status), status,
-                            (mPutMethod != null ? mPutMethod.getResponseHeaders() : null));
-                }
-            }
+			} else {
+				// perform the upload
+				int status = uploadFile(client);
+				if (mForbiddenCharsInServer){
+					result = new RemoteOperationResult(
+							RemoteOperationResult.ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER);
+				} else {
+					result = new RemoteOperationResult(isSuccess(status), status,
+							(mPutMethod != null ? mPutMethod.getResponseHeaders() : null));
+				}
+			}
 
-        } catch (Exception e) {
-            if (mPutMethod != null && mPutMethod.isAborted()) {
-                result = new RemoteOperationResult(new OperationCancelledException());
+		} catch (Exception e) {
+			if (mPutMethod != null && mPutMethod.isAborted()) {
+				result = new RemoteOperationResult(new OperationCancelledException());
 
-            } else {
-                result = new RemoteOperationResult(e);
-            }
-        } finally {
-            // reset previous retry handler
-            client.getParams().setParameter(
-                HttpMethodParams.RETRY_HANDLER,
-                oldRetryHandler
-            );
-        }
-        return result;
-    }
+			} else {
+				result = new RemoteOperationResult(e);
+			}
+		} finally {
+			// reset previous retry handler
+			client.getParams().setParameter(
+				HttpMethodParams.RETRY_HANDLER,
+				oldRetryHandler
+			);
+		}
+		return result;
+	}
 
-    public boolean isSuccess(int status) {
-        return ((status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED ||
+	public boolean isSuccess(int status) {
+		return ((status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED ||
                 status == HttpStatus.SC_NO_CONTENT));
-    }
+	}
 
-    protected int uploadFile(OwnCloudClient client) throws IOException {
-        int status = -1;
-        try {
-            File f = new File(mLocalPath);
-            mEntity  = new FileRequestEntity(f, mMimeType);
-            synchronized (mDataTransferListeners) {
-                ((ProgressiveDataTransferer)mEntity)
+	protected int uploadFile(OwnCloudClient client) throws IOException {
+		int status = -1;
+		try {
+			File f = new File(mLocalPath);
+			mEntity  = new FileRequestEntity(f, mMimeType);
+			synchronized (mDataTransferListeners) {
+				((ProgressiveDataTransferer)mEntity)
                         .addDatatransferProgressListeners(mDataTransferListeners);
-            }
-            if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
-                mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
-            }
-            mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
-
+			}
+			if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
+				mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
+			}
+			mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
             mPutMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
+			mPutMethod.setRequestEntity(mEntity);
+			status = client.executeMethod(mPutMethod);
 
-            mPutMethod.setRequestEntity(mEntity);
-            status = client.executeMethod(mPutMethod);
+			if (status == 400) {
+				InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
+				InputStream is = new ByteArrayInputStream(
+						mPutMethod.getResponseBodyAsString().getBytes());
+				try {
+					mForbiddenCharsInServer = xmlParser.parseXMLResponse(is);
 
-            if (status == 400) {
-                InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
-                InputStream is = new ByteArrayInputStream(
-                        mPutMethod.getResponseBodyAsString().getBytes());
-                try {
-                    mForbiddenCharsInServer = xmlParser.parseXMLResponse(is);
+				} catch (Exception e) {
+					mForbiddenCharsInServer = false;
+					Log_OC.e(TAG, "Exception reading exception from server", e);
+				}
+			}
 
-                } catch (Exception e) {
-                    mForbiddenCharsInServer = false;
-                    Log_OC.e(TAG, "Exception reading exception from server", e);
-                }
-            }
+			client.exhaustResponse(mPutMethod.getResponseBodyAsStream());
 
-            client.exhaustResponse(mPutMethod.getResponseBodyAsStream());
-
-        } finally {
-            mPutMethod.releaseConnection(); // let the connection available for other methods
-        }
-        return status;
-    }
+		} finally {
+			mPutMethod.releaseConnection(); // let the connection available for other methods
+		}
+		return status;
+	}
 
     public Set<OnDatatransferProgressListener> getDataTransferListeners() {
         return mDataTransferListeners;

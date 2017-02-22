@@ -59,7 +59,8 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private Context mContext;
 
     public ChunkedUploadRemoteFileOperation(
-            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag, String fileLastModifTimestamp) {
+            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag,
+            String fileLastModifTimestamp) {
         super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
         mContext = context;
     }
@@ -119,7 +120,6 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 mPutMethod.addRequestHeader(OC_CHUNKED_HEADER, OC_CHUNKED_HEADER);
                 mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
                 mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
-
                 mPutMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
 
                 ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
