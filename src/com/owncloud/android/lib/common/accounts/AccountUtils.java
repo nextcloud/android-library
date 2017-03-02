@@ -50,6 +50,7 @@ public class AccountUtils {
     public static final String WEBDAV_PATH_1_2 = "/webdav/owncloud.php";
     public static final String WEBDAV_PATH_2_0 = "/files/webdav.php";
     public static final String WEBDAV_PATH_4_0 = "/remote.php/webdav";
+	public static final String WEBDAV_PATH_9_0 = "/remote.php/dav";
     public static final String ODAV_PATH = "/remote.php/odav";
     private static final String SAML_SSO_PATH = "/remote.php/webdav";
     public static final String CARDDAV_PATH_2_0 = "/apps/contacts/carddav.php";
@@ -71,8 +72,17 @@ public class AccountUtils {
                 return ODAV_PATH;
             }
             if (supportsSamlSso) {
-                return SAML_SSO_PATH;
+				if (version.compareTo(OwnCloudVersion.nextcloud_9) < 0) {
+					return SAML_SSO_PATH;
+				} else {
+					return WEBDAV_PATH_9_0;
+				}
             }
+
+			if (version.compareTo(OwnCloudVersion.nextcloud_9) >= 0) {
+				return WEBDAV_PATH_9_0;
+			}
+
             if (version.compareTo(OwnCloudVersion.owncloud_v4) >= 0)
                 return WEBDAV_PATH_4_0;
             if (version.compareTo(OwnCloudVersion.owncloud_v3) >= 0
