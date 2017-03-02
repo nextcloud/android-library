@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -70,7 +71,8 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         RandomAccessFile raf = null;
 
         File file = new File(mLocalPath);
-        SharedPreferences sharedPref = mContext.getApplicationContext().getSharedPreferences("com.nextcloud.PREFERENCE_upload", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = mContext.getApplicationContext().
+                getSharedPreferences("com.nextcloud.PREFERENCE_upload", Context.MODE_PRIVATE);
         String chunkId = String.format("%08d", Math.abs(file.getName().hashCode()));
         Set<String> successfulChunks = sharedPref.getStringSet(chunkId, new LinkedHashSet<String>());
 
@@ -91,7 +93,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             String chunkSizeStr = String.valueOf(CHUNK_SIZE);
             String totalLengthStr = String.valueOf(file.length());
             for (int chunkIndex = 0; chunkIndex < chunkCount ; chunkIndex++, offset += CHUNK_SIZE) {
-                if (successfulChunks.contains(String.valueOf(chunkIndex))){
+                if (successfulChunks.contains(String.valueOf(chunkIndex + "_" + getDateAsString()))){
                     ((ChunkFromFileChannelRequestEntity) mEntity).setmTransferred(offset);
                     continue;
                 }
@@ -146,23 +148,21 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                         ", HTTP result status " + status);
 
                 if (isSuccess(status)){
-                  successfulChunks.add(String.valueOf(chunkIndex));
+
+                  successfulChunks.add(String.valueOf(chunkIndex) + "_" + getDateAsString());
                 } else {
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putStringSet(chunkId, successfulChunks).apply();
-
                     break;
                 }
             }
-
-            if (isSuccess(status)){
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.remove(chunkId).apply();
-            }
-
         } finally {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putStringSet(chunkId, successfulChunks).apply();
+            if (this.isSuccess(status)) {
+                editor.remove(chunkId).apply();
+            } else {
+                editor.putStringSet(chunkId, successfulChunks).apply();
+            }
 
             if (channel != null)
                 channel.close();
@@ -172,6 +172,13 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 mPutMethod.releaseConnection();    // let the connection available for other methods
         }
         return status;
+    }
+
+    private String getDateAsString() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.YEAR) + "-"
+             + calendar.get(Calendar.MONTH) + "-"
+             + calendar.get(Calendar.DAY_OF_MONTH);
     }
 
 }
