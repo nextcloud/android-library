@@ -149,21 +149,23 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                     userInfo.setEmail(respData.getString(NODE_EMAIL));
                 }
 
-                JSONObject quota = respData.getJSONObject(NODE_QUOTA);
-                final Long quotaFree = quota.getLong(NODE_QUOTA_FREE);
-                final Long quotaUsed = quota.getLong(NODE_QUOTA_USED);
-                final Long quotaTotal = quota.getLong(NODE_QUOTA_TOTAL);
-                final Double quotaRelative = quota.getDouble(NODE_QUOTA_RELATIVE);
+                if (respData.has(NODE_QUOTA) && !respData.isNull(NODE_QUOTA)) {
+                    JSONObject quota = respData.getJSONObject(NODE_QUOTA);
+                    final Long quotaFree = quota.getLong(NODE_QUOTA_FREE);
+                    final Long quotaUsed = quota.getLong(NODE_QUOTA_USED);
+                    final Long quotaTotal = quota.getLong(NODE_QUOTA_TOTAL);
+                    final Double quotaRelative = quota.getDouble(NODE_QUOTA_RELATIVE);
 
-                Long quotaValue;
-                try {
-                    quotaValue = quota.getLong(NODE_QUOTA);
-                } catch (JSONException e) {
-                    Log_OC.i(TAG, "Legacy server in use < Nextcloud 9.0.54");
-                    quotaValue = QUOTA_LIMIT_INFO_NOT_AVAILABLE;
+                    Long quotaValue;
+                    try {
+                        quotaValue = quota.getLong(NODE_QUOTA);
+                    } catch (JSONException e) {
+                        Log_OC.i(TAG, "Legacy server in use < Nextcloud 9.0.54");
+                        quotaValue = QUOTA_LIMIT_INFO_NOT_AVAILABLE;
+                    }
+
+                    userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
                 }
-
-                userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
 
                 if (respData.has(NODE_PHONE) && !respData.isNull(NODE_PHONE) &&
                         !TextUtils.isEmpty(respData.getString(NODE_PHONE))) {
