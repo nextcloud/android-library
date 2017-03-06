@@ -24,8 +24,9 @@
 
 package com.owncloud.android.lib.common.network;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import android.net.Uri;
+
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
@@ -33,9 +34,8 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
-import android.net.Uri;
-
-import com.owncloud.android.lib.common.utils.Log_OC;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class WebdavEntry {
 
@@ -45,13 +45,21 @@ public class WebdavEntry {
 	public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
 	public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
+    public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
 
     private static final int CODE_PROP_NOT_FOUND = 404;
 
-	private String mName, mPath, mUri, mContentType, mEtag, mPermissions, mRemoteId;
+	private String mName;
+    private String mPath;
+    private String mUri;
+    private String mContentType;
+    private String mEtag;
+    private String mPermissions;
+    private String mRemoteId;
+    private boolean mIsFavorite;
 	private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
 
@@ -183,6 +191,14 @@ public class WebdavEntry {
     		);
             if (prop != null) {
                 mSize = Long.parseLong((String) prop.getValue());
+            }
+
+            // OC favorite property <oc:favorite>
+            prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
+            if (prop != null) {
+                mIsFavorite = Boolean.parseBoolean((String) prop.getValue());
+            } else {
+                mIsFavorite = false;
             }
 
         } else {
