@@ -24,19 +24,19 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.util.ArrayList;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.DavConstants;
-import org.apache.jackrabbit.webdav.MultiStatus;
-import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.jackrabbit.webdav.DavConstants;
+import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
+
+import java.util.ArrayList;
 
 /**
  * Remote operation performing the read of remote file or folder in the ownCloud server.
@@ -173,6 +173,7 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
         file.setSize(we.size());
         file.setQuotaUsedBytes(we.quotaUsedBytes());
         file.setQuotaAvailableBytes(we.quotaAvailableBytes());
+        file.setFavorite(we.isFavorite());
         return file;
     }
 }
