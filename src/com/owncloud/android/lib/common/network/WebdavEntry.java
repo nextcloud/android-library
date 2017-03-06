@@ -63,7 +63,7 @@ public class WebdavEntry {
 	private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
 
-	public WebdavEntry(MultiStatusResponse ms, String splitElement) {
+    public WebdavEntry(MultiStatusResponse ms, String splitElement) {
         resetData();
         if (ms.getStatus().length != 0) {
             mUri = ms.getHref();
@@ -207,6 +207,14 @@ public class WebdavEntry {
         }
     }
 
+    public boolean isFavorite() {
+        return mIsFavorite;
+    }
+
+    public void setIsFavorite(boolean mIsFavorite) {
+        this.mIsFavorite = mIsFavorite;
+    }
+
     public String path() {
         return mPath;
     }
@@ -273,5 +281,6 @@ public class WebdavEntry {
         mSize = 0;
         mQuotaUsedBytes = null;
         mQuotaAvailableBytes = null;
+        mIsFavorite = false;
     }
 }
