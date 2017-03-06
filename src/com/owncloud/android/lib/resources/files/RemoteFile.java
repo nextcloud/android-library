@@ -51,6 +51,14 @@ public class RemoteFile implements Parcelable, Serializable {
 	private String mEtag;
 	private String mPermissions;
 	private String mRemoteId;
+	private long mSize;
+    private BigDecimal mQuotaUsedBytes;
+    private BigDecimal mQuotaAvailableBytes;
+	private boolean mIsFavorite;
+
+	/** 
+	 * Getters and Setters
+	 */
 
 	public boolean getIsFavorite() {
 		return mIsFavorite;
@@ -60,16 +68,7 @@ public class RemoteFile implements Parcelable, Serializable {
 		this.mIsFavorite = mIsFavorite;
 	}
 
-	private long mSize;
-    private BigDecimal mQuotaUsedBytes;
-    private BigDecimal mQuotaAvailableBytes;
-	private boolean mIsFavorite;
-
-	/** 
-	 * Getters and Setters
-	 */
-	
-    public String getRemotePath() {
+	public String getRemotePath() {
 		return mRemotePath;
 	}
 

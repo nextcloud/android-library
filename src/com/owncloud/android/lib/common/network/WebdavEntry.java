@@ -25,6 +25,7 @@
 package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -195,6 +196,7 @@ public class WebdavEntry {
 
             // OC favorite property <oc:favorite>
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
+            Log.d("MARIO", prop.toString());
             if (prop != null) {
                 mIsFavorite = Boolean.parseBoolean((String) prop.getValue());
             } else {
