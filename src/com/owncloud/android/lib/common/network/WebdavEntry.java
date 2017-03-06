@@ -196,7 +196,7 @@ public class WebdavEntry {
 
             // OC favorite property <oc:favorite>
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
-            Log.d("MARIO", String.valueOf(Boolean.parseBoolean((String) prop.getValue())));
+            Log.d("MARIO", (String) prop.getValue());
             if (prop != null) {
                 mIsFavorite = Boolean.parseBoolean((String) prop.getValue());
             } else {
