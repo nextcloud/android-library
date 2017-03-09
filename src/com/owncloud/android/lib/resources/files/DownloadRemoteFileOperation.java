@@ -24,6 +24,19 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
+import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.operations.OperationCancelledException;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,19 +46,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.OperationCancelledException;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
 
 /**
  * Remote operation performing the download of a remote file in the ownCloud server.
@@ -63,6 +63,8 @@ public class DownloadRemoteFileOperation extends RemoteOperation {
     private long mModificationTimestamp = 0;
     private String mEtag = "";
     private GetMethod mGet;
+
+
     
     private String mRemotePath;
     private String mLocalFolderPath;
@@ -75,7 +77,7 @@ public class DownloadRemoteFileOperation extends RemoteOperation {
 	@Override
 	protected RemoteOperationResult run(OwnCloudClient client) {
 		RemoteOperationResult result = null;
-        
+
         /// download will be performed to a temporal file, then moved to the final location
         File tmpFile = new File(getTmpPath());
         
