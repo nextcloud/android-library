@@ -24,13 +24,13 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  *  Contains the data of a Remote File from a WebDavEntry
@@ -51,15 +51,24 @@ public class RemoteFile implements Parcelable, Serializable {
 	private String mEtag;
 	private String mPermissions;
 	private String mRemoteId;
-    private long mSize;
+	private long mSize;
     private BigDecimal mQuotaUsedBytes;
     private BigDecimal mQuotaAvailableBytes;
+	private boolean mIsFavorite;
 
 	/** 
 	 * Getters and Setters
 	 */
-	
-    public String getRemotePath() {
+
+	public boolean getIsFavorite() {
+		return mIsFavorite;
+	}
+
+	public void setFavorite(boolean mIsFavorite) {
+		this.mIsFavorite = mIsFavorite;
+	}
+
+	public String getRemotePath() {
 		return mRemotePath;
 	}
 
@@ -170,6 +179,7 @@ public class RemoteFile implements Parcelable, Serializable {
         this.setSize(we.size());
         this.setQuotaUsedBytes(we.quotaUsedBytes());
         this.setQuotaAvailableBytes(we.quotaAvailableBytes());
+		this.setFavorite(we.isFavorite());
 	}
 
 	/**
@@ -187,6 +197,7 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = 0;
         mQuotaUsedBytes = null;
         mQuotaAvailableBytes = null;
+		mIsFavorite = false;
     }
 
     /** 
@@ -226,6 +237,7 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = source.readLong();
         mQuotaUsedBytes = (BigDecimal) source.readSerializable();
         mQuotaAvailableBytes = (BigDecimal) source.readSerializable();
+		mIsFavorite = Boolean.parseBoolean(source.readString());
     }
     
 	@Override
@@ -246,6 +258,7 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeLong(mSize);
         dest.writeSerializable(mQuotaUsedBytes);
         dest.writeSerializable(mQuotaAvailableBytes);
+		dest.writeString(Boolean.toString(mIsFavorite));
 	}
 
 }

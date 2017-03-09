@@ -25,11 +25,6 @@
 
 package com.owncloud.android.lib.common.network;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import android.net.Uri;
 
 import org.apache.commons.httpclient.Header;
@@ -37,6 +32,11 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class WebdavUtils {
     public static final SimpleDateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat(
@@ -107,6 +107,8 @@ public class WebdavUtils {
                 Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE,
                 Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE,
+                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
 
         return propSet;
     }
@@ -129,6 +131,8 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID,
                 Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE,
+                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE,
                 Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
 
         return propSet;
