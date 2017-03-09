@@ -25,7 +25,6 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -124,28 +123,5 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
 
     public boolean isMultiStatus(int status) {
         return (status == HttpStatus.SC_MULTI_STATUS); 
-    }
-
-
-    /**
-     * Creates and populates a new {@link RemoteFile} object with the data read from the server.
-     *
-     * @param we        WebDAV entry read from the server for a WebDAV resource (remote file or folder).
-     * @return          New OCFile instance representing the remote resource described by we.
-     */
-    private RemoteFile fillOCFile(WebdavEntry we) {
-        RemoteFile file = new RemoteFile(we.decodedPath());
-        file.setCreationTimestamp(we.createTimestamp());
-        file.setLength(we.contentLength());
-        file.setMimeType(we.contentType());
-        file.setModifiedTimestamp(we.modifiedTimestamp());
-        file.setEtag(we.etag());
-        file.setPermissions(we.permissions());
-        file.setRemoteId(we.remoteId());
-        file.setSize(we.size());
-        file.setQuotaUsedBytes(we.quotaUsedBytes());
-        file.setQuotaAvailableBytes(we.quotaAvailableBytes());
-        file.setFavorite(we.isFavorite());
-        return file;
     }
 }
