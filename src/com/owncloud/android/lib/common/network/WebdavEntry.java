@@ -197,7 +197,7 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
             if (prop != null) {
                 String favoriteValue = (String) prop.getValue();
-                if (favoriteValue.equals("1")) {
+                if ("1".equals(favoriteValue)) {
                     mIsFavorite = true;
                 } else {
                     mIsFavorite = false;
