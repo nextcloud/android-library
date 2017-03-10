@@ -24,6 +24,7 @@ import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
 
 import java.util.ArrayList;
 
@@ -61,14 +62,15 @@ public class WebDavFileUtils {
 
         String stripString = client.getWebdavUri().getPath();
         if (isSearchOperation && username != null) {
-            stripString = stripString + "/files/" + username;
+            stripString = stripString.substring(0, stripString.lastIndexOf("/")) + "/dav/files/" + username;
         }
 
         // loop to update every child
         RemoteFile remoteFile = null;
-        for (int i = start; i < remoteData.getResponses().length; i++) {
+        MultiStatusResponse[] responses = remoteData.getResponses();
+        for (int i = start; i < responses.length; i++) {
             /// new OCFile instance with the data from the server
-            we = new WebdavEntry(remoteData.getResponses()[i], stripString);
+            we = new WebdavEntry(responses[i], stripString);
             remoteFile = fillOCFile(we);
             mFolderAndFiles.add(remoteFile);
         }
