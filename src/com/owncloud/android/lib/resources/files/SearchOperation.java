@@ -35,7 +35,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,7 +58,9 @@ public class SearchOperation extends RemoteOperation {
     public enum SearchType {
         FILE_SEARCH,
         FAVORITE_SEARCH,
-        CONTENT_TYPE_SEARCH
+        CONTENT_TYPE_SEARCH,
+        RECENTLY_MODIFIED_SEARCH,
+        RECENTLY_ADDED_SEARCH
     }
 
     private String searchQuery;
@@ -139,16 +146,18 @@ public class SearchOperation extends RemoteOperation {
         public SearchMethod(String uri, SearchInfo searchInfo) throws IOException {
             super(uri, searchInfo);
             setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
-            setRequestBody(createQuery(searchQuery, searchType));
+            setRequestBody(createQuery());
         }
 
     }
 
 
-    private Document createQuery(String searchString, SearchType searchType) {
+    private Document createQuery() {
+
+        String internalSearchString = searchQuery;
 
         if (searchType == SearchType.FAVORITE_SEARCH) {
-            searchString = "yes";
+            internalSearchString = "yes";
         }
         
         Document query;
@@ -201,10 +210,13 @@ public class SearchOperation extends RemoteOperation {
         Text depthTextElement = query.createTextNode("infinity");
         Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
         Element equalsElement;
-        if (searchType != SearchType.FAVORITE_SEARCH) {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
-        } else {
+        if (searchType == SearchType.FAVORITE_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
+        } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH ||
+                searchType == SearchType.RECENTLY_ADDED_SEARCH){
+            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
+        } else {
+            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
         }
         Element propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
         Element queryElement = null;
@@ -212,12 +224,38 @@ public class SearchOperation extends RemoteOperation {
             queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
         } else if (searchType == SearchType.FILE_SEARCH){
             queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
-        } else {
+        } else if (searchType == SearchType.FAVORITE_SEARCH) {
             queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
+        } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
+            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodifed");
+        } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
+            queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
         }
         Element literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
-        Text literalTextElement = query.createTextNode(searchString);
+        Text literalTextElement;
+        if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
+            literalTextElement = query.createTextNode(internalSearchString);
+        } else {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            Date date = new Date();
+            String formattedDateString = dateFormat.format(date);
+            literalTextElement = query.createTextNode(formattedDateString);
+        }
+
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
+
+        if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
+            Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
+            Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element orderPropElementValue = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+            Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
+
+            orderPropElement.appendChild(orderPropElementValue);
+            orderElement.appendChild(orderPropElement);
+            orderElement.appendChild(orderAscDescElement);
+            orderByElement.appendChild(orderElement);
+        }
 
         // Build XML tree
         searchRequestElement.setAttribute("xmlns:oc", "http://nextcloud.com/ns");
