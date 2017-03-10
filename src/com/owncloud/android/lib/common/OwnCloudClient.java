@@ -25,8 +25,14 @@
 
 package com.owncloud.android.lib.common;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.net.Uri;
+
+import com.owncloud.android.lib.common.OwnCloudCredentialsFactory.OwnCloudAnonymousCredentials;
+import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.common.network.RedirectionPath;
+import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
@@ -44,14 +50,8 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.params.HttpParams;
 
-import android.net.Uri;
-
-import com.owncloud.android.lib.common.OwnCloudCredentialsFactory.OwnCloudAnonymousCredentials;
-import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.common.network.RedirectionPath;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class OwnCloudClient extends HttpClient {
 	
@@ -331,7 +331,7 @@ public class OwnCloudClient extends HttpClient {
     	if (mCredentials instanceof OwnCloudBearerCredentials) {
     		return Uri.parse(mBaseUri + AccountUtils.ODAV_PATH);
     	} else {
-    		return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_4_0);
+    		return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_9_0);
     	}
     }
     
