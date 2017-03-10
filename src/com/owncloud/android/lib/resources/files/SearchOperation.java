@@ -247,14 +247,13 @@ public class SearchOperation extends RemoteOperation {
 
         if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
             Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
-            Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
-            Element orderPropElementValue = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-            Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
-
-            orderPropElement.appendChild(orderPropElementValue);
-            orderElement.appendChild(orderPropElement);
-            orderElement.appendChild(orderAscDescElement);
             orderByElement.appendChild(orderElement);
+            Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            orderElement.appendChild(orderPropElement);
+            Element orderPropElementValue = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+            orderPropElement.appendChild(orderPropElementValue);
+            Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
+            orderElement.appendChild(orderAscDescElement);
         }
 
         // Build XML tree
