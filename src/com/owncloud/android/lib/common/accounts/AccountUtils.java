@@ -72,13 +72,9 @@ public class AccountUtils {
                 return ODAV_PATH;
             }
             if (supportsSamlSso) {
-                if (version.compareTo(OwnCloudVersion.nextcloud_9) < 0) {
-                    return SAML_SSO_PATH;
-                } else {
-                    return WEBDAV_PATH_9_0;
-                }
+				return SAML_SSO_PATH;
             }
-			
+
             if (version.compareTo(OwnCloudVersion.owncloud_v4) >= 0)
                 return WEBDAV_PATH_4_0;
             if (version.compareTo(OwnCloudVersion.owncloud_v3) >= 0
