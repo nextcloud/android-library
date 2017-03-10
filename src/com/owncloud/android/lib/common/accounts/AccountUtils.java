@@ -78,11 +78,7 @@ public class AccountUtils {
                     return WEBDAV_PATH_9_0;
                 }
             }
-
-            if (version.compareTo(OwnCloudVersion.nextcloud_9) >= 0) {
-                return WEBDAV_PATH_9_0;
-            }
-
+			
             if (version.compareTo(OwnCloudVersion.owncloud_v4) >= 0)
                 return WEBDAV_PATH_4_0;
             if (version.compareTo(OwnCloudVersion.owncloud_v3) >= 0
