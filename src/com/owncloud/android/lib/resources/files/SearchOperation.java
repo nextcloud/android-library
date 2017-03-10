@@ -57,13 +57,11 @@ public class SearchOperation extends RemoteOperation {
     }
 
     private String searchQuery;
-    private String username;
     private SearchType searchType;
 
-    public SearchOperation(String query, SearchType searchType, String username) {
+    public SearchOperation(String query, SearchType searchType) {
         this.searchQuery = query;
         this.searchType = searchType;
-        this.username = username;
     }
 
     @Override
@@ -95,7 +93,7 @@ public class SearchOperation extends RemoteOperation {
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
                     WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
                     ArrayList<Object> mFolderAndFiles = webDavFileUtils.readData(dataInServer, client, false, true,
-                            username);
+                            client.getCredentials().getUsername());
 
                     // Result of the operation
                     result = new RemoteOperationResult(true, status, searchMethod.getResponseHeaders());
@@ -199,7 +197,7 @@ public class SearchOperation extends RemoteOperation {
         Element scopeElement = query.createElementNS(DAV_NAMESPACE, "d:scope");
         Element hrefElement = query.createElementNS(DAV_NAMESPACE, "d:href");
         Element depthElement = query.createElementNS(DAV_NAMESPACE, "d:depth");
-        Text hrefTextElement = query.createTextNode("/files/" + username);
+        Text hrefTextElement = query.createTextNode("/files/" + getClient().getCredentials().getUsername());
         Text depthTextElement = query.createTextNode("infinity");
         Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
         Element equalsElement;
