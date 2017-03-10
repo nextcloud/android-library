@@ -331,8 +331,20 @@ public class OwnCloudClient extends HttpClient {
     	if (mCredentials instanceof OwnCloudBearerCredentials) {
     		return Uri.parse(mBaseUri + AccountUtils.ODAV_PATH);
     	} else {
-    		return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_9_0);
+    		return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_4_0);
     	}
+    }
+
+    public Uri getNewWebdavUri(boolean filesUri) {
+        if (mCredentials instanceof OwnCloudBearerCredentials) {
+            return Uri.parse(mBaseUri + AccountUtils.ODAV_PATH);
+        } else {
+            if (filesUri) {
+                return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_4_0);
+            } else {
+                return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_9_0);
+            }
+        }
     }
     
     /**

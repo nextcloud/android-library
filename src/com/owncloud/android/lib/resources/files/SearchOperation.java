@@ -72,7 +72,7 @@ public class SearchOperation extends RemoteOperation {
         SearchMethod searchMethod = null;
         OptionsMethod optionsMethod = null;
 
-        String webDavUrl = client.getWebdavUri().toString();
+        String webDavUrl = client.getNewWebdavUri(false).toString();
         optionsMethod = new OptionsMethod(webDavUrl);
 
         try {
