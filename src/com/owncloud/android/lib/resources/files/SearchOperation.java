@@ -240,7 +240,7 @@ public class SearchOperation extends RemoteOperation {
             dateFormat.setTimeZone(TimeZone.getDefault());
             Date date = new Date();
             String formattedDateString = dateFormat.format(date);
-            literalTextElement = query.createTextNode(formattedDateString);
+            literalTextElement = query.createTextNode("7");
         }
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
