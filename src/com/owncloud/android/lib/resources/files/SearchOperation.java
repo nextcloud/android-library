@@ -248,7 +248,7 @@ public class SearchOperation extends RemoteOperation {
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
 
-        if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH || searchType == SearchType.FAVORITE_SEARCH) {
+        /*if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH || searchType == SearchType.FAVORITE_SEARCH) {
             Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
             orderByElement.appendChild(orderElement);
             Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
@@ -257,7 +257,7 @@ public class SearchOperation extends RemoteOperation {
             orderPropElement.appendChild(orderPropElementValue);
             Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
             orderElement.appendChild(orderAscDescElement);
-        }
+        }*/
 
         // Build XML tree
         searchRequestElement.setAttribute("xmlns:oc", "http://nextcloud.com/ns");
