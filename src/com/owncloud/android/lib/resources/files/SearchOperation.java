@@ -245,7 +245,7 @@ public class SearchOperation extends RemoteOperation {
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
 
-        if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
+        if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH || searchType == SearchType.FAVORITE_SEARCH) {
             Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
             orderByElement.appendChild(orderElement);
             Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
