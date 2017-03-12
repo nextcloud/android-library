@@ -234,6 +234,9 @@ public class SearchOperation extends RemoteOperation {
         Element literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
         Text literalTextElement;
         if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
+            if (searchType == SearchType.FILE_SEARCH) {
+                internalSearchString = "%" + internalSearchString + "%";
+            }
             literalTextElement = query.createTextNode(internalSearchString);
         } else {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
