@@ -3,17 +3,17 @@
  *
  * @author Mario Danic
  * Copyright (C) 2017 Mario Danic
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -159,7 +160,7 @@ public class SearchOperation extends RemoteOperation {
         if (searchType == SearchType.FAVORITE_SEARCH) {
             internalSearchString = "yes";
         }
-        
+
         Document query;
         try {
             query = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -213,7 +214,7 @@ public class SearchOperation extends RemoteOperation {
         if (searchType == SearchType.FAVORITE_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
         } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH ||
-                searchType == SearchType.RECENTLY_ADDED_SEARCH){
+                searchType == SearchType.RECENTLY_ADDED_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
         } else {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
@@ -222,7 +223,7 @@ public class SearchOperation extends RemoteOperation {
         Element queryElement = null;
         if (searchType == SearchType.CONTENT_TYPE_SEARCH) {
             queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-        } else if (searchType == SearchType.FILE_SEARCH){
+        } else if (searchType == SearchType.FILE_SEARCH) {
             queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
         } else if (searchType == SearchType.FAVORITE_SEARCH) {
             queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
@@ -242,13 +243,19 @@ public class SearchOperation extends RemoteOperation {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
             dateFormat.setTimeZone(TimeZone.getDefault());
             Date date = new Date();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_YEAR, -7);
+            date = calendar.getTime();
+
             String formattedDateString = dateFormat.format(date);
-            literalTextElement = query.createTextNode("7");
+            literalTextElement = query.createTextNode(formattedDateString);
         }
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
 
-        /*if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH || searchType == SearchType.FAVORITE_SEARCH) {
+        if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH || searchType == SearchType.FAVORITE_SEARCH) {
             Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
             orderByElement.appendChild(orderElement);
             Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
@@ -257,7 +264,7 @@ public class SearchOperation extends RemoteOperation {
             orderPropElement.appendChild(orderPropElementValue);
             Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
             orderElement.appendChild(orderAscDescElement);
-        }*/
+        }
 
         // Build XML tree
         searchRequestElement.setAttribute("xmlns:oc", "http://nextcloud.com/ns");
