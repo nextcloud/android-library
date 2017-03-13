@@ -262,7 +262,7 @@ public class SearchOperation extends RemoteOperation {
             orderElement.appendChild(orderPropElement);
             Element orderPropElementValue = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
             orderPropElement.appendChild(orderPropElementValue);
-            Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:ascending");
+            Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
             orderElement.appendChild(orderAscDescElement);
         }
 
