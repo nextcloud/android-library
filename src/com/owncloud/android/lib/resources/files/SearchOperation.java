@@ -228,7 +228,7 @@ public class SearchOperation extends RemoteOperation {
         } else if (searchType == SearchType.FAVORITE_SEARCH) {
             queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
         } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodifed");
+            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
         } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
             queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
         }
