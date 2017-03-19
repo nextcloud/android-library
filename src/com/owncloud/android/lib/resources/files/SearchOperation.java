@@ -287,4 +287,5 @@ public class SearchOperation extends RemoteOperation {
 
         return query;
     }
+
 }
