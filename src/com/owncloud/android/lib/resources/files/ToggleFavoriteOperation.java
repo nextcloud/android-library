@@ -19,6 +19,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import android.net.Uri;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -64,6 +66,9 @@ public class ToggleFavoriteOperation extends RemoteOperation {
         }
 
         String webDavUrl = client.getNewWebdavUri(false).toString();
+        int pos = filePath.lastIndexOf('/') + 1;
+        filePath = filePath.substring(0, pos) + Uri.encode(filePath.substring(pos));
+
         String fullFilePath = webDavUrl + "/files/" + client.getCredentials().getUsername() + filePath;
 
         try {
