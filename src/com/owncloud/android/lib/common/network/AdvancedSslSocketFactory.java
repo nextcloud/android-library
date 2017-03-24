@@ -178,6 +178,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
         Log_OC.d(TAG, " ... with connection timeout " + timeout + " and socket timeout " + params.getSoTimeout());
         Socket socket = socketfactory.createSocket();
         enableSecureProtocols(socket);
+        enableAllCiphers(socket);
         SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
         SocketAddress remoteaddr = new InetSocketAddress(host, port);
         socket.setSoTimeout(params.getSoTimeout() * 5);
@@ -197,6 +198,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
         Log_OC.d(TAG, "Creating SSL Socket with remote " + host + ":" + port);
         Socket socket = mSslContext.getSocketFactory().createSocket(host, port);
         enableSecureProtocols(socket);
+        enableAllCiphers(socket);
         verifyPeerIdentity(host, port, socket);
         return socket;
     }
@@ -207,6 +209,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
             UnknownHostException {
         Socket sslSocket = mSslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
         enableSecureProtocols(sslSocket);
+        enableAllCiphers(socket);
         verifyPeerIdentity(host, port, sslSocket);
         return sslSocket;
     }
