@@ -131,7 +131,7 @@ public class SearchOperation extends RemoteOperation {
         }
         return result;
     }
-    
+
     private class SearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
 
         public SearchMethod(String uri, String statement, String language) throws IOException {
