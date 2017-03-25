@@ -31,29 +31,29 @@ import java.util.ArrayList;
 /**
  * WebDav helper.
  */
-
 public class WebDavFileUtils {
 
-
     /**
-     *  Read the data retrieved from the server about the contents of the target folder
+     * Read the data retrieved from the server about the contents of the target folder
      *
-     *
-     *  @param remoteData     	Full response got from the server with the data of the target
-     *                          folder and its direct children.
-     *  @param client           Client instance to the remote server where the data were
-     *                          retrieved.
-     *  @return
+     * @param remoteData Full response got from the server with the data of the target
+     *                   folder and its direct children.
+     * @param client     Client instance to the remote server where the data were
+     *                   retrieved.
+     * @return content of the target folder
      */
-    public ArrayList<Object> readData(MultiStatus remoteData, OwnCloudClient client, boolean isReadFolderOperation,
-                                      boolean isSearchOperation, String username) {
-        ArrayList<Object> mFolderAndFiles = new ArrayList<Object>();
+    public ArrayList<Object> readData(MultiStatus remoteData,
+                                      OwnCloudClient client,
+                                      boolean isReadFolderOperation,
+                                      boolean isSearchOperation,
+                                      String username) {
+        ArrayList<Object> mFolderAndFiles = new ArrayList<>();
 
         WebdavEntry we;
         int start = 1;
 
         if (isReadFolderOperation) {
-             we = new WebdavEntry(remoteData.getResponses()[0],
+            we = new WebdavEntry(remoteData.getResponses()[0],
                     client.getWebdavUri().getPath());
             mFolderAndFiles.add(fillOCFile(we));
         } else {
@@ -76,14 +76,13 @@ public class WebDavFileUtils {
         }
 
         return mFolderAndFiles;
-
     }
 
     /**
      * Creates and populates a new {@link RemoteFile} object with the data read from the server.
      *
-     * @param we        WebDAV entry read from the server for a WebDAV resource (remote file or folder).
-     * @return          New OCFile instance representing the remote resource described by we.
+     * @param we WebDAV entry read from the server for a WebDAV resource (remote file or folder).
+     * @return New OCFile instance representing the remote resource described by we.
      */
     private RemoteFile fillOCFile(WebdavEntry we) {
         RemoteFile file = new RemoteFile(we.decodedPath());
@@ -100,6 +99,4 @@ public class WebDavFileUtils {
         file.setFavorite(we.isFavorite());
         return file;
     }
-
-
 }

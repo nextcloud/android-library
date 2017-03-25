@@ -72,7 +72,7 @@ public class AccountUtils {
                 return ODAV_PATH;
             }
             if (supportsSamlSso) {
-				return SAML_SSO_PATH;
+                return SAML_SSO_PATH;
             }
 
             if (version.compareTo(OwnCloudVersion.owncloud_v4) >= 0)

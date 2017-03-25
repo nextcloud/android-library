@@ -52,7 +52,7 @@ public class WebdavEntry {
 
     private static final int CODE_PROP_NOT_FOUND = 404;
 
-	private String mName;
+    private String mName;
     private String mPath;
     private String mUri;
     private String mContentType;
@@ -60,7 +60,7 @@ public class WebdavEntry {
     private String mPermissions;
     private String mRemoteId;
     private boolean mIsFavorite;
-	private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
+    private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
 
     public WebdavEntry(MultiStatusResponse ms, String splitElement) {
@@ -207,8 +207,7 @@ public class WebdavEntry {
             }
 
         } else {
-            Log_OC.e("WebdavEntry",
-                    "General fuckup, no status for webdav response");
+            Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
     }
 

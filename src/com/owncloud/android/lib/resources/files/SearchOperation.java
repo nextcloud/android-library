@@ -49,7 +49,6 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Remote operation performing the search in the Nextcloud server.
  */
-
 public class SearchOperation extends RemoteOperation {
 
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
@@ -132,8 +131,7 @@ public class SearchOperation extends RemoteOperation {
         }
         return result;
     }
-
-
+    
     private class SearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
 
         public SearchMethod(String uri, String statement, String language) throws IOException {
@@ -151,7 +149,6 @@ public class SearchOperation extends RemoteOperation {
         }
 
     }
-
 
     private Document createQuery() {
 
@@ -290,6 +287,4 @@ public class SearchOperation extends RemoteOperation {
 
         return query;
     }
-
-
 }

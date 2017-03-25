@@ -63,16 +63,14 @@ public class DownloadRemoteFileOperation extends RemoteOperation {
     private long mModificationTimestamp = 0;
     private String mEtag = "";
     private GetMethod mGet;
-
-
     
     private String mRemotePath;
     private String mLocalFolderPath;
-	
-	public DownloadRemoteFileOperation(String remotePath, String localFolderPath) {
-		mRemotePath = remotePath;
-		mLocalFolderPath = localFolderPath;
-	}
+
+    public DownloadRemoteFileOperation(String remotePath, String localFolderPath) {
+        mRemotePath = remotePath;
+        mLocalFolderPath = localFolderPath;
+    }
 
 	@Override
 	protected RemoteOperationResult run(OwnCloudClient client) {
