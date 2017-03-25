@@ -28,6 +28,7 @@
 package com.owncloud.android.lib.resources.notifications;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -50,9 +51,9 @@ public class Notification {
     public String user;
 
     /**
-     * ISO 8601 date and time when the notification was published
+     * Date and time when the notification was published.
      */
-    public String datetime;
+    public Date datetime;
 
     /**
      * Type of the object the notification is about, that can be used
@@ -117,7 +118,7 @@ public class Notification {
     public Notification(int notificationId,
                         String app,
                         String user,
-                        String datetime,
+                        Date datetime,
                         String object_type,
                         String object_id,
                         String subject,
@@ -169,11 +170,11 @@ public class Notification {
         this.user = user;
     }
 
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 

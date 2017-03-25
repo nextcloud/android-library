@@ -37,6 +37,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +97,13 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
     private static final String NODE_ACTIONS_LABEL_PRIMARY = "primary";
 
     /**
+     * Date pattern according to h
+     * ttp://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+     * for "2004-02-12T15:19:21+00:00"
+     */
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+
+    /**
      * This status code means that there is no app that can generate notifications.
      * Slow down the polling to once per hour.
      */
@@ -143,7 +152,11 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
         notification.setNotificationId(respData.getInt(NODE_NOTIFICATION_ID));
         notification.setApp(respData.getString(NODE_APP));
         notification.setUser(respData.getString(NODE_USER));
-        notification.setDatetime(respData.getString(NODE_DATE_TIME));
+        try {
+            notification.setDatetime(SDF.parse(respData.getString(NODE_DATE_TIME)));
+        } catch (ParseException e) {
+            Log_OC.e(TAG, "Error parsing date "+ respData.getString(NODE_DATE_TIME), e);
+        }
         notification.setObject_type(respData.getString(NODE_OBJECT_TYPE));
         notification.setObject_id(respData.getString(NODE_OBJECT_ID));
         notification.setSubject(respData.getString(NODE_SUBJECT));
