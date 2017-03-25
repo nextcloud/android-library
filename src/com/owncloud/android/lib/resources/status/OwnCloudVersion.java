@@ -36,6 +36,7 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
             0x04000000);
     public static final OwnCloudVersion owncloud_v4_5 = new OwnCloudVersion(
             0x04050000);
+    public static final OwnCloudVersion nextcloud_9 = new OwnCloudVersion(0x09000000); // 9.0
 
     public static final int MINIMUN_VERSION_FOR_CHUNKED_UPLOADS = 0x04050000; // 4.5
 
@@ -51,7 +52,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
 
     public static final int MINIMUM_VERSION_CAPABILITIES_API = 0x08010000; // 8.1
 
-    public static final int MINIMUM_SELF_API = 0x0B000200;
+    public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200;
+
+    public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000;
     
     private static final int MAX_DOTS = 3;
     
@@ -160,7 +163,11 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     }
 
     public boolean isSelfSupported() {
-        return (mVersion >= MINIMUM_SELF_API);
+        return (mVersion >= MINIMUM_VERSION_FOR_SELF_API);
+    }
+
+    public boolean isSearchSupported() {
+        return (mVersion >= MINIMUM_VERSION_FOR_SEARCH_API);
     }
 
 }

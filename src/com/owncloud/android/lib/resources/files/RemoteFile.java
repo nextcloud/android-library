@@ -24,141 +24,151 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
-/**
- *  Contains the data of a Remote File from a WebDavEntry
- * 
- *  @author masensio
- */
+import java.io.Serializable;
+import java.math.BigDecimal;
 
+/**
+ * Contains the data of a Remote File from a WebDavEntry.
+ *
+ * @author masensio
+ */
 public class RemoteFile implements Parcelable, Serializable {
 
-    /** Generated - should be refreshed every time the class changes!! */
+    /**
+     * Generated - should be refreshed every time the class changes!!
+     */
     private static final long serialVersionUID = 3130865437811248451L;
 
-	private String mRemotePath;
-	private String mMimeType;
-	private long mLength;
-	private long mCreationTimestamp;
-	private long mModifiedTimestamp;
-	private String mEtag;
-	private String mPermissions;
-	private String mRemoteId;
+    private String mRemotePath;
+    private String mMimeType;
+    private long mLength;
+    private long mCreationTimestamp;
+    private long mModifiedTimestamp;
+    private String mEtag;
+    private String mPermissions;
+    private String mRemoteId;
     private long mSize;
     private BigDecimal mQuotaUsedBytes;
     private BigDecimal mQuotaAvailableBytes;
+    private boolean mIsFavorite;
 
-	/** 
-	 * Getters and Setters
-	 */
-	
+    /**
+     * Getters and Setters.
+     */
+
+    public boolean getIsFavorite() {
+        return mIsFavorite;
+    }
+
+    public void setFavorite(boolean mIsFavorite) {
+        this.mIsFavorite = mIsFavorite;
+    }
+
     public String getRemotePath() {
-		return mRemotePath;
-	}
+        return mRemotePath;
+    }
 
-	public void setRemotePath(String remotePath) {
-		this.mRemotePath = remotePath;
-	}
+    public void setRemotePath(String remotePath) {
+        this.mRemotePath = remotePath;
+    }
 
-	public String getMimeType() {
-		return mMimeType;
-	}
+    public String getMimeType() {
+        return mMimeType;
+    }
 
-	public void setMimeType(String mimeType) {
-		this.mMimeType = mimeType;
-	}
+    public void setMimeType(String mimeType) {
+        this.mMimeType = mimeType;
+    }
 
-	public long getLength() {
-		return mLength;
-	}
+    public long getLength() {
+        return mLength;
+    }
 
-	public void setLength(long length) {
-		this.mLength = length;
-	}
+    public void setLength(long length) {
+        this.mLength = length;
+    }
 
-	public long getCreationTimestamp() {
-		return mCreationTimestamp;
-	}
+    public long getCreationTimestamp() {
+        return mCreationTimestamp;
+    }
 
-	public void setCreationTimestamp(long creationTimestamp) {
-		this.mCreationTimestamp = creationTimestamp;
-	}
+    public void setCreationTimestamp(long creationTimestamp) {
+        this.mCreationTimestamp = creationTimestamp;
+    }
 
-	public long getModifiedTimestamp() {
-		return mModifiedTimestamp;
-	}
+    public long getModifiedTimestamp() {
+        return mModifiedTimestamp;
+    }
 
-	public void setModifiedTimestamp(long modifiedTimestamp) {
-		this.mModifiedTimestamp = modifiedTimestamp;
-	}
+    public void setModifiedTimestamp(long modifiedTimestamp) {
+        this.mModifiedTimestamp = modifiedTimestamp;
+    }
 
-	public String getEtag() {
-		return mEtag;
-	}
+    public String getEtag() {
+        return mEtag;
+    }
 
-	public void setEtag(String etag) {
-		this.mEtag = etag;
-	}
-	
-	public String getPermissions() {
-		return mPermissions;
-	}
+    public void setEtag(String etag) {
+        this.mEtag = etag;
+    }
 
-	public void setPermissions(String permissions) {
-		this.mPermissions = permissions;
-	}
+    public String getPermissions() {
+        return mPermissions;
+    }
 
-	public String getRemoteId() {
-		return mRemoteId;
-	}
+    public void setPermissions(String permissions) {
+        this.mPermissions = permissions;
+    }
 
-	public void setRemoteId(String remoteId) {
-		this.mRemoteId = remoteId;
-	}
+    public String getRemoteId() {
+        return mRemoteId;
+    }
+
+    public void setRemoteId(String remoteId) {
+        this.mRemoteId = remoteId;
+    }
 
     public long getSize() {
         return mSize;
     }
 
-    public void setSize (long size){
+    public void setSize(long size) {
         mSize = size;
     }
 
-    public void setQuotaUsedBytes (BigDecimal quotaUsedBytes) {
+    public void setQuotaUsedBytes(BigDecimal quotaUsedBytes) {
         mQuotaUsedBytes = quotaUsedBytes;
     }
 
-    public void setQuotaAvailableBytes (BigDecimal quotaAvailableBytes) {
+    public void setQuotaAvailableBytes(BigDecimal quotaAvailableBytes) {
         mQuotaAvailableBytes = quotaAvailableBytes;
     }
 
-	public RemoteFile() {
-		resetData();
-	}
+    public RemoteFile() {
+        resetData();
+    }
 
-	/**
+    /**
      * Create new {@link RemoteFile} with given path.
-     * 
+     *
      * The path received must be URL-decoded. Path separator must be OCFile.PATH_SEPARATOR, and it must be the first character in 'path'.
-     * 
+     *
      * @param path The remote path of the file.
      */
-	public RemoteFile(String path) {
-		resetData();
+    public RemoteFile(String path) {
+        resetData();
         if (path == null || path.length() <= 0 || !path.startsWith(FileUtils.PATH_SEPARATOR)) {
             throw new IllegalArgumentException("Trying to create a OCFile with a non valid remote path: " + path);
         }
         mRemotePath = path;
-	}
-	
-	public RemoteFile(WebdavEntry we) {
+    }
+
+    public RemoteFile(WebdavEntry we) {
         this(we.decodedPath());
         this.setCreationTimestamp(we.createTimestamp());
         this.setLength(we.contentLength());
@@ -170,9 +180,10 @@ public class RemoteFile implements Parcelable, Serializable {
         this.setSize(we.size());
         this.setQuotaUsedBytes(we.quotaUsedBytes());
         this.setQuotaAvailableBytes(we.quotaAvailableBytes());
-	}
+        this.setFavorite(we.isFavorite());
+    }
 
-	/**
+    /**
      * Used internally. Reset all file properties
      */
     private void resetData() {
@@ -187,12 +198,14 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = 0;
         mQuotaUsedBytes = null;
         mQuotaAvailableBytes = null;
+        mIsFavorite = false;
     }
 
-    /** 
+    /**
      * Parcelable Methods
      */
-    public static final Parcelable.Creator<RemoteFile> CREATOR = new Parcelable.Creator<RemoteFile>() {
+    public static final Parcelable.Creator<RemoteFile> CREATOR
+            = new Parcelable.Creator<RemoteFile>() {
         @Override
         public RemoteFile createFromParcel(Parcel source) {
             return new RemoteFile(source);
@@ -203,49 +216,50 @@ public class RemoteFile implements Parcelable, Serializable {
             return new RemoteFile[size];
         }
     };
-    
-    
+
+
     /**
      * Reconstruct from parcel
-     * 
+     *
      * @param source The source parcel
      */
     protected RemoteFile(Parcel source) {
-    	readFromParcel(source);
+        readFromParcel(source);
     }
-    
-    public void readFromParcel (Parcel source) {
+
+    public void readFromParcel(Parcel source) {
         mRemotePath = source.readString();
         mMimeType = source.readString();
         mLength = source.readLong();
         mCreationTimestamp = source.readLong();
         mModifiedTimestamp = source.readLong();
         mEtag = source.readString();
-        mPermissions= source.readString();
+        mPermissions = source.readString();
         mRemoteId = source.readString();
         mSize = source.readLong();
         mQuotaUsedBytes = (BigDecimal) source.readSerializable();
         mQuotaAvailableBytes = (BigDecimal) source.readSerializable();
+        mIsFavorite = Boolean.parseBoolean(source.readString());
     }
-    
-	@Override
-	public int describeContents() {
-		return this.hashCode();
-	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(mRemotePath);
-		dest.writeString(mMimeType);    
-		dest.writeLong(mLength);
-		dest.writeLong(mCreationTimestamp);
-		dest.writeLong(mModifiedTimestamp);
-		dest.writeString(mEtag);
-		dest.writeString(mPermissions);
-		dest.writeString(mRemoteId);
+    @Override
+    public int describeContents() {
+        return this.hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mRemotePath);
+        dest.writeString(mMimeType);
+        dest.writeLong(mLength);
+        dest.writeLong(mCreationTimestamp);
+        dest.writeLong(mModifiedTimestamp);
+        dest.writeString(mEtag);
+        dest.writeString(mPermissions);
+        dest.writeString(mRemoteId);
         dest.writeLong(mSize);
         dest.writeSerializable(mQuotaUsedBytes);
         dest.writeSerializable(mQuotaAvailableBytes);
-	}
-
+        dest.writeString(Boolean.toString(mIsFavorite));
+    }
 }
