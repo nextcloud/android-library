@@ -115,7 +115,7 @@ public class TestActivity extends Activity {
 				)
 		);
 		mClient.setBaseUri(Uri.parse(mServerUri));
-		
+
 		Log.v(TAG, "onCreate finished, ownCloud client ready");
     	
 	}
