@@ -82,7 +82,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
             params.setParameter(HttpMethodParams.USER_AGENT, OwnCloudClientManagerFactory.getUserAgent());
             get.getParams().setDefaults(params);
 
-            client.setFollowRedirects(true);
+            client.setFollowRedirects(false);
             boolean isRedirectToNonSecureConnection = false;
             int status = client.executeMethod(get, TRY_CONNECTION_TIMEOUT, TRY_CONNECTION_TIMEOUT);
             mLatestResult = new RemoteOperationResult(
