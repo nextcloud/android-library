@@ -25,39 +25,59 @@
  *
  */
 
-package com.owncloud.android.lib.resources.notifications;
+package com.owncloud.android.lib.resources.notifications.models;
 
 /**
- * Action data model.
+ * Rich object data model providing rich data to be used within rich content, e.g.
+ * in {@link Notification}s.
  */
-public class Action {
-
+public class RichObject {
     /**
-     * Translated short label of the action/button that should be presented to the user.
-     */
-    public String label;
-    /**
-     * A link that should be followed when the action is performed/clicked.
-     */
-    public String link;
-    /**
-     * HTTP method that should be used for the request against the link: GET, POST, DELETE.
+     * A unique identifier for the object type.
      */
     public String type;
 
     /**
-     * If the action is the primary action for the notification or not.
+     * A short identifier of the object on the server (int or string).
      */
-    public boolean primary;
+    public String id;
 
-    public Action() {
+    /**
+     * A name which should be used in the visual representation.
+     */
+    public String name;
+
+    public RichObject() {
 
     }
 
-    public Action(String label, String link, String type, boolean primary) {
-        this.label = label;
-        this.link = link;
+    public RichObject(String type, String id, String name) {
         this.type = type;
-        this.primary = primary;
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

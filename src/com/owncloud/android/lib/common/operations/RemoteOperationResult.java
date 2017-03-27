@@ -24,6 +24,21 @@
 
 package com.owncloud.android.lib.common.operations;
 
+import android.accounts.Account;
+import android.accounts.AccountsException;
+
+import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
+import com.owncloud.android.lib.common.network.CertificateCombinedException;
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.notifications.models.Notification;
+
+import org.apache.commons.httpclient.ConnectTimeoutException;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.jackrabbit.webdav.DavException;
+import org.json.JSONException;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,19 +49,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import android.accounts.Account;
-import android.accounts.AccountsException;
-
-import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
-import com.owncloud.android.lib.common.network.CertificateCombinedException;
-import com.owncloud.android.lib.common.utils.Log_OC;
-
-import org.apache.commons.httpclient.ConnectTimeoutException;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.DavException;
-import org.json.JSONException;
+import java.util.List;
 
 import javax.net.ssl.SSLException;
 
@@ -125,6 +128,7 @@ public class RemoteOperationResult implements Serializable {
     private String mLastPermanentLocation = null;
 
     private ArrayList<Object> mData;
+    private List<Notification> mNotificationData;
 
     public RemoteOperationResult(ResultCode code) {
         mCode = code;
@@ -279,6 +283,15 @@ public class RemoteOperationResult implements Serializable {
     public ArrayList<Object> getData() {
         return mData;
     }
+
+    public void setNotificationData(List<Notification> notifications) {
+        mNotificationData = notifications;
+    }
+
+    public List<Notification> getNotificationData() {
+        return mNotificationData;
+    }
+
 
     public boolean isSuccess() {
         return mSuccess;

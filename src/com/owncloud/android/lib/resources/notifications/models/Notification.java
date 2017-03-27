@@ -25,7 +25,9 @@
  *
  */
 
-package com.owncloud.android.lib.resources.notifications;
+package com.owncloud.android.lib.resources.notifications.models;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +40,7 @@ public class Notification {
     /**
      * Unique identifier of the notification, can be used to dismiss a notification.
      */
+    @SerializedName("notification_id")
     public int notificationId;
 
     /**
