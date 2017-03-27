@@ -62,13 +62,15 @@ public class Notification {
      * Type of the object the notification is about, that can be used
      * to mark a notification as resolved.
      */
-    public String object_type;
+    @SerializedName("object_type")
+    public String objectType;
 
     /**
      * ID of the object the notification is about, that can be used
      * to mark a notification as resolved.
      */
-    public String object_id;
+    @SerializedName("object_id")
+    public String objectId;
 
     /**
      * Translated short subject that should be presented to the user.
@@ -122,8 +124,8 @@ public class Notification {
                         String app,
                         String user,
                         Date datetime,
-                        String object_type,
-                        String object_id,
+                        String objectType,
+                        String objectId,
                         String subject,
                         String subjectRich,
                         Map<String, RichObject> subjectRichParameters,
@@ -136,8 +138,8 @@ public class Notification {
         this.app = app;
         this.user = user;
         this.datetime = datetime;
-        this.object_type = object_type;
-        this.object_id = object_id;
+        this.objectType = objectType;
+        this.objectId = objectId;
         this.subject = subject;
         this.subjectRich = subjectRich;
         this.subjectRichParameters = subjectRichParameters;
@@ -181,20 +183,20 @@ public class Notification {
         this.datetime = datetime;
     }
 
-    public String getObject_type() {
-        return object_type;
+    public String getObjectType() {
+        return objectType;
     }
 
-    public void setObject_type(String object_type) {
-        this.object_type = object_type;
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
     }
 
-    public String getObject_id() {
-        return object_id;
+    public String getObjectId() {
+        return objectId;
     }
 
-    public void setObject_id(String object_id) {
-        this.object_id = object_id;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getSubject() {
