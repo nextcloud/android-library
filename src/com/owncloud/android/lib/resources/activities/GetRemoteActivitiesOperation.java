@@ -37,7 +37,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private static final String TAG = GetRemoteActivitiesOperation.class.getSimpleName();
 
     // OCS Routes
-    private static final String OCS_ROUTE = "apps/activity/api/v2/activity";
+    private static final String OCS_ROUTE = "/apps/activity/api/v2/activity";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
@@ -65,7 +65,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         ArrayList<Object> activities;
         String url = client.getBaseUri() + OCS_ROUTE;
         Log_OC.d(TAG, "URL: " + url);
-        // get the notifications
+
         try {
 
             get = new GetMethod(url);
@@ -82,7 +82,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
                 result.setData(activities);
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
-                Log_OC.e(TAG, "Failed response while getting user notifications ");
+                Log_OC.e(TAG, "Failed response while getting user activities ");
                 if (response != null) {
                     Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
                 } else {
@@ -91,7 +91,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Exception while getting remote notifications", e);
+            Log_OC.e(TAG, "Exception while getting remote activities", e);
         } finally {
             if (get != null) {
                 get.releaseConnection();

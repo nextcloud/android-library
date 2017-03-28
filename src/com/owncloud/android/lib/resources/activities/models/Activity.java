@@ -1,5 +1,7 @@
 package com.owncloud.android.lib.resources.activities.models;
 
+import java.util.Date;
+
 /**
  * Created by alejandro on 27/03/17.
  */
@@ -7,7 +9,7 @@ package com.owncloud.android.lib.resources.activities.models;
 public class Activity {
 
     private int activity_id;
-    private long timestamp;
+    private Date datetime;
     private String app;
     private String type;
     private String user;
@@ -21,20 +23,13 @@ public class Activity {
     private String object_id;
     private String object_name;
 
+
     public int getActivity_id() {
         return activity_id;
     }
 
     public void setActivity_id(int activity_id) {
         this.activity_id = activity_id;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     public String getApp() {
@@ -123,5 +118,14 @@ public class Activity {
 
     public void setObject_name(String object_name) {
         this.object_name = object_name;
+    }
+
+
+    public Date getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
     }
 }
