@@ -97,6 +97,7 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
             String response = get.getResponseBodyAsString();
 
             if (isSuccess(status)) {
+                result = new RemoteOperationResult(true, status, get.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
 
                 // Parse the response
