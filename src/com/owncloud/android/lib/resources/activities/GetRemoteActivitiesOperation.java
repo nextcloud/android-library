@@ -1,6 +1,34 @@
+/*  Nextcloud Android Library is available under MIT license
+ *   Copyright (C) 2017 Andy Scherzinger
+ *   Copyright (C) 2017 Mario Danic
+ *   Copyright (C) 2017 Nextcloud GmbH
+ *
+ *   @author Alejandro Bautista
+ *
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ *   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ *   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *   THE SOFTWARE.
+ *
+ */
+
 package com.owncloud.android.lib.resources.activities;
 
-import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -12,15 +40,9 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.models.Activity;
-import com.owncloud.android.lib.resources.shares.GetRemoteShareesOperation;
-import com.owncloud.android.lib.resources.shares.ShareToRemoteOperationResultParser;
-import com.owncloud.android.lib.resources.shares.ShareXMLParser;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -28,7 +50,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by alejandro on 27/03/17.
+ * Provides the remote activities from the server handling the following data structure
+ * accessible via the activities endpoint at {@value OCS_ROUTE}, specified at
+ * {@link "https://github.com/nextcloud/activity/blob/master/docs/endpoint-v2.md"}.
  */
 
 public class GetRemoteActivitiesOperation extends RemoteOperation{
@@ -45,17 +69,12 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private static final String NODE_DATA = "data";
 
     /**
-     * Date pattern according to h
-     * ttp://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+     * Date pattern according to
+     * http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
      * for "2004-02-12T15:19:21+00:00"
      */
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
 
-    /**
-     * This status code means that there is no app that can generate notifications.
-     * Slow down the polling to once per hour.
-     */
-    public static final String STATUS_NO_CONTENT = "204";
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
