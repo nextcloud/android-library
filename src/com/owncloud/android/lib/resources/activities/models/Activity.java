@@ -1,35 +1,78 @@
+/*  Nextcloud Android Library is available under MIT license
+ *   Copyright (C) 2017 Andy Scherzinger
+ *   Copyright (C) 2017 Mario Danic
+ *   Copyright (C) 2017 Nextcloud GmbH
+ *
+ *   @author Alejandro Bautista
+ *
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ *   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ *   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *   THE SOFTWARE.
+ *
+ */
 package com.owncloud.android.lib.resources.activities.models;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
 /**
- * Created by alejandro on 27/03/17.
+ * Activity Data Model
  */
 
 public class Activity {
 
-    private int activity_id;
-    private Date datetime;
-    private String app;
-    private String type;
-    private String user;
-    private String affecteduser;
-    private String subject;
+    @SerializedName("activity_id")
+    public int activityId;
+    public Date datetime;
+    public String app;
+    public String type;
+    public String user;
+    @SerializedName("affecteduser")
+    public String affectedUser;
+    public String subject;
 
-    private String message;
-    private String icon;
-    private String link;
-    private String object_type;
-    private String object_id;
-    private String object_name;
+    public String message;
+    public String icon;
+    public String link;
+    @SerializedName("object_type")
+    public String objectType;
+    @SerializedName("object_id")
+    public String objectId;
+    @SerializedName("object_name")
+    public String objectName;
 
 
-    public int getActivity_id() {
-        return activity_id;
+    public int getActivityId() {
+        return activityId;
     }
 
-    public void setActivity_id(int activity_id) {
-        this.activity_id = activity_id;
+    public void setActivityId(int activityId) {
+        this.activityId = activityId;
+    }
+
+    public Date getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
     }
 
     public String getApp() {
@@ -56,12 +99,12 @@ public class Activity {
         this.user = user;
     }
 
-    public String getAffecteduser() {
-        return affecteduser;
+    public String getAffectedUser() {
+        return affectedUser;
     }
 
-    public void setAffecteduser(String affecteduser) {
-        this.affecteduser = affecteduser;
+    public void setAffectedUser(String affectedUser) {
+        this.affectedUser = affectedUser;
     }
 
     public String getSubject() {
@@ -96,36 +139,28 @@ public class Activity {
         this.link = link;
     }
 
-    public String getObject_type() {
-        return object_type;
+    public String getObjectType() {
+        return objectType;
     }
 
-    public void setObject_type(String object_type) {
-        this.object_type = object_type;
-    }
-
-    public String getObject_id() {
-        return object_id;
-    }
-
-    public void setObject_id(String object_id) {
-        this.object_id = object_id;
-    }
-
-    public String getObject_name() {
-        return object_name;
-    }
-
-    public void setObject_name(String object_name) {
-        this.object_name = object_name;
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
     }
 
 
-    public Date getDatetime() {
-        return datetime;
+    public String getObjectId() {
+        return objectId;
     }
 
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
     }
 }
