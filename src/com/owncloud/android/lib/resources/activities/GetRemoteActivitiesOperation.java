@@ -59,7 +59,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private static final String TAG = GetRemoteActivitiesOperation.class.getSimpleName();
 
     // OCS Routes
-    private static final String OCS_ROUTE = "/apps/activity/api/v2/activity";
+    private static final String OCS_ROUTE = "/ocs/v2.php/apps/activity/api/v2/activity";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
