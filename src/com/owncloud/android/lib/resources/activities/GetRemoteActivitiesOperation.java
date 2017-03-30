@@ -1,7 +1,5 @@
 /*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Andy Scherzinger
- *   Copyright (C) 2017 Mario Danic
- *   Copyright (C) 2017 Nextcloud GmbH
+ *   Copyright (C) 2017 Alejandro Bautista
  *
  *   @author Alejandro Bautista
  *
@@ -127,9 +125,8 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
 
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Activity>>(){}.getType();
-        ArrayList<Object> activities = gson.fromJson(jsonDataArray, listType);
 
-        return activities;
+        return gson.fromJson(jsonDataArray, listType);
     }
 
     private boolean isSuccess(int status) {
