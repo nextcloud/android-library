@@ -38,6 +38,8 @@ public class Activity {
     @SerializedName("activity_id")
     public int activityId;
     public Date datetime;
+    // legacy purposes
+    public Date date;
     public String app;
     public String type;
     public String user;
@@ -55,6 +57,13 @@ public class Activity {
     @SerializedName("object_name")
     public String objectName;
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public int getActivityId() {
         return activityId;
