@@ -48,7 +48,6 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteCapabilitiesOperation.class.getSimpleName();
 
-
     // OCS Routes
     private static final String OCS_ROUTE = "ocs/v1.php/cloud/capabilities";
 
