@@ -38,6 +38,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.models.Activity;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONException;
@@ -49,7 +51,7 @@ import java.util.List;
 
 /**
  * Provides the remote activities from the server handling the following data structure
- * accessible via the activities endpoint at {@value OCS_ROUTE}, specified at
+ * accessible via the activities endpoint at {@value OCS_ROUTE_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/activity/blob/master/docs/endpoint-v2.md"}.
  */
 
@@ -59,7 +61,8 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private static final String TAG = GetRemoteActivitiesOperation.class.getSimpleName();
 
     // OCS Routes
-    private static final String OCS_ROUTE = "/ocs/v2.php/apps/activity/api/v2/activity?format=json";
+    private static final String OCS_ROUTE_V12_AND_UP = "/ocs/v2.php/apps/activity/api/v2/activity?format=json";
+    private static final String OCS_ROUTE_PRE_V12 = "ocs/v1.php/cloud/activity?format=json";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
@@ -80,7 +83,12 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         int status = -1;
         GetMethod get = null;
         ArrayList<Object> activities;
-        String url = client.getBaseUri() + OCS_ROUTE;
+        String url;
+        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
+            url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
+        } else {
+            url = client.getBaseUri() + OCS_ROUTE_PRE_V12;
+        }
         Log_OC.d(TAG, "URL: " + url);
 
         try {
