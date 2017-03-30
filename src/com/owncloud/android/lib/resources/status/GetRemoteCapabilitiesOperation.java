@@ -34,6 +34,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ import java.util.ArrayList;
 public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteCapabilitiesOperation.class.getSimpleName();
-
 
     // OCS Routes
     private static final String OCS_ROUTE = "ocs/v1.php/cloud/capabilities";
@@ -110,6 +110,16 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String PROPERTY_SERVERLOGO = "logo";
     private static final String PROPERTY_SERVERBACKGROUND = "background";
 
+    // v1 notifications
+    private static final String NODE_NOTIFICATIONS = "notifications";
+    private static final String PROPERTY_OCSENDPOINT = "ocs-endpoint";
+
+    private static final String PROPERTY_LIST = "list";
+    private static final String PROPERTY_GET = "get";
+    private static final String PROPERTY_DELETE = "delete";
+    // v2 notifications
+    private static final String PROPERTY_ICONS = "icons";
+    private static final String PROPERTY_RICH_STRINGS = "rich-strings";
 
     /**
      * Constructor
@@ -263,6 +273,23 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
                             capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
                             Log_OC.d(TAG, "*** Added " + NODE_THEMING);
+                        }
+
+                        if (respCapabilities.has(NODE_NOTIFICATIONS)) {
+                            JSONObject respNotifications = respCapabilities.getJSONObject(NODE_NOTIFICATIONS);
+                            JSONArray respNotificationSupportArray = respNotifications.getJSONArray(
+                                    PROPERTY_OCSENDPOINT);
+                            for (int i = 0; i < respNotificationSupportArray.length(); i++) {
+                                String propertyString = respNotificationSupportArray.getString(i);
+                                if (PROPERTY_RICH_STRINGS.equals(propertyString)
+                                        || PROPERTY_ICONS.equals((propertyString))) {
+                                    capability.setSupportsNotificationsV2(CapabilityBooleanType.TRUE);
+                                    break;
+                                }
+                            }
+                            if (capability.getSupportsNotificationsV2() != CapabilityBooleanType.TRUE) {
+                                capability.setSupportsNotificationsV1(CapabilityBooleanType.TRUE);
+                            }
                         }
 
                     }

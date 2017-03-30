@@ -73,6 +73,9 @@ public class OCCapability {
     private CapabilityBooleanType mFilesVersioning;
     private CapabilityBooleanType mFilesFileDrop;
 
+    private CapabilityBooleanType mSupportsNotificationsV1;
+    private CapabilityBooleanType mSupportsNotificationsV2;
+
     public OCCapability(){
         mId = 0;
         mAccountName = "";
@@ -107,10 +110,31 @@ public class OCCapability {
         mFilesUndelete = CapabilityBooleanType.UNKNOWN;
         mFilesVersioning = CapabilityBooleanType.UNKNOWN;
         mFilesFileDrop = CapabilityBooleanType.UNKNOWN;
+
+        mSupportsNotificationsV1 = CapabilityBooleanType.UNKNOWN;
+        mSupportsNotificationsV2 = CapabilityBooleanType.UNKNOWN;
     }
 
 
     // Getters and Setters
+
+
+    public CapabilityBooleanType getSupportsNotificationsV1() {
+        return mSupportsNotificationsV1;
+    }
+
+    public void setSupportsNotificationsV1(CapabilityBooleanType mSupportsNotificationsV1) {
+        this.mSupportsNotificationsV1 = mSupportsNotificationsV1;
+    }
+
+    public CapabilityBooleanType getSupportsNotificationsV2() {
+        return mSupportsNotificationsV2;
+    }
+
+    public void setSupportsNotificationsV2(CapabilityBooleanType mSupportsNotificationsV2) {
+        this.mSupportsNotificationsV2 = mSupportsNotificationsV2;
+    }
+
     public String getAccountName() {
         return mAccountName;
     }

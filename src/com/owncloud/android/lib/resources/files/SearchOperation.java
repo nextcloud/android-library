@@ -60,7 +60,8 @@ public class SearchOperation extends RemoteOperation {
         FAVORITE_SEARCH,
         CONTENT_TYPE_SEARCH,
         RECENTLY_MODIFIED_SEARCH,
-        RECENTLY_ADDED_SEARCH
+        RECENTLY_ADDED_SEARCH,
+        SHARED_SEARCH
     }
 
     private String searchQuery;
