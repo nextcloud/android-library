@@ -47,7 +47,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONException;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
