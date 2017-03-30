@@ -40,6 +40,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -51,14 +52,17 @@ import java.util.List;
 
 /**
  * Provides the remote notifications from the server handling the following data structure
- * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST}, specified at
+ * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
 public class GetRemoteNotificationsOperation extends RemoteOperation {
 
     // OCS Route
-    private static final String OCS_ROUTE_LIST =
+    private static final String OCS_ROUTE_LIST_V12_AND_UP =
             "/ocs/v2.php/apps/notifications/api/v2/notifications?format=json";
+    private static final String OCS_ROUTE_LIST_V9_AND_UP =
+        "/ocs/v2.php/apps/notifications/api/v1/notifications?format=json";
+
 
     private static final String TAG = GetRemoteNotificationsOperation.class.getSimpleName();
 
@@ -86,7 +90,12 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
         int status = -1;
         GetMethod get = null;
         List<Notification> notifications;
-        String url = client.getBaseUri() + OCS_ROUTE_LIST;
+        String url;
+        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
+            url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
+        } else {
+            url = client.getBaseUri() + OCS_ROUTE_LIST_V9_AND_UP;
+        }
 
         // get the notifications
         try {
