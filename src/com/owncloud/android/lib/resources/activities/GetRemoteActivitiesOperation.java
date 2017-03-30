@@ -1,8 +1,7 @@
-/*  Nextcloud Android Library is available under MIT license
+/**  Nextcloud Android Library is available under MIT license
+ *
  *   Copyright (C) 2017 Alejandro Bautista
- *
  *   @author Alejandro Bautista
- *
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -54,9 +53,7 @@ import java.util.List;
  * accessible via the activities endpoint at {@value OCS_ROUTE_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/activity/blob/master/docs/endpoint-v2.md"}.
  */
-
 public class GetRemoteActivitiesOperation extends RemoteOperation{
-
 
     private static final String TAG = GetRemoteActivitiesOperation.class.getSimpleName();
 
@@ -68,14 +65,6 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private static final String NODE_OCS = "ocs";
 
     private static final String NODE_DATA = "data";
-
-    /**
-     * Date pattern according to
-     * http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-     * for "2004-02-12T15:19:21+00:00"
-     */
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
@@ -92,7 +81,6 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         Log_OC.d(TAG, "URL: " + url);
 
         try {
-
             get = new GetMethod(url);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
@@ -140,5 +128,4 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK);
     }
-
 }
