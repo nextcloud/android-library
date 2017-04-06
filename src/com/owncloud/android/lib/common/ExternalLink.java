@@ -31,7 +31,7 @@ public class ExternalLink {
     public Integer id;
     public String iconUrl;
     public String language;
-    public String type;
+    public ExternalLinkType type;
     public String name;
     public String url;
 
@@ -39,7 +39,7 @@ public class ExternalLink {
 
     }
 
-    public ExternalLink(Integer id, String iconUrl, String language, String type, String name, String url) {
+    public ExternalLink(Integer id, String iconUrl, String language, ExternalLinkType type, String name, String url) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.language = language;
@@ -48,3 +48,4 @@ public class ExternalLink {
         this.url = url;
     }
 }
+

@@ -21,6 +21,7 @@
 package com.owncloud.android.lib.common.accounts;
 
 import com.owncloud.android.lib.common.ExternalLink;
+import com.owncloud.android.lib.common.ExternalLinkType;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -99,7 +100,21 @@ public class ExternalLinksOperation extends RemoteOperation {
                             Integer id = link.getInt(NODE_ID);
                             String iconUrl = link.getString(NODE_ICON);
                             String language = link.getString(NODE_LANGUAGE);
-                            String type = link.getString(NODE_TYPE);
+
+                            ExternalLinkType type = ExternalLinkType.LINK;
+                            switch (link.getString(NODE_TYPE)) {
+                                case "link":
+                                    type = ExternalLinkType.LINK;
+                                    break;
+                                case "settings":
+                                    type = ExternalLinkType.SETTINGS;
+                                    break;
+                                case "quota":
+                                    type = ExternalLinkType.QUOTA;
+                                    break;
+                            }
+
+
                             String name = link.getString(NODE_NAME);
                             String url = link.getString(NODE_URL);
 
