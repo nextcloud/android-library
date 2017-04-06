@@ -1,5 +1,5 @@
 package com.owncloud.android.lib.common;
 
 public enum ExternalLinkType {
-    LINK, SETTINGS, QUOTA
+    LINK, SETTINGS, QUOTA, UNKNOWN
 }
