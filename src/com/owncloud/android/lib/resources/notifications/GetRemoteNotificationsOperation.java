@@ -132,9 +132,8 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
 
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Notification>>(){}.getType();
-        List<Notification> notifications = gson.fromJson(jsonDataArray, listType);
 
-        return notifications;
+        return gson.fromJson(jsonDataArray, listType);
     }
 
     private boolean isSuccess(int status) {

@@ -26,72 +26,42 @@
  */
 package com.owncloud.android.lib.resources.notifications;
 
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.json.JSONException;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 
-import java.lang.reflect.Type;
+public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOperation {
 
-public class RegisterDeviceForNotificationsOperation extends RemoteOperation {
     // OCS Route
     private static final String OCS_ROUTE =
             "/ocs/v2.php/apps/notifications/api/v3/push";
 
-    private static final String TAG = RegisterDeviceForNotificationsOperation.class.getSimpleName();
-
-    // JSON Node names
-    private static final String NODE_OCS = "ocs";
-    private static final String NODE_DATA = "data";
-
-    private static String pushTokenHash;
-    private static String devicePublicKey;
-
-    public RegisterDeviceForNotificationsOperation(String pushTokenHash, String devicePublicKey) {
-        this.pushTokenHash = pushTokenHash;
-        this.devicePublicKey = devicePublicKey;
-    }
+    private static final String TAG = UnregisterAccountDeviceForNotificationsOperation.class.getSimpleName();
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
         int status = -1;
-        PushResponse pushResponse;
-        PostMethod post = null;
+        DeleteMethod delete = null;
 
         try {
             // Post Method
-            post = new PostMethod(client.getBaseUri() + OCS_ROUTE);
-            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            delete = new DeleteMethod(client.getBaseUri() + OCS_ROUTE);
 
-            post.setRequestHeader( "Content-Type",
-                    "application/json; charset=utf-8"); // necessary for special characters
+            delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            status = client.executeMethod(post);
-            String response = post.getResponseBodyAsString();
+            status = client.executeMethod(delete);
+            String response = delete.getResponseBodyAsString();
 
             if(isSuccess(status)) {
-                result = new RemoteOperationResult(true, status, post.getResponseHeaders());
+                result = new RemoteOperationResult(true, status, delete.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
-
-                // Parse the response
-                pushResponse = parseResult(response);
-                result.setPushResponseData(pushResponse);
             } else {
-                result = new RemoteOperationResult(false, status, post.getResponseHeaders());
+                result = new RemoteOperationResult(false, status, delete.getResponseHeaders());
             }
 
         } catch (Exception e) {
@@ -99,27 +69,16 @@ public class RegisterDeviceForNotificationsOperation extends RemoteOperation {
             Log_OC.e(TAG, "Exception while registering device for notifications", e);
 
         } finally {
-            if (post != null) {
-                post.releaseConnection();
+            if (delete != null) {
+                delete.releaseConnection();
             }
         }
         return result;
     }
 
-    private PushResponse parseResult(String response) throws JSONException {
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jo = (JsonObject)jsonParser.parse(response);
-        JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
-
-        Gson gson = new Gson();
-        Type pushResponseType = new TypeToken<PushResponse>(){}.getType();
-        PushResponse pushResponse = gson.fromJson(jsonDataArray, pushResponseType);
-
-        return pushResponse;
-    }
-
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK || status == HttpStatus.SC_ACCEPTED);
     }
+
 
 }
