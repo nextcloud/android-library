@@ -27,6 +27,8 @@
 package com.owncloud.android.lib.resources.notifications;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -88,11 +90,13 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                     "application/json",
                     "UTF-8");
 
+            Log.d("MARIO", assembleJson());
             post.setRequestEntity(requestEntity);
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
+            Log.d("MARIO", response);
             if(isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
