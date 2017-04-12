@@ -88,7 +88,6 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                     "application/json",
                     "UTF-8");
 
-            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             post.setRequestEntity(requestEntity);
 
             status = client.executeMethod(post);
