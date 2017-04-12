@@ -109,19 +109,19 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
         stringBuilder.append(DEVICE_IDENTIFIER);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(deviceIdentifier);
+        stringBuilder.append(deviceIdentifier.trim());
         stringBuilder.append("\",");
         stringBuilder.append("\"");
         stringBuilder.append(DEVICE_IDENTIFIER_SIGNATURE);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(deviceIdentifierSignature);
+        stringBuilder.append(deviceIdentifierSignature.trim());
         stringBuilder.append("\",");
         stringBuilder.append("\"");
         stringBuilder.append(USER_PUBLIC_KEY);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(userPublicKey);
+        stringBuilder.append(userPublicKey.trim());
         stringBuilder.append("\"");
         stringBuilder.append("}");
 

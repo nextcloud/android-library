@@ -142,19 +142,19 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
         stringBuilder.append(PUSH_TOKEN_HASH);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(pushTokenHash);
+        stringBuilder.append(pushTokenHash.trim());
         stringBuilder.append("\",");
         stringBuilder.append("\"");
         stringBuilder.append(DEVICE_PUBLIC_KEY);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(devicePublicKey);
+        stringBuilder.append(devicePublicKey.trim());
         stringBuilder.append("\",");
         stringBuilder.append("\"");
         stringBuilder.append(PROXY_SERVER);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(proxyServer);
+        stringBuilder.append(proxyServer.trim());
         stringBuilder.append("\"");
         stringBuilder.append("}");
 
