@@ -59,11 +59,6 @@ public class ExternalLinksOperation extends RemoteOperation {
     private static final String NODE_URL = "url";
 
 
-
-    public ExternalLinksOperation() {
-
-    }
-
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
@@ -101,7 +96,7 @@ public class ExternalLinksOperation extends RemoteOperation {
                             String iconUrl = link.getString(NODE_ICON);
                             String language = link.getString(NODE_LANGUAGE);
 
-                            ExternalLinkType type = ExternalLinkType.LINK;
+                            ExternalLinkType type;
                             switch (link.getString(NODE_TYPE)) {
                                 case "link":
                                     type = ExternalLinkType.LINK;
@@ -112,6 +107,8 @@ public class ExternalLinksOperation extends RemoteOperation {
                                 case "quota":
                                     type = ExternalLinkType.QUOTA;
                                     break;
+                                default:
+                                    type = ExternalLinkType.UNKNOWN;
                             }
 
 
