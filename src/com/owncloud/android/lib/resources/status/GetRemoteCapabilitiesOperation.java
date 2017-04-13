@@ -112,7 +112,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
     // v1 notifications
     private static final String NODE_NOTIFICATIONS = "notifications";
-    private static final String PROPERTY_OCSENDPOINT = "ocs-endpoint";
+    private static final String PROPERTY_OCSENDPOINT = "ocs-endpoints";
 
     private static final String PROPERTY_LIST = "list";
     private static final String PROPERTY_GET = "get";
