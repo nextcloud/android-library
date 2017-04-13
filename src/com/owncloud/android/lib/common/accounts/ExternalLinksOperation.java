@@ -109,6 +109,7 @@ public class ExternalLinksOperation extends RemoteOperation {
                                     break;
                                 default:
                                     type = ExternalLinkType.UNKNOWN;
+                                    break;
                             }
 
 
