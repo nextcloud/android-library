@@ -30,7 +30,6 @@ package com.owncloud.android.lib.resources.notifications;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -123,12 +122,11 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     private PushResponse parseResult(String response) throws JSONException {
         JsonParser jsonParser = new JsonParser();
         JsonObject jo = (JsonObject)jsonParser.parse(response);
-        JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
 
         Gson gson = new Gson();
         Type pushResponseType = new TypeToken<PushResponse>(){}.getType();
 
-        return gson.fromJson(jsonDataArray, pushResponseType);
+        return gson.fromJson(jo, pushResponseType);
     }
 
     private boolean isSuccess(int status) {
