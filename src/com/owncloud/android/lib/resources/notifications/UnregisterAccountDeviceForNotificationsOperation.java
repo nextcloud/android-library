@@ -38,7 +38,7 @@ public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOper
 
     // OCS Route
     private static final String OCS_ROUTE =
-            "/ocs/v2.php/apps/notifications/api/v3/push";
+            "/ocs/v2.php/apps/notifications/api/v2/push";
 
     private static final String TAG = UnregisterAccountDeviceForNotificationsOperation.class.getSimpleName();
 
