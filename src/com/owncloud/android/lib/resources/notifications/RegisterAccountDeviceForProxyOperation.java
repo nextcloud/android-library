@@ -26,6 +26,8 @@
  */
 package com.owncloud.android.lib.resources.notifications;
 
+import android.util.Log;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -77,11 +79,15 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
                     "application/json",
                     "UTF-8");
 
+            Log.d("MARIO", assembleJson());
+
             post.setRequestEntity(requestEntity);
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
+            Log.d("MARIO", response);
+            
             if(isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);

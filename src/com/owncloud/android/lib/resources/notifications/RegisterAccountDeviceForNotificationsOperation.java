@@ -89,13 +89,11 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                     "application/json",
                     "UTF-8");
 
-            Log.d("MARIO", assembleJson());
             post.setRequestEntity(requestEntity);
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
-            Log.d("MARIO", response);
             if(isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
