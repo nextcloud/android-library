@@ -87,7 +87,7 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
             String response = post.getResponseBodyAsString();
 
             Log.d("MARIO", response);
-            
+
             if(isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
@@ -124,7 +124,7 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
         stringBuilder.append(DEVICE_IDENTIFIER);
         stringBuilder.append("\"");
         stringBuilder.append(":\"");
-        stringBuilder.append(deviceIdentifier.trim());
+        stringBuilder.append(deviceIdentifier);
         stringBuilder.append("\",");
         stringBuilder.append("\"");
         stringBuilder.append(DEVICE_IDENTIFIER_SIGNATURE);
