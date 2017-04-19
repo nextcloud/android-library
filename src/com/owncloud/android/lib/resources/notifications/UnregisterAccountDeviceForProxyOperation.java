@@ -33,7 +33,8 @@ import com.owncloud.android.lib.common.utils.HttpDeleteWithBody;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+
+import java.net.URLEncoder;
 
 public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
     private static final String PROXY_ROUTE = "/devices";
@@ -41,7 +42,6 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
     private static final String TAG = RegisterAccountDeviceForProxyOperation.class.getSimpleName();
 
     private String proxyUrl;
-    private String pushToken;
     private String deviceIdentifier;
     private String deviceIdentifierSignature;
     private String userPublicKey;
@@ -67,14 +67,14 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
 
         try {
             // Post Method
-            delete = new HttpDeleteWithBody(proxyUrl + PROXY_ROUTE);
-            StringRequestEntity requestEntity = new StringRequestEntity(
-                    assembleJson(),
-                    "application/json",
-                    "UTF-8");
+            String uriToPost = proxyUrl + PROXY_ROUTE;
+            uriToPost += "?" + DEVICE_IDENTIFIER + "=" + URLEncoder.encode(deviceIdentifier) + "&";
+            uriToPost += DEVICE_IDENTIFIER_SIGNATURE + "=" + URLEncoder.encode(deviceIdentifierSignature) + "&";
+            uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
 
-            delete.setRequestEntity(requestEntity);
+            delete = new HttpDeleteWithBody(uriToPost);
             delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            delete.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
             status = client.executeMethod(delete);
             String response = delete.getResponseBodyAsString();
@@ -100,31 +100,5 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
 
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK);
-    }
-
-    private String assembleJson() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{");
-        stringBuilder.append("\"");
-        stringBuilder.append(DEVICE_IDENTIFIER);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(deviceIdentifier.trim());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"");
-        stringBuilder.append(DEVICE_IDENTIFIER_SIGNATURE);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(deviceIdentifierSignature.trim());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"");
-        stringBuilder.append(USER_PUBLIC_KEY);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(userPublicKey.trim());
-        stringBuilder.append("\"");
-        stringBuilder.append("}");
-
-        return stringBuilder.toString();
     }
 }
