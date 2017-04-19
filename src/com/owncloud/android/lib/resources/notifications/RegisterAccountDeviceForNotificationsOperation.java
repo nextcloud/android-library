@@ -59,9 +59,9 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     private static final String DEVICE_PUBLIC_KEY = "devicePublicKey";
     private static final String PROXY_SERVER = "proxyServer";
 
-    private static String pushTokenHash;
-    private static String devicePublicKey;
-    private static String proxyServer;
+    private String pushTokenHash;
+    private String devicePublicKey;
+    private String proxyServer;
 
     public RegisterAccountDeviceForNotificationsOperation(String pushTokenHash, String devicePublicKey,
                                                           String proxyServer) {
