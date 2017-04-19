@@ -72,7 +72,7 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
 
         try {
             // Post Method
-            String uriToPost = proxyUrl + proxyUrl;
+            String uriToPost = proxyUrl + PROXY_ROUTE;
             uriToPost += "?" + PUSH_TOKEN + "=" + URLEncoder.encode(pushToken) + "&";
             uriToPost += DEVICE_IDENTIFIER + "=" + URLEncoder.encode(deviceIdentifier) + "&";
             uriToPost += DEVICE_IDENTIFIER_SIGNATURE + "=" + URLEncoder.encode(deviceIdentifierSignature) + "&";
