@@ -26,13 +26,13 @@
 
 package com.owncloud.android.lib.resources.shares;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
 
 /**
  * Creates a new share.  This allows sharing with a user or group or as a link.
@@ -90,7 +90,7 @@ public class CreateRemoteShareOperation extends RemoteOperation {
 		mPublicUpload = publicUpload;
 		mPassword = password;
 		mPermissions = permissions;
-		mGetShareDetails = false; 		// defaults to false for backwards compatibility
+		mGetShareDetails = false; 	// defaults to false for backwards compatibility
 	}
 
 	public boolean isGettingShareDetails () {
