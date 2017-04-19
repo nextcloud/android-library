@@ -35,7 +35,8 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+
+import java.net.URLEncoder;
 
 public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
     private static final String PROXY_ROUTE = "/devices";
@@ -71,17 +72,24 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
 
         try {
             // Post Method
-            post = new PostMethod(proxyUrl + PROXY_ROUTE);
+            String uriToPost = proxyUrl + proxyUrl;
+            uriToPost += "?" + PUSH_TOKEN + "=" + URLEncoder.encode(pushToken) + "&";
+            uriToPost += DEVICE_IDENTIFIER + "=" + URLEncoder.encode(deviceIdentifier) + "&";
+            uriToPost += DEVICE_IDENTIFIER_SIGNATURE + "=" + URLEncoder.encode(deviceIdentifierSignature) + "&";
+            uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
+
+            post = new PostMethod(uriToPost);
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            StringRequestEntity requestEntity = new StringRequestEntity(
+            /*StringRequestEntity requestEntity = new StringRequestEntity(
                     assembleJson(),
                     "application/json",
                     "UTF-8");
 
             Log.d("MARIO", assembleJson());
 
-            post.setRequestEntity(requestEntity);
+            post.setRequestEntity(requestEntity);*/
+            post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
