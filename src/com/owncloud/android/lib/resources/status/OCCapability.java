@@ -76,6 +76,8 @@ public class OCCapability {
     private CapabilityBooleanType mSupportsNotificationsV1;
     private CapabilityBooleanType mSupportsNotificationsV2;
 
+    private CapabilityBooleanType mExternalLinks;
+
     public OCCapability(){
         mId = 0;
         mAccountName = "";
@@ -113,6 +115,8 @@ public class OCCapability {
 
         mSupportsNotificationsV1 = CapabilityBooleanType.UNKNOWN;
         mSupportsNotificationsV2 = CapabilityBooleanType.UNKNOWN;
+
+        mExternalLinks = CapabilityBooleanType.UNKNOWN;
     }
 
 
@@ -370,6 +374,12 @@ public class OCCapability {
         this.mFilesFileDrop = mFilesFileDrop;
     }
 
+    public CapabilityBooleanType getExternalLinks() {
+        return mExternalLinks;
+    }
 
+    public void setExternalLinks(CapabilityBooleanType mExternalLinks) {
+        this.mExternalLinks = mExternalLinks;
+    }
 
 }

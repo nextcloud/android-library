@@ -117,7 +117,8 @@ public class RemoteOperationResult implements Serializable {
         INVALID_CHARACTER_DETECT_IN_SERVER,
         DELAYED_FOR_WIFI,
         DELAYED_FOR_CHARGING,
-        LOCAL_FILE_NOT_FOUND
+        LOCAL_FILE_NOT_FOUND,
+        NOT_AVAILABLE
     }
 
     private boolean mSuccess = false;

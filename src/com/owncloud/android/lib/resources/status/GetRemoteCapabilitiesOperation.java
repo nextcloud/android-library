@@ -121,6 +121,11 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String PROPERTY_ICONS = "icons";
     private static final String PROPERTY_RICH_STRINGS = "rich-strings";
 
+    // v1 external
+    private static final String NODE_EXTERNAL_LINKS = "external";
+    private static final String NODE_EXTERNAL_LINKS_V1 = "v1";
+    private static final String NODE_EXTERNAL_LINKS_SITES = "sites";
+
     /**
      * Constructor
      *
@@ -289,6 +294,22 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             }
                             if (capability.getSupportsNotificationsV2() != CapabilityBooleanType.TRUE) {
                                 capability.setSupportsNotificationsV1(CapabilityBooleanType.TRUE);
+                            }
+                        }
+
+                        if (respCapabilities.has(NODE_EXTERNAL_LINKS)) {
+                            JSONObject respExternalLinks = respCapabilities.getJSONObject(NODE_EXTERNAL_LINKS);
+
+                            if (respExternalLinks.has(NODE_EXTERNAL_LINKS_V1)) {
+                                JSONArray respExternalLinksV1 = respExternalLinks.getJSONArray(NODE_EXTERNAL_LINKS_V1);
+
+                                String element = (String) respExternalLinksV1.get(0);
+
+                                if (element.equalsIgnoreCase(NODE_EXTERNAL_LINKS_SITES)) {
+                                    capability.setExternalLinks(CapabilityBooleanType.TRUE);
+                                } else {
+                                    capability.setExternalLinks(CapabilityBooleanType.FALSE);
+                                }
                             }
                         }
 
