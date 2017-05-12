@@ -245,9 +245,8 @@ public class TestActivity extends Activity {
 	 * 
 	 * @return
 	 */
-	public RemoteOperationResult uploadFile(
-			String storagePath, String remotePath, String mimeType, String requiredEtag
-			) {
+	public RemoteOperationResult uploadFile(String storagePath, String remotePath, String mimeType,
+											String requiredEtag) {
 		return TestActivity.uploadFile(this, storagePath, remotePath, mimeType, mClient, requiredEtag);
 	}
 
@@ -262,10 +261,8 @@ public class TestActivity extends Activity {
 	 * @param requiredEtag
 	 * @return
 	 */
-	public static RemoteOperationResult uploadFile(
-			Context context, String storagePath, String remotePath, String mimeType, OwnCloudClient client,
-			String requiredEtag
-	) {
+	public static RemoteOperationResult uploadFile(Context context, String storagePath, String remotePath,
+												   String mimeType, OwnCloudClient client, String requiredEtag) {
 
 		String fileLastModifTimestamp = getFileLastModifTimeStamp(storagePath);
 
@@ -288,8 +285,7 @@ public class TestActivity extends Activity {
 	 * 
 	 * @return
 	 */
-	public RemoteOperationResult getShares(){
-
+	public RemoteOperationResult getShares() {
 		GetRemoteSharesOperation getOperation = new GetRemoteSharesOperation();
 		return getOperation.execute(mClient);
 	}
@@ -316,7 +312,8 @@ public class TestActivity extends Activity {
 	public RemoteOperationResult createShare(String path, ShareType shareType, String shareWith, boolean publicUpload, 
 			String password, int permissions){
 		
-		CreateRemoteShareOperation createOperation = new CreateRemoteShareOperation(path, shareType, shareWith, publicUpload, password, permissions);
+		CreateRemoteShareOperation createOperation = new CreateRemoteShareOperation(path, shareType, shareWith,
+				publicUpload, password, permissions);
 		return createOperation.execute(mClient);
 	}
 	

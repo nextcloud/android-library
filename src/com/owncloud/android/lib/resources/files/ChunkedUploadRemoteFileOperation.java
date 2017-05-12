@@ -58,16 +58,14 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
     private Context mContext;
 
-    public ChunkedUploadRemoteFileOperation(
-            Context context, String storagePath, String remotePath, String mimeType, String requiredEtag,
-            String fileLastModifTimestamp) {
+    public ChunkedUploadRemoteFileOperation(Context context, String storagePath, String remotePath,
+                                            String mimeType, String requiredEtag, String fileLastModifTimestamp) {
         super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
         mContext = context;
     }
 
-    public ChunkedUploadRemoteFileOperation(
-            String storagePath, String remotePath, String mimeType, String requiredEtag, String fileLastModifTimestamp
-    ) {
+    public ChunkedUploadRemoteFileOperation(String storagePath, String remotePath, String mimeType,
+                                            String requiredEtag, String fileLastModifTimestamp) {
         super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
     }
     
