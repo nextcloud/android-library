@@ -245,52 +245,49 @@ public class TestActivity extends Activity {
 	 * 
 	 * @return
 	 */
-	public RemoteOperationResult uploadFile(
-			String storagePath, String remotePath, String mimeType, String requiredEtag
-			) {
+	public RemoteOperationResult uploadFile(String storagePath, String remotePath, String mimeType,
+											String requiredEtag) {
 		return TestActivity.uploadFile(this, storagePath, remotePath, mimeType, mClient, requiredEtag);
 	}
-	
-	
-	/** Access to the library method to Upload a File 
+
+
+	/** Access to the library method to Upload a File
 	 *
 	 * @param context
 	 * @param storagePath
 	 * @param remotePath
 	 * @param mimeType
-	 * @param client            Client instance configured to access the target OC server.
-	 *
+	 * @param client       Client instance configured to access the target OC server.
+	 * @param requiredEtag
 	 * @return
 	 */
-	public static RemoteOperationResult uploadFile(
-			Context context, String storagePath, String remotePath, String mimeType, OwnCloudClient client,
-			String requiredEtag
-	) {
+	public static RemoteOperationResult uploadFile(Context context, String storagePath, String remotePath,
+												   String mimeType, OwnCloudClient client, String requiredEtag) {
+
+		String fileLastModifTimestamp = getFileLastModifTimeStamp(storagePath);
+
 		UploadRemoteFileOperation uploadOperation;
+
 		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
 			uploadOperation = new ChunkedUploadRemoteFileOperation(
-					context, storagePath, remotePath, mimeType, requiredEtag
+					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
 			);
 		} else {
             uploadOperation = new UploadRemoteFileOperation(
-            		storagePath, remotePath, mimeType
+                    storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
     		);
         }
-		
-		RemoteOperationResult result = uploadOperation.execute(client);
-		return result;
+
+		return uploadOperation.execute(client);
 	}
 
 	/** Access to the library method to Get Shares 
 	 * 
 	 * @return
 	 */
-	public RemoteOperationResult getShares(){
-		
+	public RemoteOperationResult getShares() {
 		GetRemoteSharesOperation getOperation = new GetRemoteSharesOperation();
-		RemoteOperationResult result = getOperation.execute(mClient);
-		
-		return result;
+		return getOperation.execute(mClient);
 	}
 	
 	/** Access to the library method to Create Share
@@ -315,10 +312,9 @@ public class TestActivity extends Activity {
 	public RemoteOperationResult createShare(String path, ShareType shareType, String shareWith, boolean publicUpload, 
 			String password, int permissions){
 		
-		CreateRemoteShareOperation createOperation = new CreateRemoteShareOperation(path, shareType, shareWith, publicUpload, password, permissions);
-		RemoteOperationResult result = createOperation.execute(mClient);
-		
-		return result;
+		CreateRemoteShareOperation createOperation = new CreateRemoteShareOperation(path, shareType, shareWith,
+				publicUpload, password, permissions);
+		return createOperation.execute(mClient);
 	}
 	
 	
@@ -330,10 +326,7 @@ public class TestActivity extends Activity {
 	
 	public RemoteOperationResult removeShare(int idShare) {
 		RemoveRemoteShareOperation removeOperation = new RemoveRemoteShareOperation(idShare);
-		RemoteOperationResult result = removeOperation.execute(mClient);
-		
-		return result;
-		
+		return removeOperation.execute(mClient);
 	}
 
 	
@@ -373,5 +366,9 @@ public class TestActivity extends Activity {
 		return extractedFile;
 	}
 
-
+    private static String getFileLastModifTimeStamp (String storagePath) {
+        File file = new File(storagePath);
+        Long timeStampLong = file.lastModified()/1000;
+        return timeStampLong.toString();
+    }
 }

@@ -146,30 +146,36 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
 	    		Toast.makeText(this, R.string.youre_doing_it_wrong, Toast.LENGTH_SHORT).show();
     	}
     }
-    
+
     private void startRefresh() {
     	ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(FileUtils.PATH_SEPARATOR);
     	refreshOperation.execute(mClient, this, mHandler);
     }
-    
+
     private void startUpload() {
     	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
-    	File fileToUpload = upFolder.listFiles()[0]; 
-    	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName(); 
+    	File fileToUpload = upFolder.listFiles()[0];
+    	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
     	String mimeType = getString(R.string.sample_file_mimetype);
-    	UploadRemoteFileOperation uploadOperation = new UploadRemoteFileOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType);
+
+		// Get the last modification date of the file from the file system
+		Long timeStampLong = fileToUpload.lastModified() / 1000;
+		String timeStamp = timeStampLong.toString();
+
+    	UploadRemoteFileOperation uploadOperation =
+            new UploadRemoteFileOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType, timeStamp);
     	uploadOperation.addDatatransferProgressListener(this);
     	uploadOperation.execute(mClient, this, mHandler);
     }
-    
+
     private void startRemoteDeletion() {
     	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
-    	File fileToUpload = upFolder.listFiles()[0]; 
+    	File fileToUpload = upFolder.listFiles()[0];
     	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
     	RemoveRemoteFileOperation removeOperation = new RemoveRemoteFileOperation(remotePath);
     	removeOperation.execute(mClient, this, mHandler);
     }
-    
+
     private void startDownload() {
     	File downFolder = new File(getCacheDir(), getString(R.string.download_folder_path));
     	downFolder.mkdir();

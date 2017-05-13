@@ -62,27 +62,32 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 
 	protected static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
 	protected static final String IF_MATCH_HEADER = "If-Match";
+    protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
 
 	protected String mLocalPath;
 	protected String mRemotePath;
 	protected String mMimeType;
+	protected String mFileLastModifTimestamp;
 	protected PutMethod mPutMethod = null;
 	protected boolean mForbiddenCharsInServer = false;
 	protected String mRequiredEtag = null;
-	
+
 	protected final AtomicBoolean mCancellationRequested = new AtomicBoolean(false);
 	protected Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
 
 	protected RequestEntity mEntity = null;
 
-	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType) {
+	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType,
+									 String fileLastModifTimestamp) {
 		mLocalPath = localPath;
 		mRemotePath = remotePath;
 		mMimeType = mimeType;
+		mFileLastModifTimestamp = fileLastModifTimestamp;
 	}
 
-	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String requiredEtag) {
-		this(localPath, remotePath, mimeType);
+	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String requiredEtag,
+									 String fileLastModifTimestamp) {
+		this(localPath, remotePath, mimeType, fileLastModifTimestamp);
 		mRequiredEtag = requiredEtag;
 	}
 
@@ -152,6 +157,7 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 				mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
 			}
 			mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
+            mPutMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
 			mPutMethod.setRequestEntity(mEntity);
 			status = client.executeMethod(mPutMethod);
 
@@ -175,7 +181,7 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 		}
 		return status;
 	}
-	
+
     public Set<OnDatatransferProgressListener> getDataTransferListeners() {
         return mDataTransferListeners;
     }
