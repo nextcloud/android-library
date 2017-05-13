@@ -46,13 +46,11 @@ import java.util.ArrayList;
 /**
  * Gets avatar about the user logged in, if available
  */
-
 public class GetRemoteUserAvatarOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteUserAvatarOperation.class.getSimpleName();
 
     private static final String NON_OFFICIAL_AVATAR_PATH = "/index.php/avatar/";
-    private static final String IF_NONE_MATCH_HEADER = "If-None-Match";
 
     /** Desired size in pixels of the squared image */
     private int mDimension;
@@ -62,7 +60,6 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
      * if its Etag changed.
      */
     //private String mCurrentEtag;
-
 
     public GetRemoteUserAvatarOperation(int dimension, String currentEtag) {
         mDimension = dimension;

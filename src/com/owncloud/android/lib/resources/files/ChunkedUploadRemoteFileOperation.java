@@ -110,28 +110,9 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                     mPutMethod.releaseConnection();     // let the connection available
                                                         // for other methods
                 }
-                mPutMethod = new PutMethod(uriPrefix + chunkCount + "-" + chunkIndex);
-                if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
-                    mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
-                }
-                mPutMethod.addRequestHeader(OC_CHUNKED_HEADER, OC_CHUNKED_HEADER);
-                mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
-                mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
-                mPutMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
-
-                ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
-                mPutMethod.setRequestEntity(mEntity);
-                if (mCancellationRequested.get()) {
-                    mPutMethod.abort();
-                    // next method will throw an exception
                 }
 
-                if (chunkIndex == chunkCount - 1) {
-                    // Added a high timeout to the last chunk due to when the last chunk
-                    // arrives to the server with the last PUT, all chunks get assembled
-                    // within that PHP request, so last one takes longer.
-                    mPutMethod.getParams().setSoTimeout(LAST_CHUNK_TIMEOUT);
-                }
+                mPutMethod = createPutMethod(uriPrefix, chunkCount, chunkIndex, chunkSizeStr, totalLengthStr, offset);
 
                 status = client.executeMethod(mPutMethod);
 
@@ -142,12 +123,10 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                         ", chunk index " + chunkIndex + ", count " + chunkCount +
                         ", HTTP result status " + status);
 
-                if (isSuccess(status)){
-
-                  successfulChunks.add(String.valueOf(chunkIndex) + "_" + getDateAsString());
+                if (isSuccess(status)) {
+                    successfulChunks.add(String.valueOf(chunkIndex) + "_" + getDateAsString());
                 } else {
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet(chunkId, successfulChunks).apply();
+                    sharedPref.edit().putStringSet(chunkId, successfulChunks).apply();
                     break;
                 }
             }
@@ -176,6 +155,36 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 mPutMethod.releaseConnection();    // let the connection available for other methods
         }
         return result;
+    }
+
+    private PutMethod createPutMethod(String uriPrefix,
+                                      long chunkCount,
+                                      int chunkIndex,
+                                      String chunkSizeStr,
+                                      String totalLengthStr,
+                                      long offset) {
+        PutMethod putMethod = new PutMethod(uriPrefix + chunkCount + "-" + chunkIndex);
+        if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
+            mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
+        }
+        mPutMethod.addRequestHeader(OC_CHUNKED_HEADER, OC_CHUNKED_HEADER);
+        mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
+        mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
+        ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
+        mPutMethod.setRequestEntity(mEntity);
+        if (mCancellationRequested.get()) {
+            mPutMethod.abort();
+            // next method will throw an exception
+        }
+
+        if (chunkIndex == chunkCount - 1) {
+            // Added a high timeout to the last chunk due to when the last chunk
+            // arrives to the server with the last PUT, all chunks get assembled
+            // within that PHP request, so last one takes longer.
+            mPutMethod.getParams().setSoTimeout(LAST_CHUNK_TIMEOUT);
+        }
+
+        return putMethod;
     }
 
     private String getDateAsString() {
