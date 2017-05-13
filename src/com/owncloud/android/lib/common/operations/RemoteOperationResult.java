@@ -1,5 +1,5 @@
 /* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -66,8 +66,8 @@ import javax.net.ssl.SSLException;
 public class RemoteOperationResult implements Serializable {
 
 	/** Generated - should be refreshed every time the class changes!! */;
-    private static final long serialVersionUID = 1129130415603799707L;
-
+    
+    private static final long serialVersionUID = -1909603208238358633L;
     private static final String TAG = RemoteOperationResult.class.getSimpleName();
 
     public enum ResultCode {
@@ -118,7 +118,8 @@ public class RemoteOperationResult implements Serializable {
         DELAYED_FOR_WIFI,
         DELAYED_FOR_CHARGING,
         LOCAL_FILE_NOT_FOUND,
-        NOT_AVAILABLE
+        NOT_AVAILABLE,
+        MAINTENANCE_MODE
     }
 
     private boolean mSuccess = false;
@@ -168,10 +169,12 @@ public class RemoteOperationResult implements Serializable {
 			case HttpStatus.SC_FORBIDDEN:
 				mCode = ResultCode.FORBIDDEN;
                 break;
+            case HttpStatus.SC_SERVICE_UNAVAILABLE:
+                mCode = ResultCode.MAINTENANCE_MODE;
+                break;
             default:
                 mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " +
-                        httpCode);
+                Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " + httpCode);
             }
         }
     }
