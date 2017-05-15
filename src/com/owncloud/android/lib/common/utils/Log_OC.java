@@ -86,6 +86,8 @@ public class Log_OC {
         if (!mFolder.exists()) {
             isFolderCreated = mFolder.mkdirs();
             Log.d(TAG, "Log folder created at: " + mNextcloudDataFolderLog);
+        } else {
+            isFolderCreated = true;
         }
 
         try {
