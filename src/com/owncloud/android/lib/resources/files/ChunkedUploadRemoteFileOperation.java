@@ -110,7 +110,6 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                     mPutMethod.releaseConnection();     // let the connection available
                                                         // for other methods
                 }
-                }
 
                 mPutMethod = createPutMethod(uriPrefix, chunkCount, chunkIndex, chunkSizeStr, totalLengthStr, offset);
 
