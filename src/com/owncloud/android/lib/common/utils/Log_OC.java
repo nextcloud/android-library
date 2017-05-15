@@ -1,5 +1,6 @@
 package com.owncloud.android.lib.common.utils;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -18,7 +19,7 @@ public class Log_OC {
 
     private static final String TAG = Log_OC.class.getSimpleName();
 
-    private static String mNextcloudDataFolderLog = "nextcloud_log";
+    private static String mNextcloudDataFolderLog;
 
     private static File mLogFile;
     private static File mFolder;
@@ -29,8 +30,8 @@ public class Log_OC {
     private static boolean isMaxFileSizeReached = false;
     private static boolean isEnabled = false;
 
-    public static void setLogDataFolder(String logFolder){
-        mNextcloudDataFolderLog = logFolder;
+    public static String getLogPath() {
+        return mNextcloudDataFolderLog;
     }
 
     public static void i(String TAG, String message){
@@ -73,30 +74,28 @@ public class Log_OC {
 
     /**
      * Start doing logging
-     * @param storagePath : directory for keeping logs
+     * @param context Context: used for determinated app specific folder
      */
-    synchronized public static void startLogging(String storagePath) {
-        String logPath = storagePath + File.separator +
-                mNextcloudDataFolderLog + File.separator + LOG_FOLDER_NAME;
-        mFolder = new File(logPath);
+    synchronized public static void startLogging(Context context) {
+        mNextcloudDataFolderLog = context.getFilesDir().getAbsolutePath() + File.separator + LOG_FOLDER_NAME;
+        mFolder = new File(mNextcloudDataFolderLog);
         mLogFile = new File(mFolder + File.separator + mLogFileNames[0]);
 
-        boolean isFileCreated = false;
+        boolean isFolderCreated = false;
 
         if (!mFolder.exists()) {
-            mFolder.mkdirs();
-            isFileCreated = true;
-            Log.d(TAG, "Log file created");
+            isFolderCreated = mFolder.mkdirs();
+            Log.d(TAG, "Log folder created at: " + mNextcloudDataFolderLog);
+        } else {
+            isFolderCreated = true;
         }
 
-        try { 
-
+        try {
             // Create the current log file if does not exist
-            mLogFile.createNewFile();
+            isEnabled = mLogFile.createNewFile();
             mBuf = new BufferedWriter(new FileWriter(mLogFile, true));
-            isEnabled = true;
 
-            if (isFileCreated) {
+            if (isFolderCreated && isEnabled) {
                 appendPhoneInfo();
             }
 
