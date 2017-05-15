@@ -70,16 +70,17 @@ public class RichSubjectTypeAdapter extends TypeAdapter<RichSubject> {
         while (in.hasNext()) {
             String name = in.nextName();
             if (name != null && !name.isEmpty()) {
-                richSubject.getRichObjectList().add(readObject(in));
+                richSubject.getRichObjectList().add(readObject(name,in));
             }
         }
     }
 
 
 
-    RichObject readObject(JsonReader in) throws IOException {
+    RichObject readObject(String tag,JsonReader in) throws IOException {
         in.beginObject();
         RichObject richObject = new RichObject();
+        richObject.setTag(tag);
         while (in.hasNext()) {
             String name = in.nextName();
             if ("type".contentEquals(name))

@@ -36,6 +36,7 @@ public class RichObject {
     String name;
     String path;
     String link;
+    String tag;
 
     public String getType() {
         return type;
@@ -75,5 +76,13 @@ public class RichObject {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }
