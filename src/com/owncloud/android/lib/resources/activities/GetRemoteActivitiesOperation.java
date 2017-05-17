@@ -38,9 +38,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.models.Activity;
-import com.owncloud.android.lib.resources.activities.models.RichSubject;
-import com.owncloud.android.lib.resources.activities.models.RichSubjectTypeAdapter;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+import com.owncloud.android.lib.resources.activities.models.RichElement;
+import com.owncloud.android.lib.resources.activities.models.RichElementTypeAdapter;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -75,11 +74,11 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         GetMethod get = null;
         ArrayList<Object> activities;
         String url;
-        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
+//        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
             url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
-        } else {
-            url = client.getBaseUri() + OCS_ROUTE_PRE_V12;
-        }
+//        } else {
+//            url = client.getBaseUri() + OCS_ROUTE_PRE_V12;
+//        }
         Log_OC.d(TAG, "URL: " + url);
 
         try {
@@ -122,7 +121,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(RichSubject.class,new RichSubjectTypeAdapter())//Add TypeAdapter to parse RichSubject
+                .registerTypeAdapter(RichElement.class,new RichElementTypeAdapter())//Add TypeAdapter to parse RichElement
                 .create();
         Type listType = new TypeToken<List<Activity>>(){}.getType();
 

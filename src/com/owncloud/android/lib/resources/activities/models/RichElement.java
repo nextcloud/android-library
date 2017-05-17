@@ -28,13 +28,13 @@ package com.owncloud.android.lib.resources.activities.models;
 import java.util.ArrayList;
 
 /**
- * RichSubject Data Model
+ * RichElement Data Model
  */
 
-public class RichSubject {
+public class RichElement {
 
     public String richSubject;
-    ArrayList<RichObject> richObjectList=new ArrayList<>();
+    ArrayList<RichObject> richObjectList = new ArrayList<>();
 
 
     public String getRichSubject() {
@@ -52,7 +52,6 @@ public class RichSubject {
     public void setRichObjectList(ArrayList<RichObject> richObjectList) {
         this.richObjectList = richObjectList;
     }
-
 
 
 }

@@ -32,28 +32,28 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 
 /**
- * RichSubject Parser
+ * RichElement Parser
  */
 
-public class RichSubjectTypeAdapter extends TypeAdapter<RichSubject> {
+public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
 
     @Override
-    public void write(JsonWriter out, RichSubject value) throws IOException {
+    public void write(JsonWriter out, RichElement value) throws IOException {
 
     }
 
     @Override
-    public RichSubject read(JsonReader in) throws IOException {
-        RichSubject richSubject = new RichSubject();
+    public RichElement read(JsonReader in) throws IOException {
+        RichElement richElement = new RichElement();
         in.beginArray();
         int count = 0;
         while (in.hasNext()) {
             if (count == 0) {
-                richSubject.setRichSubject(in.nextString());
+                richElement.setRichSubject(in.nextString());
             } else {
                 in.beginObject();
 
-                read(richSubject, in);
+                read(richElement, in);
 
                 in.endObject();
             }
@@ -63,14 +63,14 @@ public class RichSubjectTypeAdapter extends TypeAdapter<RichSubject> {
 
         in.endArray();
 
-        return richSubject;
+        return richElement;
     }
 
-    private void read(RichSubject richSubject, JsonReader in) throws IOException {
+    private void read(RichElement richElement, JsonReader in) throws IOException {
         while (in.hasNext()) {
             String name = in.nextName();
             if (name != null && !name.isEmpty()) {
-                richSubject.getRichObjectList().add(readObject(name,in));
+                richElement.getRichObjectList().add(readObject(name,in));
             }
         }
     }
