@@ -58,7 +58,7 @@ public class Activity {
     public String objectName;
 
     @SerializedName("subject_rich")
-    public RichElement richElement;
+    public RichElement richSubjectElement;
 
     public Date getDate() {
         return date;
@@ -173,11 +173,11 @@ public class Activity {
         this.objectName = objectName;
     }
 
-    public RichElement getRichElement() {
-        return richElement;
+    public RichElement getRichSubjectElement() {
+        return richSubjectElement;
     }
 
-    public void setRichElement(RichElement richElement) {
-        this.richElement = richElement;
+    public void setRichSubjectElement(RichElement richSubjectElement) {
+        this.richSubjectElement = richSubjectElement;
     }
 }

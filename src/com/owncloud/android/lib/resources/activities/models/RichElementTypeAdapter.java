@@ -99,9 +99,5 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
         in.endObject();
         return richObject;
     }
-
-
-
-
 }
 
