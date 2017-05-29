@@ -365,7 +365,7 @@ public class RemoteOperationResult implements Serializable {
                     continue;
                 }
                 if ("www-authenticate".equals(current.getName().toLowerCase())) {
-                    mAuthenticate = current.getValue();
+                    mAuthenticateHeaders.add(current.getValue());
                     break;
                 }
             }
