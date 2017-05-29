@@ -28,6 +28,7 @@ package com.owncloud.android.lib.resources.activities;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -37,6 +38,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.models.Activity;
+import com.owncloud.android.lib.resources.activities.models.RichElement;
+import com.owncloud.android.lib.resources.activities.models.RichElementTypeAdapter;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -118,7 +121,9 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         JsonObject jo = (JsonObject)jsonParser.parse(response);
         JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(RichElement.class,new RichElementTypeAdapter())//Add TypeAdapter to parse RichElement
+                .create();
         Type listType = new TypeToken<List<Activity>>(){}.getType();
 
         return gson.fromJson(jsonDataArray, listType);
