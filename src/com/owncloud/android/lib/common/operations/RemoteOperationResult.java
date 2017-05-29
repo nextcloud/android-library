@@ -36,6 +36,7 @@ import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavException;
 import org.json.JSONException;
@@ -57,7 +58,7 @@ import javax.net.ssl.SSLException;
 
 /**
  * The result of a remote operation required to an ownCloud server.
- * <p/>
+ *
  * Provides a common classification of remote operation results for all the
  * application.
  *
@@ -124,6 +125,7 @@ public class RemoteOperationResult implements Serializable {
 
     private boolean mSuccess = false;
     private int mHttpCode = -1;
+    private String mHttpPhrase = null;
     private Exception mException = null;
     private ResultCode mCode = ResultCode.UNKNOWN_ERROR;
     private String mRedirectedLocation;
@@ -134,6 +136,13 @@ public class RemoteOperationResult implements Serializable {
     private List<Notification> mNotificationData;
     private PushResponse mPushResponse;
 
+    /**
+     * Public constructor from result code.
+     * <p>
+     * To be used when the caller takes the responsibility of interpreting the result of a {@link RemoteOperation}
+     *
+     * @param code {@link ResultCode} decided by the caller.
+     */
     public RemoteOperationResult(ResultCode code) {
         mCode = code;
 		mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL ||
@@ -228,9 +237,17 @@ public class RemoteOperationResult implements Serializable {
                             httpCode);
             }
         }
-
     }
 
+    /**
+     * Public constructor from exception.
+     *
+     * To be used when an exception prevented the end of the {@link RemoteOperation}.
+     *
+     * Determines a {@link ResultCode} depending on the type of the exception.
+     *
+     * @param e Exception that interrupted the {@link RemoteOperation}
+     */
     public RemoteOperationResult(Exception e) {
         mException = e;
 
@@ -278,9 +295,134 @@ public class RemoteOperationResult implements Serializable {
         } else {
             mCode = ResultCode.UNKNOWN_ERROR;
         }
-
     }
 
+    /**
+     * Public constructor from separate elements of an HTTP or DAV response.
+     *
+     * To be used when the result needs to be interpreted from the response of an HTTP/DAV method.
+     *
+     * Determines a {@link ResultCode} from the already executed method received as a parameter. Generally,
+     * will depend on the HTTP code and HTTP response headers received. In some cases will inspect also the
+     * response body.
+     *
+     * @param success    The operation was considered successful or not.
+     * @param httpMethod HTTP/DAV method already executed which response will be examined to interpret the
+     *                   result.
+     */
+    public RemoteOperationResult(boolean success, HttpMethod httpMethod) throws IOException {
+        this(
+                success,
+                httpMethod.getStatusCode(),
+                httpMethod.getStatusText(),
+                httpMethod.getResponseHeaders()
+        );
+
+        if (mHttpCode == HttpStatus.SC_BAD_REQUEST) {   // 400
+            String bodyResponse = httpMethod.getResponseBodyAsString();
+            // do not get for other HTTP codes!; could not be available
+
+            if (bodyResponse != null && bodyResponse.length() > 0) {
+                InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
+                try {
+                    if (xmlParser.parseXMLResponse(is)) {
+                        mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
+                    }
+
+                } catch (Exception e) {
+                    Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
+                    // mCode stays as set in this(success, httpCode, headers)
+                }
+            }
+        }
+    }
+
+    /**
+     * Public constructor from separate elements of an HTTP or DAV response.
+     *
+     * To be used when the result needs to be interpreted from HTTP response elements that could come from
+     * different requests (WARNING: black magic, try to avoid).
+     *
+     * If all the fields come from the same HTTP/DAV response, {@link #RemoteOperationResult(boolean, HttpMethod)}
+     * should be used instead.
+     *
+     * Determines a {@link ResultCode} depending on the HTTP code and HTTP response headers received.
+     *
+     * @param success     The operation was considered successful or not.
+     * @param httpCode    HTTP status code returned by an HTTP/DAV method.
+     * @param httpPhrase  HTTP status line phrase returned by an HTTP/DAV method
+     * @param httpHeaders HTTP response header returned by an HTTP/DAV method
+     */
+    public RemoteOperationResult(boolean success, int httpCode, String httpPhrase, Header[] httpHeaders) {
+        this(success, httpCode, httpPhrase);
+        if (httpHeaders != null) {
+            Header current;
+            for (Header httpHeader : httpHeaders) {
+                current = httpHeader;
+                if ("location".equals(current.getName().toLowerCase())) {
+                    mRedirectedLocation = current.getValue();
+                    continue;
+                }
+                if ("www-authenticate".equals(current.getName().toLowerCase())) {
+                    mAuthenticate = current.getValue();
+                    break;
+                }
+            }
+        }
+        if (isIdPRedirection()) {
+            mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
+        }
+    }
+
+    /**
+     * Private constructor for results built interpreting a HTTP or DAV response.
+     *
+     * Determines a {@link ResultCode} depending of the type of the exception.
+     *
+     * @param success    Operation was successful or not.
+     * @param httpCode   HTTP status code returned by the HTTP/DAV method.
+     * @param httpPhrase HTTP status line phrase returned by the HTTP/DAV method
+     */
+    private RemoteOperationResult(boolean success, int httpCode, String httpPhrase) {
+        mSuccess = success;
+        mHttpCode = httpCode;
+        mHttpPhrase = httpPhrase;
+
+        if (success) {
+            mCode = ResultCode.OK;
+
+        } else if (httpCode > 0) {
+            switch (httpCode) {
+                case HttpStatus.SC_UNAUTHORIZED:                    // 401
+                    mCode = ResultCode.UNAUTHORIZED;
+                    break;
+                case HttpStatus.SC_FORBIDDEN:                       // 403
+                    mCode = ResultCode.FORBIDDEN;
+                    break;
+                case HttpStatus.SC_NOT_FOUND:                       // 404
+                    mCode = ResultCode.FILE_NOT_FOUND;
+                    break;
+                case HttpStatus.SC_CONFLICT:                        // 409
+                    mCode = ResultCode.CONFLICT;
+                    break;
+                case HttpStatus.SC_INTERNAL_SERVER_ERROR:           // 500
+                    mCode = ResultCode.INSTANCE_NOT_CONFIGURED;     // assuming too much...
+                    break;
+                case HttpStatus.SC_SERVICE_UNAVAILABLE:             // 503
+                    mCode = ResultCode.MAINTENANCE_MODE;
+                    break;
+                case HttpStatus.SC_INSUFFICIENT_STORAGE:            // 507
+                    mCode = ResultCode.QUOTA_EXCEEDED;
+                    break;
+                default:
+                    mCode = ResultCode.UNHANDLED_HTTP_CODE;         // UNKNOWN ERROR
+                    Log_OC.d(TAG,
+                            "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: "
+                                    + mHttpCode + " " + mHttpPhrase);
+            }
+        }
+    }
 
     public void setData(ArrayList<Object> files) {
         mData = files;
@@ -316,6 +458,10 @@ public class RemoteOperationResult implements Serializable {
 
     public int getHttpCode() {
         return mHttpCode;
+    }
+
+    public String getHttpPhrase() {
+        return mHttpPhrase;
     }
 
     public ResultCode getCode() {

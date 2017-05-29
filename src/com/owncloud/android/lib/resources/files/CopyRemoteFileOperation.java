@@ -45,7 +45,7 @@ import java.io.IOException;
 /**
  * Remote operation moving a remote file or folder in the ownCloud server to a different folder
  * in the same account.
- * <p/>
+ *
  * Allows renaming the moving file/folder at the same time.
  *
  * @author David A. Velasco
@@ -65,7 +65,7 @@ public class CopyRemoteFileOperation extends RemoteOperation {
 
     /**
      * Constructor.
-     * <p/>
+     *
      * TODO Paths should finish in "/" in the case of folders. ?
      *
      * @param srcRemotePath    Remote path of the file/folder to move.
@@ -129,29 +129,21 @@ public class CopyRemoteFileOperation extends RemoteOperation {
                 /// for other errors that could be explicitly handled, check first:
                 /// http://www.webdav.org/specs/rfc4918.html#rfc.section.9.9.4
 
-            } else if (status == 400) {
-                result = new RemoteOperationResult(copyMethod.succeeded(),
-                        copyMethod.getResponseBodyAsString(), status);
             } else {
-                result = new RemoteOperationResult(
-                        isSuccess(status),    // copy.succeeded()? trustful?
-                        status,
-                        copyMethod.getResponseHeaders()
-                );
+                result = new RemoteOperationResult(isSuccess(status), copyMethod);
                 client.exhaustResponse(copyMethod.getResponseBodyAsStream());
             }
 
-            Log.i(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " +
-                    result.getLogMessage());
+            Log.i(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage());
 
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log.e(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " +
-                    result.getLogMessage(), e);
+            Log.e(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage(), e);
 
         } finally {
-            if (copyMethod != null)
+            if (copyMethod != null) {
                 copyMethod.releaseConnection();
+            }
         }
 
         return result;
@@ -160,10 +152,10 @@ public class CopyRemoteFileOperation extends RemoteOperation {
 
     /**
      * Analyzes a multistatus response from the OC server to generate an appropriate result.
-     * <p/>
+     *
      * In WebDAV, a COPY request on collections (folders) can be PARTIALLY successful: some
      * children are copied, some other aren't.
-     * <p/>
+     *
      * According to the WebDAV specification, a multistatus response SHOULD NOT include partial
      * successes (201, 204) nor for descendants of already failed children (424) in the response
      * entity. But SHOULD NOT != MUST NOT, so take carefully.
@@ -196,20 +188,13 @@ public class CopyRemoteFileOperation extends RemoteOperation {
         if (failFound) {
             result = new RemoteOperationResult(ResultCode.PARTIAL_COPY_DONE);
         } else {
-            result = new RemoteOperationResult(
-                    true,
-                    HttpStatus.SC_MULTI_STATUS,
-                    copyMethod.getResponseHeaders()
-            );
+            result = new RemoteOperationResult(true, copyMethod);
         }
 
         return result;
-
     }
-
 
     protected boolean isSuccess(int status) {
         return status == HttpStatus.SC_CREATED || status == HttpStatus.SC_NO_CONTENT;
     }
-
 }
