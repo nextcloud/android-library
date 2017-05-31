@@ -162,7 +162,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                                       String chunkSizeStr,
                                       String totalLengthStr,
                                       long offset) {
-        PutMethod putMethod = new PutMethod(uriPrefix + chunkCount + "-" + chunkIndex);
+        mPutMethod = new PutMethod(uriPrefix + chunkCount + "-" + chunkIndex);
         if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
             mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
         }
@@ -183,7 +183,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             mPutMethod.getParams().setSoTimeout(LAST_CHUNK_TIMEOUT);
         }
 
-        return putMethod;
+        return mPutMethod;
     }
 
     private String getDateAsString() {
