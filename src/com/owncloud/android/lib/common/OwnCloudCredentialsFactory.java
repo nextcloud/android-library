@@ -31,12 +31,8 @@ public class OwnCloudCredentialsFactory {
 	private static OwnCloudAnonymousCredentials sAnonymousCredentials;
 
 	public static OwnCloudCredentials newBasicCredentials(String username, String password) {
-		return new OwnCloudBasicCredentials(username, password);
+		return new OwnCloudBasicCredentials(username, password, true);
 	}
-
-    public static OwnCloudCredentials newBasicCredentials(String username, String password, boolean preemptiveMode) {
-        return new OwnCloudBasicCredentials(username, password, preemptiveMode);
-    }
 
     public static OwnCloudCredentials newBearerCredentials(String authToken) {
         return new OwnCloudBearerCredentials(authToken);
