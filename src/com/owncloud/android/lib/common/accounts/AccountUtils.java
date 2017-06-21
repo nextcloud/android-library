@@ -25,10 +25,6 @@
 
 package com.owncloud.android.lib.common.accounts;
 
-import java.io.IOException;
-
-import org.apache.commons.httpclient.Cookie;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountsException;
@@ -42,6 +38,10 @@ import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
+import org.apache.commons.httpclient.Cookie;
+
+import java.io.IOException;
 
 public class AccountUtils {
 	
@@ -165,6 +165,26 @@ public class AccountUtils {
         return username;
     }
 
+	/**
+	 * Get the stored server version corresponding to an OC account.
+	 *
+	 * @param account An OC account
+	 * @param context Application context
+	 * @return Version of the OC server, according to last check
+	 */
+	public static OwnCloudVersion getServerVersionForAccount(Account account, Context context) {
+		AccountManager ama = AccountManager.get(context);
+		OwnCloudVersion version = null;
+		try {
+			String versionString = ama.getUserData(account, Constants.KEY_OC_VERSION);
+			version = new OwnCloudVersion(versionString);
+
+		} catch (Exception e) {
+			Log_OC.e(TAG, "Couldn't get a the server version for an account", e);
+		}
+		return version;
+	}
+
     /**
      * 
      * @return
@@ -187,6 +207,7 @@ public class AccountUtils {
         		AccountUtils.Constants.KEY_SUPPORTS_SAML_WEB_SSO) != null;
 
         String username = AccountUtils.getUsernameForAccount(account);
+		OwnCloudVersion version = new OwnCloudVersion(am.getUserData(account, Constants.KEY_OC_VERSION));
 
         if (isOauth2) {    
             String accessToken = am.blockingGetAuthToken(
@@ -206,12 +227,13 @@ public class AccountUtils {
 
         } else {
             String password = am.blockingGetAuthToken(
-            		account, 
-            		AccountTypeUtils.getAuthTokenTypePass(account.type), 
-            		false);
-            
-            credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
-        }
+					account,
+					AccountTypeUtils.getAuthTokenTypePass(account.type),
+					false);
+
+			credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password,
+					version.isPreemptiveAuthenticationPreferred());
+		}
         
         return credentials;
         
@@ -258,7 +280,7 @@ public class AccountUtils {
 		}
 
 	}
-	
+
 	
   /**
   * Restore the client cookies

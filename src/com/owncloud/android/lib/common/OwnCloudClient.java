@@ -39,7 +39,6 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -149,7 +148,7 @@ public class OwnCloudClient extends HttpClient {
      * @throws  	Exception   When the existence could not be determined
      */
     @Deprecated
-    public boolean existsFile(String path) throws IOException, HttpException {
+    public boolean existsFile(String path) throws IOException {
         HeadMethod head = new HeadMethod(getWebdavUri() + WebdavUtils.encodePath(path));
         try {
             int status = executeMethod(head);
@@ -387,17 +386,17 @@ public class OwnCloudClient extends HttpClient {
         	}
         }
         if (counter == 0) {
-    		Log_OC.d(TAG + " #" + mInstanceNumber, "No cookie at request before");
+            Log_OC.d(TAG + " #" + mInstanceNumber, "No cookie at request (" + when + ")");
         }
 	}
 
-    private void logCookiesAtState(String string) {
+    private void logCookiesAtState(String when) {
         Cookie[] cookies = getState().getCookies();
         if (cookies.length == 0) {
-    		Log_OC.d(TAG + " #" + mInstanceNumber, "No cookie at STATE before");
+            Log_OC.d(TAG + " #" + mInstanceNumber, "No cookie at STATE " + when);
         } else {
-    		Log_OC.d(TAG + " #" + mInstanceNumber, "Cookies at STATE (before)");
-	        for (int i=0; i<cookies.length; i++) {
+            Log_OC.d(TAG + " #" + mInstanceNumber, "Cookies at STATE (" + when + ")");
+            for (int i=0; i<cookies.length; i++) {
 	    		Log_OC.d(TAG + " #" + mInstanceNumber, "    (" + i + "):" +
 	    				"\n        name: " + cookies[i].getName() +
 	    				"\n        value: " + cookies[i].getValue() +
