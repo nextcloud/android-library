@@ -39,6 +39,7 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -110,7 +111,11 @@ public class OwnCloudClientFactory {
             		AccountTypeUtils.getAuthTokenTypePass(account.type), 
             		false);
 
-            OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
+            OwnCloudVersion version = AccountUtils.getServerVersionForAccount(account, appContext);
+
+            OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(
+                    username, password, (version != null && version.isPreemptiveAuthenticationPreferred()));
+
             client.setCredentials(credentials);
         }
         
@@ -183,7 +188,10 @@ public class OwnCloudClientFactory {
             Bundle result = future.getResult();
             String password = result.getString(AccountManager.KEY_AUTHTOKEN);
 
-            OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
+            OwnCloudVersion version = AccountUtils.getServerVersionForAccount(account, appContext);
+            OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(
+                    username, password, (version != null && version.isPreemptiveAuthenticationPreferred()));
+
             client.setCredentials(credentials);
         }
         

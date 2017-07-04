@@ -231,7 +231,8 @@ public class AccountUtils {
 					AccountTypeUtils.getAuthTokenTypePass(account.type),
 					false);
 
-			credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
+			credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password,
+					version.isPreemptiveAuthenticationPreferred());
 		}
         
         return credentials;

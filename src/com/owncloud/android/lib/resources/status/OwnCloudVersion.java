@@ -174,6 +174,10 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
         return (mVersion >= MINIMUM_VERSION_WITH_NOT_RESHAREABLE_FEDERATED);
     }
 
+    public boolean isPreemptiveAuthenticationPreferred() {
+        return (mVersion >= MINIMUM_VERSION_WITH_SESSION_MONITORING);
+    }
+
     public boolean isSelfSupported() {
         return (mVersion >= MINIMUM_VERSION_FOR_SELF_API);
     }

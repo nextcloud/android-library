@@ -5,6 +5,7 @@ import android.accounts.OperationCanceledException;
 import android.content.Context;
 
 import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import java.io.IOException;
 
@@ -28,7 +29,18 @@ public class DynamicSessionManager implements OwnCloudClientManager {
             throws AccountUtils.AccountNotFoundException,
             OperationCanceledException, AuthenticatorException, IOException {
 
-        return mSingleSessionManager.getClientFor(account, context);
+        OwnCloudVersion ownCloudVersion = null;
+        if (account.getSavedAccount() != null) {
+            ownCloudVersion = AccountUtils.getServerVersionForAccount(
+                    account.getSavedAccount(), context
+            );
+        }
+
+        if (ownCloudVersion != null && ownCloudVersion.isPreemptiveAuthenticationPreferred()) {
+            return mSingleSessionManager.getClientFor(account, context);
+        } else {
+            return mSimpleFactoryManager.getClientFor(account, context);
+        }
     }
 
     @Override
