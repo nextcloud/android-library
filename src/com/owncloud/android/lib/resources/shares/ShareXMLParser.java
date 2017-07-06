@@ -24,19 +24,20 @@
 
 package com.owncloud.android.lib.resources.shares;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import android.util.Xml;
+
+import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.resources.files.FileUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-//import android.util.Log;
-import android.util.Xml;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.resources.files.FileUtils;
+//import android.util.Log;
 
 /**
  * Parser for Share API Response
@@ -82,6 +83,7 @@ public class ShareXMLParser {
 	private static final String TYPE_FOLDER = "folder";
 	
 	private static final int SUCCESS = 100;
+	private static final int OK = 200;
 	private static final int ERROR_WRONG_PARAMETER = 400;
 	private static final int ERROR_FORBIDDEN = 403;
 	private static final int ERROR_NOT_FOUND = 404;
@@ -121,7 +123,7 @@ public class ShareXMLParser {
 	}
 
 	public boolean isSuccess() {
-		return mStatusCode == SUCCESS;
+		return mStatusCode == SUCCESS || mStatusCode == OK;
 	}
 
 	public boolean isForbidden() {
