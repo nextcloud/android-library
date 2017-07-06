@@ -24,11 +24,12 @@
 package com.owncloud.android.lib.common;
 
 public class OwnCloudClientManagerFactory {
-	
-	public static enum Policy {
-		ALWAYS_NEW_CLIENT,
-		SINGLE_SESSION_PER_ACCOUNT
-	}
+
+    public enum Policy {
+        ALWAYS_NEW_CLIENT,
+        SINGLE_SESSION_PER_ACCOUNT,
+        SINGLE_SESSION_PER_ACCOUNT_IF_SERVER_SUPPORTS_SERVER_MONITORING
+    }
 	
 	private static Policy sDefaultPolicy = Policy.ALWAYS_NEW_CLIENT;
 	
@@ -47,8 +48,11 @@ public class OwnCloudClientManagerFactory {
 				
 			case SINGLE_SESSION_PER_ACCOUNT:
 				return new SingleSessionManager();
-				
-			default:
+
+            case SINGLE_SESSION_PER_ACCOUNT_IF_SERVER_SUPPORTS_SERVER_MONITORING:
+                return new DynamicSessionManager();
+
+            default:
 				throw new IllegalArgumentException("Unknown policy");
 		}
 	}
@@ -90,11 +94,8 @@ public class OwnCloudClientManagerFactory {
 				!(sDefaultSingleton instanceof SimpleFactoryManager)) {
 			return true;
 		}
-		if (policy == Policy.SINGLE_SESSION_PER_ACCOUNT && 
-				!(sDefaultSingleton instanceof SingleSessionManager)) {
-			return true;
-		}
-		return false;
-	}
+        return policy == Policy.SINGLE_SESSION_PER_ACCOUNT &&
+                !(sDefaultSingleton instanceof SingleSessionManager);
+    }
 
 }

@@ -56,6 +56,8 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
 
     private static final int MINIMUM_VERSION_WITH_NOT_RESHAREABLE_FEDERATED = 0x09010000;   // 9.1
 
+    private static final int MINIMUM_VERSION_WITH_SESSION_MONITORING = 0x09010000;   // 9.1
+
     public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200;
 
     public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000;
@@ -170,6 +172,10 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
 
     public boolean isNotReshareableFederatedSupported() {
         return (mVersion >= MINIMUM_VERSION_WITH_NOT_RESHAREABLE_FEDERATED);
+    }
+
+    public boolean isPreemptiveAuthenticationPreferred() {
+        return (mVersion >= MINIMUM_VERSION_WITH_SESSION_MONITORING);
     }
 
     public boolean isSelfSupported() {

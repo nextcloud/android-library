@@ -25,17 +25,17 @@
 package com.owncloud.android.lib.common;
 
 
-import java.io.IOException;
-
-import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.net.Uri;
+
+import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
+
+import java.io.IOException;
 
 /**
  * OwnCloud Account
@@ -137,6 +137,10 @@ public class OwnCloudAccount {
     
     public String getName() {
     	return mSavedAccountName;
+    }
+
+    public Account getSavedAccount() {
+        return mSavedAccount;
     }
 
     public String getDisplayName() {
