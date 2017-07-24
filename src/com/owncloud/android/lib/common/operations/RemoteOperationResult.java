@@ -120,7 +120,8 @@ public class RemoteOperationResult implements Serializable {
         DELAYED_FOR_CHARGING,
         LOCAL_FILE_NOT_FOUND,
         NOT_AVAILABLE,
-        MAINTENANCE_MODE
+        MAINTENANCE_MODE,
+        LOCK_FAILED
     }
 
     private boolean mSuccess = false;
