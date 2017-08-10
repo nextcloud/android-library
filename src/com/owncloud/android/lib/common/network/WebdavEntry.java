@@ -92,11 +92,15 @@ public class WebdavEntry {
             mContentType = "application/octet-stream";
             prop = propSet.get(DavPropertyName.GETCONTENTTYPE);
             if (prop != null) {
-                mContentType = (String) prop.getValue();
+                String contentType = (String) prop.getValue();
                 // dvelasco: some builds of ownCloud server 4.0.x added a trailing ';'
                 // to the MIME type ; if looks fixed, but let's be cautious
-                if (mContentType.indexOf(";") >= 0) {
-                    mContentType = mContentType.substring(0, mContentType.indexOf(";"));
+                if (contentType != null) {
+                    if (contentType.contains(";")) {
+                        mContentType = contentType.substring(0, contentType.indexOf(";"));
+                    } else {
+                        mContentType = contentType;
+                    }
                 }
             }
             
