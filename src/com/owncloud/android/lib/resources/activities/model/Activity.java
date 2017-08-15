@@ -27,7 +27,9 @@ package com.owncloud.android.lib.resources.activities.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Activity Data Model
@@ -56,6 +58,8 @@ public class Activity {
     public String objectId;
     @SerializedName("object_name")
     public String objectName;
+
+    public List<PreviewObject> previews;
 
     @SerializedName("subject_rich")
     public RichElement richSubjectElement;
@@ -179,5 +183,13 @@ public class Activity {
 
     public void setRichSubjectElement(RichElement richSubjectElement) {
         this.richSubjectElement = richSubjectElement;
+    }
+
+    public List<PreviewObject> getPreviews() {
+        return previews;
+    }
+
+    public void setPreviews(ArrayList<PreviewObject> previews) {
+        this.previews = previews;
     }
 }

@@ -33,8 +33,8 @@ import java.util.ArrayList;
 
 public class RichElement {
 
-    public String richSubject;
-    ArrayList<RichObject> richObjectList = new ArrayList<>();
+    private String richSubject;
+    private ArrayList<RichObject> richObjectList = new ArrayList<>();
 
 
     public String getRichSubject() {
