@@ -59,12 +59,15 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
                         in.beginObject();
                         read(richElement, in);
                         in.endObject();
-
                         break;
+
                     case BEGIN_ARRAY:
                         in.beginArray();
                         in.endArray();
+                        break;
 
+                    default:
+                        // do nothing
                         break;
                 }
 
