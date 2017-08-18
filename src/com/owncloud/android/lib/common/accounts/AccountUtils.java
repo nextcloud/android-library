@@ -297,7 +297,13 @@ public class AccountUtils {
 
 		Uri serverUri = (client.getBaseUri() != null)? client.getBaseUri() : client.getWebdavUri();
 
-		String cookiesString = am.getUserData(account, Constants.KEY_COOKIES);
+		String cookiesString = null;
+		try {
+			cookiesString = am.getUserData(account, Constants.KEY_COOKIES);
+		} catch (SecurityException e) {
+			Log_OC.e(TAG, e.getMessage());
+		}
+
 		if (cookiesString !=null) {
 			String[] cookies = cookiesString.split(";");
 			if (cookies.length > 0) {
