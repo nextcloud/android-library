@@ -170,7 +170,7 @@ public class CreateRemoteShareOperation extends RemoteOperation {
     }
 
     private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK);
+        return status == HttpStatus.SC_OK || status == HttpStatus.SC_FORBIDDEN;
     }
 
 }
