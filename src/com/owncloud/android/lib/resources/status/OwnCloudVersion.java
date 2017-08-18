@@ -38,6 +38,8 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
             0x04050000);
     public static final OwnCloudVersion nextcloud_9 = new OwnCloudVersion(0x09000000); // 9.0
 
+    public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
+
     public static final OwnCloudVersion nextcloud_12 = new OwnCloudVersion(0x0C000000); // 12.0
 
     public static final int MINIMUN_VERSION_FOR_CHUNKED_UPLOADS = 0x04050000; // 4.5
@@ -77,19 +79,19 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
         mVersion = version;
         mIsValid = true;
     }
-    
-    public OwnCloudVersion(String version){
-    	 mVersion = 0;
-         mIsValid = false;
-         int countDots = version.length() - version.replace(".", "").length();
 
-         // Complete the version. Version must have 3 dots
-         for (int i = countDots; i < MAX_DOTS; i++) {
-        	 version = version + ".0";
-         }
-         
-         parseVersion(version);
+    public OwnCloudVersion(String version) {
+        mVersion = 0;
+        mIsValid = false;
+        int countDots = version.length() - version.replace(".", "").length();
 
+        // Complete the version. Version must have 3 dots
+        StringBuilder versionWithDots = new StringBuilder(version);
+        for (int i = countDots; i < MAX_DOTS; i++) {
+            versionWithDots.append(".0");
+        }
+
+        parseVersion(versionWithDots.toString());
     }
     
     public String toString() {

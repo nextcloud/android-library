@@ -207,7 +207,15 @@ public class AccountUtils {
         		AccountUtils.Constants.KEY_SUPPORTS_SAML_WEB_SSO) != null;
 
         String username = AccountUtils.getUsernameForAccount(account);
-		OwnCloudVersion version = new OwnCloudVersion(am.getUserData(account, Constants.KEY_OC_VERSION));
+		String ocVersion = am.getUserData(account, Constants.KEY_OC_VERSION);
+
+		OwnCloudVersion version;
+		if (ocVersion == null) {
+			// set to oldest supported version
+			version = OwnCloudVersion.nextcloud_10;
+		} else {
+			version = new OwnCloudVersion(ocVersion);
+		}
 
         if (isOauth2) {    
             String accessToken = am.blockingGetAuthToken(
