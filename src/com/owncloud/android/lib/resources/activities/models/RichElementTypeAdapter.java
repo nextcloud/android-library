@@ -27,6 +27,7 @@ package com.owncloud.android.lib.resources.activities.models;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -51,11 +52,25 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
             if (count == 0) {
                 richElement.setRichSubject(in.nextString());
             } else {
-                in.beginObject();
+                JsonToken nextType = in.peek();
 
-                read(richElement, in);
+                switch (nextType) {
+                    case BEGIN_OBJECT:
+                        in.beginObject();
+                        read(richElement, in);
+                        in.endObject();
+                        break;
 
-                in.endObject();
+                    case BEGIN_ARRAY:
+                        in.beginArray();
+                        in.endArray();
+                        break;
+
+                    default:
+                        // do nothing
+                        break;
+                }
+
             }
             count++;
         }
