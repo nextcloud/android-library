@@ -24,13 +24,13 @@
 
 package com.owncloud.android.lib.resources.shares;
 
-import java.io.Serializable;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
+
+import java.io.Serializable;
 
 
 /**
@@ -57,32 +57,32 @@ public class OCShare implements Parcelable, Serializable {
     public static final int MAXIMUM_PERMISSIONS_FOR_FILE =
         READ_PERMISSION_FLAG +
         UPDATE_PERMISSION_FLAG +
-        SHARE_PERMISSION_FLAG
-    ;
+        SHARE_PERMISSION_FLAG;
+
     public static final int MAXIMUM_PERMISSIONS_FOR_FOLDER =
         MAXIMUM_PERMISSIONS_FOR_FILE +
         CREATE_PERMISSION_FLAG +
-        DELETE_PERMISSION_FLAG
-    ;
+        DELETE_PERMISSION_FLAG;
+
     public static final int FEDERATED_PERMISSIONS_FOR_FILE_UP_TO_OC9 =
         READ_PERMISSION_FLAG +
-        UPDATE_PERMISSION_FLAG
-    ;
+        UPDATE_PERMISSION_FLAG;
+
     public static final int FEDERATED_PERMISSIONS_FOR_FILE_AFTER_OC9 =
         READ_PERMISSION_FLAG +
         UPDATE_PERMISSION_FLAG +
-        SHARE_PERMISSION_FLAG
-    ;
+        CREATE_PERMISSION_FLAG +
+        DELETE_PERMISSION_FLAG;
+
     public static final int FEDERATED_PERMISSIONS_FOR_FOLDER_UP_TO_OC9 =
         READ_PERMISSION_FLAG +
         UPDATE_PERMISSION_FLAG +
         CREATE_PERMISSION_FLAG +
-        DELETE_PERMISSION_FLAG
-    ;
+        DELETE_PERMISSION_FLAG;
+
     public static final int FEDERATED_PERMISSIONS_FOR_FOLDER_AFTER_OC9 =
         FEDERATED_PERMISSIONS_FOR_FOLDER_UP_TO_OC9 +
-        SHARE_PERMISSION_FLAG
-    ;
+        SHARE_PERMISSION_FLAG;
 
     private long mId;
     private long mFileSource;
