@@ -203,7 +203,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
 
                 status = client.executeMethod(put);
 
-                if (status == HttpStatus.SC_OK) {
+                if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
                     String response = put.getResponseBodyAsString();
 
                     // Parse xml response
