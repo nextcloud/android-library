@@ -79,19 +79,19 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
         mVersion = version;
         mIsValid = true;
     }
-    
+
     public OwnCloudVersion(String version) {
-    	 mVersion = 0;
-         mIsValid = false;
-         int countDots = version.length() - version.replace(".", "").length();
+        mVersion = 0;
+        mIsValid = false;
+        int countDots = version.length() - version.replace(".", "").length();
 
-         // Complete the version. Version must have 3 dots
-         for (int i = countDots; i < MAX_DOTS; i++) {
-        	 version = version + ".0";
-         }
-         
-         parseVersion(version);
+        // Complete the version. Version must have 3 dots
+        StringBuilder versionWithDots = new StringBuilder(version);
+        for (int i = countDots; i < MAX_DOTS; i++) {
+            versionWithDots.append(".0");
+        }
 
+        parseVersion(versionWithDots.toString());
     }
     
     public String toString() {
