@@ -89,7 +89,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
             post = new PostMethod(uri);
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            
+
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
@@ -129,32 +129,6 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED);
-    }
-
-    private String assembleJson() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{");
-        stringBuilder.append("\"");
-        stringBuilder.append(PUSH_TOKEN_HASH);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(pushTokenHash.trim());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"");
-        stringBuilder.append(DEVICE_PUBLIC_KEY);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(devicePublicKey.trim());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"");
-        stringBuilder.append(PROXY_SERVER);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(proxyServer.trim());
-        stringBuilder.append("\"");
-        stringBuilder.append("}");
-
-        return stringBuilder.toString();
     }
 
 }
