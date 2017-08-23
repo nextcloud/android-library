@@ -39,7 +39,6 @@ import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.json.JSONException;
 
 import java.lang.reflect.Type;
@@ -82,12 +81,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
             post = new PostMethod(client.getBaseUri() + OCS_ROUTE);
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            StringRequestEntity requestEntity = new StringRequestEntity(
-                    assembleJson(),
-                    "application/json",
-                    "UTF-8");
-
-            post.setRequestEntity(requestEntity);
+            post.setRequestBody(assembleJson());
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
