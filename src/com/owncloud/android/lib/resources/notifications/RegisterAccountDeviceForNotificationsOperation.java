@@ -27,6 +27,8 @@
 package com.owncloud.android.lib.resources.notifications;
 
 
+import android.net.Uri;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -39,7 +41,6 @@ import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.json.JSONException;
 
 import java.lang.reflect.Type;
@@ -79,15 +80,15 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
         try {
             // Post Method
-            post = new PostMethod(client.getBaseUri() + OCS_ROUTE);
+            String uri = Uri.parse(client.getBaseUri() + OCS_ROUTE)
+                    .buildUpon()
+                    .appendQueryParameter(PUSH_TOKEN_HASH, pushTokenHash)
+                    .appendQueryParameter(DEVICE_PUBLIC_KEY, devicePublicKey)
+                    .appendQueryParameter(PROXY_SERVER, proxyServer)
+                    .build().toString();
+
+            post = new PostMethod(uri);
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            StringRequestEntity requestEntity = new StringRequestEntity(
-                    assembleJson(),
-                    "application/json",
-                    "UTF-8");
-
-            post.setRequestEntity(requestEntity);
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
@@ -128,32 +129,6 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED);
-    }
-
-    private String assembleJson() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{");
-        stringBuilder.append("\"");
-        stringBuilder.append(PUSH_TOKEN_HASH);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(pushTokenHash.trim());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"");
-        stringBuilder.append(DEVICE_PUBLIC_KEY);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(devicePublicKey.trim());
-        stringBuilder.append("\",");
-        stringBuilder.append("\"");
-        stringBuilder.append(PROXY_SERVER);
-        stringBuilder.append("\"");
-        stringBuilder.append(":\"");
-        stringBuilder.append(proxyServer.trim());
-        stringBuilder.append("\"");
-        stringBuilder.append("}");
-
-        return stringBuilder.toString();
     }
 
 }
