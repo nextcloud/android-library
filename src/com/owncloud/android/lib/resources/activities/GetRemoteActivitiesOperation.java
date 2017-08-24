@@ -42,6 +42,7 @@ import com.owncloud.android.lib.resources.activities.models.RichElement;
 import com.owncloud.android.lib.resources.activities.models.RichElementTypeAdapter;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONException;
@@ -68,6 +69,8 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
 
     private static final String NODE_DATA = "data";
 
+    private String nextUrl = "";
+
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
@@ -75,10 +78,14 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         GetMethod get = null;
         ArrayList<Object> activities;
         String url;
-        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-            url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
+        if (nextUrl.isEmpty()) {
+            if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
+                url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
+            } else {
+                url = client.getBaseUri() + OCS_ROUTE_PRE_V12;
+            }
         } else {
-            url = client.getBaseUri() + OCS_ROUTE_PRE_V12;
+            url = nextUrl;
         }
         Log_OC.d(TAG, "URL: " + url);
 
@@ -88,6 +95,20 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
 
             status = client.executeMethod(get);
             String response = get.getResponseBodyAsString();
+
+            Header nextPageHeader = get.getResponseHeader("Link");
+            if (nextPageHeader != null) {
+                String link = nextPageHeader.getValue();
+                if (link.startsWith("<") && link.endsWith(">; rel=\"next\"")) {
+                    nextUrl = nextPageHeader.getValue().substring(1, link.length() - 13);
+                    Log_OC.d(TAG, "nextUrl");
+                    Log_OC.d(TAG, nextUrl);
+                } else {
+                    nextUrl = "";
+                }
+            } else {
+                nextUrl = "";
+            }
 
             if (isSuccess(status)) {
                 Log_OC.d(TAG, "Successful response: " + response);
@@ -114,6 +135,10 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         }
 
         return result;
+    }
+
+    public Boolean hasMoreActivities() {
+        return !nextUrl.isEmpty();
     }
 
     private ArrayList<Object> parseResult(String response) throws JSONException {
