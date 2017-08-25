@@ -71,12 +71,16 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
 
     private String nextUrl = "";
 
+    public void setNextUrl(String url) {
+        nextUrl = url;
+    }
+
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
         int status = -1;
         GetMethod get = null;
-        ArrayList<Object> activities;
+        ArrayList<Activity> activities;
         String url;
         if (nextUrl.isEmpty()) {
             if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
@@ -115,7 +119,11 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
                 result = new RemoteOperationResult(true, status, get.getResponseHeaders());
                 // Parse the response
                 activities = parseResult(response);
-                result.setData(activities);
+
+                ArrayList<Object> data = new ArrayList<>();
+                data.add(activities);
+                data.add(nextUrl);
+                result.setData(data);
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
                 Log_OC.e(TAG, "Failed response while getting user activities ");
@@ -141,7 +149,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         return !nextUrl.isEmpty();
     }
 
-    private ArrayList<Object> parseResult(String response) throws JSONException {
+    private ArrayList<Activity> parseResult(String response) throws JSONException {
         JsonParser jsonParser = new JsonParser();
         JsonObject jo = (JsonObject)jsonParser.parse(response);
         JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
