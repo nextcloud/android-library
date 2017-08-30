@@ -26,6 +26,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 
 
@@ -63,6 +64,21 @@ public class UnlockFileOperation extends RemoteOperation {
             deleteMethod = new DeleteMethod(client.getBaseUri() + LOCK_FILE_URL + localId);
             deleteMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             deleteMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            NameValuePair[] deleteParams = new NameValuePair[1];
+            deleteParams[0] = new NameValuePair("token", token);
+            deleteMethod.setQueryString(deleteParams);
+
+            int status = client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+
+            if (status == HttpStatus.SC_OK) {
+                String response = deleteMethod.getResponseBodyAsString();
+
+                result = new RemoteOperationResult(true, deleteMethod);
+            } else {
+                result = new RemoteOperationResult(false, deleteMethod);
+                client.exhaustResponse(deleteMethod.getResponseBodyAsStream());
+            }
             deleteMethod.addRequestHeader("token", token);
 
             int status = client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
