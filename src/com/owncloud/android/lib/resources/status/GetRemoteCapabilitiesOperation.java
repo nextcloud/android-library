@@ -128,6 +128,9 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_EXTERNAL_LINKS_V1 = "v1";
     private static final String NODE_EXTERNAL_LINKS_SITES = "sites";
 
+    // v1 client side encryption
+    private static final String NODE_END_TO_END_ENCRYPTION = "end-to-end-encryption";
+
     /**
      * Constructor
      *
@@ -315,6 +318,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             if (capability.getSupportsNotificationsV2() != CapabilityBooleanType.TRUE) {
                                 capability.setSupportsNotificationsV1(CapabilityBooleanType.TRUE);
                             }
+                            Log_OC.d(TAG, "*** Added " + NODE_NOTIFICATIONS);
                         }
 
                         if (respCapabilities.has(NODE_EXTERNAL_LINKS)) {
@@ -331,6 +335,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                     capability.setExternalLinks(CapabilityBooleanType.FALSE);
                                 }
                             }
+                            Log_OC.d(TAG, "*** Added " + NODE_EXTERNAL_LINKS);
                         }
                         
                         if (respCapabilities.has("fullnextsearch")) {
@@ -357,6 +362,18 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                         // do nothing
                                 }
                             }
+                        }
+                        
+                        if (respCapabilities.has(NODE_END_TO_END_ENCRYPTION)) {
+                            JSONObject respEndToEndEncryption = respCapabilities
+                                    .getJSONObject(NODE_END_TO_END_ENCRYPTION);
+
+                            if (respEndToEndEncryption.getBoolean(PROPERTY_ENABLED)) {
+                                capability.setEndToEndEncryption(CapabilityBooleanType.TRUE);
+                            } else {
+                                capability.setEndToEndEncryption(CapabilityBooleanType.FALSE);
+                            }
+                            Log_OC.d(TAG, "*** Added " + NODE_END_TO_END_ENCRYPTION);
                         }
                     }
                     

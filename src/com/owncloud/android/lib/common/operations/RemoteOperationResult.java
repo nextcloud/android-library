@@ -123,7 +123,9 @@ public class RemoteOperationResult implements Serializable {
         MAINTENANCE_MODE,
         LOCK_FAILED,
         DELAYED_IN_POWER_SAVE_MODE,
-        ACCOUNT_USES_STANDARD_PASSWORD
+        ACCOUNT_USES_STANDARD_PASSWORD,
+        METADATA_NOT_FOUND,
+        OLD_ANDROID_API
     }
 
     private boolean mSuccess = false;

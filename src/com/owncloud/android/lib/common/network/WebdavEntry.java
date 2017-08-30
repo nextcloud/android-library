@@ -42,10 +42,12 @@ public class WebdavEntry {
     private static final String TAG = WebdavEntry.class.getSimpleName();
 
 	public static final String NAMESPACE_OC = "http://owncloud.org/ns";
+	public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
 	public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
 	public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
+    public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
@@ -60,6 +62,7 @@ public class WebdavEntry {
     private String mPermissions;
     private String mRemoteId;
     private boolean mIsFavorite;
+    private boolean mIsEncrypted;
     private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
 
@@ -210,6 +213,19 @@ public class WebdavEntry {
                 mIsFavorite = false;
             }
 
+            // NC encrypted property <nc:is-encrypted>
+            prop = propSet.get(EXTENDED_PROPERTY_IS_ENCRYPTED,  Namespace.getNamespace(NAMESPACE_NC));
+            if (prop != null) {
+                String encryptedValue = (String) prop.getValue();
+                if ("1".equals(encryptedValue)) {
+                    mIsEncrypted = true;
+                } else {
+                    mIsEncrypted = false;
+                }
+            } else {
+                mIsEncrypted = false;
+            }
+
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
@@ -221,6 +237,10 @@ public class WebdavEntry {
 
     public void setIsFavorite(boolean mIsFavorite) {
         this.mIsFavorite = mIsFavorite;
+    }
+
+    public boolean isEncrypted() {
+        return mIsEncrypted;
     }
 
     public String path() {
