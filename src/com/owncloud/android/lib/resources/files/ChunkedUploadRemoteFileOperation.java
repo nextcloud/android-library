@@ -77,8 +77,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     public ChunkedUploadRemoteFileOperation(Context context, String storagePath, String remotePath,
                                             String mimeType, String requiredEtag, String fileLastModifTimestamp,
                                             long size) {
-        super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
-        mContext = context;
+        this(context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
         mSize = size;
     }
 

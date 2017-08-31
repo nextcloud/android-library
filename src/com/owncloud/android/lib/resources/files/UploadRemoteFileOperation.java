@@ -94,6 +94,13 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 		mRequiredEtag = requiredEtag;
 	}
 
+	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String requiredEtag,
+									 String fileLastModifTimestamp, long size) {
+		this(localPath, remotePath, mimeType, fileLastModifTimestamp, requiredEtag);
+		mSize = size;
+	}
+
+
 	@Override
 	protected RemoteOperationResult run(OwnCloudClient client) {
 		RemoteOperationResult result = null;
