@@ -264,8 +264,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 capability.setFilesUndelete(CapabilityBooleanType.fromBooleanValue(
                                         respFiles.getBoolean(PROPERTY_UNDELETE)));
                             }
-                            capability.setFilesVersioning(CapabilityBooleanType.fromBooleanValue(
-                                    respFiles.getBoolean(PROPERTY_VERSIONING)));
+
+                            if (respFiles.has(PROPERTY_VERSIONING)) {
+                                capability.setFilesVersioning(CapabilityBooleanType.fromBooleanValue(
+                                        respFiles.getBoolean(PROPERTY_VERSIONING)));
+                            }
+
                             Log_OC.d(TAG, "*** Added " + NODE_FILES);
                         }
 
