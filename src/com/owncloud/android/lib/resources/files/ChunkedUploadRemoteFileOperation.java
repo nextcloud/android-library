@@ -55,6 +55,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
     private Context mContext;
+    protected long mSize = 0;
 
     public ChunkedUploadRemoteFileOperation(Context context, String storagePath, String remotePath,
                                             String mimeType, String requiredEtag, String fileLastModifTimestamp) {
@@ -66,7 +67,22 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                                             String requiredEtag, String fileLastModifTimestamp) {
         super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
     }
-    
+
+    public ChunkedUploadRemoteFileOperation(String storagePath, String remotePath, String mimeType,
+                                            String requiredEtag, String fileLastModifTimestamp, long size) {
+        super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
+        mSize = size;
+    }
+
+    public ChunkedUploadRemoteFileOperation(Context context, String storagePath, String remotePath,
+                                            String mimeType, String requiredEtag, String fileLastModifTimestamp,
+                                            long size) {
+        this(context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
+        mSize = size;
+    }
+
+
+
     @Override
     protected RemoteOperationResult uploadFile(OwnCloudClient client) throws IOException {
         int status = -1;
@@ -94,6 +110,11 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             String uriPrefix = client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath) +
                     "-chunking-" + chunkId + "-" ;
             long totalLength = file.length();
+
+            if (mSize > 0) {
+                totalLength = mSize;
+            }
+
             long chunkCount = (long) Math.ceil((double)totalLength / CHUNK_SIZE);
             String chunkSizeStr = String.valueOf(CHUNK_SIZE);
             String totalLengthStr = String.valueOf(file.length());
