@@ -105,8 +105,6 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
                 String link = nextPageHeader.getValue();
                 if (link.startsWith("<") && link.endsWith(">; rel=\"next\"")) {
                     nextUrl = nextPageHeader.getValue().substring(1, link.length() - 13);
-                    Log_OC.d(TAG, "nextUrl");
-                    Log_OC.d(TAG, nextUrl);
                 } else {
                     nextUrl = "";
                 }
@@ -145,7 +143,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         return result;
     }
 
-    public Boolean hasMoreActivities() {
+    public boolean hasMoreActivities() {
         return !nextUrl.isEmpty();
     }
 
