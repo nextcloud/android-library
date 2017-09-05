@@ -169,6 +169,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         mPutMethod.addRequestHeader(OC_CHUNKED_HEADER, OC_CHUNKED_HEADER);
         mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
         mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
+        mPutMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
         ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
         mPutMethod.setRequestEntity(mEntity);
         if (mCancellationRequested.get()) {
