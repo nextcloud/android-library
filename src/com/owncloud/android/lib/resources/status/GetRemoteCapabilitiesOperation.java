@@ -279,7 +279,9 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             capability.setServerName(respTheming.getString(PROPERTY_SERVERNAME));
                             capability.setServerSlogan(respTheming.getString(PROPERTY_SERVERSLOGAN));
                             capability.setServerColor(respTheming.getString(PROPERTY_SERVERCOLOR));
-                            capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
+                            if (respTheming.getString(PROPERTY_SERVERLOGO) != null) {
+                                capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
+                            }
                             capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
                             Log_OC.d(TAG, "*** Added " + NODE_THEMING);
                         }
