@@ -283,7 +283,10 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                     respTheming.getString(PROPERTY_SERVERLOGO) != null) {
                                 capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
                             }
-                            capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
+                            if (respTheming.has(PROPERTY_SERVERBACKGROUND) &&
+                                    respTheming.getString(PROPERTY_SERVERBACKGROUND) != null) {
+                                capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
+                            }
                             Log_OC.d(TAG, "*** Added " + NODE_THEMING);
                         }
 
