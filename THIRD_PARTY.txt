@@ -27,29 +27,17 @@ that govern this software, for the purposes they are being used.
 
 The third party software included and used by this project is:
 
- * Apache JackRabbit, version 2.10.1
-   Copyright (C) 2004-2010 The Apache Software Foundation.
+ * Apache JackRabbit, version 2.12.6
+   Copyright (C) 2004-2016 The Apache Software Foundation.
    Licensed under Apache License, Version 2.0.
-   Placed at libs/jackrabbit-webdav-2.10.1.jar
-   The jar file must be included in projects using the Nextcloud Android
-   Library, and those must respect the terms of its license.
-   Original license document included at libs/APACHE-2.0.txt
    See http://jackrabbit.apache.org/
 
- * Jakarta Commons Httpclient, version 3.1
-   Copyright (C) 2001-2011 The Apache Software Foundation.
+ * gson, version 2.8.0
+   Copyright (C) 2008 Google Inc.
    Licensed under Apache License, Version 2.0.
-   Placed at libs/commons-httpclient-3.1.jar
-   The jar file must be included in projects using the Nextcloud Android
-   Library, and those must respect the terms of its license.
-   Original license document included at libs/APACHE-2.0.txt
-   See http://hc.apache.org/httpclient-3.x/
+   See https://github.com/google/gson
  
- * Simple Logging Facade for Java, version 1.7.5
-   Copyright (C) 2004-2013 QOS.ch
-   Licensed under the MIT License
-   Placed at libs/sl4f-api.1.7.5.jar
-   The jar file must be included in projects using the Nextcloud Android
-   Library, and those must respect the terms of its license.
-   Original license document included at libs/sl4j-api-LICENSE.txt
-   See http://www.slf4j.org/
+ * Parceler, version 1.1.6
+   Copyright (C) 2011-2017 John Ericksen
+   Licensed under Apache License, Version 2.0.
+   See http://parceler.org/
