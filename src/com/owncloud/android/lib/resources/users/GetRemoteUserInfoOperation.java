@@ -34,6 +34,7 @@ import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -97,8 +98,13 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
      */
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
 
+    private String userID;
 
     public GetRemoteUserInfoOperation() {
+    }
+
+    public GetRemoteUserInfoOperation(String userID) {
+        this.userID = userID;
     }
 
     @Override
@@ -106,7 +112,17 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
         RemoteOperationResult result = null;
         int status = -1;
         GetMethod get = null;
-        String url = client.getBaseUri() + OCS_ROUTE_SELF;
+
+        OwnCloudVersion version = client.getOwnCloudVersion();
+        boolean versionWithSelfAPI = version != null && version.isSelfSupported();
+
+        String url = "";
+
+        if (!versionWithSelfAPI && TextUtils.isEmpty(userID)) {
+            url = client.getBaseUri() + OCS_ROUTE_SEARCH + userID;
+        } else {
+            url = client.getBaseUri() + OCS_ROUTE_SELF;
+        }
 
 
         OwnCloudBasicCredentials credentials = (OwnCloudBasicCredentials) client.getCredentials();

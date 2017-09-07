@@ -43,10 +43,12 @@ import java.io.IOException;
 public class ToggleFavoriteOperation extends RemoteOperation {
     private boolean makeItFavorited;
     private String filePath;
+    private String userID;
 
-    public ToggleFavoriteOperation(boolean makeItFavorited, String filePath) {
+    public ToggleFavoriteOperation(boolean makeItFavorited, String filePath, String userID) {
         this.makeItFavorited = makeItFavorited;
         this.filePath = filePath;
+        this.userID = userID;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class ToggleFavoriteOperation extends RemoteOperation {
         int pos = filePath.lastIndexOf('/') + 1;
         filePath = filePath.substring(0, pos) + Uri.encode(filePath.substring(pos));
 
-        String fullFilePath = webDavUrl + "/files/" + client.getCredentials().getUsername() + filePath;
+        String fullFilePath = webDavUrl + "/files/" + userID + filePath;
 
         try {
             propPatchMethod = new PropPatchMethod(fullFilePath,

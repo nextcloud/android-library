@@ -423,6 +423,10 @@ public class AccountUtils {
 		 */
 		public static final String KEY_DISPLAY_NAME = "oc_display_name";
 
-    }
+		/**
+		 * User ID
+		 */
+		public static final String KEY_USER_ID = "oc_id";
+	}
 
 }
