@@ -98,7 +98,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
      */
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
 
-    private static String userID;
+    private String userID;
 
     public GetRemoteUserInfoOperation() {
     }
