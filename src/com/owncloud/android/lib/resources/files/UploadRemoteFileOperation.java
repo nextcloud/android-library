@@ -146,7 +146,10 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 			if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
 				mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
 			}
-			mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
+
+			if (f.length() > 0) {
+				mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
+			}
             mPutMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
 			mPutMethod.setRequestEntity(mEntity);
 			status = client.executeMethod(mPutMethod);
