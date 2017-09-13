@@ -32,6 +32,7 @@ package com.owncloud.android.lib.resources.shares;
  *  3 - Shared by public link
  *  4 - Shared by e-mail
  *  5 - Shared by contact
+ *  6 - Shared by federation
  *  
  * @author masensio
  *
@@ -75,7 +76,8 @@ public enum ShareType {
             return CONTACT;
         case 6:
             return FEDERATED;
+        default:
+            return NO_SHARED;
         }
-        return null;
     }
 };
