@@ -80,4 +80,4 @@ public enum ShareType {
             return NO_SHARED;
         }
     }
-};
+}
