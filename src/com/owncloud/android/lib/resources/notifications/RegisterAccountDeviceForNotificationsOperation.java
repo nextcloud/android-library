@@ -104,7 +104,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                 result.setPushResponseData(pushResponse);
             } else {
                 if (isInvalidSessionToken(response)) {
-                    result = new RemoteOperationResult(RemoteOperationResult.ResultCode.ACCOUNT_USES_OLD_LOGIN);
+                    result = new RemoteOperationResult(RemoteOperationResult.ResultCode.ACCOUNT_USES_STANDARD_PASSWORD);
                 } else {
                     result = new RemoteOperationResult(false, status, post.getResponseHeaders());
                 }
@@ -135,8 +135,8 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
     private boolean isInvalidSessionToken(String response) {
         JsonParser jsonParser = new JsonParser();
-        JsonObject jo = (JsonObject)jsonParser.parse(response);
-        String message = String.valueOf(jo.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA).get(MESSAGE));
+        JsonObject jsonObject = (JsonObject)jsonParser.parse(response);
+        String message = jsonObject.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA).get(MESSAGE).getAsString();
 
         return INVALID_SESSION_TOKEN.equals(message);
     }
