@@ -104,9 +104,9 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                 result.setPushResponseData(pushResponse);
             } else {
                 if (isInvalidSessionToken(response)) {
-                    result = new RemoteOperationResult(false, status, post.getResponseHeaders());
-                } else {
                     result = new RemoteOperationResult(RemoteOperationResult.ResultCode.ACCOUNT_USES_OLD_LOGIN);
+                } else {
+                    result = new RemoteOperationResult(false, status, post.getResponseHeaders());
                 }
             }
 
