@@ -55,10 +55,12 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     // JSON Node names
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
+    private static final String MESSAGE = "message";
 
     private static final String PUSH_TOKEN_HASH = "pushTokenHash";
     private static final String DEVICE_PUBLIC_KEY = "devicePublicKey";
     private static final String PROXY_SERVER = "proxyServer";
+    private static final String INVALID_SESSION_TOKEN = "INVALID_SESSION_TOKEN";
 
     private String pushTokenHash;
     private String devicePublicKey;
@@ -93,7 +95,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
-            if(isSuccess(status)) {
+            if (isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
 
@@ -101,7 +103,11 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                 pushResponse = parseResult(response);
                 result.setPushResponseData(pushResponse);
             } else {
-                result = new RemoteOperationResult(false, status, post.getResponseHeaders());
+                if (isInvalidSessionToken(response)) {
+                    result = new RemoteOperationResult(false, status, post.getResponseHeaders());
+                } else {
+                    result = new RemoteOperationResult(RemoteOperationResult.ResultCode.ACCOUNT_USES_OLD_LOGIN);
+                }
             }
 
         } catch (Exception e) {
@@ -125,6 +131,14 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
         Type pushResponseType = new TypeToken<PushResponse>(){}.getType();
 
         return gson.fromJson(jsonDataObject, pushResponseType);
+    }
+
+    private boolean isInvalidSessionToken(String response) {
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jo = (JsonObject)jsonParser.parse(response);
+        String message = String.valueOf(jo.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA).get(MESSAGE));
+
+        return INVALID_SESSION_TOKEN.equals(message);
     }
 
     private boolean isSuccess(int status) {
