@@ -122,7 +122,8 @@ public class RemoteOperationResult implements Serializable {
         NOT_AVAILABLE,
         MAINTENANCE_MODE,
         LOCK_FAILED,
-        DELAYED_IN_POWER_SAVE_MODE
+        DELAYED_IN_POWER_SAVE_MODE,
+        ACCOUNT_USES_STANDARD_PASSWORD
     }
 
     private boolean mSuccess = false;
