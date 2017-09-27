@@ -51,12 +51,6 @@ public class GetPublicKeyOperation extends RemoteOperation {
     private static final String JSON_FORMAT = "?format=json";
 
     /**
-     * Constructor
-     */
-    public GetPublicKeyOperation() {
-    }
-
-    /**
      * @param client Client object
      */
     @Override
