@@ -79,6 +79,11 @@ public class OCCapability {
     private CapabilityBooleanType mSupportsNotificationsV2;
 
     private CapabilityBooleanType mExternalLinks;
+    
+    // Fullnextsearch
+    private CapabilityBooleanType mFullNextSearchEnabled;
+    private CapabilityBooleanType mFullNextSearchFiles;
+    
 
     public OCCapability(){
         mId = 0;
@@ -402,4 +407,19 @@ public class OCCapability {
         this.mExternalLinks = mExternalLinks;
     }
 
+    public CapabilityBooleanType getFullNextSearchEnabled() {
+        return mFullNextSearchEnabled;
+    }
+
+    public void setFullNextSearchEnabled(CapabilityBooleanType fullNextSearchEnabled) {
+        mFullNextSearchEnabled = fullNextSearchEnabled;
+    }
+
+    public CapabilityBooleanType getFullNextSearchFiles() {
+        return mFullNextSearchFiles;
+    }
+
+    public void setFullNextSearchFiles(CapabilityBooleanType fullNextSearchFiles) {
+        mFullNextSearchFiles = fullNextSearchFiles;
+    }
 }

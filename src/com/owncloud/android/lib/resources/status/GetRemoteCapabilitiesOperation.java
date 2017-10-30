@@ -332,8 +332,34 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 }
                             }
                         }
+                        
+                        if (respCapabilities.has("fullnextsearch")) {
+                            JSONObject respFullNextSearch = respCapabilities.getJSONObject("fullnextsearch");
 
+                            if (respFullNextSearch.getBoolean("remote")) {
+                                capability.setFullNextSearchEnabled(CapabilityBooleanType.TRUE);
+                            } else {
+                                capability.setFullNextSearchEnabled(CapabilityBooleanType.FALSE);
+                            }
+
+                            JSONArray providers = respFullNextSearch.getJSONArray("providers");
+                            
+                            for (int i = 0; i < providers.length(); i++) {
+                                JSONObject provider = (JSONObject) providers.get(i);
+                                
+                                String id = provider.getString("id");
+                                
+                                switch (id) {
+                                    case "files":
+                                        capability.setFullNextSearchFiles(CapabilityBooleanType.TRUE);
+                                        Log_OC.d(TAG, "full next search: file provider enabled");
+                                    default:
+                                        // do nothing
+                                }
+                            }
+                        }
                     }
+                    
                     // Result
                     data.add(capability);
                     result = new RemoteOperationResult(true, get);
