@@ -62,7 +62,8 @@ public class SearchOperation extends RemoteOperation {
         RECENTLY_MODIFIED_SEARCH,
         RECENTLY_ADDED_SEARCH,
         SHARED_SEARCH,
-        GALLERY_SEARCH
+        GALLERY_SEARCH,
+        FULL_NEXT_SEARCH_FILE_SEARCH
     }
 
     private String searchQuery;
