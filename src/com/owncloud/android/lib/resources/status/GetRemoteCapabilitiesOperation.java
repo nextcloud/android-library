@@ -107,6 +107,8 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String PROPERTY_SERVERNAME = "name";
     private static final String PROPERTY_SERVERSLOGAN = "slogan";
     private static final String PROPERTY_SERVERCOLOR = "color";
+    private static final String PROPERTY_SERVERTEXTCOLOR = "color-text";
+    private static final String PROPERTY_SERVERELEMENTCOLOR = "color-element";
     private static final String PROPERTY_SERVERLOGO = "logo";
     private static final String PROPERTY_SERVERBACKGROUND = "background";
 
@@ -286,6 +288,14 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             if (respTheming.has(PROPERTY_SERVERBACKGROUND) &&
                                     respTheming.getString(PROPERTY_SERVERBACKGROUND) != null) {
                                 capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
+                            }
+                            if (respTheming.has(PROPERTY_SERVERTEXTCOLOR) && 
+                                    respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
+                                capability.setServerTextColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
+                            }
+                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR) && 
+                                    respTheming.getString(PROPERTY_SERVERELEMENTCOLOR) != null) {
+                                capability.setServerElementColor(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR));
                             }
                             Log_OC.d(TAG, "*** Added " + NODE_THEMING);
                         }

@@ -43,6 +43,8 @@ public class OCCapability {
     private String mServerName;
     private String mServerSlogan;
     private String mServerColor;
+    private String mServerTextColor;
+    private String mServerElementColor;
     private String mServerLogo;
     private String mServerBackground;
 
@@ -90,6 +92,8 @@ public class OCCapability {
         mServerName = "";
         mServerSlogan = "";
         mServerColor = "";
+        mServerElementColor = "";
+        mServerTextColor = "";
         mServerLogo = "";
         mServerBackground = "";
 
@@ -218,6 +222,22 @@ public class OCCapability {
 
     public void setServerColor(String mServerColor) {
         this.mServerColor = mServerColor;
+    }
+
+    public String getServerTextColor() {
+        return mServerTextColor;
+    }
+
+    public void setServerTextColor(String mServerTextColor) {
+        this.mServerTextColor = mServerTextColor;
+    }
+
+    public String getServerElementColor() {
+        return mServerElementColor;
+    }
+
+    public void setServerElementColor(String mServerElementColor) {
+        this.mServerElementColor = mServerElementColor;
     }
 
     public String getServerSlogan() {
