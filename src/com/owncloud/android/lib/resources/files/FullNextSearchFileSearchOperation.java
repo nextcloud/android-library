@@ -68,16 +68,31 @@ public class FullNextSearchFileSearchOperation extends RemoteOperation {
                 JsonArray jsonDataArray = (JsonArray) jsonObject.getAsJsonArray("result").getAsJsonArray().get(0)
                         .getAsJsonObject().get("documents");
 
-                HashMap<Integer, ArrayList<String>> results = new HashMap<>();
+                HashMap<RemoteFile, ArrayList<String>> results = new HashMap<>();
                 for (JsonElement element: jsonDataArray) {
-                    Integer id = element.getAsJsonObject().get("id").getAsInt();
+                    JsonObject object = element.getAsJsonObject();
+                    JsonObject more = object.get("more").getAsJsonObject();
 
+                    RemoteFile file = new RemoteFile(more.get("path").getAsString());
+                    file.setRemoteId(more.get("webdav").getAsString());
+                    file.setCreationTimestamp(more.get("timestamp").getAsLong() * 1000);
+                    file.setMimeType(more.get("mimetype").getAsString());
+                    file.setModifiedTimestamp(more.get("modified_timestamp").getAsLong() * 1000);
+                    file.setEtag(more.get("etag").getAsString());
+                    file.setPermissions(more.get("permissions").getAsString());
+                    if (more.get("mimetype").getAsString().equalsIgnoreCase("DIR")) {
+                        file.setSize(more.get("size").getAsLong());    
+                    } else {
+                        file.setLength(more.get("size").getAsLong());
+                    }
+                    file.setFavorite(more.get("favorite").getAsBoolean());
+                    
                     ArrayList<String> excerpts = new ArrayList<>();
                     for (JsonElement excerpt: element.getAsJsonObject().get("excerpts").getAsJsonArray()) {
                         excerpts.add(excerpt.getAsString());
                     }                    
                     
-                    results.put(id, excerpts);
+                    results.put(file, excerpts);
                 }
                 result = new RemoteOperationResult(true, status, getMethod.getResponseHeaders());
                 ArrayList<Object> list = new ArrayList<>();
