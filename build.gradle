@@ -16,6 +16,7 @@ group='com.github.nextcloud'
 
 repositories {
     jcenter()
+    google()
 }
 
 dependencies {
