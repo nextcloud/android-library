@@ -68,21 +68,14 @@ public class ToggleFavoriteOperation extends RemoteOperation {
         }
 
         String webDavUrl = client.getNewWebdavUri(false).toString();
-        int pos = filePath.lastIndexOf('/') + 1;
-        filePath = filePath.substring(0, pos) + Uri.encode(filePath.substring(pos));
-
-        String fullFilePath = webDavUrl + "/files/" + userID + filePath;
+        String encodedPath = Uri.encode(userID + filePath).replace("%2F", "/");
+        String fullFilePath = webDavUrl + "/files/" + encodedPath;
 
         try {
-            propPatchMethod = new PropPatchMethod(fullFilePath,
-                    newProps,
-                    removeProperties);
+            propPatchMethod = new PropPatchMethod(fullFilePath, newProps, removeProperties);
             int status = client.executeMethod(propPatchMethod);
 
-            boolean isSuccess = (
-                    status == HttpStatus.SC_MULTI_STATUS ||
-                            status == HttpStatus.SC_OK
-            );
+            boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
 
             if (isSuccess) {
                 result = new RemoteOperationResult(true, status, propPatchMethod.getResponseHeaders());
