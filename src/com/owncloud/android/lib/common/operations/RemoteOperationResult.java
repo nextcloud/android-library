@@ -558,13 +558,13 @@ public class RemoteOperationResult implements Serializable {
         }
 
         if (mCode == ResultCode.INSTANCE_NOT_CONFIGURED) {
-            return "The ownCloud server is not configured!";
+            return "The Nextcloud server is not configured!";
 
         } else if (mCode == ResultCode.NO_NETWORK_CONNECTION) {
             return "No network connection";
 
         } else if (mCode == ResultCode.BAD_OC_VERSION) {
-            return "No valid ownCloud version was found at the server";
+            return "No valid Nextcloud version was found at the server";
 
         } else if (mCode == ResultCode.LOCAL_STORAGE_FULL) {
             return "Local storage full";
