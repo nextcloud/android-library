@@ -137,7 +137,16 @@ public class DownloadRemoteFileOperation extends RemoteOperation {
                         }
                     }
                 }
-                if (transferred == totalToTransfer) {  // Check if the file is completed
+                // Check if the file is completed
+                // if transfer-encoding: chunked we cannot check if the file is complete
+                Header transferEncodingHeader = mGet.getResponseHeader("Transfer-Encoding");
+                boolean transferEncoding = false;
+
+                if (transferEncodingHeader != null) {
+                    transferEncoding = transferEncodingHeader.getValue().equals("chunked");
+                }
+                
+                if (transferred == totalToTransfer || transferEncoding) {  
                     savedFile = true;
                     Header modificationTime = mGet.getResponseHeader("Last-Modified");
                     if (modificationTime == null) {
@@ -164,6 +173,8 @@ public class DownloadRemoteFileOperation extends RemoteOperation {
                 client.exhaustResponse(mGet.getResponseBodyAsStream());
             }
 
+        } catch (Exception e) {
+          Log_OC.e(TAG, e.getMessage());  
         } finally {
             if (fos != null) fos.close();
             if (!savedFile && targetFile.exists()) {
