@@ -35,7 +35,6 @@ import java.util.ArrayList;
 /**
  * Lock a file
  */
-
 public class LockFileOperation extends RemoteOperation {
 
     private static final String TAG = LockFileOperation.class.getSimpleName();

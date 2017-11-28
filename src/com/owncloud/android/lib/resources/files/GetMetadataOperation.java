@@ -92,7 +92,6 @@ public class GetMetadataOperation extends RemoteOperation {
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            e.printStackTrace();
             Log_OC.e(TAG, "Fetching of metadata for folder " + fileId + " failed: " +
                     result.getLogMessage(), result.getException());
         } finally {

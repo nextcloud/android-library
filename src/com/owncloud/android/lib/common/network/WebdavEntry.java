@@ -52,6 +52,8 @@ public class WebdavEntry {
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
 
+    private static final String IS_ENCRYPTED = "1";
+
     private static final int CODE_PROP_NOT_FOUND = 404;
 
     private String mName;
@@ -204,7 +206,7 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
             if (prop != null) {
                 String favoriteValue = (String) prop.getValue();
-                if ("1".equals(favoriteValue)) {
+                if (IS_ENCRYPTED.equals(favoriteValue)) {
                     mIsFavorite = true;
                 } else {
                     mIsFavorite = false;

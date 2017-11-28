@@ -32,7 +32,6 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 /**
  * Unlock a file
  */
-
 public class UnlockFileOperation extends RemoteOperation {
 
     private static final String TAG = UnlockFileOperation.class.getSimpleName();
