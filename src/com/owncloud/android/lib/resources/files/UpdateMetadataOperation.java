@@ -28,8 +28,10 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
@@ -58,7 +60,7 @@ public class UpdateMetadataOperation extends RemoteOperation {
      */
     public UpdateMetadataOperation(String fileId, String encryptedMetadataJson, String token) {
         this.fileId = fileId;
-        this.encryptedMetadataJson = encryptedMetadataJson;
+        this.encryptedMetadataJson = URLEncoder.encode(encryptedMetadataJson);
         this.token = token;
     }
 
@@ -76,11 +78,14 @@ public class UpdateMetadataOperation extends RemoteOperation {
             putMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             putMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            NameValuePair[] putParams = new NameValuePair[3];
-            putParams[0] = new NameValuePair("metaData", encryptedMetadataJson);
-            putParams[1] = new NameValuePair("token", token);
-            putParams[2] = new NameValuePair("format", "json");
+            NameValuePair[] putParams = new NameValuePair[2];
+            putParams[0] = new NameValuePair("token", token);
+            putParams[1] = new NameValuePair("format", "json");
             putMethod.setQueryString(putParams);
+
+            StringRequestEntity data = new StringRequestEntity("metaData="+encryptedMetadataJson, 
+                    "application/json", "UTF-8");
+            putMethod.setRequestEntity(data);
 
             int status = client.executeMethod(putMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
