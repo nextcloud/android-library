@@ -26,21 +26,15 @@
 package com.owncloud.android.lib.resources.status;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
-    public static final OwnCloudVersion owncloud_v1 = new OwnCloudVersion(
-            0x01000000);
-    public static final OwnCloudVersion owncloud_v2 = new OwnCloudVersion(
-            0x02000000);
-    public static final OwnCloudVersion owncloud_v3 = new OwnCloudVersion(
-            0x03000000);
-    public static final OwnCloudVersion owncloud_v4 = new OwnCloudVersion(
-            0x04000000);
-    public static final OwnCloudVersion owncloud_v4_5 = new OwnCloudVersion(
-            0x04050000);
+    public static final OwnCloudVersion owncloud_v1 = new OwnCloudVersion(0x01000000);
+    public static final OwnCloudVersion owncloud_v2 = new OwnCloudVersion(0x02000000);
+    public static final OwnCloudVersion owncloud_v3 = new OwnCloudVersion(0x03000000);
+    public static final OwnCloudVersion owncloud_v4 = new OwnCloudVersion(0x04000000);
+    public static final OwnCloudVersion owncloud_v4_5 = new OwnCloudVersion(0x04050000);
     public static final OwnCloudVersion nextcloud_9 = new OwnCloudVersion(0x09000000); // 9.0
-
     public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
-
     public static final OwnCloudVersion nextcloud_12 = new OwnCloudVersion(0x0C000000); // 12.0
+    public static final OwnCloudVersion nextcloud_13 = new OwnCloudVersion(0x0D000000); // 13.0
 
     public static final int MINIMUN_VERSION_FOR_CHUNKED_UPLOADS = 0x04050000; // 4.5
 
