@@ -74,7 +74,7 @@ public class OwnCloudClient extends HttpClient {
     /**
      * Constructor
      */
-    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr) {
+    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr, boolean useNextcloudUserAgent) {
         super(connectionMgr);
         
         if (baseUri == null) {
@@ -85,7 +85,14 @@ public class OwnCloudClient extends HttpClient {
         mInstanceNumber = sIntanceCounter++;
         Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
 
-        String userAgent = OwnCloudClientManagerFactory.getUserAgent();
+        String userAgent;
+
+        if (useNextcloudUserAgent) {
+            userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
+        } else {
+            userAgent = OwnCloudClientManagerFactory.getUserAgent();
+        }
+        
         getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
         getParams().setParameter(
         		PARAM_PROTOCOL_VERSION,

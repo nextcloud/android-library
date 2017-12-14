@@ -26,20 +26,25 @@ public class DynamicSessionManager implements OwnCloudClientManager {
 
     @Override
     public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
+            throws AccountUtils.AccountNotFoundException, OperationCanceledException, AuthenticatorException,
+            IOException {
+        return getClientFor(account, context, false);
+    }
+
+    @Override
+    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context, boolean useNextcloudUserAgent)
             throws AccountUtils.AccountNotFoundException,
             OperationCanceledException, AuthenticatorException, IOException {
 
         OwnCloudVersion ownCloudVersion = null;
         if (account.getSavedAccount() != null) {
-            ownCloudVersion = AccountUtils.getServerVersionForAccount(
-                    account.getSavedAccount(), context
-            );
+            ownCloudVersion = AccountUtils.getServerVersionForAccount(account.getSavedAccount(), context);
         }
 
         if (ownCloudVersion != null && ownCloudVersion.isPreemptiveAuthenticationPreferred()) {
-            return mSingleSessionManager.getClientFor(account, context);
+            return mSingleSessionManager.getClientFor(account, context, useNextcloudUserAgent);
         } else {
-            return mSimpleFactoryManager.getClientFor(account, context);
+            return mSimpleFactoryManager.getClientFor(account, context, useNextcloudUserAgent);
         }
     }
 

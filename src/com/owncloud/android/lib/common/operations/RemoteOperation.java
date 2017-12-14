@@ -40,6 +40,8 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.params.HttpMethodParams;
+
 import java.io.IOException;
 
 
@@ -98,7 +100,7 @@ public abstract class RemoteOperation implements Runnable {
      * @param context   Android context for the component calling the method.
      * @return          Result of the operation.
      */
-    public RemoteOperationResult execute(Account account, Context context) {
+    public RemoteOperationResult execute(Account account, Context context, boolean useNextcloudUserAgent) {
         if (account == null)
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL " +
                     "Account");
@@ -109,13 +111,17 @@ public abstract class RemoteOperation implements Runnable {
         mContext = context.getApplicationContext();
         try {
         	OwnCloudAccount ocAccount = new OwnCloudAccount(mAccount, mContext);
-            mClient = OwnCloudClientManagerFactory.getDefaultSingleton().
-            		getClientFor(ocAccount, mContext);
+            mClient = OwnCloudClientManagerFactory.getDefaultSingleton().getClientFor(ocAccount, mContext,
+                    useNextcloudUserAgent);
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while trying to access to " + mAccount.name, e);
             return new RemoteOperationResult(e);
         }
         return run(mClient);
+    }
+
+    public RemoteOperationResult execute(Account account, Context context) {
+        return execute(account, context, false);
     }
     
 	
@@ -128,13 +134,23 @@ public abstract class RemoteOperation implements Runnable {
      *                  the operation.
 	 * @return			Result of the operation.
 	 */
-	public RemoteOperationResult execute(OwnCloudClient client) {
-		if (client == null)
-			throw new IllegalArgumentException("Trying to execute a remote operation with a NULL " +
+    public RemoteOperationResult execute(OwnCloudClient client, boolean useNextcloudUserAgent) {
+        if (client == null)
+            throw new IllegalArgumentException("Trying to execute a remote operation with a NULL " +
                     "OwnCloudClient");
 		mClient = client;
-		return run(client);
-	}
+
+        if (useNextcloudUserAgent) {
+            mClient.getParams().setParameter(HttpMethodParams.USER_AGENT,
+                    OwnCloudClientManagerFactory.getNextcloudUserAgent());
+        }
+
+        return run(client);
+    }
+
+    public RemoteOperationResult execute(OwnCloudClient client) {
+        return execute(client, false);
+    }
 
 	
     /**

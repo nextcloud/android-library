@@ -24,13 +24,13 @@
 
 package com.owncloud.android.lib.common;
 
-import java.io.IOException;
-
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.Context;
 
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
+
+import java.io.IOException;
 
 
 /**
@@ -42,7 +42,11 @@ import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundExce
 
 public interface OwnCloudClientManager {
 
-	public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
+    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context, boolean useNextcloudUserAgent)
+            throws AccountNotFoundException, OperationCanceledException, AuthenticatorException,
+            IOException;
+
+    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
             throws AccountNotFoundException, OperationCanceledException, AuthenticatorException,
             IOException;
     
