@@ -181,7 +181,7 @@ public class WebdavEntry {
             prop = propSet.get(
             		EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(NAMESPACE_OC)
     		);
-            if (prop != null) {
+            if (prop != null && prop.getValue() != null) {
                 mPermissions = prop.getValue().toString();
             }
 
