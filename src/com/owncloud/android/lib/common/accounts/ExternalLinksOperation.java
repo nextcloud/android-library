@@ -94,7 +94,10 @@ public class ExternalLinksOperation extends RemoteOperation {
                         if (link != null) {
                             Integer id = link.getInt(NODE_ID);
                             String iconUrl = link.getString(NODE_ICON);
-                            String language = link.getString(NODE_LANGUAGE);
+                            String language = "";
+                            if (link.has(NODE_LANGUAGE)) {
+                                language = link.getString(NODE_LANGUAGE);
+                            }
 
                             ExternalLinkType type;
                             switch (link.getString(NODE_TYPE)) {

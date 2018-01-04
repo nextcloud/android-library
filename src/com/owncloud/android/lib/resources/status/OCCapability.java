@@ -43,6 +43,8 @@ public class OCCapability {
     private String mServerName;
     private String mServerSlogan;
     private String mServerColor;
+    private String mServerTextColor;
+    private String mServerElementColor;
     private String mServerLogo;
     private String mServerBackground;
 
@@ -77,6 +79,11 @@ public class OCCapability {
     private CapabilityBooleanType mSupportsNotificationsV2;
 
     private CapabilityBooleanType mExternalLinks;
+    
+    // Fullnextsearch
+    private CapabilityBooleanType mFullNextSearchEnabled;
+    private CapabilityBooleanType mFullNextSearchFiles;
+    
 
     public OCCapability(){
         mId = 0;
@@ -90,6 +97,8 @@ public class OCCapability {
         mServerName = "";
         mServerSlogan = "";
         mServerColor = "";
+        mServerElementColor = "";
+        mServerTextColor = "";
         mServerLogo = "";
         mServerBackground = "";
 
@@ -218,6 +227,22 @@ public class OCCapability {
 
     public void setServerColor(String mServerColor) {
         this.mServerColor = mServerColor;
+    }
+
+    public String getServerTextColor() {
+        return mServerTextColor;
+    }
+
+    public void setServerTextColor(String mServerTextColor) {
+        this.mServerTextColor = mServerTextColor;
+    }
+
+    public String getServerElementColor() {
+        return mServerElementColor;
+    }
+
+    public void setServerElementColor(String mServerElementColor) {
+        this.mServerElementColor = mServerElementColor;
     }
 
     public String getServerSlogan() {
@@ -382,4 +407,19 @@ public class OCCapability {
         this.mExternalLinks = mExternalLinks;
     }
 
+    public CapabilityBooleanType getFullNextSearchEnabled() {
+        return mFullNextSearchEnabled;
+    }
+
+    public void setFullNextSearchEnabled(CapabilityBooleanType fullNextSearchEnabled) {
+        mFullNextSearchEnabled = fullNextSearchEnabled;
+    }
+
+    public CapabilityBooleanType getFullNextSearchFiles() {
+        return mFullNextSearchFiles;
+    }
+
+    public void setFullNextSearchFiles(CapabilityBooleanType fullNextSearchFiles) {
+        mFullNextSearchFiles = fullNextSearchFiles;
+    }
 }
