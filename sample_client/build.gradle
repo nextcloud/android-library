@@ -2,15 +2,16 @@ apply plugin: 'com.android.application'
 
 repositories {
     jcenter()
+    google()
 }
 
 dependencies {
-    compile project(':')
+    implementation project(':')
 }
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
 
     sourceSets {
         main {

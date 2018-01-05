@@ -22,7 +22,7 @@
  *
  */
 
-package com.owncloud.android.lib.test_project;
+package com.owncloud.android.lib.testclient;
 
 import android.app.Activity;
 import android.content.Context;
