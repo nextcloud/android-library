@@ -25,9 +25,7 @@
 package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
-
 import com.owncloud.android.lib.common.utils.Log_OC;
-
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -206,11 +204,7 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
             if (prop != null) {
                 String favoriteValue = (String) prop.getValue();
-                if (IS_ENCRYPTED.equals(favoriteValue)) {
-                    mIsFavorite = true;
-                } else {
-                    mIsFavorite = false;
-                }
+                mIsFavorite = IS_ENCRYPTED.equals(favoriteValue);
             } else {
                 mIsFavorite = false;
             }
@@ -219,11 +213,7 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_IS_ENCRYPTED,  Namespace.getNamespace(NAMESPACE_NC));
             if (prop != null) {
                 String encryptedValue = (String) prop.getValue();
-                if ("1".equals(encryptedValue)) {
-                    mIsEncrypted = true;
-                } else {
-                    mIsEncrypted = false;
-                }
+                mIsEncrypted = IS_ENCRYPTED.equals(encryptedValue);
             } else {
                 mIsEncrypted = false;
             }
