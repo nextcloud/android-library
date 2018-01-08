@@ -82,7 +82,7 @@ public class ToggleEncryptionOperation extends RemoteOperation {
 
             // remote request
             method.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            method.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            method.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
             int status = client.executeMethod(method, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
@@ -94,7 +94,6 @@ public class ToggleEncryptionOperation extends RemoteOperation {
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            e.printStackTrace();
             Log_OC.e(TAG, "Setting encryption status of " + localId + " failed: " + result.getLogMessage(),
                     result.getException());
         } finally {

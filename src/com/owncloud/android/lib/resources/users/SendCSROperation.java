@@ -42,6 +42,7 @@ public class SendCSROperation extends RemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String PUBLIC_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/public-key";
+    private static final String CSR = "csr";
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
@@ -71,7 +72,7 @@ public class SendCSROperation extends RemoteOperation {
             // remote request
             postMethod = new PostMethod(client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT);
             postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            postMethod.setParameter("csr", csr);
+            postMethod.setParameter(CSR, csr);
 
             int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
@@ -93,7 +94,6 @@ public class SendCSROperation extends RemoteOperation {
 
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            e.printStackTrace();
             Log_OC.e(TAG, "Fetching of signing CSR failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (postMethod != null)

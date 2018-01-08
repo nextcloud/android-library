@@ -102,8 +102,8 @@ public class TestActivity extends Activity {
 				Log.e(TAG, "Self-signed confident SSL context could not be loaded");
 			}
 		}
-		
-		mClient = new OwnCloudClient(Uri.parse(mServerUri), NetworkUtils.getMultiThreadedConnManager());
+
+		mClient = new OwnCloudClient(Uri.parse(mServerUri), NetworkUtils.getMultiThreadedConnManager(), false);
 		mClient.setDefaultTimeouts(
 				OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT, 
 				OwnCloudClientFactory.DEFAULT_CONNECTION_TIMEOUT);

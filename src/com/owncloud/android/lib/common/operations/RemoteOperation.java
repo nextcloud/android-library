@@ -62,6 +62,9 @@ public abstract class RemoteOperation implements Runnable {
     /** OCS API header value */
     public static final String OCS_API_HEADER_VALUE = "true";
 
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
+
     /** ownCloud account in the remote ownCloud server to operate */
     private Account mAccount = null;
     

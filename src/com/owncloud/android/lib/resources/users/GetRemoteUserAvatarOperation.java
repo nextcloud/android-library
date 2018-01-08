@@ -105,7 +105,7 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
 
                 // find out MIME-type!
                 String mimeType;
-                Header contentType = get.getResponseHeader("Content-Type");
+                Header contentType = get.getResponseHeader(CONTENT_TYPE);
                 if (contentType == null || !contentType.getValue().startsWith("image")) {
                     Log_OC.e(TAG, "Not an image, failing with no avatar");
                     result = new RemoteOperationResult(RemoteOperationResult.ResultCode.FILE_NOT_FOUND);

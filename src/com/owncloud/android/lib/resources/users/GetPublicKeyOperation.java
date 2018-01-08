@@ -84,7 +84,6 @@ public class GetPublicKeyOperation extends RemoteOperation {
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            e.printStackTrace();
             Log_OC.e(TAG, "Fetching of public key failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (getMethod != null)

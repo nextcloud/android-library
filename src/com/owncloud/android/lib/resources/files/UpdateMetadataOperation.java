@@ -45,6 +45,8 @@ public class UpdateMetadataOperation extends RemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String METADATA_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/meta-data/";
+    private static final String TOKEN = "token";
+    private static final String FORMAT = "format";
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
@@ -76,11 +78,11 @@ public class UpdateMetadataOperation extends RemoteOperation {
             // remote request
             putMethod = new PutMethod(client.getBaseUri() + METADATA_URL + fileId);
             putMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            putMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            putMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
             NameValuePair[] putParams = new NameValuePair[2];
-            putParams[0] = new NameValuePair("token", token);
-            putParams[1] = new NameValuePair("format", "json");
+            putParams[0] = new NameValuePair(TOKEN, token);
+            putParams[1] = new NameValuePair(FORMAT, "json");
             putMethod.setQueryString(putParams);
 
             StringRequestEntity data = new StringRequestEntity("metaData="+encryptedMetadataJson, 
@@ -107,9 +109,8 @@ public class UpdateMetadataOperation extends RemoteOperation {
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            e.printStackTrace();
-            Log_OC.e(TAG, "Storing of metadata for folder " + fileId + " failed: " +
-                    result.getLogMessage(), result.getException());
+            Log_OC.e(TAG, "Storing of metadata for folder " + fileId + " failed: " + result.getLogMessage(),
+                    result.getException());
         } finally {
             if (putMethod != null)
                 putMethod.releaseConnection();

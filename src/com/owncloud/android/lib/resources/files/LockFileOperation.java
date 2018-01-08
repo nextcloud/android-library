@@ -82,7 +82,7 @@ public class LockFileOperation extends RemoteOperation {
 
             // remote request
             postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            postMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
             int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
@@ -104,9 +104,7 @@ public class LockFileOperation extends RemoteOperation {
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            e.printStackTrace();
-            Log_OC.e(TAG, "Lock file with id " + localId + " failed: " + result.getLogMessage(),
-                    result.getException());
+            Log_OC.e(TAG, "Lock file with id " + localId + " failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (postMethod != null)
                 postMethod.releaseConnection();
