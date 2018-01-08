@@ -5,6 +5,7 @@ pipeline:
       # - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI -c 20M
       # - emulator -avd test -no-window &
       # - ./wait_for_emulator.sh
+      
       # build app 
       - ./gradlew clean build
 
@@ -12,14 +13,29 @@ pipeline:
       - ANDROID_TARGET=android-28
       - ANDROID_ABI=armeabi-v7a
       - LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/opt/android-sdk-linux/tools/lib64/gles_mesa/
-
+  
   lint:
-    image: nextcloudci/android:android-30
-    commands:
-      # needs gplay
-      - sed -i '/com.google.*.gms/s/^.*\\/\\///g' build.gradle
-      - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
-      - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
-    secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
+      image: nextcloudci/android:android-30
+      commands:
+        # needs gplay
+        - sed -i '/com.google.*.gms/s/^.*\\/\\///g' build.gradle
+        - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
+        - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
+      secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
+
+  notify:
+        image: drillster/drone-email
+        host: $EMAIL_HOST
+        port: 587
+        username: $EMAIL_USERNAME
+        password: $EMAIL_PASSWORD
+        from: nextcloud-drone@kaminsky.me
+        recipients_only: true
+        recipients: [ $EMAIL_RECIPIENTS ]
+        secrets: [ EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_RECIPIENTS, EMAIL_HOST ]
+        when:
+          event: push
+          status: failure
+          branch: master
 
 branches: master
