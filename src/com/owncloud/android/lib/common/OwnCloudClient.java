@@ -71,31 +71,36 @@ public class OwnCloudClient extends HttpClient {
 
     private OwnCloudVersion mVersion = null;
     
+    private boolean mUseNextcloudUserAgent = false;
+    
     /**
      * Constructor
      */
-    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr) {
+    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr, boolean useNextcloudUserAgent) {
         super(connectionMgr);
         
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
         mBaseUri = baseUri;
+        mUseNextcloudUserAgent = useNextcloudUserAgent;
         
         mInstanceNumber = sIntanceCounter++;
         Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
 
-        String userAgent = OwnCloudClientManagerFactory.getUserAgent();
-        getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
-        getParams().setParameter(
-        		PARAM_PROTOCOL_VERSION,
-        		HttpVersion.HTTP_1_1);
+        String userAgent;
+
+        if (useNextcloudUserAgent) {
+            userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
+        } else {
+            userAgent = OwnCloudClientManagerFactory.getUserAgent();
+        }
         
-        getParams().setCookiePolicy(
-        		CookiePolicy.IGNORE_COOKIES);
-        getParams().setParameter(
-        		PARAM_SINGLE_COOKIE_HEADER, 			// to avoid problems with some web servers
-        		PARAM_SINGLE_COOKIE_HEADER_VALUE);
+        getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
+        getParams().setParameter(PARAM_PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+        getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+        // to avoid problems with some web servers
+        getParams().setParameter(PARAM_SINGLE_COOKIE_HEADER, PARAM_SINGLE_COOKIE_HEADER_VALUE); 
         
         applyProxySettings();
         
@@ -208,7 +213,13 @@ public class OwnCloudClient extends HttpClient {
         try {
             // Update User Agent
             HttpParams params = method.getParams();
-            String userAgent = OwnCloudClientManagerFactory.getUserAgent();
+
+            String userAgent;
+            if (mUseNextcloudUserAgent) {
+                userAgent = OwnCloudClientManagerFactory.getUserAgent();
+            } else {
+                userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
+            }
             params.setParameter(HttpMethodParams.USER_AGENT, userAgent);
 
             Log_OC.d(TAG + " #" + mInstanceNumber, "REQUEST " +

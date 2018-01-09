@@ -25,9 +25,7 @@
 package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
-
 import com.owncloud.android.lib.common.utils.Log_OC;
-
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -42,13 +40,17 @@ public class WebdavEntry {
     private static final String TAG = WebdavEntry.class.getSimpleName();
 
 	public static final String NAMESPACE_OC = "http://owncloud.org/ns";
+	public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
 	public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
 	public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
+    public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
+
+    private static final String IS_ENCRYPTED = "1";
 
     private static final int CODE_PROP_NOT_FOUND = 404;
 
@@ -60,6 +62,7 @@ public class WebdavEntry {
     private String mPermissions;
     private String mRemoteId;
     private boolean mIsFavorite;
+    private boolean mIsEncrypted;
     private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
 
@@ -176,7 +179,7 @@ public class WebdavEntry {
             prop = propSet.get(
             		EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(NAMESPACE_OC)
     		);
-            if (prop != null) {
+            if (prop != null && prop.getValue() != null) {
                 mPermissions = prop.getValue().toString();
             }
 
@@ -201,13 +204,18 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
             if (prop != null) {
                 String favoriteValue = (String) prop.getValue();
-                if ("1".equals(favoriteValue)) {
-                    mIsFavorite = true;
-                } else {
-                    mIsFavorite = false;
-                }
+                mIsFavorite = IS_ENCRYPTED.equals(favoriteValue);
             } else {
                 mIsFavorite = false;
+            }
+
+            // NC encrypted property <nc:is-encrypted>
+            prop = propSet.get(EXTENDED_PROPERTY_IS_ENCRYPTED,  Namespace.getNamespace(NAMESPACE_NC));
+            if (prop != null) {
+                String encryptedValue = (String) prop.getValue();
+                mIsEncrypted = IS_ENCRYPTED.equals(encryptedValue);
+            } else {
+                mIsEncrypted = false;
             }
 
         } else {
@@ -221,6 +229,10 @@ public class WebdavEntry {
 
     public void setIsFavorite(boolean mIsFavorite) {
         this.mIsFavorite = mIsFavorite;
+    }
+
+    public boolean isEncrypted() {
+        return mIsEncrypted;
     }
 
     public String path() {

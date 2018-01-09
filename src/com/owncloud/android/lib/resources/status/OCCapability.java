@@ -85,6 +85,8 @@ public class OCCapability {
     private CapabilityBooleanType mFullNextSearchFiles;
     
 
+    private CapabilityBooleanType mEndToEndEncryption;
+
     public OCCapability(){
         mId = 0;
         mAccountName = "";
@@ -126,6 +128,8 @@ public class OCCapability {
         mSupportsNotificationsV2 = CapabilityBooleanType.UNKNOWN;
 
         mExternalLinks = CapabilityBooleanType.UNKNOWN;
+
+        mEndToEndEncryption = CapabilityBooleanType.UNKNOWN;
     }
 
 
@@ -422,4 +426,12 @@ public class OCCapability {
     public void setFullNextSearchFiles(CapabilityBooleanType fullNextSearchFiles) {
         mFullNextSearchFiles = fullNextSearchFiles;
     }
+    public CapabilityBooleanType getEndToEndEncryption() {
+        return mEndToEndEncryption;
+    }
+
+    public void setEndToEndEncryption(CapabilityBooleanType endToEndEncryption) {
+        this.mEndToEndEncryption = endToEndEncryption;
+    }
+
 }

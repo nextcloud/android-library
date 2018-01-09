@@ -209,8 +209,8 @@ public class OwnCloudClientFactory {
      * @param context   Android context where the OwnCloudClient is being created.
      * @return          A OwnCloudClient object ready to be used
      */
-    public static OwnCloudClient createOwnCloudClient(Uri uri, Context context,
-                                                      boolean followRedirects) {
+    public static OwnCloudClient createOwnCloudClient(Uri uri, Context context, boolean followRedirects,
+                                                      boolean useNextcloudUserAgent) {
         try {
             NetworkUtils.registerAdvancedSslContext(true, context);
         }  catch (GeneralSecurityException e) {
@@ -221,13 +221,16 @@ public class OwnCloudClientFactory {
             Log_OC.e(TAG, "The local server truststore could not be read. Default SSL management" +
                     " in the system will be used for HTTPS connections", e);
         }
-        
-        OwnCloudClient client = new OwnCloudClient(uri, NetworkUtils.getMultiThreadedConnManager());
+
+        OwnCloudClient client = new OwnCloudClient(uri, NetworkUtils.getMultiThreadedConnManager(),
+                useNextcloudUserAgent);
         client.setDefaultTimeouts(DEFAULT_DATA_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
         client.setFollowRedirects(followRedirects);
         
         return client;
     }
-    
 
+    public static OwnCloudClient createOwnCloudClient(Uri uri, Context context, boolean followRedirects) {
+        return createOwnCloudClient(uri, context, followRedirects, false);
+    }
 }

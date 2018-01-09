@@ -74,7 +74,7 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
 
             delete = new HttpDeleteWithBody(uriToPost);
             delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            delete.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            delete.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
             status = client.executeMethod(delete);
             String response = delete.getResponseBodyAsString();

@@ -24,15 +24,6 @@
 
 package com.owncloud.android.lib.common;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-
 import android.accounts.Account;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
@@ -43,6 +34,13 @@ import android.util.Log;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.cookie.CookiePolicy;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Implementation of {@link OwnCloudClientManager}
@@ -62,92 +60,96 @@ public class SingleSessionManager implements OwnCloudClientManager {
     
     private ConcurrentMap<String, OwnCloudClient> mClientsWithUnknownUsername =
     		new ConcurrentHashMap<String, OwnCloudClient>();
-    
-    
+
     @Override
     public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
+            throws AccountNotFoundException, OperationCanceledException, AuthenticatorException, IOException {
+        return getClientFor(account, context, false);
+    }
+
+    @Override
+    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context, boolean useNextcloudUserAgent)
             throws AccountNotFoundException, OperationCanceledException, AuthenticatorException,
             IOException {
 
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log_OC.d(TAG, "getClientFor starting ");
         }
-    	if (account == null) {
-    		throw new IllegalArgumentException("Cannot get an OwnCloudClient for a null account");
-    	}
+        if (account == null) {
+            throw new IllegalArgumentException("Cannot get an OwnCloudClient for a null account");
+        }
 
-    	OwnCloudClient client = null;
-    	String accountName = account.getName();
-    	String sessionName = account.getCredentials() == null ? "" :
-            AccountUtils.buildAccountName (
-                account.getBaseUri(),
-                account.getCredentials().getAuthToken()
-            )
-        ;
+        OwnCloudClient client = null;
+        String accountName = account.getName();
+        String sessionName = account.getCredentials() == null ? "" :
+                AccountUtils.buildAccountName(
+                        account.getBaseUri(),
+                        account.getCredentials().getAuthToken()
+                );
 
-    	if (accountName != null) {
-    		client = mClientsWithKnownUsername.get(accountName);
-    	}
-    	boolean reusingKnown = false;	// just for logs
-    	if (client == null) {
-    		if (accountName != null) {
-    			client = mClientsWithUnknownUsername.remove(sessionName);
-    			if (client != null) {
+        if (accountName != null) {
+            client = mClientsWithKnownUsername.get(accountName);
+        }
+        boolean reusingKnown = false;    // just for logs
+        if (client == null) {
+            if (accountName != null) {
+                client = mClientsWithUnknownUsername.remove(sessionName);
+                if (client != null) {
                     if (Log.isLoggable(TAG, Log.VERBOSE)) {
                         Log_OC.v(TAG, "reusing client for session " + sessionName);
                     }
-    				mClientsWithKnownUsername.put(accountName, client);
+                    mClientsWithKnownUsername.put(accountName, client);
                     if (Log.isLoggable(TAG, Log.VERBOSE)) {
                         Log_OC.v(TAG, "moved client to account " + accountName);
                     }
-    			}
-    		} else {
-        		client = mClientsWithUnknownUsername.get(sessionName);
-    		}
-    	} else {
+                }
+            } else {
+                client = mClientsWithUnknownUsername.get(sessionName);
+            }
+        } else {
             if (Log.isLoggable(TAG, Log.VERBOSE)) {
                 Log_OC.v(TAG, "reusing client for account " + accountName);
             }
-    		reusingKnown = true;
-    	}
-    	
-    	if (client == null) {
-    		// no client to reuse - create a new one
-    		client = OwnCloudClientFactory.createOwnCloudClient(
-    				account.getBaseUri(), 
-    				context.getApplicationContext(), 
-    				true);	// TODO remove dependency on OwnCloudClientFactory
+            reusingKnown = true;
+        }
+
+        if (client == null) {
+            // no client to reuse - create a new one
+            client = OwnCloudClientFactory.createOwnCloudClient(
+                    account.getBaseUri(),
+                    context.getApplicationContext(),
+                    true, useNextcloudUserAgent);    // TODO remove dependency on OwnCloudClientFactory
             client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-            	// enable cookie tracking
-            
-    		AccountUtils.restoreCookies(accountName, client, context);
+            // enable cookie tracking
+
+            AccountUtils.restoreCookies(accountName, client, context);
 
             account.loadCredentials(context);
-    		client.setCredentials(account.getCredentials());
-    		if (accountName != null) {
-    			mClientsWithKnownUsername.put(accountName, client);
+            client.setCredentials(account.getCredentials());
+            if (accountName != null) {
+                mClientsWithKnownUsername.put(accountName, client);
                 if (Log.isLoggable(TAG, Log.VERBOSE)) {
                     Log_OC.v(TAG, "new client for account " + accountName);
                 }
 
-    		} else {
-    			mClientsWithUnknownUsername.put(sessionName, client);
+            } else {
+                mClientsWithUnknownUsername.put(sessionName, client);
                 if (Log.isLoggable(TAG, Log.VERBOSE)) {
                     Log_OC.v(TAG, "new client for session " + sessionName);
                 }
-    		}
-    	} else {
-    		if (!reusingKnown && Log.isLoggable(TAG, Log.VERBOSE)) {
-    			Log_OC.v(TAG, "reusing client for session " + sessionName);
-    		}
-    		keepCredentialsUpdated(account, client);
-    		keepUriUpdated(account, client);
-    	}
+            }
+        } else {
+            if (!reusingKnown && Log.isLoggable(TAG, Log.VERBOSE)) {
+                Log_OC.v(TAG, "reusing client for session " + sessionName);
+            }
+            keepCredentialsUpdated(account, client);
+            keepUriUpdated(account, client);
+        }
 
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log_OC.d(TAG, "getClientFor finishing ");
         }
-    	return client;
+        return client;
     }
     
     

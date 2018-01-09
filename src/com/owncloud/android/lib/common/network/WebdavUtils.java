@@ -101,14 +101,11 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.GETETAG);
         propSet.add(DavPropertyName.create(WebdavEntry.PROPERTY_QUOTA_USED_BYTES));
         propSet.add(DavPropertyName.create(WebdavEntry.PROPERTY_QUOTA_AVAILABLE_BYTES));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
 
         return propSet;
     }

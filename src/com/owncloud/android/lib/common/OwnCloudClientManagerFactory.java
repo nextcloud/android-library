@@ -36,6 +36,7 @@ public class OwnCloudClientManagerFactory {
 	private static OwnCloudClientManager sDefaultSingleton;
 
     private static String sUserAgent;
+    private static String sNextcloudUserAgent;
 
 	public static OwnCloudClientManager newDefaultOwnCloudClientManager() {
 		return newOwnCloudClientManager(sDefaultPolicy);
@@ -84,6 +85,14 @@ public class OwnCloudClientManagerFactory {
 
     public static String getUserAgent() {
         return sUserAgent;
+    }
+
+    public static void setNextcloudUserAgent(String userAgent) {
+        sNextcloudUserAgent = userAgent;
+    }
+
+    public static String getNextcloudUserAgent() {
+        return sNextcloudUserAgent;
     }
 
 	private static boolean defaultSingletonMustBeUpdated(Policy policy) {

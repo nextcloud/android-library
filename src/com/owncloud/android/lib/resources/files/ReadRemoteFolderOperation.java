@@ -173,6 +173,7 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
         file.setQuotaUsedBytes(we.quotaUsedBytes());
         file.setQuotaAvailableBytes(we.quotaAvailableBytes());
         file.setFavorite(we.isFavorite());
+        file.setIsEncrypted(we.isEncrypted());
         return file;
     }
 }

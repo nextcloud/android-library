@@ -40,22 +40,23 @@ public class SimpleFactoryManager implements OwnCloudClientManager {
 	private static final String TAG = SimpleFactoryManager.class.getSimpleName();
 
 	@Override
-	public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
+    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
+            throws AccountNotFoundException, OperationCanceledException, AuthenticatorException, IOException {
+        return getClientFor(account, context, false);
+    }
+
+    @Override
+    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context, boolean useNextcloudUserAgent)
             throws AccountNotFoundException, OperationCanceledException, AuthenticatorException,
             IOException {
 
 		Log_OC.d(TAG, "getClientFor(OwnCloudAccount ... : ");
 
-		OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(
-				account.getBaseUri(), 
-				context.getApplicationContext(),
-				true);
+        OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(account.getBaseUri(),
+                context.getApplicationContext(), true, useNextcloudUserAgent);
 
 		Log_OC.v(TAG, "    new client {" +
-				(account.getName() != null ?
-						account.getName() :
-						AccountUtils.buildAccountName(account.getBaseUri(), "")
-
+                (account.getName() != null ? account.getName() : AccountUtils.buildAccountName(account.getBaseUri(), "")
                 ) + ", " + client.hashCode() + "}");
 
         if (account.getCredentials() == null) {

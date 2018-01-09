@@ -56,6 +56,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private BigDecimal mQuotaUsedBytes;
     private BigDecimal mQuotaAvailableBytes;
     private boolean mIsFavorite;
+    private boolean mIsEncrypted;
 
     /**
      * Getters and Setters.
@@ -67,6 +68,14 @@ public class RemoteFile implements Parcelable, Serializable {
 
     public void setFavorite(boolean mIsFavorite) {
         this.mIsFavorite = mIsFavorite;
+    }
+
+    public boolean getIsEncrypted() {
+        return mIsEncrypted;
+    }
+
+    public void setIsEncrypted(boolean mIsEncrypted) {
+        this.mIsEncrypted = mIsEncrypted;
     }
 
     public String getRemotePath() {
@@ -199,6 +208,7 @@ public class RemoteFile implements Parcelable, Serializable {
         mQuotaUsedBytes = null;
         mQuotaAvailableBytes = null;
         mIsFavorite = false;
+        mIsEncrypted = false;
     }
 
     /**
@@ -240,6 +250,7 @@ public class RemoteFile implements Parcelable, Serializable {
         mQuotaUsedBytes = (BigDecimal) source.readSerializable();
         mQuotaAvailableBytes = (BigDecimal) source.readSerializable();
         mIsFavorite = Boolean.parseBoolean(source.readString());
+        mIsEncrypted = Boolean.parseBoolean(source.readString());
     }
 
     @Override
@@ -261,5 +272,6 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeSerializable(mQuotaUsedBytes);
         dest.writeSerializable(mQuotaAvailableBytes);
         dest.writeString(Boolean.toString(mIsFavorite));
+        dest.writeString(Boolean.toString(mIsEncrypted));
     }
 }
