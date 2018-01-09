@@ -178,7 +178,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
         SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
 
         InetAddress address = InetAddress.getByName(host);
-        if (address instanceof Inet6Address) {
+        if (address instanceof Inet6Address && localAddress instanceof Inet4Address) {
             InetAddress[] inetAddressArray = InetAddress.getAllByName(host);
             for (InetAddress inetAddress : inetAddressArray) {
                 if (inetAddress instanceof Inet4Address) {
