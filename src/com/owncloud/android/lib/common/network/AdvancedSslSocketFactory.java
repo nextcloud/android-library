@@ -95,9 +95,10 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
      */
     @Override
     public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort)
-            throws IOException, UnknownHostException {
+            throws IOException {
 
-        Socket socket = mSslContext.getSocketFactory().createSocket(host, port, clientHost, clientPort);
+        Socket socket = mSslContext.getSocketFactory().createSocket(getInetAddressForHost(host), port, clientHost,
+                clientPort);
         enableSecureProtocols(socket);
         verifyPeerIdentity(host, port, socket);
         return socket;
@@ -177,8 +178,19 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
         enableSecureProtocols(socket);
         SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
 
+
+        SocketAddress remoteaddr = new InetSocketAddress(getInetAddressForHost(host), port);
+        socket.setSoTimeout(params.getSoTimeout() * 5);
+        socket.bind(localaddr);
+        ServerNameIndicator.setServerNameIndication(host, (SSLSocket) socket);
+        socket.connect(remoteaddr, timeout);
+        verifyPeerIdentity(host, port, socket);
+        return socket;
+    }
+
+    private InetAddress getInetAddressForHost(String host) throws UnknownHostException {
         InetAddress address = InetAddress.getByName(host);
-        if (address instanceof Inet6Address && localAddress instanceof Inet4Address) {
+        if (address instanceof Inet6Address) {
             InetAddress[] inetAddressArray = InetAddress.getAllByName(host);
             for (InetAddress inetAddress : inetAddressArray) {
                 if (inetAddress instanceof Inet4Address) {
@@ -188,13 +200,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
             }
         }
 
-        SocketAddress remoteaddr = new InetSocketAddress(address, port);
-        socket.setSoTimeout(params.getSoTimeout() * 5);
-        socket.bind(localaddr);
-        ServerNameIndicator.setServerNameIndication(host, (SSLSocket) socket);
-        socket.connect(remoteaddr, timeout);
-        verifyPeerIdentity(host, port, socket);
-        return socket;
+        return address;
     }
 
     /**
@@ -204,7 +210,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
     public Socket createSocket(String host, int port) throws IOException,
             UnknownHostException {
         Log_OC.d(TAG, "Creating SSL Socket with remote " + host + ":" + port);
-        Socket socket = mSslContext.getSocketFactory().createSocket(host, port);
+        Socket socket = mSslContext.getSocketFactory().createSocket(getInetAddressForHost(host), port);
         enableSecureProtocols(socket);
         verifyPeerIdentity(host, port, socket);
         return socket;
