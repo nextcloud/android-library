@@ -66,12 +66,12 @@ public class SearchOperation extends RemoteOperation {
 
     private String searchQuery;
     private SearchType searchType;
-    private boolean onlyFolder;
+    private boolean filterOutFiles;
 
-    public SearchOperation(String query, SearchType searchType, boolean onlyFolder) {
+    public SearchOperation(String query, SearchType searchType, boolean filterOutFiles) {
         this.searchQuery = query;
         this.searchType = searchType;
-        this.onlyFolder = onlyFolder;
+        this.filterOutFiles = filterOutFiles;
     }
 
     @Override
@@ -208,7 +208,7 @@ public class SearchOperation extends RemoteOperation {
         Text depthTextElement = query.createTextNode("infinity");
         Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
         Element folderElement = null;
-        if (onlyFolder) {
+        if (filterOutFiles) {
             folderElement = query.createElementNS(DAV_NAMESPACE, "d:is-collection");
         }   
         Element equalsElement;
