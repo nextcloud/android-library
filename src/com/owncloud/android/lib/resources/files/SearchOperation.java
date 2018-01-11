@@ -1,19 +1,19 @@
-/**
+/*
  * Nextcloud Android client application
  *
  * @author Mario Danic
  * Copyright (C) 2017 Mario Danic
- * <p>
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- * <p>
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * <p>
+ * 
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -66,10 +66,12 @@ public class SearchOperation extends RemoteOperation {
 
     private String searchQuery;
     private SearchType searchType;
+    private boolean filterOutFiles;
 
-    public SearchOperation(String query, SearchType searchType) {
+    public SearchOperation(String query, SearchType searchType, boolean filterOutFiles) {
         this.searchQuery = query;
         this.searchType = searchType;
+        this.filterOutFiles = filterOutFiles;
     }
 
     @Override
@@ -84,18 +86,15 @@ public class SearchOperation extends RemoteOperation {
         try {
             int optionsStatus = client.executeMethod(optionsMethod);
             boolean isSearchSupported = optionsMethod.isAllowed("SEARCH");
+            
             if (isSearchSupported) {
-
-                searchMethod = new SearchMethod(webDavUrl, new SearchInfo("NC",
-                        Namespace.XMLNS_NAMESPACE, "NC"));
+                searchMethod = new SearchMethod(webDavUrl, new SearchInfo("NC", Namespace.XMLNS_NAMESPACE, "NC"));
 
                 int status = client.executeMethod(searchMethod);
 
                 // check and process response
-                boolean isSuccess = (
-                        status == HttpStatus.SC_MULTI_STATUS ||
-                                status == HttpStatus.SC_OK
-                );
+                boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
+                
                 if (isSuccess) {
                     // get data from remote folder
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
@@ -208,6 +207,10 @@ public class SearchOperation extends RemoteOperation {
         Text hrefTextElement = query.createTextNode("/files/" + getClient().getCredentials().getUsername());
         Text depthTextElement = query.createTextNode("infinity");
         Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
+        Element folderElement = null;
+        if (filterOutFiles) {
+            folderElement = query.createElementNS(DAV_NAMESPACE, "d:is-collection");
+        }   
         Element equalsElement;
         if (searchType == SearchType.FAVORITE_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
@@ -279,7 +282,14 @@ public class SearchOperation extends RemoteOperation {
         scopeElement.appendChild(depthElement);
         hrefElement.appendChild(hrefTextElement);
         depthElement.appendChild(depthTextElement);
-        whereElement.appendChild(equalsElement);
+        if (folderElement != null) {
+            Element andElement = query.createElementNS(DAV_NAMESPACE, "d:and");
+            andElement.appendChild(folderElement);
+            andElement.appendChild(equalsElement);
+            whereElement.appendChild(andElement);
+        } else {
+            whereElement.appendChild(equalsElement);
+        }
         equalsElement.appendChild(propElement);
         equalsElement.appendChild(literalElement);
         propElement.appendChild(queryElement);
@@ -290,3 +300,4 @@ public class SearchOperation extends RemoteOperation {
     }
 
 }
+
