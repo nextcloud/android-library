@@ -90,26 +90,36 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
         }
     }
 
-
-
-    RichObject readObject(String tag,JsonReader in) throws IOException {
+    private RichObject readObject(String tag, JsonReader in) throws IOException {
         in.beginObject();
         RichObject richObject = new RichObject();
         richObject.setTag(tag);
         while (in.hasNext()) {
             String name = in.nextName();
-            if ("type".contentEquals(name))
-                richObject.setType(in.nextString());
-            else if ("id".contentEquals(name)) {
-                richObject.setId(in.nextString());
-            }else if ("name".contentEquals(name))
-                richObject.setName(in.nextString());
-            else if ("path".contentEquals(name))
-                richObject.setPath(in.nextString());
-            else if ("link".contentEquals(name))
-                richObject.setLink(in.nextString());
-            else if ("server".contentEquals(name))
-                richObject.setLink(in.nextString());
+
+            switch (name) {
+                case "type":
+                    richObject.setType(in.nextString());
+                    break;
+                case "id":
+                    richObject.setId(in.nextString());
+                    break;
+                case "name":
+                    richObject.setName(in.nextString());
+                    break;
+                case "path":
+                    richObject.setPath(in.nextString());
+                    break;
+                case "link":
+                    richObject.setLink(in.nextString());
+                    break;
+                case "server":
+                    richObject.setLink(in.nextString());
+                    break;
+                default:
+                    in.skipValue(); // ignore value
+                    break;
+            }
         }
         in.endObject();
         return richObject;
