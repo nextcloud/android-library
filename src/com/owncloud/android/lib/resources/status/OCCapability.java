@@ -40,6 +40,8 @@ public class OCCapability {
     private int mVersionMicro;
     private String mVersionString;
     private String mVersionEdition;
+    
+    // Theming
     private String mServerName;
     private String mServerSlogan;
     private String mServerColor;
@@ -47,6 +49,8 @@ public class OCCapability {
     private String mServerElementColor;
     private String mServerLogo;
     private String mServerBackground;
+    private CapabilityBooleanType mServerBackgroundDefault;
+    private CapabilityBooleanType mServerBackgroundPlain;
 
     // Core PollInterval
     private int mCorePollinterval;
@@ -103,6 +107,8 @@ public class OCCapability {
         mServerTextColor = "";
         mServerLogo = "";
         mServerBackground = "";
+        mServerBackgroundDefault = CapabilityBooleanType.UNKNOWN;
+        mServerBackgroundPlain = CapabilityBooleanType.UNKNOWN;
 
         mCorePollinterval = 0;
 
@@ -257,6 +263,22 @@ public class OCCapability {
         this.mServerSlogan = mServerSlogan;
     }
 
+    public CapabilityBooleanType getServerBackgroundPlain() {
+        return mServerBackgroundPlain;
+    }
+
+    public void setServerBackgroundPlain(CapabilityBooleanType serverBackgroundPlain) {
+        this.mServerBackgroundPlain = serverBackgroundPlain;
+    }
+
+    public CapabilityBooleanType getServerBackgroundDefault() {
+        return mServerBackgroundDefault;
+    }
+
+    public void setServerBackgroundDefault(CapabilityBooleanType serverBackgroundDefault) {
+        this.mServerBackgroundDefault = serverBackgroundDefault;
+    }
+
     public String getVersionEdition() {
         return mVersionEdition;
     }
@@ -264,8 +286,7 @@ public class OCCapability {
     public void setVersionEdition(String versionEdition) {
         this.mVersionEdition = versionEdition;
     }
-
-
+    
     public int getCorePollinterval() {
         return mCorePollinterval;
     }
@@ -321,8 +342,7 @@ public class OCCapability {
     public void setFilesSharingPublicExpireDateEnforced(CapabilityBooleanType filesSharingPublicExpireDateEnforced) {
         this.mFilesSharingPublicExpireDateEnforced = filesSharingPublicExpireDateEnforced;
     }
-
-
+    
     public CapabilityBooleanType getFilesSharingPublicSendMail() {
         return mFilesSharingPublicSendMail;
     }
@@ -433,5 +453,4 @@ public class OCCapability {
     public void setEndToEndEncryption(CapabilityBooleanType endToEndEncryption) {
         this.mEndToEndEncryption = endToEndEncryption;
     }
-
 }
