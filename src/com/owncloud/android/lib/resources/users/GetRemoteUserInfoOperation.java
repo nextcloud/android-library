@@ -69,7 +69,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
     private static final String NODE_ENABLED = "enabled";
     private static final String NODE_PHONE = "phone";
     private static final String NODE_ADDRESS = "address";
-    private static final String NODE_WEBPAGE = "webpage";
+    private static final String NODE_WEBSITE = "website";
     private static final String NODE_TWITTER = "twitter";
 
     private static final String NODE_QUOTA = "quota";
@@ -197,9 +197,9 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                     userInfo.setAddress(respData.getString(NODE_ADDRESS));
                 }
 
-                if (respData.has(NODE_WEBPAGE) && !respData.isNull(NODE_WEBPAGE) &&
-                        !TextUtils.isEmpty(respData.getString(NODE_WEBPAGE))) {
-                    userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
+                if (respData.has(NODE_WEBSITE) && !respData.isNull(NODE_WEBSITE) &&
+                        !TextUtils.isEmpty(respData.getString(NODE_WEBSITE))) {
+                    userInfo.setWebpage(respData.getString(NODE_WEBSITE));
                 }
 
                 if (respData.has(NODE_TWITTER) && !respData.isNull(NODE_TWITTER) &&
