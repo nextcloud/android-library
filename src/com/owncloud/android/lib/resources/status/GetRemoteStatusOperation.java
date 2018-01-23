@@ -63,6 +63,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
     private static final String NODE_VERSION = "version";
     private static final String PROTOCOL_HTTPS = "https://";
     private static final String PROTOCOL_HTTP = "http://";
+    private static final int UNTRUSTED_DOMAIN_ERROR_CODE = 15;
 
     private RemoteOperationResult mLatestResult;
     private Context mContext;
@@ -103,6 +104,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
             }
 
             String response = get.getResponseBodyAsString();
+
             if (status == HttpStatus.SC_OK) {
                 JSONObject json = new JSONObject(response);
                 if (!json.getBoolean(NODE_INSTALLED)) {
@@ -137,13 +139,24 @@ public class GetRemoteStatusOperation extends RemoteOperation {
                     }
                 }
                 
+            } else if (status == HttpStatus.SC_BAD_REQUEST) {
+                try {
+                    JSONObject json = new JSONObject(response);
+
+                    if (json.getInt("code") == UNTRUSTED_DOMAIN_ERROR_CODE) {
+                        mLatestResult = new RemoteOperationResult(RemoteOperationResult.ResultCode.UNTRUSTED_DOMAIN);
+                    } else {
+                        mLatestResult = new RemoteOperationResult(false, status, get.getResponseHeaders());
+                    }
+                } catch (JSONException e) {
+                    mLatestResult = new RemoteOperationResult(false, status, get.getResponseHeaders());
+                }
             } else {
                 mLatestResult = new RemoteOperationResult(false, status, get.getResponseHeaders());
             }
 
         } catch (JSONException e) {
-            mLatestResult = new RemoteOperationResult(
-            		RemoteOperationResult.ResultCode.INSTANCE_NOT_CONFIGURED);
+            mLatestResult = new RemoteOperationResult(RemoteOperationResult.ResultCode.INSTANCE_NOT_CONFIGURED);
             
         } catch (Exception e) {
             mLatestResult = new RemoteOperationResult(e);

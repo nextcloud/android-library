@@ -125,7 +125,8 @@ public class RemoteOperationResult implements Serializable {
         DELAYED_IN_POWER_SAVE_MODE,
         ACCOUNT_USES_STANDARD_PASSWORD,
         METADATA_NOT_FOUND,
-        OLD_ANDROID_API
+        OLD_ANDROID_API,
+        UNTRUSTED_DOMAIN
     }
 
     private boolean mSuccess = false;
