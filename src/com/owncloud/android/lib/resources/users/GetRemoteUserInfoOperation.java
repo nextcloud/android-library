@@ -69,6 +69,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
     private static final String NODE_ENABLED = "enabled";
     private static final String NODE_PHONE = "phone";
     private static final String NODE_ADDRESS = "address";
+    private static final String NODE_WEBSITE = "website";
     private static final String NODE_WEBPAGE = "webpage";
     private static final String NODE_TWITTER = "twitter";
 
@@ -164,8 +165,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                     userInfo.setDisplayName(respData.getString(NODE_DISPLAY_NAME_ALT));
                 }
 
-                if (respData.has(NODE_EMAIL) && !respData.isNull(NODE_EMAIL) &&
-                        !TextUtils.isEmpty(respData.getString(NODE_EMAIL))) {
+                if (hasData(respData, NODE_EMAIL)) {
                     userInfo.setEmail(respData.getString(NODE_EMAIL));
                 }
 
@@ -187,25 +187,20 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                     userInfo.setQuota(new Quota(quotaFree, quotaUsed, quotaTotal, quotaRelative, quotaValue));
                 }
 
-                if (respData.has(NODE_PHONE) && !respData.isNull(NODE_PHONE) &&
-                        !TextUtils.isEmpty(respData.getString(NODE_PHONE))) {
+                if (hasData(respData, NODE_PHONE))
                     userInfo.setPhone(respData.getString(NODE_PHONE));
-                }
 
-                if (respData.has(NODE_ADDRESS) && !respData.isNull(NODE_ADDRESS) &&
-                        !TextUtils.isEmpty(respData.getString(NODE_ADDRESS))) {
+                if (hasData(respData, NODE_ADDRESS))
                     userInfo.setAddress(respData.getString(NODE_ADDRESS));
-                }
 
-                if (respData.has(NODE_WEBPAGE) && !respData.isNull(NODE_WEBPAGE) &&
-                        !TextUtils.isEmpty(respData.getString(NODE_WEBPAGE))) {
-                    userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
-                }
+                // webpage is a field name pre NC12
+                if (hasData(respData, NODE_WEBSITE))
+                    userInfo.setWebsite(respData.getString(NODE_WEBSITE));
+                else if (hasData(respData, NODE_WEBPAGE))
+                    userInfo.setWebsite(respData.getString(NODE_WEBPAGE));
 
-                if (respData.has(NODE_TWITTER) && !respData.isNull(NODE_TWITTER) &&
-                        !TextUtils.isEmpty(respData.getString(NODE_TWITTER))) {
+                if (hasData(respData, NODE_TWITTER))
                     userInfo.setTwitter(respData.getString(NODE_TWITTER));
-                }
 
                 if (respData.has(NODE_ENABLED)) {
                     userInfo.setEnabled(respData.getBoolean(NODE_ENABLED));
@@ -236,6 +231,11 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
             }
         }
         return result;
+    }
+
+    private boolean hasData(JSONObject respData, String objectName) throws JSONException {
+        return respData.has(objectName) && !respData.isNull(objectName) &&
+                !TextUtils.isEmpty(respData.getString(objectName));
     }
 
     private boolean isSuccess(int status) {

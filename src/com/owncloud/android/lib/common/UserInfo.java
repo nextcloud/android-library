@@ -33,7 +33,7 @@ public class UserInfo {
     public String email;
     public String phone;
     public String address;
-    public String webpage;
+    public String website;
     public String twitter;
     public Quota quota;
 
@@ -41,14 +41,14 @@ public class UserInfo {
     }
 
     public UserInfo(String id, Boolean enabled, String displayName, String email, String phone, String address,
-                    String webpage, String twitter, Quota quota) {
+                    String website, String twitter, Quota quota) {
         this.id = id;
         this.enabled = enabled;
         this.displayName = displayName;
         this.email = email;
         this.phone = phone;
         this.address = address;
-        this.webpage = webpage;
+        this.website = website;
         this.twitter = twitter;
         this.quota = quota;
     }
@@ -93,12 +93,12 @@ public class UserInfo {
         this.address = address;
     }
 
-    public String getWebpage() {
-        return webpage;
+    public String getWebsite() {
+        return website;
     }
 
-    public void setWebpage(String webpage) {
-        this.webpage = webpage;
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getTwitter() {
