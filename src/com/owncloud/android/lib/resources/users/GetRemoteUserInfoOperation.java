@@ -193,11 +193,11 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 if (hasData(respData, NODE_ADDRESS))
                     userInfo.setAddress(respData.getString(NODE_ADDRESS));
 
-                // webpage field name pre NC12
+                // webpage is a field name pre NC12
                 if (hasData(respData, NODE_WEBSITE))
-                    userInfo.setWebpage(respData.getString(NODE_WEBSITE));
+                    userInfo.setWebsite(respData.getString(NODE_WEBSITE));
                 else if (hasData(respData, NODE_WEBPAGE))
-                    userInfo.setWebpage(respData.getString(NODE_WEBPAGE));
+                    userInfo.setWebsite(respData.getString(NODE_WEBPAGE));
 
                 if (hasData(respData, NODE_TWITTER))
                     userInfo.setTwitter(respData.getString(NODE_TWITTER));
