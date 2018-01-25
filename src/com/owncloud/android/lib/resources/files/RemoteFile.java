@@ -30,7 +30,6 @@ import android.os.Parcelable;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * Contains the data of a Remote File from a WebDavEntry.
@@ -53,8 +52,6 @@ public class RemoteFile implements Parcelable, Serializable {
     private String mPermissions;
     private String mRemoteId;
     private long mSize;
-    private BigDecimal mQuotaUsedBytes;
-    private BigDecimal mQuotaAvailableBytes;
     private boolean mIsFavorite;
     private boolean mIsEncrypted;
 
@@ -150,14 +147,6 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = size;
     }
 
-    public void setQuotaUsedBytes(BigDecimal quotaUsedBytes) {
-        mQuotaUsedBytes = quotaUsedBytes;
-    }
-
-    public void setQuotaAvailableBytes(BigDecimal quotaAvailableBytes) {
-        mQuotaAvailableBytes = quotaAvailableBytes;
-    }
-
     public RemoteFile() {
         resetData();
     }
@@ -187,8 +176,6 @@ public class RemoteFile implements Parcelable, Serializable {
         this.setPermissions(we.permissions());
         this.setRemoteId(we.remoteId());
         this.setSize(we.size());
-        this.setQuotaUsedBytes(we.quotaUsedBytes());
-        this.setQuotaAvailableBytes(we.quotaAvailableBytes());
         this.setFavorite(we.isFavorite());
     }
 
@@ -205,8 +192,6 @@ public class RemoteFile implements Parcelable, Serializable {
         mPermissions = null;
         mRemoteId = null;
         mSize = 0;
-        mQuotaUsedBytes = null;
-        mQuotaAvailableBytes = null;
         mIsFavorite = false;
         mIsEncrypted = false;
     }
@@ -247,8 +232,6 @@ public class RemoteFile implements Parcelable, Serializable {
         mPermissions = source.readString();
         mRemoteId = source.readString();
         mSize = source.readLong();
-        mQuotaUsedBytes = (BigDecimal) source.readSerializable();
-        mQuotaAvailableBytes = (BigDecimal) source.readSerializable();
         mIsFavorite = Boolean.parseBoolean(source.readString());
         mIsEncrypted = Boolean.parseBoolean(source.readString());
     }
@@ -269,8 +252,6 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(mPermissions);
         dest.writeString(mRemoteId);
         dest.writeLong(mSize);
-        dest.writeSerializable(mQuotaUsedBytes);
-        dest.writeSerializable(mQuotaAvailableBytes);
         dest.writeString(Boolean.toString(mIsFavorite));
         dest.writeString(Boolean.toString(mIsEncrypted));
     }
