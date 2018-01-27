@@ -30,21 +30,21 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.ocs.OCSResponse;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -57,9 +57,6 @@ import java.util.ArrayList;
 public class GetRemoteUserInfoOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteUserInfoOperation.class.getSimpleName();
-
-    private static final String NODE_OCS = "ocs";
-    private static final String NODE_DATA = "data";
 
     // OCS Route
     private static final String OCS_ROUTE_SELF = "/ocs/v1.php/cloud/user";
@@ -129,9 +126,10 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 Gson gson = new Gson();
                 JsonParser parser = new JsonParser();
                 JsonObject respJson = (JsonObject)parser.parse(response);
+                Type respType = new TypeToken<OCSResponse<UserInfo>>(){}.getType();
+                OCSResponse<UserInfo> ocsResponse = gson.fromJson(respJson, respType);
 
-                JsonObject respData = respJson.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA);
-                UserInfo userInfo = gson.fromJson(respData, UserInfo.class);
+                UserInfo userInfo = ocsResponse.data;
 
                 if (userInfo.getId() == null) {
                     if (TextUtils.isEmpty(userID))
