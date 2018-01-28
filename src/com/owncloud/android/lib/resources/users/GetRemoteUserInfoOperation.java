@@ -38,6 +38,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.OCSResponse;
+import com.owncloud.android.lib.ocs.ServerResponse;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -126,10 +127,10 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 Gson gson = new Gson();
                 JsonParser parser = new JsonParser();
                 JsonObject respJson = (JsonObject)parser.parse(response);
-                Type respType = new TypeToken<OCSResponse<UserInfo>>(){}.getType();
-                OCSResponse<UserInfo> ocsResponse = gson.fromJson(respJson, respType);
+                Type respType = new TypeToken<ServerResponse<UserInfo>>(){}.getType();
+                ServerResponse<UserInfo> ocsResponse = gson.fromJson(respJson, respType);
 
-                UserInfo userInfo = ocsResponse.data;
+                UserInfo userInfo = ocsResponse.ocs.data;
 
                 if (userInfo.getId() == null) {
                     if (TextUtils.isEmpty(userID))

@@ -22,20 +22,22 @@
  *   THE SOFTWARE.
  *
  */
+
 package com.owncloud.android.lib.ocs;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Wrapper for server OCS response
+ * A meta class which is a part of OCS response from server
  *
  * @author Bartosz Przybylski
  */
-public class OCSResponse<T extends Object> {
-
-    @SerializedName("data")
-    public T data;
-
-    @SerializedName("meta")
-    public OCSMeta meta;
+public class OCSMeta extends Object {
+    @SerializedName("status")
+    public String status;
+    @SerializedName("statuscode")
+    public int statusCode;
+    @SerializedName("message")
+    public String message;
+    // TODO(bp): add paging information
 }
