@@ -32,7 +32,7 @@ import com.google.gson.annotations.SerializedName;
  *
  * @author Bartosz Przybylski
  */
-public class OCSMeta extends Object {
+public class OCSMeta {
     @SerializedName("status")
     public String status;
     @SerializedName("statuscode")
