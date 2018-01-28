@@ -38,4 +38,12 @@ public class OCSResponse<T extends Object> {
 
     @SerializedName("meta")
     public OCSMeta meta;
+
+    public T getData() {
+        return data;
+    }
+
+    public OCSMeta getMeta() {
+        return meta;
+    }
 }

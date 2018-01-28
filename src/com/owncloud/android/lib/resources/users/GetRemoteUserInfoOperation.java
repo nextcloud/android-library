@@ -129,7 +129,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 Type respType = new TypeToken<ServerResponse<UserInfo>>(){}.getType();
                 ServerResponse<UserInfo> ocsResponse = gson.fromJson(respJson, respType);
 
-                UserInfo userInfo = ocsResponse.ocs.data;
+                UserInfo userInfo = ocsResponse.getOcs().getData();
 
                 if (userInfo.getId() == null) {
                     if (TextUtils.isEmpty(userID))

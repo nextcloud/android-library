@@ -40,4 +40,16 @@ public class OCSMeta {
     @SerializedName("message")
     public String message;
     // TODO(bp): add paging information
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

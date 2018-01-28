@@ -35,4 +35,8 @@ import com.google.gson.annotations.SerializedName;
 public class ServerResponse<T extends Object> {
     @SerializedName("ocs")
     public OCSResponse<T> ocs;
+
+    public OCSResponse<T> getOcs() {
+        return ocs;
+    }
 }
