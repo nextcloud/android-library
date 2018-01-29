@@ -49,6 +49,12 @@ public class GetPublicKeyOperation extends RemoteOperation {
     private static final String NODE_PUBLIC_KEYS = "public-keys";
 
     private static final String JSON_FORMAT = "?format=json";
+    
+    private String userID;
+    
+    public GetPublicKeyOperation(String userID) {
+        this.userID = userID;
+    }
 
     /**
      * @param client Client object
@@ -69,10 +75,9 @@ public class GetPublicKeyOperation extends RemoteOperation {
                 String response = getMethod.getResponseBodyAsString();
 
                 // Parse the response
-                String username = client.getCredentials().getUsername();
                 JSONObject respJSON = new JSONObject(response);
                 String key = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA)
-                        .getJSONObject(NODE_PUBLIC_KEYS).get(username);
+                        .getJSONObject(NODE_PUBLIC_KEYS).get(userID);
 
                 result = new RemoteOperationResult(true, getMethod);
                 ArrayList<Object> keys = new ArrayList<>();
