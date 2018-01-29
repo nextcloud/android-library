@@ -38,6 +38,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
+import com.owncloud.android.lib.resources.OCSRemoteOperation;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
  * @author David A. Velasco
  * @author Mario Danic
  */
-public class GetRemoteUserInfoOperation extends RemoteOperation {
+public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
 
     private static final String TAG = GetRemoteUserInfoOperation.class.getSimpleName();
 
@@ -123,11 +124,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
                 String response = get.getResponseBodyAsString();
                 Log_OC.d(TAG, "Successful response: " + response);
 
-                Gson gson = new Gson();
-                JsonParser parser = new JsonParser();
-                JsonObject respJson = (JsonObject)parser.parse(response);
-                Type respType = new TypeToken<ServerResponse<UserInfo>>(){}.getType();
-                ServerResponse<UserInfo> ocsResponse = gson.fromJson(respJson, respType);
+                ServerResponse<UserInfo> ocsResponse = getServerResponse(get);
 
                 UserInfo userInfo = ocsResponse.getOcs().getData();
 

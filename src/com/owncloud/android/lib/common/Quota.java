@@ -36,7 +36,7 @@ public class Quota {
     @SerializedName("total")
     public long total;
     @SerializedName("quota")
-    public transient long quota;
+    public long quota;
     @SerializedName("relative")
     public double relative;
 
