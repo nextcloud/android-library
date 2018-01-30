@@ -19,6 +19,8 @@
  */
 package com.owncloud.android.lib.common;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.parceler.Parcel;
 
 /**
@@ -27,14 +29,23 @@ import org.parceler.Parcel;
 
 @Parcel
 public class UserInfo {
+    @SerializedName("id")
     public String id;
+    @SerializedName("enabled")
     public Boolean enabled;
+    @SerializedName(value = "display-name", alternate = {"displayname"})
     public String displayName;
+    @SerializedName("email")
     public String email;
+    @SerializedName("phone")
     public String phone;
+    @SerializedName("address")
     public String address;
+    @SerializedName(value = "website", alternate = {"webpage"})
     public String website;
+    @SerializedName("twitter")
     public String twitter;
+    @SerializedName("quota")
     public Quota quota;
 
     public UserInfo() {

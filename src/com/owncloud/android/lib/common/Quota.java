@@ -19,6 +19,8 @@
  */
 package com.owncloud.android.lib.common;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.parceler.Parcel;
 
 /**
@@ -27,10 +29,15 @@ import org.parceler.Parcel;
 
 @Parcel
 public class Quota {
+    @SerializedName("free")
     public long free;
+    @SerializedName("used")
     public long used;
+    @SerializedName("total")
     public long total;
+    @SerializedName("quota")
     public long quota;
+    @SerializedName("relative")
     public double relative;
 
     public Quota() {
