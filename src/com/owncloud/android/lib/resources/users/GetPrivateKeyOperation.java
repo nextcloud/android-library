@@ -20,6 +20,7 @@
  */
 package com.owncloud.android.lib.resources.users;
 
+import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -62,7 +63,7 @@ public class GetPrivateKeyOperation extends OCSRemoteOperation {
             int status = client.executeMethod(getMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
             if (status == HttpStatus.SC_OK) {
-                ServerResponse<PrivateKey> serverResponse = getServerResponse(getMethod);
+                ServerResponse<PrivateKey> serverResponse = getServerResponse(getMethod, new TypeToken<ServerResponse<PrivateKey>>(){});
 
                 result = new RemoteOperationResult(true, getMethod);
                 ArrayList<Object> keys = new ArrayList<>();
