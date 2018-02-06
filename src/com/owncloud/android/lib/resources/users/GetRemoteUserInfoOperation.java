@@ -27,6 +27,7 @@ package com.owncloud.android.lib.resources.users;
 
 import android.text.TextUtils;
 
+import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.UserInfo;
@@ -118,7 +119,7 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
                 String response = get.getResponseBodyAsString();
                 Log_OC.d(TAG, "Successful response: " + response);
 
-                ServerResponse<UserInfo> ocsResponse = getServerResponse(get);
+                ServerResponse<UserInfo> ocsResponse = getServerResponse(get, new TypeToken<ServerResponse<UserInfo>>(){});
 
                 UserInfo userInfo = ocsResponse.getOcs().getData();
 

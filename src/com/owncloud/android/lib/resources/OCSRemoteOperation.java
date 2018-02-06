@@ -45,14 +45,13 @@ import java.lang.reflect.Type;
  */
 public abstract class OCSRemoteOperation extends RemoteOperation {
 
-    public <T> ServerResponse<T> getServerResponse(HttpMethodBase method) throws IOException {
+    public <T> T getServerResponse(HttpMethodBase method, TypeToken<T> type) throws IOException {
         String response = method.getResponseBodyAsString();
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(response);
 
         Gson gson = new Gson();
-        Type type = new TypeToken<T>(){}.getType();
 
-        return gson.fromJson(element, type);
+        return gson.fromJson(element, type.getType());
     }
 }
