@@ -18,7 +18,13 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * Common base for all integration tests
@@ -26,6 +32,8 @@ import java.util.ArrayList;
 
 @RunWith(AndroidJUnit4.class)
 public abstract class AbstractIT {
+    private static final int BUFFER_SIZE = 1024;
+    
     protected static OwnCloudClient client;
     protected static Context context;
 
@@ -41,6 +49,43 @@ public abstract class AbstractIT {
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         client.setUserId(loginName); // for test same as userId
+    }
+
+    public String createFile(String name) throws IOException {
+        File tempDir = context.getFilesDir();
+
+        File file = new File(tempDir + File.separator + name);
+        file.createNewFile();
+
+        assertTrue(file.exists());
+
+        return file.getAbsolutePath();
+    }
+
+    /**
+     * Extracts file from AssetManager to cache folder.
+     *
+     * @param fileName Name of the asset file to extract.
+     * @param context  Android context to access assets and file system.
+     * @return File instance of the extracted file.
+     */
+    public static File extractAsset(String fileName, Context context) throws IOException {
+        File extractedFile = new File(context.getCacheDir() + File.separator + fileName);
+        if (!extractedFile.exists()) {
+            InputStream in = null;
+            FileOutputStream out = null;
+            in = context.getAssets().open(fileName);
+            out = new FileOutputStream(extractedFile);
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int readCount;
+            while ((readCount = in.read(buffer)) != -1) {
+                out.write(buffer, 0, readCount);
+            }
+            out.flush();
+            out.close();
+            in.close();
+        }
+        return extractedFile;
     }
 
     @After

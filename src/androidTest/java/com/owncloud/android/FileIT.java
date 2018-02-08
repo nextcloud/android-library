@@ -7,9 +7,6 @@ import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests related to file operations
  */
-@RunWith(AndroidJUnit4.class)
 public class FileIT extends AbstractIT {
     @Test
     public void testCreateFolderSuccess() {

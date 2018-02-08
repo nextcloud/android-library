@@ -28,7 +28,6 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.WebDavFileUtils;
@@ -38,56 +37,48 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.client.methods.OptionsMethod;
 import org.apache.jackrabbit.webdav.search.SearchInfo;
 import org.apache.jackrabbit.webdav.xml.Namespace;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Remote operation performing the search in the Nextcloud server.
  */
 public class SearchRemoteOperation extends RemoteOperation {
 
-    private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
-
-    private static final String DAV_NAMESPACE = "DAV:";
 
     public enum SearchType {
-        FILE_SEARCH,
-        FAVORITE_SEARCH,
-        CONTENT_TYPE_SEARCH,
-        RECENTLY_MODIFIED_SEARCH,
-        RECENTLY_ADDED_SEARCH,
-        SHARED_SEARCH,
-        GALLERY_SEARCH,
-        FILE_ID_SEARCH
+        FILE_SEARCH, // search by name
+        FAVORITE_SEARCH, // get all favorited files/folder
+        RECENTLY_MODIFIED_SEARCH, // get files/folders that were modified within last 7 days, ordered descending by time
+        PHOTO_SEARCH, // gets all files with mimetype "image/%"
+        GALLERY_SEARCH, // combined photo and video
+        FILE_ID_SEARCH // search one file specified by file id
     }
 
     private String searchQuery;
     private SearchType searchType;
     private boolean filterOutFiles;
+    private int limit;
+    private long timestamp = -1;
 
     public SearchRemoteOperation(String query, SearchType searchType, boolean filterOutFiles) {
         this.searchQuery = query;
         this.searchType = searchType;
         this.filterOutFiles = filterOutFiles;
     }
+    
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+    
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
-        SearchMethod searchMethod = null;
+        NcSearchMethod searchMethod = null;
         OptionsMethod optionsMethod;
 
         String webDavUrl = client.getNewWebdavUri().toString();
@@ -96,9 +87,17 @@ public class SearchRemoteOperation extends RemoteOperation {
         try {
             int optionsStatus = client.executeMethod(optionsMethod);
             boolean isSearchSupported = optionsMethod.isAllowed("SEARCH");
-            
+
             if (isSearchSupported) {
-                searchMethod = new SearchMethod(webDavUrl, new SearchInfo("NC", Namespace.XMLNS_NAMESPACE, "NC"));
+                searchMethod = new NcSearchMethod(webDavUrl,
+                                                  new SearchInfo("NC",
+                                                                 Namespace.XMLNS_NAMESPACE,
+                                                                 searchQuery),
+                                                  searchType,
+                                                  getClient().getUserId(),
+                                                  timestamp,
+                                                  limit,
+                                                  filterOutFiles);
 
                 int status = client.executeMethod(searchMethod);
 
@@ -135,222 +134,9 @@ public class SearchRemoteOperation extends RemoteOperation {
                 searchMethod.releaseConnection();  // let the connection available for other methods
             }
 
-            if (optionsMethod != null) {
-                optionsMethod.releaseConnection();
-            }
+            optionsMethod.releaseConnection();
         }
         return result;
     }
-
-    private class SearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
-
-        public SearchMethod(String uri, String statement, String language) throws IOException {
-            super(uri, statement, language);
-        }
-
-        public SearchMethod(String uri, String statement, String language, Namespace languageNamespace) throws IOException {
-            super(uri, statement, language, languageNamespace);
-        }
-
-        public SearchMethod(String uri, SearchInfo searchInfo) throws IOException {
-            super(uri, searchInfo);
-            setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
-            setRequestBody(createQuery());
-        }
-
-    }
-
-    private Document createQuery() {
-
-        String internalSearchString = searchQuery;
-
-        if (searchType == SearchType.FAVORITE_SEARCH) {
-            internalSearchString = "yes";
-        }
-
-        Document query;
-        try {
-            query = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException parserError) {
-            System.err.println("ParserConfigurationException: " + parserError.getLocalizedMessage());
-            return null;
-        }
-
-        // Create Nodes & Elements
-        Element searchRequestElement = query.createElementNS(DAV_NAMESPACE, "d:searchrequest");
-        Element basicSearchElement = query.createElementNS(DAV_NAMESPACE, "d:basicsearch");
-        Element selectElement = query.createElementNS(DAV_NAMESPACE, "d:select");
-        Element selectPropsElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
-        // get all
-        Element displayNameElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
-        Element contentTypeElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-        Element resourceTypeElement = query.createElementNS(DAV_NAMESPACE, "d:resourcetype");
-        Element contentLengthElement = query.createElementNS(DAV_NAMESPACE, "d:getcontentlength");
-        Element lastModifiedElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-        Element creationDate = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
-        Element etagElement = query.createElementNS(DAV_NAMESPACE, "d:getetag");
-        Element quotaUsedElement = query.createElementNS(DAV_NAMESPACE, "d:quota-used-bytes");
-        Element quotaAvailableElement = query.createElementNS(DAV_NAMESPACE, "d:quota-available-bytes");
-        Element permissionsElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:permissions");
-        Element remoteIdElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:id");
-        Element sizeElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:size");
-        Element favoriteElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
-
-        selectPropsElement.appendChild(displayNameElement);
-        selectPropsElement.appendChild(contentTypeElement);
-        selectPropsElement.appendChild(resourceTypeElement);
-        selectPropsElement.appendChild(contentLengthElement);
-        selectPropsElement.appendChild(lastModifiedElement);
-        selectPropsElement.appendChild(creationDate);
-        selectPropsElement.appendChild(etagElement);
-        selectPropsElement.appendChild(quotaUsedElement);
-        selectPropsElement.appendChild(quotaAvailableElement);
-        selectPropsElement.appendChild(permissionsElement);
-        selectPropsElement.appendChild(remoteIdElement);
-        selectPropsElement.appendChild(sizeElement);
-        selectPropsElement.appendChild(favoriteElement);
-
-        Element fromElement = query.createElementNS(DAV_NAMESPACE, "d:from");
-        Element scopeElement = query.createElementNS(DAV_NAMESPACE, "d:scope");
-        Element hrefElement = query.createElementNS(DAV_NAMESPACE, "d:href");
-        Element depthElement = query.createElementNS(DAV_NAMESPACE, "d:depth");
-        Text hrefTextElement = query.createTextNode("/files/" + getClient().getUserId());
-        Text depthTextElement = query.createTextNode("infinity");
-        Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
-        Element folderElement = null;
-        if (filterOutFiles) {
-            folderElement = query.createElementNS(DAV_NAMESPACE, "d:is-collection");
-        }
-        Element equalsElement;
-        if (searchType == SearchType.FAVORITE_SEARCH || searchType == SearchType.FILE_ID_SEARCH) {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
-        } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH ||
-                searchType == SearchType.RECENTLY_ADDED_SEARCH) {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
-        } else if (searchType == SearchType.GALLERY_SEARCH) {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:or");
-        } else {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
-        }
-
-        Element propElement = null;
-        Element queryElement = null;
-        Element literalElement = null;
-        Text literalTextElement = null;
-        Element imageLikeElement = null;
-        Element videoLikeElement = null;
-
-        if (searchType != SearchType.GALLERY_SEARCH) {
-            propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
-            queryElement = null;
-            if (searchType == SearchType.CONTENT_TYPE_SEARCH) {
-                queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-            } else if (searchType == SearchType.FILE_SEARCH) {
-                queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
-            } else if (searchType == SearchType.FAVORITE_SEARCH) {
-                queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
-            } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
-                queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-            } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
-                queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
-            } else if (searchType == SearchType.FILE_ID_SEARCH) {
-                queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:fileid");
-            }
-            literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
-            if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
-                if (searchType == SearchType.FILE_SEARCH) {
-                    internalSearchString = "%" + internalSearchString + "%";
-                }
-                literalTextElement = query.createTextNode(internalSearchString);
-            } else {
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-                dateFormat.setTimeZone(TimeZone.getDefault());
-                Date date = new Date();
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                calendar.add(Calendar.DAY_OF_YEAR, -7);
-                date = calendar.getTime();
-
-                String formattedDateString = dateFormat.format(date);
-                literalTextElement = query.createTextNode(formattedDateString);
-            }
-        } else {
-            imageLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
-            Element imagePropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
-            Element imageQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-            Element imageLiteralElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
-            Text imageLiteralTextElement = query.createTextNode("image/%");
-            videoLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
-            Element videoPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
-            Element videoQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-            Element videoLiteralElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
-            Text videoLiteralTextElement = query.createTextNode("video/%");
-
-            videoLiteralElement.appendChild(videoLiteralTextElement);
-            imageLiteralElement.appendChild(imageLiteralTextElement);
-
-            videoPropElement.appendChild(videoQueryElement);
-            videoLikeElement.appendChild(videoPropElement);
-            videoLikeElement.appendChild(videoLiteralElement);
-
-
-            imagePropElement.appendChild(imageQueryElement);
-            imageLikeElement.appendChild(imagePropElement);
-            imageLikeElement.appendChild(imageLiteralElement);
-
-        }
-
-        Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
-
-        // Disabling order for now, but will leave the code in place for the future
-
-        /*if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH || searchType == SearchType.FAVORITE_SEARCH) {
-            Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
-            orderByElement.appendChild(orderElement);
-            Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
-            orderElement.appendChild(orderPropElement);
-            Element orderPropElementValue = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-            orderPropElement.appendChild(orderPropElementValue);
-            Element orderAscDescElement = query.createElementNS(DAV_NAMESPACE, "d:descending");
-            orderElement.appendChild(orderAscDescElement);
-        }*/
-
-        // Build XML tree
-        searchRequestElement.setAttribute("xmlns:oc", "http://nextcloud.com/ns");
-        query.appendChild(searchRequestElement);
-        searchRequestElement.appendChild(basicSearchElement);
-        basicSearchElement.appendChild(selectElement);
-        basicSearchElement.appendChild(fromElement);
-        basicSearchElement.appendChild(whereElement);
-        selectElement.appendChild(selectPropsElement);
-        fromElement.appendChild(scopeElement);
-        scopeElement.appendChild(hrefElement);
-        scopeElement.appendChild(depthElement);
-        hrefElement.appendChild(hrefTextElement);
-        depthElement.appendChild(depthTextElement);
-        if (folderElement != null) {
-            Element andElement = query.createElementNS(DAV_NAMESPACE, "d:and");
-            andElement.appendChild(folderElement);
-            andElement.appendChild(equalsElement);
-            whereElement.appendChild(andElement);
-        } else {
-            whereElement.appendChild(equalsElement);
-        }
-
-        if (searchType != SearchType.GALLERY_SEARCH) {
-            equalsElement.appendChild(propElement);
-            equalsElement.appendChild(literalElement);
-            propElement.appendChild(queryElement);
-            literalElement.appendChild(literalTextElement);
-        } else {
-            equalsElement.appendChild(imageLikeElement);
-            equalsElement.appendChild(videoLikeElement);
-        }
-        basicSearchElement.appendChild(orderByElement);
-
-        return query;
-    }
-
 }
 
