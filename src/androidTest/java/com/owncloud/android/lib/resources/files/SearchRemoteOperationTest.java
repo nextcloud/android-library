@@ -152,6 +152,25 @@ public class SearchRemoteOperationTest extends AbstractIT {
         assertEquals(path, remoteFile.getRemotePath());
     }
 
+    @Test
+    public void testContentTypeSearch() throws IOException {
+        String imagePath = createFile("image");
+        assertTrue(new UploadFileRemoteOperation(imagePath, "/image.jpg", "image/jpg", "123")
+                           .execute(client).isSuccess());
+
+        String filePath = createFile("pdf");
+        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123")
+                           .execute(client).isSuccess());
+
+        SearchRemoteOperation sut = new SearchRemoteOperation("application/pdf",
+                                                              SearchRemoteOperation.SearchType.CONTENT_TYPE_SEARCH,
+                                                              false);
+
+        RemoteOperationResult result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getData().size());
+    }
+
     /**
      * shows just all files, but sorted by date
      */

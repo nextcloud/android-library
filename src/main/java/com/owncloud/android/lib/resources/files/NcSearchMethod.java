@@ -157,6 +157,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
 
             switch (searchType) {
+                case CONTENT_TYPE_SEARCH:
                 case PHOTO_SEARCH:
                     queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
                     break;

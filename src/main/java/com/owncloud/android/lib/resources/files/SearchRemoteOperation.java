@@ -49,6 +49,7 @@ public class SearchRemoteOperation extends RemoteOperation {
     public enum SearchType {
         FILE_SEARCH, // search by name
         FAVORITE_SEARCH, // get all favorited files/folder
+        CONTENT_TYPE_SEARCH, // search by mimetype
         RECENTLY_MODIFIED_SEARCH, // get files/folders that were modified within last 7 days, ordered descending by time
         PHOTO_SEARCH, // gets all files with mimetype "image/%"
         GALLERY_SEARCH, // combined photo and video
