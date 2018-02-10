@@ -116,9 +116,6 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
             status = client.executeMethod(get);
 
             if (isSuccess(status)) {
-                String response = get.getResponseBodyAsString();
-                Log_OC.d(TAG, "Successful response: " + response);
-
                 ServerResponse<UserInfo> ocsResponse = getServerResponse(get, new TypeToken<ServerResponse<UserInfo>>(){});
 
                 UserInfo userInfo = ocsResponse.getOcs().getData();
