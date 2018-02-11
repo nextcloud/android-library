@@ -3,6 +3,8 @@ package com.owncloud.android.lib.common.utils;
 import android.content.Context;
 import android.util.Log;
 
+import com.owncloud.android.lib.BuildConfig;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,12 +42,16 @@ public class Log_OC {
     }
 
     public static void d(String TAG, String message){
-        Log.d(TAG, message);
-        appendLog(TAG + " : " + message);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, message);
+            appendLog(TAG + " : " + message);
+        }
     }
     public static void d(String TAG, String message, Exception e) {
-        Log.d(TAG, message, e);
-        appendLog(TAG + " : " + message + " Exception : "+ Arrays.toString(e.getStackTrace()));
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, message, e);
+            appendLog(TAG + " : " + message + " Exception : " + Arrays.toString(e.getStackTrace()));
+        }
     }
     public static void e(String TAG, String message){
         Log.e(TAG, message);
@@ -58,8 +64,10 @@ public class Log_OC {
     }
     
     public static void v(String TAG, String message){
-        Log.v(TAG, message);
-        appendLog(TAG+" : "+ message);
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, message);
+            appendLog(TAG + " : " + message);
+        }
     }
     
     public static void w(String TAG, String message) {
