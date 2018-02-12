@@ -50,7 +50,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private static final int LAST_CHUNK_TIMEOUT = 900000; //15 mins.
 
     public static final long CHUNK_SIZE = 1024000;
-    private static final String OC_CHUNKED_HEADER = "OC-Chunked";
+    private static final String OC_CHUNKED_HEADER = "HTTP-OC-Chunked";
     private static final String OC_CHUNK_SIZE_HEADER = "OC-Chunk-Size";
     private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
