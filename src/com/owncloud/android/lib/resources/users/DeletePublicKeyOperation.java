@@ -2,8 +2,8 @@
  * Nextcloud Android client application
  *
  * @author Tobias Kaminsky
- * Copyright (C) 2017 Tobias Kaminsky
- * Copyright (C) 2017 Nextcloud GmbH.
+ * Copyright (C) 2018 Tobias Kaminsky
+ * Copyright (C) 2018 Nextcloud GmbH.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,75 +26,41 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 
 
 /**
- * Remote operation performing the storage of the public key for an user
+ * Remote operation performing to delete the public key for an user
  */
 
-public class SendCSROperation extends RemoteOperation {
+public class DeletePublicKeyOperation extends RemoteOperation {
 
-    private static final String TAG = SendCSROperation.class.getSimpleName();
+    private static final String TAG = DeletePublicKeyOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String PUBLIC_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/public-key";
-    private static final String CSR = "csr";
-
-    // JSON node names
-    private static final String NODE_OCS = "ocs";
-    private static final String NODE_DATA = "data";
-    private static final String NODE_PUBLIC_KEY = "public-key";
-
-    private static final String JSON_FORMAT = "?format=json";
-
-    private String csr;
-
-    /**
-     * Constructor
-     */
-    public SendCSROperation(String csr) {
-        this.csr = csr;
-    }
 
     /**
      * @param client Client object
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        PostMethod postMethod = null;
+        DeleteMethod postMethod = null;
         RemoteOperationResult result;
 
         try {
             // remote request
-            postMethod = new PostMethod(client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT);
+            postMethod = new DeleteMethod(client.getBaseUri() + PUBLIC_KEY_URL);
             postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            postMethod.setParameter(CSR, csr);
 
             int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
-            if (status == HttpStatus.SC_OK) {
-                String response = postMethod.getResponseBodyAsString();
+            result = new RemoteOperationResult(status == HttpStatus.SC_OK, postMethod);
 
-                // Parse the response
-                JSONObject respJSON = new JSONObject(response);
-                String key = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).get(NODE_PUBLIC_KEY);
-
-                result = new RemoteOperationResult(true, postMethod);
-                ArrayList<Object> keys = new ArrayList<>();
-                keys.add(key);
-                result.setData(keys);
-            } else {
-                result = new RemoteOperationResult(false, postMethod);
-                client.exhaustResponse(postMethod.getResponseBodyAsStream());
-            }
-
+            client.exhaustResponse(postMethod.getResponseBodyAsStream());
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Fetching of signing CSR failed: " + result.getLogMessage(), result.getException());
+            Log_OC.e(TAG, "Deletion of public key failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (postMethod != null)
                 postMethod.releaseConnection();

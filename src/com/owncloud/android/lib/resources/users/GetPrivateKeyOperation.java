@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 
 /**
- * Remote operation performing the fetch of the public key for an user
+ * Remote operation performing the fetch of the private key for an user
  */
 
 public class GetPrivateKeyOperation extends OCSRemoteOperation {
