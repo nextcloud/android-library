@@ -216,9 +216,9 @@ public class OwnCloudClient extends HttpClient {
 
             String userAgent;
             if (mUseNextcloudUserAgent) {
-                userAgent = OwnCloudClientManagerFactory.getUserAgent();
-            } else {
                 userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
+            } else {
+                userAgent = OwnCloudClientManagerFactory.getUserAgent();
             }
             params.setParameter(HttpMethodParams.USER_AGENT, userAgent);
 
