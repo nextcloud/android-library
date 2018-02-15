@@ -24,15 +24,13 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 
 
 /**
@@ -71,23 +69,15 @@ public class CreateRemoteFolderOperation extends RemoteOperation {
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        OwnCloudVersion version = client.getOwnCloudVersion();
-        boolean versionWithForbiddenChars =
-            (version != null && version.isVersionWithForbiddenCharacters());
-        boolean noInvalidChars = FileUtils.isValidPath(mRemotePath, versionWithForbiddenChars);
-        if (noInvalidChars) {
-            result = createFolder(client);
-            if (!result.isSuccess() && mCreateFullPath &&
-                RemoteOperationResult.ResultCode.CONFLICT == result.getCode()) {
-                result = createParentFolder(FileUtils.getParentPath(mRemotePath), client);
-                if (result.isSuccess()) {
-                    result = createFolder(client);    // second (and last) try
-                }
-            }
+        RemoteOperationResult result;
 
-        } else {
-            result = new RemoteOperationResult(ResultCode.INVALID_CHARACTER_IN_NAME);
+        result = createFolder(client);
+        if (!result.isSuccess() && mCreateFullPath &&
+                RemoteOperationResult.ResultCode.CONFLICT == result.getCode()) {
+            result = createParentFolder(FileUtils.getParentPath(mRemotePath), client);
+            if (result.isSuccess()) {
+                result = createFolder(client);    // second (and last) try
+            }
         }
 
         return result;

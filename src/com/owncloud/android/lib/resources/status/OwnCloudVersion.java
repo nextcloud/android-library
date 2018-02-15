@@ -26,39 +26,14 @@
 package com.owncloud.android.lib.resources.status;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
-    public static final OwnCloudVersion owncloud_v1 = new OwnCloudVersion(0x01000000);
-    public static final OwnCloudVersion owncloud_v2 = new OwnCloudVersion(0x02000000);
-    public static final OwnCloudVersion owncloud_v3 = new OwnCloudVersion(0x03000000);
-    public static final OwnCloudVersion owncloud_v4 = new OwnCloudVersion(0x04000000);
-    public static final OwnCloudVersion owncloud_v4_5 = new OwnCloudVersion(0x04050000);
-    public static final OwnCloudVersion nextcloud_9 = new OwnCloudVersion(0x09000000); // 9.0
-    public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
     public static final OwnCloudVersion nextcloud_12 = new OwnCloudVersion(0x0C000000); // 12.0
     public static final OwnCloudVersion nextcloud_13 = new OwnCloudVersion(0x0D000000); // 13.0
 
-    public static final int MINIMUN_VERSION_FOR_CHUNKED_UPLOADS = 0x04050000; // 4.5
+    public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200; // 11.0.2
 
-    public static final int MINIMUM_VERSION_FOR_SHARING_API = 0x05001B00; // 5.0.27
+    public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000; // 12.0
 
-    public static final int MINIMUM_VERSION_WITH_FORBIDDEN_CHARS = 0x08010000; // 8.1
-
-    public static final int MINIMUM_SERVER_VERSION_FOR_REMOTE_THUMBNAILS = 0x07080000; // 7.8.0
-
-    public static final int MINIMUM_VERSION_FOR_SEARCHING_USERS = 0x08020000; //8.2
-
-    public static final int VERSION_8 = 0x08000000; // 8.0
-
-    public static final int MINIMUM_VERSION_CAPABILITIES_API = 0x08010000; // 8.1
-
-    private static final int MINIMUM_VERSION_WITH_NOT_RESHAREABLE_FEDERATED = 0x09010000;   // 9.1
-
-    private static final int MINIMUM_VERSION_WITH_SESSION_MONITORING = 0x09010000;   // 9.1
-
-    public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200;
-
-    public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000;
-
-    public static final int MINIMUM_VERSION_FOR_WEB_LOGIN = 0x0C000000;
+    public static final int MINIMUM_VERSION_FOR_WEB_LOGIN = 0x0C000000; // 12.0
 
     private static final int MAX_DOTS = 3;
 
@@ -137,46 +112,10 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     	return versionValue; 
     }
 
-
-    public boolean isChunkedUploadSupported() {
-        return (mVersion >= MINIMUN_VERSION_FOR_CHUNKED_UPLOADS);
-    }
-
-    public boolean isSharedSupported() {
-    	return (mVersion >= MINIMUM_VERSION_FOR_SHARING_API);
-    }
-
-    public boolean isVersionWithForbiddenCharacters() {
-        return (mVersion >= MINIMUM_VERSION_WITH_FORBIDDEN_CHARS);
-    }
-
-    public boolean supportsRemoteThumbnails() {
-        return (mVersion >= MINIMUM_SERVER_VERSION_FOR_REMOTE_THUMBNAILS);
-    }
-
-    public boolean isAfter8Version(){
-        return (mVersion >= VERSION_8);
-    }
-
-    public boolean isSearchUsersSupported() {
-        return (mVersion >= MINIMUM_VERSION_FOR_SEARCHING_USERS);
-    }
-
-    public boolean isVersionWithCapabilitiesAPI(){
-        return (mVersion>= MINIMUM_VERSION_CAPABILITIES_API);
-    }
-
-    public boolean isNotReshareableFederatedSupported() {
-        return (mVersion >= MINIMUM_VERSION_WITH_NOT_RESHAREABLE_FEDERATED);
-    }
-
-    public boolean isPreemptiveAuthenticationPreferred() {
-        return (mVersion >= MINIMUM_VERSION_WITH_SESSION_MONITORING);
-    }
-
     public boolean isSelfSupported() {
         return (mVersion >= MINIMUM_VERSION_FOR_SELF_API);
     }
+
     public boolean isSearchSupported() {
         return (mVersion >= MINIMUM_VERSION_FOR_SEARCH_API);
     }

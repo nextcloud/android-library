@@ -64,10 +64,6 @@ public class OCShare implements Parcelable, Serializable {
         CREATE_PERMISSION_FLAG +
         DELETE_PERMISSION_FLAG;
 
-    public static final int FEDERATED_PERMISSIONS_FOR_FILE_UP_TO_OC9 =
-        READ_PERMISSION_FLAG +
-        UPDATE_PERMISSION_FLAG;
-
     public static final int FEDERATED_PERMISSIONS_FOR_FILE_AFTER_OC9 =
         READ_PERMISSION_FLAG +
         UPDATE_PERMISSION_FLAG +

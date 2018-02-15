@@ -67,7 +67,7 @@ public class ToggleFavoriteOperation extends RemoteOperation {
             removeProperties.add("oc:favorite", Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         }
 
-        String webDavUrl = client.getNewWebdavUri(false).toString();
+        String webDavUrl = client.getNewWebdavUri().toString();
         String encodedPath = Uri.encode(userID + filePath).replace("%2F", "/");
         String fullFilePath = webDavUrl + "/files/" + encodedPath;
 
