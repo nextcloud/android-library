@@ -24,6 +24,14 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import java.io.IOException;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.jackrabbit.webdav.DavException;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.Status;
+import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
+
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -32,14 +40,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.Status;
-import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
-
-import java.io.IOException;
 
 
 /**
@@ -90,8 +90,14 @@ public class MoveRemoteFileOperation extends RemoteOperation {
     protected RemoteOperationResult run(OwnCloudClient client) {
 
         OwnCloudVersion version = client.getOwnCloudVersion();
+        boolean versionWithForbiddenChars =
+            (version != null && version.isVersionWithForbiddenCharacters());
 
         /// check parameters
+        if (!FileUtils.isValidPath(mTargetRemotePath, versionWithForbiddenChars)) {
+            return new RemoteOperationResult(ResultCode.INVALID_CHARACTER_IN_NAME);
+        }
+
         if (mTargetRemotePath.equals(mSrcRemotePath)) {
             // nothing to do!
             return new RemoteOperationResult(ResultCode.OK);

@@ -76,11 +76,11 @@ public class SearchOperation extends RemoteOperation {
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+        RemoteOperationResult result = null;
         SearchMethod searchMethod = null;
-        OptionsMethod optionsMethod;
+        OptionsMethod optionsMethod = null;
 
-        String webDavUrl = client.getNewWebdavUri().toString();
+        String webDavUrl = client.getNewWebdavUri(false).toString();
         optionsMethod = new OptionsMethod(webDavUrl);
 
         try {
