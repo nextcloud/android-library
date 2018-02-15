@@ -114,7 +114,7 @@ public class OwnCloudClientFactory {
             OwnCloudVersion version = AccountUtils.getServerVersionForAccount(account, appContext);
 
             OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(
-                    username, password);
+                    username, password, (version != null && version.isPreemptiveAuthenticationPreferred()));
 
             client.setCredentials(credentials);
         }
@@ -188,8 +188,9 @@ public class OwnCloudClientFactory {
             Bundle result = future.getResult();
             String password = result.getString(AccountManager.KEY_AUTHTOKEN);
 
+            OwnCloudVersion version = AccountUtils.getServerVersionForAccount(account, appContext);
             OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(
-                    username, password);
+                    username, password, (version != null && version.isPreemptiveAuthenticationPreferred()));
 
             client.setCredentials(credentials);
         }

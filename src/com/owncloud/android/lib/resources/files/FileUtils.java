@@ -26,6 +26,9 @@ package com.owncloud.android.lib.resources.files;
 
 import java.io.File;
 
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
 public class FileUtils {
 
 	private static final  String TAG = FileUtils.class.getSimpleName();
@@ -40,12 +43,44 @@ public class FileUtils {
 	}
 	
 	/**
-     * Validate the fileName to detect if path separator "/" is used 
-     * @param fileName name to check
-     * @return true if if no path separator is used
-     */
-    public static boolean isValidName(String fileName) {
+	 * Validate the fileName to detect if contains any forbidden character: / , \ , < , > ,
+	 * : , " , | , ? , *
+	 * @param fileName
+	 * @param versionSupportsForbiddenChars
+	 * @return
+	 */
+	public static boolean isValidName(String fileName, boolean versionSupportsForbiddenChars) {
+		boolean result = true;
+		
+		Log_OC.d(TAG, "fileName =======" + fileName);
+		if ( (versionSupportsForbiddenChars && fileName.contains(PATH_SEPARATOR)) ||
+				(!versionSupportsForbiddenChars && ( fileName.contains(PATH_SEPARATOR) ||
+				fileName.contains("\\") || fileName.contains("<") || fileName.contains(">") ||
+				fileName.contains(":") || fileName.contains("\"") || fileName.contains("|") ||
+				fileName.contains("?") || fileName.contains("*") ) ) ) {
 
-        return fileName.contains(PATH_SEPARATOR);
-    }
+			result = false;
+		}
+		return result;
+	}
+	
+	/**
+	 * Validate the path to detect if contains any forbidden character: \ , < , > , : , " , | ,
+	 * ? , *
+	 * @param path
+	 * @return
+	 */
+	public static boolean isValidPath(String path, boolean versionSupportsForbidenChars) {
+		boolean result = true;
+		
+		Log_OC.d(TAG, "path ....... " + path);
+		if (!versionSupportsForbidenChars &&
+				(path.contains("\\") || path.contains("<") || path.contains(">") ||
+				path.contains(":") || path.contains("\"") || path.contains("|") || 
+				path.contains("?") || path.contains("*") ) ){
+			result = false;
+		}
+		return result;
+	}
+	
 }
