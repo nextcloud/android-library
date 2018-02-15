@@ -46,6 +46,6 @@ public class FileUtils {
      */
     public static boolean isValidName(String fileName) {
 
-        return fileName.contains(PATH_SEPARATOR);
+        return !fileName.contains(PATH_SEPARATOR);
     }
 }
