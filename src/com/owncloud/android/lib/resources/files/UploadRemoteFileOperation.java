@@ -66,6 +66,7 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 	protected String mFileLastModifTimestamp;
 	protected PutMethod mPutMethod = null;
 	protected String mRequiredEtag = null;
+	protected long mFileSize = 0;
 
 	protected final AtomicBoolean mCancellationRequested = new AtomicBoolean(false);
 	protected Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
@@ -84,6 +85,13 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 									 String fileLastModifTimestamp) {
 		this(localPath, remotePath, mimeType, fileLastModifTimestamp);
 		mRequiredEtag = requiredEtag;
+	}
+
+	public UploadRemoteFileOperation(String localPath, String remotePath, String mimeType, String requiredEtag,
+									 String fileLastModifTimestamp, long size) {
+		this(localPath, remotePath, mimeType, fileLastModifTimestamp);
+		mRequiredEtag = requiredEtag;
+		mFileSize = size;
 	}
 
 	@Override
@@ -138,6 +146,11 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 
 		try {
 			File f = new File(mLocalPath);
+
+			if (mFileSize == 0) {
+				mFileSize = f.length();
+			}
+			
 			mEntity  = new FileRequestEntity(f, mMimeType);
 			synchronized (mDataTransferListeners) {
 				((ProgressiveDataTransferer)mEntity)
@@ -146,8 +159,8 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 			if (mRequiredEtag != null && mRequiredEtag.length() > 0) {
 				mPutMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + mRequiredEtag + "\"");
 			}
-			mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
-            mPutMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
+			mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(mFileSize));
+			mPutMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
 			mPutMethod.setRequestEntity(mEntity);
 			status = client.executeMethod(mPutMethod);
 
