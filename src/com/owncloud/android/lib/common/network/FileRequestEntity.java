@@ -25,6 +25,8 @@
 
 package com.owncloud.android.lib.common.network;
 
+import org.apache.commons.httpclient.methods.RequestEntity;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,10 +39,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.httpclient.methods.RequestEntity;
-
-import com.owncloud.android.lib.common.utils.Log_OC;
-
 
 
 /**
@@ -51,12 +49,14 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
 
     final File mFile;
     final String mContentType;
+    final long mFileSize;
     Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
 
-    public FileRequestEntity(final File file, final String contentType) {
+    public FileRequestEntity(final File file, final String contentType, long fileSize) {
         super();
         this.mFile = file;
         this.mContentType = contentType;
+        this.mFileSize = fileSize;
         if (file == null) {
             throw new IllegalArgumentException("File may not be null");
         }
@@ -64,7 +64,11 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
     
     @Override
     public long getContentLength() {
-        return mFile.length();
+        if (mFileSize > 0) {
+            return mFileSize;
+        } else {
+            return mFile.length();
+        }
     }
 
     @Override
@@ -108,7 +112,7 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
         FileChannel channel = raf.getChannel();
         Iterator<OnDatatransferProgressListener> it = null;
         long transferred = 0;
-        long size = mFile.length();
+        long size = getContentLength();
         if (size == 0) size = -1;
         try {
             while ((readResult = channel.read(tmp)) >= 0) {

@@ -85,7 +85,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         try {
             raf = new RandomAccessFile(file, "r");
             channel = raf.getChannel();
-            mEntity = new ChunkFromFileChannelRequestEntity(channel, mMimeType, CHUNK_SIZE, file);
+            mEntity = new ChunkFromFileChannelRequestEntity(channel, mMimeType, CHUNK_SIZE, file, mFileSize);
             synchronized (mDataTransferListeners) {
 				((ProgressiveDataTransferer)mEntity)
                         .addDatatransferProgressListeners(mDataTransferListeners);

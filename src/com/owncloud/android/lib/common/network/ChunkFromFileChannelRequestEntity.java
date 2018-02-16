@@ -24,6 +24,8 @@
 
 package com.owncloud.android.lib.common.network;
 
+import org.apache.commons.httpclient.methods.RequestEntity;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,10 +36,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.apache.commons.httpclient.methods.RequestEntity;
-
-import com.owncloud.android.lib.common.utils.Log_OC;
 
 
 /**
@@ -56,12 +54,12 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     private final File mFile;
     private long mOffset;
     private long mTransferred;
+    private long mFileSize;
     Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
     private ByteBuffer mBuffer = ByteBuffer.allocate(4096);
 
-    public ChunkFromFileChannelRequestEntity(
-        final FileChannel channel, final String contentType, long chunkSize, final File file
-    ) {
+    public ChunkFromFileChannelRequestEntity(final FileChannel channel, final String contentType, long chunkSize,
+                                             final File file, long fileSize) {
         super();
         if (channel == null) {
             throw new IllegalArgumentException("File may not be null");
@@ -75,6 +73,7 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
         mFile = file;
         mOffset = 0;
         mTransferred = 0;
+        this.mFileSize = fileSize;
     }
     
     public void setOffset(long offset) {
@@ -83,7 +82,13 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     
     public long getContentLength() {
         try {
-            return Math.min(mChunkSize, mChannel.size() - mOffset);
+            long size;
+            if (mFileSize > 0) {
+                size = mFileSize;
+            } else {
+                size = mChannel.size();
+            }
+            return Math.min(mChunkSize, size - mOffset);
         } catch (IOException e) {
             return mChunkSize;
         }
@@ -124,14 +129,19 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     }
 
     public void writeRequest(final OutputStream out) throws IOException {
-        int readCount = 0;
+        int readCount;
         Iterator<OnDatatransferProgressListener> it = null;
 
         try {
             mChannel.position(mOffset);
-            long size = mFile.length();
-            if (size == 0) size = -1;
-            long maxCount = Math.min(mOffset + mChunkSize, mChannel.size());
+
+            if (mFileSize == 0) {
+                mFileSize = mFile.length();
+            }
+
+            if (mFileSize == 0) mFileSize = -1;
+
+            long maxCount = Math.min(mOffset + mChunkSize, Math.max(mChannel.size(), mFileSize));
             while (mChannel.position() < maxCount) {
                 readCount = mChannel.read(mBuffer);
                 try {
@@ -147,7 +157,7 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
                 synchronized (mDataTransferListeners) {
                     it = mDataTransferListeners.iterator();
                     while (it.hasNext()) {
-                        it.next().onTransferProgress(readCount, mTransferred, size, mFile.getAbsolutePath());
+                        it.next().onTransferProgress(readCount, mTransferred, mFileSize, mFile.getAbsolutePath());
                     }
                 }
             }

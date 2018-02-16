@@ -150,8 +150,8 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 			if (mFileSize == 0) {
 				mFileSize = f.length();
 			}
-			
-			mEntity  = new FileRequestEntity(f, mMimeType);
+
+			mEntity = new FileRequestEntity(f, mMimeType, mFileSize);
 			synchronized (mDataTransferListeners) {
 				((ProgressiveDataTransferer)mEntity)
                         .addDatatransferProgressListeners(mDataTransferListeners);
