@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -127,6 +128,11 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
                         userInfo.setId(userID);
                 }
 
+                if (userInfo.getQuota() == null) {
+                    userInfo.setQuota(new Quota());
+                    userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
+                }
+                
                 if (userInfo.getQuota().getQuota() == 0) {
                     userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
                 }
