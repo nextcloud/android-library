@@ -127,6 +127,12 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
                         userInfo.setId(userID);
                 }
 
+                if (userInfo.getQuota() == null) {
+                    Log_OC.e(TAG, "No quota in server response, use default quota");
+                    userInfo.setQuota(new Quota());
+                    userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
+                }
+                
                 if (userInfo.getQuota().getQuota() == 0) {
                     userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
                 }
