@@ -104,6 +104,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_MOUNT_TYPE, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
 
         return propSet;
     }
