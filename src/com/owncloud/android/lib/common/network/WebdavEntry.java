@@ -227,8 +227,7 @@ public class WebdavEntry {
             // NC mount-type property <nc:mount-type>
             prop = propSet.get(EXTENDED_PROPERTY_MOUNT_TYPE, Namespace.getNamespace(NAMESPACE_NC));
             if (prop != null) {
-                String mountTypeValue = (String) prop.getValue();
-                if ("external".equals(mountTypeValue)) {
+                if ("external".equals(prop.getValue())) {
                     mMountType = MountType.EXTERNAL;
                 } else {
                     mMountType = MountType.INTERNAL;

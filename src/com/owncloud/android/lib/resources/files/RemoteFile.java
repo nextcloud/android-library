@@ -54,7 +54,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private long mSize;
     private boolean mIsFavorite;
     private boolean mIsEncrypted;
-    WebdavEntry.MountType mMountType;
+    private WebdavEntry.MountType mMountType;
 
     /**
      * Getters and Setters.
