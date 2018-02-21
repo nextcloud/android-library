@@ -79,8 +79,10 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
             int status = client.executeMethod(query);
 
             // check and process response
-            boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
-            
+            boolean isSuccess = (
+                status == HttpStatus.SC_MULTI_STATUS ||
+                    status == HttpStatus.SC_OK
+            );
             if (isSuccess) {
                 // get data from remote folder
                 MultiStatus dataInServer = query.getResponseBodyAsMultiStatus();
@@ -170,7 +172,6 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
         file.setSize(we.size());
         file.setFavorite(we.isFavorite());
         file.setIsEncrypted(we.isEncrypted());
-        file.setMountType(we.getMountType());
         return file;
     }
 }

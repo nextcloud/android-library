@@ -25,9 +25,7 @@
 package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
-
 import com.owncloud.android.lib.common.utils.Log_OC;
-
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -48,7 +46,6 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
     public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
-    public static final String EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type";
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
@@ -66,11 +63,8 @@ public class WebdavEntry {
     private String mRemoteId;
     private boolean mIsFavorite;
     private boolean mIsEncrypted;
-    private MountType mMountType;
     private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
-
-    public enum MountType {INTERNAL, EXTERNAL}
 
     public WebdavEntry(MultiStatusResponse ms, String splitElement) {
         resetData();
@@ -224,19 +218,6 @@ public class WebdavEntry {
                 mIsEncrypted = false;
             }
 
-            // NC mount-type property <nc:mount-type>
-            prop = propSet.get(EXTENDED_PROPERTY_MOUNT_TYPE, Namespace.getNamespace(NAMESPACE_NC));
-            if (prop != null) {
-                String mountTypeValue = (String) prop.getValue();
-                if ("external".equals(mountTypeValue)) {
-                    mMountType = MountType.EXTERNAL;
-                } else {
-                    mMountType = MountType.INTERNAL;
-                }
-            } else {
-                mMountType = MountType.INTERNAL;
-            }
-
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
@@ -312,10 +293,6 @@ public class WebdavEntry {
 
     public BigDecimal quotaAvailableBytes() {
         return mQuotaAvailableBytes;
-    }
-
-    public MountType getMountType() {
-        return mMountType;
     }
 
     private void resetData() {

@@ -54,7 +54,6 @@ public class RemoteFile implements Parcelable, Serializable {
     private long mSize;
     private boolean mIsFavorite;
     private boolean mIsEncrypted;
-    WebdavEntry.MountType mMountType;
 
     /**
      * Getters and Setters.
@@ -148,14 +147,6 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = size;
     }
 
-    public WebdavEntry.MountType getMountType() {
-        return mMountType;
-    }
-
-    public void setMountType(WebdavEntry.MountType mountType) {
-        this.mMountType = mountType;
-    }
-
     public RemoteFile() {
         resetData();
     }
@@ -186,7 +177,6 @@ public class RemoteFile implements Parcelable, Serializable {
         this.setRemoteId(we.remoteId());
         this.setSize(we.size());
         this.setFavorite(we.isFavorite());
-        this.setMountType(we.getMountType());
     }
 
     /**
@@ -244,7 +234,6 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = source.readLong();
         mIsFavorite = Boolean.parseBoolean(source.readString());
         mIsEncrypted = Boolean.parseBoolean(source.readString());
-        mMountType = (WebdavEntry.MountType) source.readSerializable();
     }
 
     @Override
@@ -265,6 +254,5 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeLong(mSize);
         dest.writeString(Boolean.toString(mIsFavorite));
         dest.writeString(Boolean.toString(mIsEncrypted));
-        dest.writeSerializable(mMountType);
     }
 }
