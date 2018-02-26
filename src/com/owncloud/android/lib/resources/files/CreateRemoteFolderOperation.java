@@ -24,8 +24,6 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -33,6 +31,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 
 
 /**
@@ -99,6 +99,7 @@ public class CreateRemoteFolderOperation extends RemoteOperation {
         MkColMethod mkcol = null;
         try {
             mkcol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
+            client.setUseNextcloudUserAgent(true);
             client.executeMethod(mkcol, READ_TIMEOUT, CONNECTION_TIMEOUT);
             result = new RemoteOperationResult(mkcol.succeeded(), mkcol);
             Log_OC.d(TAG, "Create directory " + mRemotePath + ": " + result.getLogMessage());

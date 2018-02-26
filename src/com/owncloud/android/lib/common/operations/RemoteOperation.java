@@ -40,8 +40,6 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.params.HttpMethodParams;
-
 import java.io.IOException;
 
 
@@ -142,11 +140,7 @@ public abstract class RemoteOperation implements Runnable {
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL " +
                     "OwnCloudClient");
 		mClient = client;
-
-        if (useNextcloudUserAgent) {
-            mClient.getParams().setParameter(HttpMethodParams.USER_AGENT,
-                    OwnCloudClientManagerFactory.getNextcloudUserAgent());
-        }
+        mClient.setUseNextcloudUserAgent(useNextcloudUserAgent);
 
         return run(client);
     }
