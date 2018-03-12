@@ -473,4 +473,17 @@ public class OwnCloudClient extends HttpClient {
     public OwnCloudVersion getOwnCloudVersion(){
         return mVersion;
     }
+
+    public void setUseNextcloudUserAgent(boolean nextcloudUserAgent) {
+        mUseNextcloudUserAgent = nextcloudUserAgent;
+
+        String userAgent = nextcloudUserAgent ? OwnCloudClientManagerFactory.getNextcloudUserAgent() :
+                OwnCloudClientManagerFactory.getUserAgent();
+
+        getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
+    }
+
+    public boolean useNextcloudUserAgent() {
+        return mUseNextcloudUserAgent;
+    }
 }

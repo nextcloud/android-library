@@ -63,6 +63,7 @@ public class WebDavFileUtils {
         String stripString = client.getWebdavUri().getPath();
         if (isSearchOperation && username != null) {
             stripString = stripString.substring(0, stripString.lastIndexOf("/")) + "/dav/files/" + username;
+            stripString = stripString.replaceAll(" ", "%20");
         }
 
         // loop to update every child

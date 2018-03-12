@@ -97,26 +97,29 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
                 client.exhaustResponse(query.getResponseBodyAsStream());
                 result = new RemoteOperationResult(false, query);
             }
-
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-
-
         } finally {
             if (query != null)
                 query.releaseConnection();  // let the connection available for other methods
-            if (result.isSuccess()) {
-                Log_OC.i(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage());
+
+            if (result == null) {
+                result = new RemoteOperationResult(new Exception("unknown error"));
+                Log_OC.e(TAG, "Synchronized " + mRemotePath + ": failed");
             } else {
-                if (result.isException()) {
-                    Log_OC.e(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage(),
-                        result.getException());
+                if (result.isSuccess()) {
+                    Log_OC.i(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage());
                 } else {
-                    Log_OC.e(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage());
+                    if (result.isException()) {
+                        Log_OC.e(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage(),
+                                result.getException());
+                    } else {
+                        Log_OC.e(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage());
+                    }
                 }
             }
-
         }
+        
         return result;
     }
 
