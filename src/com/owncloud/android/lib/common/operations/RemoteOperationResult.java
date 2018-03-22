@@ -128,7 +128,8 @@ public class RemoteOperationResult implements Serializable {
         OLD_ANDROID_API,
         UNTRUSTED_DOMAIN,
         ETAG_CHANGED,
-        ETAG_UNCHANGED
+        ETAG_UNCHANGED,
+        VIRUS_DETECTED
     }
 
     private boolean mSuccess = false;
@@ -223,17 +224,15 @@ public class RemoteOperationResult implements Serializable {
 
         if (success) {
             mCode = ResultCode.OK;
-
         } else if (httpCode > 0) {
             switch (httpCode) {
                 case HttpStatus.SC_BAD_REQUEST:
-
-                    InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                    InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
                     try {
-                        if (xmlParser.parseXMLResponse(is))
+                        InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                        ExceptionParser xmlParser = new ExceptionParser(is);
+                        if (xmlParser.isInvalidCharacterException()) {
                             mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
-
+                        }
                     } catch (Exception e) {
                         mCode = ResultCode.UNHANDLED_HTTP_CODE;
                         Log_OC.e(TAG, "Exception reading exception from server", e);
@@ -241,8 +240,7 @@ public class RemoteOperationResult implements Serializable {
                     break;
                 default:
                     mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                    Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " +
-                            httpCode);
+                    Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " + httpCode);
             }
         }
     }
@@ -319,29 +317,27 @@ public class RemoteOperationResult implements Serializable {
      *                   result.
      */
     public RemoteOperationResult(boolean success, HttpMethod httpMethod) throws IOException {
-        this(
-                success,
-                httpMethod.getStatusCode(),
-                httpMethod.getStatusText(),
-                httpMethod.getResponseHeaders()
-        );
+        this(success, httpMethod.getStatusCode(), httpMethod.getStatusText(), httpMethod.getResponseHeaders());
 
-        if (mHttpCode == HttpStatus.SC_BAD_REQUEST) {   // 400
-            String bodyResponse = httpMethod.getResponseBodyAsString();
-            // do not get for other HTTP codes!; could not be available
+        if (mHttpCode == HttpStatus.SC_BAD_REQUEST || mHttpCode == HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE) {
+            try {
+                String bodyResponse = httpMethod.getResponseBodyAsString();
 
-            if (bodyResponse != null && bodyResponse.length() > 0) {
-                InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
-                try {
-                    if (xmlParser.parseXMLResponse(is)) {
+                if (bodyResponse != null && bodyResponse.length() > 0) {
+                    InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                    ExceptionParser xmlParser = new ExceptionParser(is);
+
+                    if (xmlParser.isInvalidCharacterException()) {
                         mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
                     }
-
-                } catch (Exception e) {
-                    Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
-                    // mCode stays as set in this(success, httpCode, headers)
+                    if (xmlParser.isVirusException()) {
+                        mCode = ResultCode.VIRUS_DETECTED;
+                        mHttpPhrase = xmlParser.getMessage();
+                    }
                 }
+            } catch (Exception e) {
+                Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
+                // mCode stays as set in this(success, httpCode, headers)
             }
         }
     }
