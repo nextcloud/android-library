@@ -1,39 +1,59 @@
 apply plugin: 'com.android.application'
+apply plugin: 'jacoco-android'
 
 repositories {
     jcenter()
     google()
 }
 
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        google()
+    }
+    dependencies {
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.2'
+    }
+}
+
+ext {
+    jacocoVersion = "0.7.4.201502262128"
+}
+
 dependencies {
     implementation project(':')
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    // dependencies for instrumented tests
+    // JUnit4 Rules
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    // Android JUnit Runner
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+
+    jacocoAnt "org.jacoco:org.jacoco.ant:${project.jacocoVersion}"
+    jacocoAgent "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
+    androidJacocoAgent "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
+    androidJacocoAnt "org.jacoco:org.jacoco.ant:${project.jacocoVersion}"
+    androidJacocoAnt "org.jacoco:org.jacoco.core:${project.jacocoVersion}"
+    androidJacocoAnt "org.jacoco:org.jacoco.report:${project.jacocoVersion}"
+    androidJacocoAnt "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
 }
 
 android {
     compileSdkVersion 26
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
+    defaultConfig {
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
         }
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
 
     lintOptions {
@@ -43,4 +63,22 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
     }
+}
+
+task combinedTestReport(type: JacocoReport) {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "$project.buildDir/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "$project.projectDir/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ])
 }
