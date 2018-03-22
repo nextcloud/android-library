@@ -126,7 +126,9 @@ public class RemoteOperationResult implements Serializable {
         ACCOUNT_USES_STANDARD_PASSWORD,
         METADATA_NOT_FOUND,
         OLD_ANDROID_API,
-        UNTRUSTED_DOMAIN
+        UNTRUSTED_DOMAIN,
+        ETAG_CHANGED,
+        ETAG_UNCHANGED
     }
 
     private boolean mSuccess = false;
