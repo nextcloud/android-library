@@ -24,7 +24,7 @@
  -->
  
 <resources>
-    <string name="server_base_url">http://10.0.2.2/nc</string>
+    <string name="server_base_url">http://server/nc</string>
     <string name="server_base_url_2">http://localhost/nc13</string>
     <string name="username">test</string>
     <string name="password">test</string>
