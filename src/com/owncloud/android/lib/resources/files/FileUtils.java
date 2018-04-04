@@ -24,6 +24,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import com.owncloud.android.lib.common.utils.Log_OC;
+
 import java.io.File;
 
 public class FileUtils {
@@ -48,4 +50,26 @@ public class FileUtils {
 
         return !fileName.contains(PATH_SEPARATOR);
     }
+
+	/**
+	 * Validate the path to detect if contains any forbidden character: \ , < , > , : , " , | ,
+	 * ? , *
+	 * @param path
+	 * @return
+	 */
+	public static boolean isValidPath(String path, boolean versionSupportsForbidenChars) {
+		boolean result = true;
+		
+		Log_OC.d(TAG, "path ....... " + path);
+		if (!versionSupportsForbidenChars &&
+				(path.contains("\\") || path.contains("<") || path.contains(">") ||
+				path.contains(":") || path.contains("\"") || path.contains("|") ||
+                        path.contains("?") || path.contains("*") ) ){
+            result = false;
+        } else if (path.contains("\\")) {
+            return false;
+        }
+		return result;
+	}
+	
 }

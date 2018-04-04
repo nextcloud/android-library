@@ -138,6 +138,11 @@ public class UploadRemoteFileOperation extends RemoteOperation {
 
 		try {
 			File f = new File(mLocalPath);
+
+			if (!f.exists()) {
+				return new RemoteOperationResult(RemoteOperationResult.ResultCode.LOCAL_FILE_NOT_FOUND);
+			}
+			
 			mEntity  = new FileRequestEntity(f, mMimeType);
 			synchronized (mDataTransferListeners) {
 				((ProgressiveDataTransferer)mEntity)

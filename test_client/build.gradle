@@ -41,6 +41,8 @@ dependencies {
     androidJacocoAnt "org.jacoco:org.jacoco.core:${project.jacocoVersion}"
     androidJacocoAnt "org.jacoco:org.jacoco.report:${project.jacocoVersion}"
     androidJacocoAnt "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
+    androidTestCompile 'junit:junit:4.12'
+    implementation 'commons-io:commons-io:2.6'
 }
 
 android {
