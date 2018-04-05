@@ -72,7 +72,8 @@ public class GetShareesTest extends RemoteTest {
         JSONObject resultItem;
         JSONObject value;
         int type;
-        int userCount = 0, groupCount = 0;
+        int userCount = 0;
+        int groupCount = 0;
         assertTrue(result.isSuccess() && result.getData().size() > 0);
         try {
             for (int i = 0; i < result.getData().size(); i++) {

@@ -189,6 +189,15 @@ public class UpdatePublicShareTest extends RemoteTest {
                 Utils.logAndThrow(LOG_TAG, removeResult);
             }
         }
+
+        if (mFullPath2FolderToShare != null) {
+            RemoteOperationResult removeResult = getActivity().removeFile(mFullPath2FolderToShare);
+
+            if (!removeResult.isSuccess()) {
+                Utils.logAndThrow(LOG_TAG, removeResult);
+            }
+        }
+        
         super.tearDown();
         Log.v(LOG_TAG, "Remote fixture delete.");
     }

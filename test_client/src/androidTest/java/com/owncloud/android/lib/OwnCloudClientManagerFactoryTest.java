@@ -66,7 +66,8 @@ public class OwnCloudClientManagerFactoryTest extends TestCase {
             throw new AssertionFailedError("Accepted NULL parameter");
 
         } catch (IllegalArgumentException e) {
-            assertTrue("Expected exception when setting default policy null", true);
+            // Expected exception when setting default policy null
+            return;
         } catch (Exception e) {
             assertTrue("Unexpected exception when setting default policy null", false);
         }
