@@ -30,6 +30,7 @@ import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.SimpleFactoryManager;
+import com.owncloud.android.lib.testclient.R;
 
 import junit.framework.AssertionFailedError;
 

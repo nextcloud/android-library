@@ -32,6 +32,7 @@ import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.NetworkUtils;
+import com.owncloud.android.lib.testclient.R;
 
 import junit.framework.AssertionFailedError;
 
