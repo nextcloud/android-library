@@ -30,7 +30,6 @@ import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.SingleSessionManager;
-import com.owncloud.android.lib.testclient.R;
 
 import junit.framework.AssertionFailedError;
 
@@ -88,9 +87,9 @@ public class SingleSessionManagerTest extends AndroidTestCase {
     }
 
 
-    public void testSaveAllClients() {
+//    public void testSaveAllClients() {
         // TODO implement test;
         // 		or refactor saveAllClients() method out of OwnCloudClientManager to make 
         //		it independent of AccountManager
-    }
+//    }
 }

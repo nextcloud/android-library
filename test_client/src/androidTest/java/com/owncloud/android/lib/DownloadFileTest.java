@@ -88,7 +88,7 @@ public class DownloadFileTest extends RemoteTest {
     /**
      * Test Download a File
      */
-    public void testDownloadFile() {
+    public void testDownloadFile() throws FileNotFoundException {
         RemoteOperationResult result = mActivity.downloadFile(new RemoteFile(mFullPath2Image), "");
         mDownloadedFilePath = mFullPath2Image;
         assertTrue(result.isSuccess());
@@ -98,7 +98,7 @@ public class DownloadFileTest extends RemoteTest {
     /**
      * Test Download a File with special chars
      */
-    public void testDownloadFileSpecialChars() {
+    public void testDownloadFileSpecialChars() throws FileNotFoundException {
         RemoteOperationResult result = mActivity.downloadFile(new RemoteFile(mFullPath2ImageWitSpecialChars), "");
         mDownloadedFilePath = mFullPath2ImageWitSpecialChars;
         assertTrue(result.isSuccess());
@@ -108,7 +108,7 @@ public class DownloadFileTest extends RemoteTest {
     /**
      * Test Download a Not Found File
      */
-    public void testDownloadFileNotFound() {
+    public void testDownloadFileNotFound() throws FileNotFoundException {
         RemoteOperationResult result = mActivity.downloadFile(new RemoteFile(mFullPath2ImageNotFound), "");
         assertFalse(result.isSuccess());
     }

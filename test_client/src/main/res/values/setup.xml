@@ -24,8 +24,8 @@
  -->
  
 <resources>
-    <string name="server_base_url">http://server/nc</string>
-    <string name="server_base_url_2">http://localhost/nc13</string>
+    <string name="server_base_url">http://server</string>
+    <string name="server_base_url_2">http://server2</string>
     <string name="username">test</string>
     <string name="password">test</string>
     <string name ="user_agent">Mozilla/5.0 (Android) ownCloud test project</string>

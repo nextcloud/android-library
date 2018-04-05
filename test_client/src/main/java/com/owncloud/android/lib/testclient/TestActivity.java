@@ -54,6 +54,7 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.security.GeneralSecurityException;
 
 /**
@@ -66,18 +67,11 @@ import java.security.GeneralSecurityException;
 public class TestActivity extends Activity {
 
     private static final String TAG = null;
-    // This account must exists on the server side
-    private String mServerUri;
-    private String mUser;
-    private String mPass;
-
-    private static final int BUFFER_SIZE = 1024;
 
     public static final String ASSETS__TEXT_FILE_NAME = "textFile.txt";
     public static final String ASSETS__IMAGE_FILE_NAME = "imageFile.png";
     public static final String ASSETS__VIDEO_FILE_NAME = "videoFile.mp4";
 
-    //private Account mAccount = null;
     private OwnCloudClient mClient;
 
     @Override
@@ -85,9 +79,9 @@ public class TestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        mServerUri = getString(R.string.server_base_url);
-        mUser = getString(R.string.username);
-        mPass = getString(R.string.password);
+        String serverUri = getString(R.string.server_base_url);
+        String username = getString(R.string.username);
+        String password = getString(R.string.password);
 
         Protocol pr = Protocol.getProtocol("https");
         if (pr == null || !(pr.getSocketFactory() instanceof SelfSignedConfidentSslSocketFactory)) {
@@ -99,12 +93,12 @@ public class TestActivity extends Activity {
             }
         }
 
-        mClient = new OwnCloudClient(Uri.parse(mServerUri), NetworkUtils.getMultiThreadedConnManager(), false);
+        mClient = new OwnCloudClient(Uri.parse(serverUri), NetworkUtils.getMultiThreadedConnManager(), false);
         mClient.setDefaultTimeouts(OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT,
                 OwnCloudClientFactory.DEFAULT_CONNECTION_TIMEOUT);
         mClient.setFollowRedirects(true);
-        mClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(mUser, mPass));
-        mClient.setBaseUri(Uri.parse(mServerUri));
+        mClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(username, password));
+        mClient.setBaseUri(Uri.parse(serverUri));
         mClient.setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
 
         Log.v(TAG, "onCreate finished, ownCloud client ready");
@@ -123,7 +117,7 @@ public class TestActivity extends Activity {
      * @param remotePath     Full path to the new directory to create in the remote server.
      * @param createFullPath 'True' means that all the ancestor folders should be created if
      *                       don't exist yet.
-     * @return
+     * @return RemoteOperationResult result of call
      */
     public RemoteOperationResult createFolder(String remotePath, boolean createFullPath) {
         return TestActivity.createFolder(remotePath, createFullPath, mClient);
@@ -152,22 +146,21 @@ public class TestActivity extends Activity {
      * @param oldRemotePath Old remote path of the file. For folders it starts and ends by "/"
      * @param newName       New name to set as the name of file.
      * @param isFolder      'true' for folder and 'false' for files
-     * @return
+     * @return RemoteOperationResult result of call
      */
 
     public RemoteOperationResult renameFile(String oldName, String oldRemotePath, String newName, boolean isFolder) {
 
         RenameRemoteFileOperation renameOperation = new RenameRemoteFileOperation(oldName, oldRemotePath, newName, isFolder);
-        RemoteOperationResult result = renameOperation.execute(mClient);
 
-        return result;
+        return renameOperation.execute(mClient);
     }
 
     /**
      * Access to the library method to Remove a File or Folder
      *
      * @param remotePath Remote path of the file or folder in the server.
-     * @return
+     * @return RemoteOperationResult result of call
      */
     public RemoteOperationResult removeFile(String remotePath) {
         return TestActivity.removeFile(remotePath, mClient);
@@ -177,7 +170,7 @@ public class TestActivity extends Activity {
      * Access to the library method to Remove a File or Folder
      *
      * @param remotePath Remote path of the file or folder in the server.
-     * @return
+     * @return RemoteOperationResult result of call
      */
     public static RemoteOperationResult removeFile(String remotePath, OwnCloudClient client) {
         RemoveRemoteFileOperation removeOperation = new RemoveRemoteFileOperation(remotePath);
@@ -188,45 +181,48 @@ public class TestActivity extends Activity {
     /**
      * Access to the library method to Read a Folder (PROPFIND DEPTH 1)
      *
-     * @param remotePath
-     * @return
+     * @param remotePath remote path of folder, with trailing "/"
+     * @return RemoteOperationResult result of call
      */
     public RemoteOperationResult readFile(String remotePath) {
 
         ReadRemoteFolderOperation readOperation = new ReadRemoteFolderOperation(remotePath);
-        RemoteOperationResult result = readOperation.execute(mClient);
 
-        return result;
+        return readOperation.execute(mClient);
     }
 
     /**
      * Access to the library method to Download a File
      *
-     * @param remoteFile
-     * @param temporalFolder
-     * @return
+     * @param remoteFile remoteFile to download
+     * @param temporalFolder to which folder the file should be downloaded, created if needed
+     * @return RemoteOperationResult result of call
      */
-    public RemoteOperationResult downloadFile(RemoteFile remoteFile, String temporalFolder) {
+    public RemoteOperationResult downloadFile(RemoteFile remoteFile, String temporalFolder)
+            throws FileNotFoundException {
         // Create folder 
         String path = "/owncloud/tmp/" + temporalFolder;
         File privateFolder = getFilesDir();
         File folder = new File(privateFolder.getAbsolutePath() + "/" + path);
-        folder.mkdirs();
 
-        DownloadRemoteFileOperation downloadOperation = new DownloadRemoteFileOperation(remoteFile.getRemotePath(), folder.getAbsolutePath());
-        RemoteOperationResult result = downloadOperation.execute(mClient);
+        if (!folder.mkdirs()) {
+            throw new FileNotFoundException("Folder " + temporalFolder + " could not be created");
+        }
 
-        return result;
+        DownloadRemoteFileOperation downloadOperation = new DownloadRemoteFileOperation(remoteFile.getRemotePath(),
+                folder.getAbsolutePath());
+
+        return downloadOperation.execute(mClient);
     }
 
     /**
      * Access to the library method to Upload a File
      *
-     * @param storagePath
-     * @param remotePath
-     * @param mimeType
-     * @param requiredEtag
-     * @return
+     * @param storagePath local path of file
+     * @param remotePath remote path of file
+     * @param mimeType mimeType, can be null to auto-detect on server
+     * @param requiredEtag if set upload will be skipped if same etag on server, can be null
+     * @return RemoteOperationResult result of call
      */
     public RemoteOperationResult uploadFile(String storagePath, String remotePath, String mimeType,
                                             String requiredEtag) {
@@ -237,28 +233,28 @@ public class TestActivity extends Activity {
     /**
      * Access to the library method to Upload a File
      *
-     * @param context
-     * @param storagePath
-     * @param remotePath
-     * @param mimeType
+     * @param context context of app
+     * @param storagePath local path of file
+     * @param remotePath remote path of file
+     * @param mimeType mimeType, can be null to auto-detect on server
      * @param client       Client instance configured to access the target OC server.
-     * @param requiredEtag
-     * @return
+     * @param requiredEtag if set upload will be skipped if same etag on server, can be null
+     * @return RemoteOperationResult result of call
      */
     public static RemoteOperationResult uploadFile(Context context, String storagePath, String remotePath,
                                                    String mimeType, OwnCloudClient client, String requiredEtag) {
 
-        String fileLastModifTimestamp = getFileLastModifiedTimeStamp(storagePath);
+        String fileLastModifiedTimestamp = getFileLastModifiedTimeStamp(storagePath);
 
         UploadRemoteFileOperation uploadOperation;
 
         if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
             uploadOperation = new ChunkedUploadRemoteFileOperation(
-                    context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
+                    context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifiedTimestamp
             );
         } else {
             uploadOperation = new UploadRemoteFileOperation(
-                    storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
+                    storagePath, remotePath, mimeType, requiredEtag, fileLastModifiedTimestamp
             );
         }
 
@@ -268,7 +264,7 @@ public class TestActivity extends Activity {
     /**
      * Access to the library method to Get Shares
      *
-     * @return
+     * @return RemoteOperationResult result of call
      */
     public RemoteOperationResult getShares() {
         GetRemoteSharesOperation getOperation = new GetRemoteSharesOperation();
@@ -293,7 +289,7 @@ public class TestActivity extends Activity {
      *                     For user or group shares.
      *                     To obtain combinations, add the desired values together.
      *                     For instance, for Re-Share, delete, read, update add 16+8+2+1 = 27.
-     * @return
+     * @return RemoteOperationResult result of call
      */
     public RemoteOperationResult createShare(String path, ShareType shareType, String shareWith, boolean publicUpload,
                                              String password, int permissions) {

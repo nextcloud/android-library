@@ -32,7 +32,6 @@ import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.NetworkUtils;
-import com.owncloud.android.lib.testclient.R;
 
 import junit.framework.AssertionFailedError;
 
@@ -73,17 +72,20 @@ public class OwnCloudClientTest extends AndroidTestCase {
         try {
             new OwnCloudClient(null, NetworkUtils.getMultiThreadedConnManager(), false);
             throw new AssertionFailedError("Accepted NULL parameter");
-
+        } catch (IllegalArgumentException e) {
+            assertTrue("Expected exception passing NULL baseUri", true);
         } catch (Exception e) {
-            assertTrue("Unexpected exception passing NULL baseUri", (e instanceof IllegalArgumentException));
+            assertTrue("Unexpected exception", false);
         }
 
         try {
             new OwnCloudClient(mServerUri, null, false);
             throw new AssertionFailedError("Accepted NULL parameter");
 
+        } catch (IllegalArgumentException e) {
+            assertTrue("Expected exception passing NULL connectionMgr", true);
         } catch (Exception e) {
-            assertTrue("Unexpected exception passing NULL connectionMgr", (e instanceof IllegalArgumentException));
+            assertTrue("Unexpected exception passing NULL connectionMgr", false);
         }
 
         OwnCloudClient client = new OwnCloudClient(mServerUri, NetworkUtils.getMultiThreadedConnManager(), false);
@@ -120,12 +122,12 @@ public class OwnCloudClientTest extends AndroidTestCase {
         try {
             client.executeMethod(head, 1, 1000);
             throw new AssertionFailedError("Completed HEAD with impossible read timeout");
-        } catch (Exception e) {
+        } catch (ConnectTimeoutException | SocketTimeoutException e) {
             Log.e("OwnCloudClientTest", "EXCEPTION", e);
-            assertTrue("Unexpected exception " + e.getLocalizedMessage(),
-                    (e instanceof ConnectTimeoutException) ||
-                            (e instanceof SocketTimeoutException));
+            assertTrue("Expected exception " + e.getLocalizedMessage(), true);
 
+        } catch (IOException e) {
+            assertFalse("Unexpected exception", false);
         } finally {
             head.releaseConnection();
         }
@@ -138,10 +140,12 @@ public class OwnCloudClientTest extends AndroidTestCase {
             client.executeMethod(head, 1000, 1);
             throw new AssertionFailedError("Completed HEAD with impossible connection timeout");
 
+        } catch (ConnectTimeoutException | SocketTimeoutException e) {
+            Log.e("OwnCloudClientTest", "EXCEPTION", e);
+            assertTrue("Expected exception " + e.getLocalizedMessage(), true);
         } catch (Exception e) {
             Log.e("OwnCloudClientTest", "EXCEPTION", e);
-            assertTrue("Unexpected exception " + e.getLocalizedMessage(), (e instanceof ConnectTimeoutException) ||
-                    (e instanceof SocketTimeoutException));
+            assertTrue("Unexpected exception " + e.getLocalizedMessage(), false);
         } finally {
             head.releaseConnection();
         }
@@ -276,13 +280,14 @@ public class OwnCloudClientTest extends AndroidTestCase {
         try {
             client.setBaseUri(null);
             throw new AssertionFailedError("Accepted NULL parameter");
-
+        } catch (IllegalArgumentException e) {
+            assertTrue("Unexpected exception passing NULL base URI", true);
         } catch (Exception e) {
-            assertTrue("Unexpected exception passing NULL base URI", (e instanceof IllegalArgumentException));
+            assertTrue("Unexpected exception passing NULL base URI", false);
         }
     }
 
-    public void testGetCookiesString() {
+//    public void testGetCookiesString() {
         // TODO implement test body
         /*public String getCookiesString(){
             Cookie[] cookies = getState().getCookies(); 
@@ -297,11 +302,11 @@ public class OwnCloudClientTest extends AndroidTestCase {
 			
 		}
 		*/
-    }
+//    }
 
 
-    public void testSetFollowRedirects() {
-        // TODO - to implement this test we need a redirected server
-    }
+//    public void testSetFollowRedirects() {
+//        // TODO - to implement this test we need a redirected server
+//    }
 
 }

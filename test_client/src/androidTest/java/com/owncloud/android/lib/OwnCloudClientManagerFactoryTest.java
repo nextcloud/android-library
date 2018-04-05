@@ -65,8 +65,10 @@ public class OwnCloudClientManagerFactoryTest extends TestCase {
             OwnCloudClientManagerFactory.setDefaultPolicy(null);
             throw new AssertionFailedError("Accepted NULL parameter");
 
+        } catch (IllegalArgumentException e) {
+            assertTrue("Expected exception when setting default policy null", true);
         } catch (Exception e) {
-            assertTrue("Unexpected exception when setting default policy null", (e instanceof IllegalArgumentException));
+            assertTrue("Unexpected exception when setting default policy null", false);
         }
         defaultPolicy = OwnCloudClientManagerFactory.getDefaultPolicy();
         assertEquals("ALWAYS_NEW_CLIENT changed after setting null", Policy.ALWAYS_NEW_CLIENT, defaultPolicy);
