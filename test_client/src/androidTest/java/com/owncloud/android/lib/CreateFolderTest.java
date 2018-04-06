@@ -26,7 +26,6 @@ package com.owncloud.android.lib;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.resources.files.ExistenceCheckRemoteOperation;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -117,47 +116,6 @@ public class CreateFolderTest extends RemoteTest {
         result = mActivity.createFolder(remotePath, true);
         assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
     }
-
-    /**
-     * Test to Create Folder with special characters: /  \  < >  :  "  |  ?  *
-     * > oc8.1 no characters are forbidden
-     */
-    public void testCreateFolderSpecialCharactersOnNewVersion() {
-        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_9);
-
-        String remotePath = mFullPath2FolderBase + "_\\";
-        RemoteOperationResult result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_<";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-
-        remotePath = mFullPath2FolderBase + "_>";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-
-        remotePath = mFullPath2FolderBase + "_:";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-
-        remotePath = mFullPath2FolderBase + "_\"";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-
-        remotePath = mFullPath2FolderBase + "_|";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-
-        remotePath = mFullPath2FolderBase + "_?";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-
-        remotePath = mFullPath2FolderBase + "_*";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
-    }
-
 
     @Override
     protected void tearDown() throws Exception {
