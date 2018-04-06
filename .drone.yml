@@ -10,21 +10,8 @@ pipeline:
       privileged: true
       commands:
         - emulator -avd android-27 -no-window -no-audio &
-        - ./wait_for_emulator.sh
-        - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "Unit"
-        - ./gradlew assembleDebug installDebugAndroidTest
-        - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "IT"
-        - ./gradlew combinedTestReport
-        - curl -o codecov.sh https://codecov.io/bash
-        - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
+        - ./wait_for_emulator.sh && ./gradlew :test_client:connectedDebugAndroidTest --info
       secrets: [ LOG_USERNAME, LOG_PASSWORD ]
-
-  lint:
-      image: nextcloudci/android:android-33
-      commands:
-        - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
-        - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
-      secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
 
   notify:
         image: drillster/drone-email
