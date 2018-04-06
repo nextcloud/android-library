@@ -9,7 +9,7 @@ pipeline:
       image: nextcloudci/android:android-33
       privileged: true
       commands:
-        - emulator -avd android-27 -no-window -no-audio &
+        - emulator -avd android-27 -no-window -no-audio -gpu on &
         - ./wait_for_emulator.sh && ./gradlew :test_client:connectedDebugAndroidTest --info
       secrets: [ LOG_USERNAME, LOG_PASSWORD ]
 
