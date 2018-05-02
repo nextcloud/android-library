@@ -49,6 +49,9 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
     public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
     public static final String EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type";
+    public static final String TRASHBIN_FILENAME = "trashbin-filename";
+    public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
+    public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
@@ -56,6 +59,7 @@ public class WebdavEntry {
     private static final String IS_ENCRYPTED = "1";
 
     private static final int CODE_PROP_NOT_FOUND = 404;
+    
 
     private String mName;
     private String mPath;
@@ -64,6 +68,9 @@ public class WebdavEntry {
     private String mEtag;
     private String mPermissions;
     private String mRemoteId;
+    private String mTrashbinOriginalLocation;
+    private String mTrashbinFilename;
+    private long mTrashbinDeletionTimestamp;
     private boolean mIsFavorite;
     private boolean mIsEncrypted;
     private MountType mMountType;
@@ -235,7 +242,24 @@ public class WebdavEntry {
             } else {
                 mMountType = MountType.INTERNAL;
             }
+            
+            // NC trashbin-original-location <nc:trashbin-original-location>
+            prop = propSet.get(TRASHBIN_ORIGINAL_LOCATION, Namespace.getNamespace(NAMESPACE_NC));
+            if (prop != null) {
+                mTrashbinOriginalLocation = prop.getValue().toString();
+            }
 
+            // NC trashbin-filename <nc:trashbin-filename>
+            prop = propSet.get(TRASHBIN_FILENAME, Namespace.getNamespace(NAMESPACE_NC));
+            if (prop != null) {
+                mTrashbinFilename = prop.getValue().toString();
+            }
+
+            // NC trashbin-deletion-time <nc:trashbin-deletion-time>
+            prop = propSet.get(TRASHBIN_DELETION_TIME, Namespace.getNamespace(NAMESPACE_NC));
+            if (prop != null) {
+                mTrashbinDeletionTimestamp = Long.parseLong((String) prop.getValue());
+            }
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
@@ -315,6 +339,18 @@ public class WebdavEntry {
 
     public MountType getMountType() {
         return mMountType;
+    }
+    
+    public String getTrashbinOriginalLocation() {
+        return mTrashbinOriginalLocation;
+    }
+    
+    public String getTrashbinFilename() {
+        return mTrashbinFilename;
+    }
+    
+    public long getTrashbinDeletionTimestamp() {
+        return mTrashbinDeletionTimestamp;
     }
 
     private void resetData() {
