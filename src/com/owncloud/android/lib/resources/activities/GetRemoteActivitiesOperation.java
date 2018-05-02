@@ -1,4 +1,4 @@
-/**  Nextcloud Android Library is available under MIT license
+/*  Nextcloud Android Library is available under MIT license
  *
  *   Copyright (C) 2017 Alejandro Bautista
  *   @author Alejandro Bautista
@@ -56,13 +56,14 @@ import java.util.List;
  * accessible via the activities endpoint at {@value OCS_ROUTE_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/activity/blob/master/docs/endpoint-v2.md"}.
  */
-public class GetRemoteActivitiesOperation extends RemoteOperation{
+public class GetRemoteActivitiesOperation extends RemoteOperation {
 
     private static final String TAG = GetRemoteActivitiesOperation.class.getSimpleName();
 
     // OCS Routes
-    private static final String OCS_ROUTE_V12_AND_UP = "/ocs/v2.php/apps/activity/api/v2/activity?format=json";
-    private static final String OCS_ROUTE_PRE_V12 = "/ocs/v1.php/cloud/activity?format=json";
+    private static final String OCS_ROUTE_V12_AND_UP = "/ocs/v2.php/apps/activity/api/v2/activity";
+    private static final String OCS_ROUTE_PRE_V12 = "/ocs/v1.php/cloud/activity";
+    private static final String FORMAT_JSON = "?format=json";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
@@ -70,6 +71,15 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
     private static final String NODE_DATA = "data";
 
     private String nextUrl = "";
+    
+    private String fileId = "";
+
+    public GetRemoteActivitiesOperation() {
+    }
+    
+    public GetRemoteActivitiesOperation(String fileId) {
+        this.fileId = fileId;
+    }
 
     public void setNextUrl(String url) {
         nextUrl = url;
@@ -77,7 +87,7 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+        RemoteOperationResult result;
         int status = -1;
         GetMethod get = null;
         ArrayList<Activity> activities;
@@ -91,6 +101,14 @@ public class GetRemoteActivitiesOperation extends RemoteOperation{
         } else {
             url = nextUrl;
         }
+        
+        // add filter for fileId, if available
+        if (!fileId.isEmpty()) {
+            url = url + "/filter" + FORMAT_JSON + "&sort=desc&object_type=files&object_id=" + fileId;
+        } else if (nextUrl.isEmpty()){
+            url = url + FORMAT_JSON;
+        }
+        
         Log_OC.d(TAG, "URL: " + url);
 
         try {
