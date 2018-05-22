@@ -46,7 +46,7 @@ public class WebDavFileUtils {
                                       OwnCloudClient client,
                                       boolean isReadFolderOperation,
                                       boolean isSearchOperation,
-                                      String username) {
+                                      String userId) {
         ArrayList<Object> mFolderAndFiles = new ArrayList<>();
 
         WebdavEntry we;
@@ -61,8 +61,8 @@ public class WebDavFileUtils {
         }
 
         String stripString = client.getWebdavUri().getPath();
-        if (isSearchOperation && username != null) {
-            stripString = stripString.substring(0, stripString.lastIndexOf("/")) + "/dav/files/" + username;
+        if (isSearchOperation && userId != null) {
+            stripString = stripString.substring(0, stripString.lastIndexOf("/")) + "/dav/files/" + userId;
             stripString = stripString.replaceAll(" ", "%20");
         }
 
