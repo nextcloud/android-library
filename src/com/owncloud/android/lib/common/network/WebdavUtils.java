@@ -113,7 +113,7 @@ public class WebdavUtils {
      * Builds a DavPropertyNameSet with properties for files
      * @return
      */
-    public static DavPropertyNameSet getFilePropSet(){
+    public static DavPropertyNameSet getFilePropSet() {
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
@@ -122,14 +122,28 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.GETLASTMODIFIED);
         propSet.add(DavPropertyName.CREATIONDATE);
         propSet.add(DavPropertyName.GETETAG);
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE,
-                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+
+        return propSet;
+    }
+
+    /**
+     * Builds a DavPropertyNameSet with properties for trashbin
+     * @return
+     */
+    public static DavPropertyNameSet getTrashbinPropSet() {
+        DavPropertyNameSet propSet = new DavPropertyNameSet();
+        propSet.add(DavPropertyName.RESOURCETYPE);
+        propSet.add(DavPropertyName.GETCONTENTTYPE);
+        propSet.add(DavPropertyName.GETCONTENTLENGTH);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.TRASHBIN_FILENAME, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
+        propSet.add(WebdavEntry.TRASHBIN_ORIGINAL_LOCATION, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
+        propSet.add(WebdavEntry.TRASHBIN_DELETION_TIME, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
 
         return propSet;
     }
