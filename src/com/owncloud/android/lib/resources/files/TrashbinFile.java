@@ -98,6 +98,13 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     public void setRemoteId(String remoteId) {
         this.remoteId = remoteId;
     }
+
+    /**
+     * For trashbin this is the same as remoteId
+     */
+    public String getLocalId() {
+        return getRemoteId();
+    }
     
     public void setFileName(String fileName) {
         this.fileName = fileName;
