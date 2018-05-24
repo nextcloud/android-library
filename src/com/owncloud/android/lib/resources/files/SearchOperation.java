@@ -19,6 +19,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import android.util.Log;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -97,7 +99,7 @@ public class SearchOperation extends RemoteOperation {
 
                 // check and process response
                 boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
-                
+
                 if (isSuccess) {
                     // get data from remote folder
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
@@ -221,7 +223,7 @@ public class SearchOperation extends RemoteOperation {
                 searchType == SearchType.RECENTLY_ADDED_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
         } else if (searchType == SearchType.GALLERY_SEARCH) {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:or");
+            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:and");
         } else {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
         }
