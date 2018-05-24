@@ -19,8 +19,6 @@
  */
 package com.owncloud.android.lib.resources.files;
 
-import android.util.Log;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -223,7 +221,7 @@ public class SearchOperation extends RemoteOperation {
                 searchType == SearchType.RECENTLY_ADDED_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
         } else if (searchType == SearchType.GALLERY_SEARCH) {
-            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:and");
+            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:or");
         } else {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
         }
@@ -332,7 +330,7 @@ public class SearchOperation extends RemoteOperation {
             literalElement.appendChild(literalTextElement);
         } else {
             equalsElement.appendChild(imageLikeElement);
-            equalsElement.appendChild(videoLikeElement);
+            //equalsElement.appendChild(videoLikeElement);
         }
         basicSearchElement.appendChild(orderByElement);
 
