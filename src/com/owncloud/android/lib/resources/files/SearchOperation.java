@@ -61,7 +61,8 @@ public class SearchOperation extends RemoteOperation {
         CONTENT_TYPE_SEARCH,
         RECENTLY_MODIFIED_SEARCH,
         RECENTLY_ADDED_SEARCH,
-        SHARED_SEARCH
+        SHARED_SEARCH,
+        GALLERY_SEARCH
     }
 
     private String searchQuery;
@@ -219,41 +220,70 @@ public class SearchOperation extends RemoteOperation {
         } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH ||
                 searchType == SearchType.RECENTLY_ADDED_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
+        } else if (searchType == SearchType.GALLERY_SEARCH) {
+            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:or");
         } else {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
         }
-        Element propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+
+        Element propElement = null;
         Element queryElement = null;
-        if (searchType == SearchType.CONTENT_TYPE_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-        } else if (searchType == SearchType.FILE_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
-        } else if (searchType == SearchType.FAVORITE_SEARCH) {
-            queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
-        } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-        } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
-        }
-        Element literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
-        Text literalTextElement;
-        if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
-            if (searchType == SearchType.FILE_SEARCH) {
-                internalSearchString = "%" + internalSearchString + "%";
+        Element literalElement = null;
+        Text literalTextElement = null;
+        Element imageLikeElement = null;
+        Element videoLikeElement = null;
+        if (searchType != SearchType.GALLERY_SEARCH) {
+            propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            queryElement = null;
+            if (searchType == SearchType.CONTENT_TYPE_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            } else if (searchType == SearchType.FILE_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
+            } else if (searchType == SearchType.FAVORITE_SEARCH) {
+                queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
+            } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+            } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
             }
-            literalTextElement = query.createTextNode(internalSearchString);
+            literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
+            if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
+                if (searchType == SearchType.FILE_SEARCH) {
+                    internalSearchString = "%" + internalSearchString + "%";
+                }
+                literalTextElement = query.createTextNode(internalSearchString);
+            } else {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+                dateFormat.setTimeZone(TimeZone.getDefault());
+                Date date = new Date();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_YEAR, -7);
+                date = calendar.getTime();
+
+                String formattedDateString = dateFormat.format(date);
+                literalTextElement = query.createTextNode(formattedDateString);
+            }
         } else {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-            dateFormat.setTimeZone(TimeZone.getDefault());
-            Date date = new Date();
+            imageLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
+            Element imagePropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element imageQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            Text imageLiteralTextElement = query.createTextNode("image/%");
+            videoLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
+            Element videoPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element videoQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            Text videoLiteralTextElement = query.createTextNode("video/%");
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.DAY_OF_YEAR, -7);
-            date = calendar.getTime();
+            videoPropElement.appendChild(videoQueryElement);
+            videoLikeElement.appendChild(videoPropElement);
+            videoLikeElement.appendChild(videoLiteralTextElement);
 
-            String formattedDateString = dateFormat.format(date);
-            literalTextElement = query.createTextNode(formattedDateString);
+
+            imagePropElement.appendChild(imageQueryElement);
+            imageLikeElement.appendChild(imagePropElement);
+            imageLikeElement.appendChild(imageLiteralTextElement);
+
         }
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
@@ -292,10 +322,16 @@ public class SearchOperation extends RemoteOperation {
         } else {
             whereElement.appendChild(equalsElement);
         }
-        equalsElement.appendChild(propElement);
-        equalsElement.appendChild(literalElement);
-        propElement.appendChild(queryElement);
-        literalElement.appendChild(literalTextElement);
+
+        if (searchType != SearchType.GALLERY_SEARCH) {
+            equalsElement.appendChild(propElement);
+            equalsElement.appendChild(literalElement);
+            propElement.appendChild(queryElement);
+            literalElement.appendChild(literalTextElement);
+        } else {
+            equalsElement.appendChild(imageLikeElement);
+            equalsElement.appendChild(videoLikeElement);
+        }
         basicSearchElement.appendChild(orderByElement);
 
         return query;
