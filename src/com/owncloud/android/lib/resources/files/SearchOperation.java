@@ -213,7 +213,7 @@ public class SearchOperation extends RemoteOperation {
         Element folderElement = null;
         if (filterOutFiles) {
             folderElement = query.createElementNS(DAV_NAMESPACE, "d:is-collection");
-        }   
+        }
         Element equalsElement;
         if (searchType == SearchType.FAVORITE_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
@@ -232,6 +232,7 @@ public class SearchOperation extends RemoteOperation {
         Text literalTextElement = null;
         Element imageLikeElement = null;
         Element videoLikeElement = null;
+
         if (searchType != SearchType.GALLERY_SEARCH) {
             propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
             queryElement = null;
@@ -269,20 +270,25 @@ public class SearchOperation extends RemoteOperation {
             imageLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
             Element imagePropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
             Element imageQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            Element imageLiteralElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
             Text imageLiteralTextElement = query.createTextNode("image/%");
             videoLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
             Element videoPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
             Element videoQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            Element videoLiteralElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
             Text videoLiteralTextElement = query.createTextNode("video/%");
+
+            videoLiteralElement.appendChild(videoLiteralTextElement);
+            imageLiteralElement.appendChild(imageLiteralTextElement);
 
             videoPropElement.appendChild(videoQueryElement);
             videoLikeElement.appendChild(videoPropElement);
-            videoLikeElement.appendChild(videoLiteralTextElement);
+            videoLikeElement.appendChild(videoLiteralElement);
 
 
             imagePropElement.appendChild(imageQueryElement);
             imageLikeElement.appendChild(imagePropElement);
-            imageLikeElement.appendChild(imageLiteralTextElement);
+            imageLikeElement.appendChild(imageLiteralElement);
 
         }
 
@@ -330,7 +336,7 @@ public class SearchOperation extends RemoteOperation {
             literalElement.appendChild(literalTextElement);
         } else {
             equalsElement.appendChild(imageLikeElement);
-            //equalsElement.appendChild(videoLikeElement);
+            equalsElement.appendChild(videoLikeElement);
         }
         basicSearchElement.appendChild(orderByElement);
 
