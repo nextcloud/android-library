@@ -134,7 +134,11 @@ public class GetRemoteActivitiesOperation extends RemoteOperation {
                 Log_OC.d(TAG, "Successful response: " + response);
                 result = new RemoteOperationResult(true, status, get.getResponseHeaders());
                 // Parse the response
-                activities = parseResult(response);
+                if (response == null) {
+                    activities = new ArrayList<>();
+                } else {
+                    activities = parseResult(response);
+                }
 
                 ArrayList<Object> data = new ArrayList<>();
                 data.add(activities);
@@ -179,6 +183,6 @@ public class GetRemoteActivitiesOperation extends RemoteOperation {
     }
 
     private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK);
+        return (status == HttpStatus.SC_OK || status == HttpStatus.SC_NOT_MODIFIED);
     }
 }
