@@ -149,6 +149,23 @@ public class WebdavUtils {
     }
 
     /**
+     * Builds a DavPropertyNameSet with properties for versions
+     * @return
+     */
+    public static DavPropertyNameSet getFileVersionPropSet() {
+        DavPropertyNameSet propSet = new DavPropertyNameSet();
+        propSet.add(DavPropertyName.GETCONTENTTYPE);
+        propSet.add(DavPropertyName.RESOURCETYPE);
+        propSet.add(DavPropertyName.GETCONTENTLENGTH);
+        propSet.add(DavPropertyName.GETLASTMODIFIED);
+        propSet.add(DavPropertyName.CREATIONDATE);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+
+        return propSet;
+    }
+
+    /**
      *
      * @param rawEtag
      * @return
