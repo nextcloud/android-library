@@ -316,7 +316,7 @@ public class OCShare implements Parcelable, Serializable {
         mUserId = source.readLong();
         mRemoteId = source.readLong();
         mShareLink = source.readString();
-        mIsPasswordProtected = source.readInt() == 0;
+        mIsPasswordProtected = source.readInt() == 1;
     }
 
 
