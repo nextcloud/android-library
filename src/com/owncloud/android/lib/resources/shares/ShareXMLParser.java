@@ -37,17 +37,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-//import android.util.Log;
-
 /**
  * Parser for Share API Response
  * @author masensio
  *
  */
-
 public class ShareXMLParser {
-
-	//private static final String TAG = ShareXMLParser.class.getSimpleName();
 
 	// No namespaces
 	private static final String ns = null;
@@ -76,6 +71,7 @@ public class ShareXMLParser {
 	private static final String NODE_TOKEN = "token";
 	private static final String NODE_STORAGE = "storage";
 	private static final String NODE_MAIL_SEND = "mail_send";
+	private static final String NODE_PASSWORD = "password";
 	private static final String NODE_SHARE_WITH_DISPLAY_NAME = "share_with_displayname";
 	
 	private static final String NODE_URL = "url";
@@ -342,6 +338,9 @@ public class ShareXMLParser {
 				if (!(value.length() == 0)) {
 					share.setExpirationDate(WebdavUtils.parseResponseDate(value).getTime()); 
 				}
+
+			} else if (name.equalsIgnoreCase(NODE_PASSWORD)) {
+				share.setIsPasswordProtected(readNode(parser, NODE_PASSWORD).length() > 0);
 
 			} else if (name.equalsIgnoreCase(NODE_TOKEN)) {
 				share.setToken(readNode(parser, NODE_TOKEN));
