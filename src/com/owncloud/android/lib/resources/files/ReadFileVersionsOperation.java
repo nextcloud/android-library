@@ -123,7 +123,7 @@ public class ReadFileVersionsOperation extends RemoteOperation {
                         Log_OC.e(TAG, "Synchronized with id " + fileId + ": " + result.getLogMessage(),
                                 result.getException());
                     } else {
-                        Log_OC.e(TAG, "Synchronized with id " + fileId + ": " + result.getLogMessage());
+                        Log_OC.w(TAG, "Synchronized with id " + fileId + ": " + result.getLogMessage());
                     }
                 }
             }
@@ -142,13 +142,11 @@ public class ReadFileVersionsOperation extends RemoteOperation {
         versions = new ArrayList<>();
 
         // parse data from remote folder
-        WebdavEntry we;
         String splitElement = client.getNewWebdavUri(false).getPath();
 
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
-            we = new WebdavEntry(remoteData.getResponses()[i], splitElement);
-            versions.add(new FileVersion(fileId, we));
+            versions.add(new FileVersion(fileId, new WebdavEntry(remoteData.getResponses()[i], splitElement)));
         }
     }
 }
