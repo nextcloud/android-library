@@ -61,7 +61,8 @@ public class SearchOperation extends RemoteOperation {
         CONTENT_TYPE_SEARCH,
         RECENTLY_MODIFIED_SEARCH,
         RECENTLY_ADDED_SEARCH,
-        SHARED_SEARCH
+        SHARED_SEARCH,
+        GALLERY_SEARCH
     }
 
     private String searchQuery;
@@ -96,7 +97,7 @@ public class SearchOperation extends RemoteOperation {
 
                 // check and process response
                 boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
-                
+
                 if (isSuccess) {
                     // get data from remote folder
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
@@ -212,48 +213,83 @@ public class SearchOperation extends RemoteOperation {
         Element folderElement = null;
         if (filterOutFiles) {
             folderElement = query.createElementNS(DAV_NAMESPACE, "d:is-collection");
-        }   
+        }
         Element equalsElement;
         if (searchType == SearchType.FAVORITE_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
         } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH ||
                 searchType == SearchType.RECENTLY_ADDED_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
+        } else if (searchType == SearchType.GALLERY_SEARCH) {
+            equalsElement = query.createElementNS(DAV_NAMESPACE, "d:or");
         } else {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
         }
-        Element propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+
+        Element propElement = null;
         Element queryElement = null;
-        if (searchType == SearchType.CONTENT_TYPE_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-        } else if (searchType == SearchType.FILE_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
-        } else if (searchType == SearchType.FAVORITE_SEARCH) {
-            queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
-        } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-        } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
-            queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
-        }
-        Element literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
-        Text literalTextElement;
-        if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
-            if (searchType == SearchType.FILE_SEARCH) {
-                internalSearchString = "%" + internalSearchString + "%";
+        Element literalElement = null;
+        Text literalTextElement = null;
+        Element imageLikeElement = null;
+        Element videoLikeElement = null;
+
+        if (searchType != SearchType.GALLERY_SEARCH) {
+            propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            queryElement = null;
+            if (searchType == SearchType.CONTENT_TYPE_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            } else if (searchType == SearchType.FILE_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
+            } else if (searchType == SearchType.FAVORITE_SEARCH) {
+                queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
+            } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+            } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
+                queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
             }
-            literalTextElement = query.createTextNode(internalSearchString);
+            literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
+            if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
+                if (searchType == SearchType.FILE_SEARCH) {
+                    internalSearchString = "%" + internalSearchString + "%";
+                }
+                literalTextElement = query.createTextNode(internalSearchString);
+            } else {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+                dateFormat.setTimeZone(TimeZone.getDefault());
+                Date date = new Date();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_YEAR, -7);
+                date = calendar.getTime();
+
+                String formattedDateString = dateFormat.format(date);
+                literalTextElement = query.createTextNode(formattedDateString);
+            }
         } else {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-            dateFormat.setTimeZone(TimeZone.getDefault());
-            Date date = new Date();
+            imageLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
+            Element imagePropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element imageQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            Element imageLiteralElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
+            Text imageLiteralTextElement = query.createTextNode("image/%");
+            videoLikeElement = query.createElementNS(DAV_NAMESPACE, "d:like");
+            Element videoPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element videoQueryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+            Element videoLiteralElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
+            Text videoLiteralTextElement = query.createTextNode("video/%");
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.DAY_OF_YEAR, -7);
-            date = calendar.getTime();
+            videoLiteralElement.appendChild(videoLiteralTextElement);
+            imageLiteralElement.appendChild(imageLiteralTextElement);
 
-            String formattedDateString = dateFormat.format(date);
-            literalTextElement = query.createTextNode(formattedDateString);
+            videoPropElement.appendChild(videoQueryElement);
+            videoLikeElement.appendChild(videoPropElement);
+            videoLikeElement.appendChild(videoLiteralElement);
+
+
+            imagePropElement.appendChild(imageQueryElement);
+            imageLikeElement.appendChild(imagePropElement);
+            imageLikeElement.appendChild(imageLiteralElement);
+
         }
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
@@ -292,10 +328,16 @@ public class SearchOperation extends RemoteOperation {
         } else {
             whereElement.appendChild(equalsElement);
         }
-        equalsElement.appendChild(propElement);
-        equalsElement.appendChild(literalElement);
-        propElement.appendChild(queryElement);
-        literalElement.appendChild(literalTextElement);
+
+        if (searchType != SearchType.GALLERY_SEARCH) {
+            equalsElement.appendChild(propElement);
+            equalsElement.appendChild(literalElement);
+            propElement.appendChild(queryElement);
+            literalElement.appendChild(literalTextElement);
+        } else {
+            equalsElement.appendChild(imageLikeElement);
+            equalsElement.appendChild(videoLikeElement);
+        }
         basicSearchElement.appendChild(orderByElement);
 
         return query;
