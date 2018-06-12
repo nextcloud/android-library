@@ -88,6 +88,7 @@ public class GetRemoteShareesOperation extends RemoteOperation{
     private static final String NODE_USERS = "users";
     private static final String NODE_GROUPS = "groups";
     private static final String NODE_REMOTES = "remotes";
+    private static final String NODE_EMAILS = "emails";
     public static final String NODE_VALUE = "value";
     public static final String PROPERTY_LABEL = "label";
     public static final String PROPERTY_SHARE_TYPE = "shareType";
@@ -144,6 +145,7 @@ public class GetRemoteShareesOperation extends RemoteOperation{
                 JSONArray respExactUsers = respExact.getJSONArray(NODE_USERS);
                 JSONArray respExactGroups = respExact.getJSONArray(NODE_GROUPS);
                 JSONArray respExactRemotes = respExact.getJSONArray(NODE_REMOTES);
+                JSONArray respExactEmails = respExact.getJSONArray(NODE_EMAILS);
                 JSONArray respPartialUsers = respData.getJSONArray(NODE_USERS);
                 JSONArray respPartialGroups = respData.getJSONArray(NODE_GROUPS);
                 JSONArray respPartialRemotes = respData.getJSONArray(NODE_REMOTES);
@@ -153,11 +155,12 @@ public class GetRemoteShareesOperation extends RemoteOperation{
                         respExactRemotes,
                         respPartialUsers,
                         respPartialGroups,
-                        respPartialRemotes
+                        respPartialRemotes,
+                        respExactEmails
                 };
 
                 ArrayList<Object> data = new ArrayList<Object>(); // For result data
-                for (int i=0; i<6; i++) {
+                for (int i=0; i<7; i++) {
                     for(int j=0; j< jsonResults[i].length(); j++){
                         JSONObject jsonResult = jsonResults[i].getJSONObject(j);
                         data.add(jsonResult);
