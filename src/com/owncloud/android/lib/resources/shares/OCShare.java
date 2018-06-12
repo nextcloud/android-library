@@ -99,6 +99,7 @@ public class OCShare implements Parcelable, Serializable {
     private long mUserId;
     private long mRemoteId;
     private String mShareLink;
+    private boolean mIsPasswordProtected;
     
     public OCShare() {
     	super();
@@ -133,6 +134,7 @@ public class OCShare implements Parcelable, Serializable {
         mUserId = -1;
         mRemoteId = -1;
         mShareLink = "";
+        mIsPasswordProtected = false;
     }	
     
     /// Getters and Setters
@@ -257,8 +259,16 @@ public class OCShare implements Parcelable, Serializable {
         this.mShareLink = (shareLink != null) ? shareLink : "";
     }
 
+    public void setIsPasswordProtected(boolean isPasswordProtected) {
+        this.mIsPasswordProtected = isPasswordProtected;
+    }
+
     public boolean isPasswordProtected() {
-        return ShareType.PUBLIC_LINK.equals(mShareType) && mShareWith.length() > 0;
+        if (!ShareType.PUBLIC_LINK.equals(mShareType)) {
+            return mIsPasswordProtected;
+        } else {
+            return mShareWith.length() > 0;
+        }
     }
     
     /** 
@@ -306,6 +316,7 @@ public class OCShare implements Parcelable, Serializable {
         mUserId = source.readLong();
         mRemoteId = source.readLong();
         mShareLink = source.readString();
+        mIsPasswordProtected = source.readInt() == 1;
     }
 
 
@@ -332,6 +343,6 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeLong(mUserId);
         dest.writeLong(mRemoteId);
         dest.writeString(mShareLink);
+        dest.writeInt(mIsPasswordProtected ? 1 : 0);
     }
-
 }
