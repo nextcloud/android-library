@@ -1,4 +1,4 @@
-/**
+/*
  * Nextcloud Android client application
  *
  * @author Mario Danic
@@ -67,7 +67,7 @@ public class WebDavFileUtils {
         }
 
         // loop to update every child
-        RemoteFile remoteFile = null;
+        RemoteFile remoteFile;
         MultiStatusResponse[] responses = remoteData.getResponses();
         for (int i = start; i < responses.length; i++) {
             /// new OCFile instance with the data from the server

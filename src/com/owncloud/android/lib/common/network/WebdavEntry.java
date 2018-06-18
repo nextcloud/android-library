@@ -84,7 +84,7 @@ public class WebdavEntry {
         if (ms.getStatus().length != 0) {
             mUri = ms.getHref();
 
-            mPath = mUri.split(splitElement, 2)[1];
+            mPath = mUri.split(splitElement, 2)[1].replace("//", "/");
 
             int status = ms.getStatus()[0].getStatusCode();
             if ( status == CODE_PROP_NOT_FOUND ) {
