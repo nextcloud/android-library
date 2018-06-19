@@ -49,8 +49,8 @@ public class CreateRemoteFolderOperation extends RemoteOperation {
     private static final int CONNECTION_TIMEOUT = 5000;
 
 
-    protected String mRemotePath;
-    protected boolean mCreateFullPath;
+    private String mRemotePath;
+    private boolean mCreateFullPath;
 
     /**
      * Constructor
@@ -71,10 +71,9 @@ public class CreateRemoteFolderOperation extends RemoteOperation {
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+        RemoteOperationResult result;
         OwnCloudVersion version = client.getOwnCloudVersion();
-        boolean versionWithForbiddenChars =
-            (version != null && version.isVersionWithForbiddenCharacters());
+        boolean versionWithForbiddenChars = (version != null && version.isVersionWithForbiddenCharacters());
         boolean noInvalidChars = FileUtils.isValidPath(mRemotePath, versionWithForbiddenChars);
         if (noInvalidChars) {
             result = createFolder(client);
@@ -95,23 +94,23 @@ public class CreateRemoteFolderOperation extends RemoteOperation {
 
 
     private RemoteOperationResult createFolder(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        MkColMethod mkcol = null;
+        RemoteOperationResult result;
+        MkColMethod mkCol = null;
         try {
-            mkcol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
+            mkCol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
             client.setUseNextcloudUserAgent(true);
-            client.executeMethod(mkcol, READ_TIMEOUT, CONNECTION_TIMEOUT);
-            result = new RemoteOperationResult(mkcol.succeeded(), mkcol);
+            client.executeMethod(mkCol, READ_TIMEOUT, CONNECTION_TIMEOUT);
+            result = new RemoteOperationResult(mkCol.succeeded(), mkCol);
             Log_OC.d(TAG, "Create directory " + mRemotePath + ": " + result.getLogMessage());
-            client.exhaustResponse(mkcol.getResponseBodyAsStream());
+            client.exhaustResponse(mkCol.getResponseBodyAsStream());
 
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Create directory " + mRemotePath + ": " + result.getLogMessage(), e);
 
         } finally {
-            if (mkcol != null)
-                mkcol.releaseConnection();
+            if (mkCol != null)
+                mkCol.releaseConnection();
         }
         return result;
     }

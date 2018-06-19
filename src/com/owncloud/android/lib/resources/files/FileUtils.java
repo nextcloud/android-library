@@ -24,10 +24,9 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import java.io.File;
-
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
+import java.io.File;
 
 public class FileUtils {
 
@@ -76,10 +75,12 @@ public class FileUtils {
 		Log_OC.d(TAG, "path ....... " + path);
 		if (!versionSupportsForbidenChars &&
 				(path.contains("\\") || path.contains("<") || path.contains(">") ||
-				path.contains(":") || path.contains("\"") || path.contains("|") || 
-				path.contains("?") || path.contains("*") ) ){
-			result = false;
-		}
+				path.contains(":") || path.contains("\"") || path.contains("|") ||
+                        path.contains("?") || path.contains("*") ) ){
+            result = false;
+        } else if (path.contains("\\")) {
+            return false;
+        }
 		return result;
 	}
 	
