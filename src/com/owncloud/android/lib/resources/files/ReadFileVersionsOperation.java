@@ -81,7 +81,7 @@ public class ReadFileVersionsOperation extends RemoteOperation {
                 throw new IllegalArgumentException("UserId may not be empty!");
             }
 
-            String uri = client.getNewWebdavUri(false) + "/versions/" + userId + "/versions/" + fileId;
+            String uri = client.getNewWebdavUri() + "/versions/" + userId + "/versions/" + fileId;
             DavPropertyNameSet propSet = WebdavUtils.getFileVersionPropSet();
 
             query = new PropFindMethod(uri, propSet, DavConstants.DEPTH_1);
@@ -142,7 +142,7 @@ public class ReadFileVersionsOperation extends RemoteOperation {
         versions = new ArrayList<>();
 
         // parse data from remote folder
-        String splitElement = client.getNewWebdavUri(false).getPath();
+        String splitElement = client.getNewWebdavUri().getPath();
 
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
