@@ -8,6 +8,8 @@ public interface ServerFileInterface {
     
     String getRemotePath();
     
+    String getLocalId();
+    
     String getRemoteId();
     
     boolean getIsFavorite();
