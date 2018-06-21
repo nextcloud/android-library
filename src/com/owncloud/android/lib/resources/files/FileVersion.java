@@ -67,6 +67,14 @@ public class FileVersion implements Parcelable, ServerFileInterface {
         return "";
     }
 
+    /**
+     * For file version this is the same as remoteId
+     */
+    @Override
+    public String getLocalId() {
+        return getRemoteId();
+    }
+
     @Override
     public String getRemoteId() {
         return remoteId;

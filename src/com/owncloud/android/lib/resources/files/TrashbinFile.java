@@ -67,6 +67,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         return false;
     }
 
+    @Override
     public String getRemotePath() {
         return remotePath;
     }
@@ -75,6 +76,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         this.fullRemotePath = fullRemotePath;
     }
 
+    @Override
     public String getMimeType() {
         return mimeType;
     }
@@ -83,6 +85,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         this.mimeType = mimeType;
     }
 
+    @Override
     public long getFileLength() {
         return length;
     }
@@ -91,6 +94,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         this.length = length;
     }
 
+    @Override
     public String getRemoteId() {
         return remoteId;
     }
@@ -102,6 +106,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     /**
      * For trashbin this is the same as remoteId
      */
+    @Override
     public String getLocalId() {
         return getRemoteId();
     }
@@ -109,7 +114,8 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-    
+
+    @Override
     public String getFileName() {
         return fileName;
     }
@@ -129,7 +135,8 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     public long getDeletionTimestamp() {
         return deletionTimestamp;
     }
-    
+
+    @Override
     public boolean isFolder() {
         return mimeType != null && mimeType.equals(DIRECTORY);
     }
@@ -160,7 +167,6 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         setOriginalLocation(we.getTrashbinOriginalLocation());
         setDeletionTimestamp(we.getTrashbinDeletionTimestamp());
         setRemoteId(we.remoteId());
-        
     }
 
     /**
