@@ -136,6 +136,9 @@ public class OCCapability {
         mExternalLinks = CapabilityBooleanType.UNKNOWN;
 
         mEndToEndEncryption = CapabilityBooleanType.UNKNOWN;
+
+        mFullNextSearchEnabled = CapabilityBooleanType.UNKNOWN;
+        mFullNextSearchFiles = CapabilityBooleanType.UNKNOWN;
     }
 
 
@@ -442,10 +445,15 @@ public class OCCapability {
     public CapabilityBooleanType getFullNextSearchFiles() {
         return mFullNextSearchFiles;
     }
+    
+    public boolean isFullNextSearchFilesSearchEnabled() {
+        return mFullNextSearchEnabled.isTrue() && mFullNextSearchFiles.isTrue();
+    }
 
     public void setFullNextSearchFiles(CapabilityBooleanType fullNextSearchFiles) {
         mFullNextSearchFiles = fullNextSearchFiles;
     }
+
     public CapabilityBooleanType getEndToEndEncryption() {
         return mEndToEndEncryption;
     }
