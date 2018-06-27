@@ -95,26 +95,31 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
         RichObject richObject = new RichObject();
         richObject.setTag(tag);
         while (in.hasNext()) {
-            String name = in.nextName();
-
+            String name;
+            try {
+                name = in.nextName();
+            } catch (IllegalStateException e) {
+                name = "";
+            }
+            
             switch (name) {
                 case "type":
-                    richObject.setType(in.nextString());
+                    richObject.setType(getNextString(in));
                     break;
                 case "id":
-                    richObject.setId(in.nextString());
+                    richObject.setId(getNextString(in));
                     break;
                 case "name":
-                    richObject.setName(in.nextString());
+                    richObject.setName(getNextString(in));
                     break;
                 case "path":
-                    richObject.setPath(in.nextString());
+                    richObject.setPath(getNextString(in));
                     break;
                 case "link":
-                    richObject.setLink(in.nextString());
+                    richObject.setLink(getNextString(in));
                     break;
                 case "server":
-                    richObject.setLink(in.nextString());
+                    richObject.setLink(getNextString(in));
                     break;
                 default:
                     in.skipValue(); // ignore value
@@ -123,6 +128,14 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
         }
         in.endObject();
         return richObject;
+    }
+
+    private String getNextString(JsonReader in) {
+        try {
+            return in.nextString();
+        } catch (IllegalStateException | IOException e) {
+            return "";
+        }
     }
 }
 
