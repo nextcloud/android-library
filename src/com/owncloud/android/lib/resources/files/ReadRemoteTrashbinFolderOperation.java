@@ -79,7 +79,7 @@ public class ReadRemoteTrashbinFolderOperation extends RemoteOperation {
                 throw new IllegalArgumentException("UserId may not be empty!");
             }
 
-            String baseUri = client.getNewWebdavUri(false) + "/trashbin/" + userId + "/trash/";
+            String baseUri = client.getNewWebdavUri() + "/trashbin/" + userId + "/trash/";
             DavPropertyNameSet propSet = WebdavUtils.getTrashbinPropSet();
                 
             query = new PropFindMethod(baseUri + WebdavUtils.encodePath(remotePath), propSet, DavConstants.DEPTH_1);
@@ -142,7 +142,7 @@ public class ReadRemoteTrashbinFolderOperation extends RemoteOperation {
 
         // parse data from remote folder
         WebdavEntry we;
-        String splitElement = client.getNewWebdavUri(false).getPath();
+        String splitElement = client.getNewWebdavUri().getPath();
 
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {

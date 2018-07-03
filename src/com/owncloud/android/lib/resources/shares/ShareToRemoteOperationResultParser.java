@@ -95,8 +95,9 @@ public class ShareToRemoteOperationResultParser {
                                     share.getToken().length() > 0
                                     ) {
                                 if (mServerBaseUri != null) {
-                                    String sharingLinkPath = ShareUtils.getSharingLinkPath(mOwnCloudVersion);
-                                    share.setShareLink(mServerBaseUri + sharingLinkPath + share.getToken());
+                                    share.setShareLink(mServerBaseUri +
+                                            ShareUtils.SHARING_LINK_PATH_AFTER_VERSION_8 +
+                                            share.getToken());
                                 } else {
                                     Log_OC.e(TAG, "Couldn't build link for public share");
                                 }
