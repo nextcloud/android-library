@@ -26,6 +26,9 @@ package com.owncloud.android.lib.common.operations;
 
 import android.accounts.Account;
 import android.accounts.AccountsException;
+import android.os.Build;
+import android.system.ErrnoException;
+import android.system.OsConstants;
 
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
@@ -46,6 +49,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -260,28 +264,24 @@ public class RemoteOperationResult implements Serializable {
 
         if (e instanceof OperationCancelledException) {
             mCode = ResultCode.CANCELLED;
-
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && e instanceof ErrnoException && ((ErrnoException) e).errno == OsConstants.ENOTCONN) {
+            mCode = ResultCode.NO_NETWORK_CONNECTION;
+        } else if (e instanceof ConnectException) {
+            mCode = ResultCode.NO_NETWORK_CONNECTION;
         } else if (e instanceof SocketException) {
             mCode = ResultCode.WRONG_CONNECTION;
-
         } else if (e instanceof SocketTimeoutException) {
             mCode = ResultCode.TIMEOUT;
-
         } else if (e instanceof ConnectTimeoutException) {
             mCode = ResultCode.TIMEOUT;
-
         } else if (e instanceof MalformedURLException) {
             mCode = ResultCode.INCORRECT_ADDRESS;
-
         } else if (e instanceof UnknownHostException) {
             mCode = ResultCode.HOST_NOT_AVAILABLE;
-
         } else if (e instanceof AccountNotFoundException) {
             mCode = ResultCode.ACCOUNT_NOT_FOUND;
-
         } else if (e instanceof AccountsException) {
             mCode = ResultCode.ACCOUNT_EXCEPTION;
-
         } else if (e instanceof SSLException || e instanceof RuntimeException) {
             CertificateCombinedException se = getCertificateCombinedException(e);
             if (se != null) {
@@ -295,10 +295,8 @@ public class RemoteOperationResult implements Serializable {
             } else {
                 mCode = ResultCode.SSL_ERROR;
             }
-
         } else if (e instanceof FileNotFoundException) {
             mCode = ResultCode.LOCAL_FILE_NOT_FOUND;
-
         } else {
             mCode = ResultCode.UNKNOWN_ERROR;
         }
