@@ -129,7 +129,8 @@ public class RemoteOperationResult implements Serializable {
         UNTRUSTED_DOMAIN,
         ETAG_CHANGED,
         ETAG_UNCHANGED,
-        VIRUS_DETECTED
+        VIRUS_DETECTED,
+        FOLDER_ALREADY_EXISTS
     }
 
     private boolean mSuccess = false;
