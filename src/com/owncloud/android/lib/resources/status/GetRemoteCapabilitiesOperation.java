@@ -132,6 +132,10 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
     // v1 client side encryption
     private static final String NODE_END_TO_END_ENCRYPTION = "end-to-end-encryption";
+    
+    // Richdocuments
+    private static final String NODE_RICHDOCUMENTS = "richdocuments";
+    private static final String NODE_MIMETYPES = "mimetypes";
 
     // activity
     private static final String NODE_ACTIVITY = "activity";
@@ -396,6 +400,23 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             capability.setActivity(CapabilityBooleanType.TRUE);
                         } else {
                             capability.setActivity(CapabilityBooleanType.FALSE);
+                        }
+                        
+                        if (respCapabilities.has(NODE_RICHDOCUMENTS)) {
+                            capability.setRichDocuments(CapabilityBooleanType.TRUE);
+
+                            JSONArray mimeTypesArray = respCapabilities.getJSONObject(NODE_RICHDOCUMENTS)
+                                    .getJSONArray(NODE_MIMETYPES);
+                            
+                            ArrayList<String> mimeTypes = new ArrayList<>();
+
+                            for (int i=0; i < mimeTypesArray.length(); i++) {
+                                mimeTypes.add(mimeTypesArray.getString(i));
+                            }
+                            
+                            capability.setRichDocumentsMimeTypeList(mimeTypes);
+                        } else {
+                            capability.setRichDocuments(CapabilityBooleanType.FALSE);
                         }
                     }
                     
