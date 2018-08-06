@@ -34,18 +34,21 @@ public class ExternalLink {
     public ExternalLinkType type;
     public String name;
     public String url;
+    public boolean redirect;
 
     public ExternalLink() {
 
     }
 
-    public ExternalLink(Integer id, String iconUrl, String language, ExternalLinkType type, String name, String url) {
+    public ExternalLink(Integer id, String iconUrl, String language, ExternalLinkType type, String name, String url, 
+                        boolean redirect) {
         this.id = id;
         this.iconUrl = iconUrl;
         this.language = language;
         this.type = type;
         this.name = name;
         this.url = url;
+        this.redirect = redirect;
     }
 }
 

@@ -57,6 +57,7 @@ public class ExternalLinksOperation extends RemoteOperation {
     private static final String NODE_TYPE = "type";
     private static final String NODE_NAME = "name";
     private static final String NODE_URL = "url";
+    private static final String NODE_REDIRECT = "redirect";
 
 
     @Override
@@ -118,8 +119,9 @@ public class ExternalLinksOperation extends RemoteOperation {
 
                             String name = link.getString(NODE_NAME);
                             String url = link.getString(NODE_URL);
+                            boolean redirect = link.getInt(NODE_REDIRECT) == 1;
 
-                            resultLinks.add(new ExternalLink(id, iconUrl, language, type, name, url));
+                            resultLinks.add(new ExternalLink(id, iconUrl, language, type, name, url, redirect));
                         }
                     }
 
