@@ -119,7 +119,12 @@ public class ExternalLinksOperation extends RemoteOperation {
 
                             String name = link.getString(NODE_NAME);
                             String url = link.getString(NODE_URL);
-                            boolean redirect = link.getInt(NODE_REDIRECT) == 1;
+
+                            boolean redirect = false;
+
+                            if (link.has(NODE_REDIRECT)) {
+                                redirect = link.getInt(NODE_REDIRECT) == 1;
+                            }
 
                             resultLinks.add(new ExternalLink(id, iconUrl, language, type, name, url, redirect));
                         }
