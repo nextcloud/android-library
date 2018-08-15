@@ -87,9 +87,10 @@ public class OCCapability {
     // Fullnextsearch
     private CapabilityBooleanType mFullNextSearchEnabled;
     private CapabilityBooleanType mFullNextSearchFiles;
-    
 
     private CapabilityBooleanType mEndToEndEncryption;
+
+    private CapabilityBooleanType mActivity;
 
     public OCCapability(){
         mId = 0;
@@ -136,6 +137,8 @@ public class OCCapability {
         mExternalLinks = CapabilityBooleanType.UNKNOWN;
 
         mEndToEndEncryption = CapabilityBooleanType.UNKNOWN;
+
+        mActivity = CapabilityBooleanType.UNKNOWN;
     }
 
 
@@ -452,5 +455,13 @@ public class OCCapability {
 
     public void setEndToEndEncryption(CapabilityBooleanType endToEndEncryption) {
         this.mEndToEndEncryption = endToEndEncryption;
+    }
+
+    public CapabilityBooleanType isActivityEnabled() {
+        return mActivity;
+    }
+
+    public void setActivity(CapabilityBooleanType mActivity) {
+        this.mActivity = mActivity;
     }
 }
