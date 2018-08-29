@@ -327,7 +327,7 @@ public class MoveFileTest extends RemoteTest {
         );
         result = moveOperation.execute(mClient);
         assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_9);
+        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
 
         // name collision
 

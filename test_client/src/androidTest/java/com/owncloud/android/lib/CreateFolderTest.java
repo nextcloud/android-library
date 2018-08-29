@@ -123,7 +123,7 @@ public class CreateFolderTest extends RemoteTest {
      * > oc8.1 no characters are forbidden
      */
     public void testCreateFolderSpecialCharactersOnNewVersion() {
-        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_9);
+        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
 
         String remotePath = mFullPath2FolderBase + "_\\";
         RemoteOperationResult result = mActivity.createFolder(remotePath, true);

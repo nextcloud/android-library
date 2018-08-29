@@ -290,7 +290,7 @@ public class CopyFileTest extends RemoteTest {
         assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
 
         // name collision
-        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_9);
+        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10   );
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_1, TARGET_PATH_TO_ALREADY_EXISTENT_FILE_7, false);
         result = copyOperation.execute(mClient);
         assertTrue(result.getCode() == ResultCode.INVALID_OVERWRITE);
