@@ -33,6 +33,8 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
+import java.util.ArrayList;
+
 /**
  * Check if file is up to date, by checking only eTag
  */
@@ -69,7 +71,20 @@ public class CheckEtagOperation extends RemoteOperation {
 
                 if (etag.equals(expectedEtag)) {
                     return new RemoteOperationResult(RemoteOperationResult.ResultCode.ETAG_UNCHANGED);
+                } else {
+                    RemoteOperationResult result = new RemoteOperationResult(
+                            RemoteOperationResult.ResultCode.ETAG_CHANGED);
+
+                    ArrayList<Object> list = new ArrayList<>();
+                    list.add(etag);
+                    result.setData(list);
+
+                    return result;
                 }
+            }
+            
+            if (status == HttpStatus.SC_NOT_FOUND) {
+                return new RemoteOperationResult(RemoteOperationResult.ResultCode.FILE_NOT_FOUND);
             }
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while retrieving eTag");
