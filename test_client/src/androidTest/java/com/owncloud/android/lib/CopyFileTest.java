@@ -223,50 +223,50 @@ public class CopyFileTest extends RemoteTest {
         CopyRemoteFileOperation copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_1, TARGET_PATH_TO_FILE_1,
                 false);
         RemoteOperationResult result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy file",result.isSuccess());
 
         // copy & rename file, different location
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_2, TARGET_PATH_TO_FILE_2_RENAMED, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy & rename file, different location",result.isSuccess());
 
         // copy & rename file, same location (rename file)
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_3, SRC_PATH_TO_FILE_3_RENAMED, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy & rename file, same location (rename file)",result.isSuccess());
 
         // copy empty folder
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_EMPTY_FOLDER, TARGET_PATH_TO_EMPTY_FOLDER, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy empty folder",result.isSuccess());
 
         // copy non-empty folder
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FULL_FOLDER_1, TARGET_PATH_TO_FULL_FOLDER_1, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy non-empty folder",result.isSuccess());
 
         // copy & rename folder, different location
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FULL_FOLDER_2, TARGET_PATH_TO_FULL_FOLDER_2_RENAMED,
                 false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy & rename folder, different location",result.isSuccess());
 
         // copy & rename folder, same location (rename folder)
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FULL_FOLDER_3, SRC_PATH_TO_FULL_FOLDER_3_RENAMED,
                 false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy & rename folder, same location (rename folder)",result.isSuccess());
 
         // copy for nothing (success, but no interaction with network)
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_4, SRC_PATH_TO_FILE_4, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy for nothing (success, but no interaction with network)", result.isSuccess());
 
         // copy overwriting
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FULL_FOLDER_4,
                 TARGET_PATH_TO_ALREADY_EXISTENT_EMPTY_FOLDER_4, true);
         result = copyOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("copy overwriting", result.isSuccess());
 
 
         /// Failed cases
@@ -275,30 +275,30 @@ public class CopyFileTest extends RemoteTest {
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_NON_EXISTENT_FILE, TARGET_PATH_TO_NON_EXISTENT_FILE,
                 false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.FILE_NOT_FOUND);
+        assertTrue("file to copy does not exist",result.getCode() == ResultCode.FILE_NOT_FOUND);
 
         // folder to copy into does no exist
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_5, TARGET_PATH_TO_FILE_5_INTO_NON_EXISTENT_FOLDER,
                 false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.getHttpCode() == HttpStatus.SC_CONFLICT);
+        assertTrue("folder to copy into does no exist",result.getHttpCode() == HttpStatus.SC_CONFLICT);
 
         // target location (renaming) has invalid characters
         mActivity.getClient().setOwnCloudVersion(null);
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_6, TARGET_PATH_RENAMED_WITH_INVALID_CHARS, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
+        assertTrue("Target location (renaming) has invalid characters",result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
 
         // name collision
-        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10   );
+        mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_1, TARGET_PATH_TO_ALREADY_EXISTENT_FILE_7, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.INVALID_OVERWRITE);
+        assertTrue("Name collision", result.getCode() == ResultCode.INVALID_OVERWRITE);
 
         // copy a folder into a descendant
         copyOperation = new CopyRemoteFileOperation(SRC_BASE_FOLDER, SRC_PATH_TO_EMPTY_FOLDER, false);
         result = copyOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.INVALID_COPY_INTO_DESCENDANT);
+        assertTrue("Copy a folder into a descendant",result.getCode() == ResultCode.INVALID_COPY_INTO_DESCENDANT);
     }
 
     @Override
