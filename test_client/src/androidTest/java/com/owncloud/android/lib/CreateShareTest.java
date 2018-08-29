@@ -144,28 +144,28 @@ public class CreateShareTest extends RemoteTest {
         // sharee doesn't exist in an existing remote server
         result = mActivity.createShare(mFullPath2FileToShare, ShareType.FEDERATED, "no_exist@" + mServerUri2, false,
                 "", 31);
-        assertFalse(result.isSuccess());
-        assertEquals(RemoteOperationResult.ResultCode.SHARE_FORBIDDEN, result.getCode());
+        assertFalse("sharee doesn't exist in an existing remote server", result.isSuccess());
+        assertEquals("sharee doesn't exist in an existing remote server, forbidden", RemoteOperationResult.ResultCode.SHARE_FORBIDDEN, result.getCode());
 
         // error message from server as part of the result
         // TODO verify error message
-        assertTrue(result.getData().size() == 1 && result.getData().get(0) instanceof String);
+        assertTrue("sharee doesn't exist in an existing remote server, no error message", result.getData().size() == 1 && result.getData().get(0) instanceof String);
 
         // remote server doesn't exist
         result = mActivity.createShare(mFullPath2FileToShare, ShareType.FEDERATED, "no_exist", false, "", 31);
         assertFalse(result.isSuccess());
         // TODO expected:<SHARE_WRONG_PARAMETER> but was:<SHARE_FORBIDDEN>
-        assertEquals(ResultCode.SHARE_FORBIDDEN, result.getCode());
+        assertEquals("remote server doesn't exist",ResultCode.SHARE_FORBIDDEN, result.getCode());
 
         // error message from server as part of the result
         // TODO verify error message
-        assertTrue(result.getData().size() == 1 && result.getData().get(0) instanceof String);
+        assertTrue("remote server doesn't exist, no error message", result.getData().size() == 1 && result.getData().get(0) instanceof String);
 
         // file doesn't exist
         result = mActivity.createShare(mFullPath2NonExistentFile, ShareType.FEDERATED, "admin@" + mServerUri2, false,
                 "", 31);
-        assertFalse(result.isSuccess());
-        assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
+        assertFalse("file doesn't exist", result.isSuccess());
+        assertEquals("file doesn't exist", ResultCode.FILE_NOT_FOUND, result.getCode());
     }
 
 
