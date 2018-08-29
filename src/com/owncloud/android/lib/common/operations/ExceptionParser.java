@@ -26,6 +26,8 @@ package com.owncloud.android.lib.common.operations;
 
 import android.util.Xml;
 
+import com.owncloud.android.lib.common.utils.Log_OC;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -39,6 +41,7 @@ import java.io.InputStream;
  * @author masensio, tobiaskaminsky
  */
 public class ExceptionParser {
+    private static final String TAG = ExceptionParser.class.getSimpleName();
 
     private static final String INVALID_PATH_EXCEPTION_STRING = "OC\\Connector\\Sabre\\Exception\\InvalidPath";
     private static final String INVALID_PATH_EXCEPTION_UPLOAD_STRING = "OCP\\Files\\InvalidPathException";
@@ -52,8 +55,8 @@ public class ExceptionParser {
     private static final String NODE_EXCEPTION = "s:exception";
     private static final String NODE_MESSAGE = "s:message";
 
-    private String exception;
-    private String message;
+    private String exception = "";
+    private String message = "";
 
     /**
      * Parse is as an Invalid Path Exception
@@ -64,7 +67,6 @@ public class ExceptionParser {
      * @throws IOException
      */
     public ExceptionParser(InputStream is) throws XmlPullParserException, IOException {
-
         try {
             // XMLPullParser
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -75,14 +77,16 @@ public class ExceptionParser {
             parser.setInput(is, null);
             parser.nextTag();
             readError(parser);
-
+        } catch (Exception e) {
+            Log_OC.e(TAG, "Error parsing exception: " + e.getMessage());
         } finally {
             is.close();
         }
     }
 
     public boolean isInvalidCharacterException() {
-        return exception.equalsIgnoreCase(INVALID_PATH_EXCEPTION_STRING) || exception.equalsIgnoreCase(INVALID_PATH_EXCEPTION_UPLOAD_STRING);
+        return exception.equalsIgnoreCase(INVALID_PATH_EXCEPTION_STRING) ||
+                exception.equalsIgnoreCase(INVALID_PATH_EXCEPTION_UPLOAD_STRING);
     }
 
     public boolean isVirusException() {

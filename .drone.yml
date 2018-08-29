@@ -1,24 +1,27 @@
 pipeline:
-  test:
-    image: nextcloudci/android:android-30
+  compile:
+    image: nextcloudci/android:android-33
     commands:
-      # - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI -c 20M
-      # - emulator -avd test -no-window &
-      # - ./wait_for_emulator.sh
-      
-      # build app 
-      - ./gradlew clean build
+      # build app and assemble APK
+      - ./gradlew assemble
 
-    environment:
-      - ANDROID_TARGET=android-28
-      - ANDROID_ABI=armeabi-v7a
-      - LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/opt/android-sdk-linux/tools/lib64/gles_mesa/
-  
-  lint:
-      image: nextcloudci/android:android-30
+  test:
+      image: nextcloudci/android:android-33
+      privileged: true
       commands:
-        # needs gplay
-        - sed -i '/com.google.*.gms/s/^.*\\/\\///g' build.gradle
+        - emulator -avd android-27 -no-window -no-audio &
+        - ./wait_for_emulator.sh
+        - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "Unit"
+        - ./gradlew assembleDebug installDebugAndroidTest
+        - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "IT"
+        - ./gradlew combinedTestReport
+        - curl -o codecov.sh https://codecov.io/bash
+        - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
+      secrets: [ LOG_USERNAME, LOG_PASSWORD ]
+
+  lint:
+      image: nextcloudci/android:android-33
+      commands:
         - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
         - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
       secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
@@ -37,5 +40,9 @@ pipeline:
           event: push
           status: failure
           branch: master
+
+services:
+  server:
+    image: nextcloudci/server:server-1
 
 branches: master
