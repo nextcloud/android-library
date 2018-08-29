@@ -77,47 +77,6 @@ public class CreateFolderTest extends RemoteTest {
         assertTrue(result.isSuccess());
     }
 
-
-    /**
-     * Test to Create Folder with special characters: /  \  < >  :  "  |  ?  *
-     * < oC 8.1 some characters are forbidden
-     */
-    public void testCreateFolderSpecialCharactersOnOlderVersion() {
-        mActivity.getClient().setOwnCloudVersion(null);
-
-        String remotePath = mFullPath2FolderBase + "_\\";
-        RemoteOperationResult result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_<";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_>";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_:";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_\"";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_|";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_?";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_*";
-        result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-    }
-
     /**
      * Test to Create Folder with special characters: /  \  < >  :  "  |  ?  *
      * > oc8.1 no characters are forbidden
@@ -125,12 +84,8 @@ public class CreateFolderTest extends RemoteTest {
     public void testCreateFolderSpecialCharactersOnNewVersion() {
         mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
 
-        String remotePath = mFullPath2FolderBase + "_\\";
+        String remotePath = mFullPath2FolderBase + "_<";
         RemoteOperationResult result = mActivity.createFolder(remotePath, true);
-        assertTrue("Remote path: " + remotePath, result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_<";
-        result = mActivity.createFolder(remotePath, true);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_>";
