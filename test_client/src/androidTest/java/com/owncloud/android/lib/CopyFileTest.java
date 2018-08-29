@@ -283,12 +283,6 @@ public class CopyFileTest extends RemoteTest {
         result = copyOperation.execute(mClient);
         assertTrue("folder to copy into does no exist",result.getHttpCode() == HttpStatus.SC_CONFLICT);
 
-        // target location (renaming) has invalid characters
-        mActivity.getClient().setOwnCloudVersion(null);
-        copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_6, TARGET_PATH_RENAMED_WITH_INVALID_CHARS, false);
-        result = copyOperation.execute(mClient);
-        assertTrue("Target location (renaming) has invalid characters",result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
         // name collision
         mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
         copyOperation = new CopyRemoteFileOperation(SRC_PATH_TO_FILE_1, TARGET_PATH_TO_ALREADY_EXISTENT_FILE_7, false);

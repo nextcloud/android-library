@@ -127,35 +127,35 @@ public class CreateFolderTest extends RemoteTest {
 
         String remotePath = mFullPath2FolderBase + "_\\";
         RemoteOperationResult result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
+        assertTrue("Remote path: " + remotePath, result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
 
         remotePath = mFullPath2FolderBase + "_<";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_>";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_:";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_\"";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_|";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_?";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_*";
         result = mActivity.createFolder(remotePath, true);
-        assertTrue(result.isSuccess());
+        assertTrue("Remote path: " + remotePath, result.isSuccess());
     }
 
 

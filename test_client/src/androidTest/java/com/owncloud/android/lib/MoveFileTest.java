@@ -223,7 +223,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         RemoteOperationResult result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move file", result.isSuccess());
 
         // move & rename file, different location
         moveOperation = new MoveRemoteFileOperation(
@@ -232,7 +232,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move & rename file, different location", result.isSuccess());
 
         // move & rename file, same location (rename file)
         moveOperation = new MoveRemoteFileOperation(
@@ -241,7 +241,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move & rename file, same location (rename file)", result.isSuccess());
 
         // move empty folder
         moveOperation = new MoveRemoteFileOperation(
@@ -250,7 +250,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move empty folder", result.isSuccess());
 
         // move non-empty folder
         moveOperation = new MoveRemoteFileOperation(
@@ -259,7 +259,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move non-empty folder", result.isSuccess());
 
         // move & rename folder, different location
         moveOperation = new MoveRemoteFileOperation(
@@ -268,7 +268,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move & rename folder, different location", result.isSuccess());
 
         // move & rename folder, same location (rename folder)
         moveOperation = new MoveRemoteFileOperation(
@@ -277,7 +277,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move & rename folder, same location (rename folder)", result.isSuccess());
 
         // move for nothing (success, but no interaction with network)
         moveOperation = new MoveRemoteFileOperation(
@@ -286,7 +286,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move for nothing (success, but no interaction with network)", result.isSuccess());
 
         // move overwriting
         moveOperation = new MoveRemoteFileOperation(
@@ -295,7 +295,7 @@ public class MoveFileTest extends RemoteTest {
                 true
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.isSuccess());
+        assertTrue("move overwriting", result.isSuccess());
 
 
         /// Failed cases
@@ -307,7 +307,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.FILE_NOT_FOUND);
+        assertTrue("file to move does not exist", result.getCode() == ResultCode.FILE_NOT_FOUND);
 
         // folder to move into does no exist
         moveOperation = new MoveRemoteFileOperation(
@@ -316,7 +316,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.getHttpCode() == HttpStatus.SC_CONFLICT);
+        assertTrue("folder to move into does no exist", result.getHttpCode() == HttpStatus.SC_CONFLICT);
 
         // target location (renaming) has invalid characters
         mActivity.getClient().setOwnCloudVersion(null);
@@ -326,18 +326,17 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
+        assertTrue("target location (renaming) has invalid characters", result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
         mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
 
         // name collision
-
         moveOperation = new MoveRemoteFileOperation(
                 mBaseFolderPath + SRC_PATH_TO_FILE_7,
                 mBaseFolderPath + TARGET_PATH_TO_ALREADY_EXISTENT_FILE_7,
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.INVALID_OVERWRITE);
+        assertTrue("name collision", result.getCode() == ResultCode.INVALID_OVERWRITE);
 
         // move a folder into a descendant
         moveOperation = new MoveRemoteFileOperation(
@@ -346,7 +345,7 @@ public class MoveFileTest extends RemoteTest {
                 false
         );
         result = moveOperation.execute(mClient);
-        assertTrue(result.getCode() == ResultCode.INVALID_MOVE_INTO_DESCENDANT);
+        assertTrue("move a folder into a descendant", result.getCode() == ResultCode.INVALID_MOVE_INTO_DESCENDANT);
     }
 
     @Override
