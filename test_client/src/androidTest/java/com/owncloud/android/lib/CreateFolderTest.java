@@ -125,12 +125,8 @@ public class CreateFolderTest extends RemoteTest {
     public void testCreateFolderSpecialCharactersOnNewVersion() {
         mActivity.getClient().setOwnCloudVersion(OwnCloudVersion.nextcloud_10);
 
-        String remotePath = mFullPath2FolderBase + "_\\";
+        String remotePath = mFullPath2FolderBase + "_<";
         RemoteOperationResult result = mActivity.createFolder(remotePath, true);
-        assertTrue("Remote path: " + remotePath, result.getCode() == ResultCode.INVALID_CHARACTER_IN_NAME);
-
-        remotePath = mFullPath2FolderBase + "_<";
-        result = mActivity.createFolder(remotePath, true);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_>";
