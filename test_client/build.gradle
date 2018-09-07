@@ -32,7 +32,7 @@ dependencies {
     // JUnit4 Rules
     androidTestImplementation 'com.android.support.test:rules:1.0.1'
     // Android JUnit Runner
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
 
     jacocoAnt "org.jacoco:org.jacoco.ant:${project.jacocoVersion}"
     jacocoAgent "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
