@@ -1,6 +1,6 @@
 pipeline:
   compile:
-    image: nextcloudci/android:android-33
+    image: nextcloudci/android:android-35
     commands:
       # build app and assemble APK
       - ./gradlew assemble
