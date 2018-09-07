@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     compile 'org.apache.jackrabbit:jackrabbit-webdav:2.12.6'
-    implementation 'org.parceler:parceler-api:1.1.6'
+    implementation 'org.parceler:parceler-api:1.1.11'
     annotationProcessor 'org.parceler:parceler:1.1.6'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
     implementation "com.android.support:support-annotations:27.1.1"
