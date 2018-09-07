@@ -6,7 +6,7 @@ pipeline:
       - ./gradlew assemble
 
   test:
-      image: nextcloudci/android:android-33
+      image: nextcloudci/android:android-35
       privileged: true
       commands:
         - emulator -avd android-27 -no-window -no-audio &
@@ -20,7 +20,7 @@ pipeline:
       secrets: [ LOG_USERNAME, LOG_PASSWORD ]
 
   lint:
-      image: nextcloudci/android:android-33
+      image: nextcloudci/android:android-35
       commands:
         - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
         - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
