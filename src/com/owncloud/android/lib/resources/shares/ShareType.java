@@ -45,7 +45,8 @@ public enum ShareType {
     PUBLIC_LINK (3),
     EMAIL (4),
     CONTACT (5),
-    FEDERATED (6);
+    FEDERATED(6),
+    ROOM(10);
     
     private int value;
     
@@ -76,6 +77,8 @@ public enum ShareType {
             return CONTACT;
         case 6:
             return FEDERATED;
+            case 10:
+                return ROOM;    
         default:
             return NO_SHARED;
         }

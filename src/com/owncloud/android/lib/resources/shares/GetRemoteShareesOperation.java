@@ -48,7 +48,7 @@ import java.util.ArrayList;
  *
  * Currently only handles users and groups. Users in other OC servers (federation) should be added later.
  *
- * Depends on SHAREE API. {@See https://github.com/owncloud/documentation/issues/1626}
+ * Depends on SHAREE API. {@see https://github.com/owncloud/documentation/issues/1626}
  *
  * Syntax:
  *    Entry point: ocs/v2.php/apps/files_sharing/api/v1/sharees
@@ -89,6 +89,7 @@ public class GetRemoteShareesOperation extends RemoteOperation{
     private static final String NODE_GROUPS = "groups";
     private static final String NODE_REMOTES = "remotes";
     private static final String NODE_EMAILS = "emails";
+    private static final String NODE_ROOMS = "rooms";
     public static final String NODE_VALUE = "value";
     public static final String PROPERTY_LABEL = "label";
     public static final String PROPERTY_SHARE_TYPE = "shareType";
@@ -113,7 +114,7 @@ public class GetRemoteShareesOperation extends RemoteOperation{
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+        RemoteOperationResult result;
         int status;
         GetMethod get = null;
 
@@ -133,7 +134,7 @@ public class GetRemoteShareesOperation extends RemoteOperation{
 
             status = client.executeMethod(get);
 
-            if(isSuccess(status)) {
+            if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
                 Log_OC.d(TAG, "Successful response: " + response);
 
@@ -145,26 +146,30 @@ public class GetRemoteShareesOperation extends RemoteOperation{
                 JSONArray respExactUsers = respExact.getJSONArray(NODE_USERS);
                 JSONArray respExactGroups = respExact.getJSONArray(NODE_GROUPS);
                 JSONArray respExactRemotes = respExact.getJSONArray(NODE_REMOTES);
+                JSONArray respExactRooms = respExact.getJSONArray(NODE_ROOMS);
                 JSONArray respExactEmails = respExact.getJSONArray(NODE_EMAILS);
                 JSONArray respPartialUsers = respData.getJSONArray(NODE_USERS);
                 JSONArray respPartialGroups = respData.getJSONArray(NODE_GROUPS);
                 JSONArray respPartialRemotes = respData.getJSONArray(NODE_REMOTES);
+                JSONArray respPartialRooms = respData.getJSONArray(NODE_ROOMS);
                 JSONArray[] jsonResults = {
                         respExactUsers,
                         respExactGroups,
                         respExactRemotes,
+                        respExactRooms,
+                        respExactEmails,
                         respPartialUsers,
                         respPartialGroups,
                         respPartialRemotes,
-                        respExactEmails
+                        respPartialRooms
                 };
 
-                ArrayList<Object> data = new ArrayList<Object>(); // For result data
-                for (int i=0; i<7; i++) {
-                    for(int j=0; j< jsonResults[i].length(); j++){
-                        JSONObject jsonResult = jsonResults[i].getJSONObject(j);
-                        data.add(jsonResult);
-                        Log_OC.d(TAG, "*** Added item: " + jsonResult.getString(PROPERTY_LABEL));
+                ArrayList<Object> data = new ArrayList<>();
+                for (JSONArray jsonResult : jsonResults) {
+                    for (int j = 0; j < jsonResult.length(); j++) {
+                        JSONObject jsonObject = jsonResult.getJSONObject(j);
+                        data.add(jsonObject);
+                        Log_OC.d(TAG, "*** Added item: " + jsonObject.getString(PROPERTY_LABEL));
                     }
                 }
 
@@ -172,12 +177,13 @@ public class GetRemoteShareesOperation extends RemoteOperation{
                 result = new RemoteOperationResult(true, get);
                 result.setData(data);
 
-                Log_OC.d(TAG, "*** Get Users or groups completed " );
+                Log_OC.d(TAG, "*** Get Users or groups completed");
 
             } else {
                 result = new RemoteOperationResult(false, get);
                 String response = get.getResponseBodyAsString();
-                Log_OC.e(TAG, "Failed response while getting users/groups from the server ");
+                Log_OC.e(TAG, "Failed response while getting users/groups from the server");
+
                 if (response != null) {
                     Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
                 } else {
