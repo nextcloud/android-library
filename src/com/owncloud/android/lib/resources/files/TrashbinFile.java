@@ -63,7 +63,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     }
 
     @Override
-    public boolean isFavorite() {
+    public boolean getIsFavorite() {
         return false;
     }
 

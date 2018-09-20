@@ -12,7 +12,7 @@ public interface ServerFileInterface {
     
     String getRemoteId();
     
-    boolean isFavorite();
+    boolean getIsFavorite();
     
     boolean isFolder();
     
