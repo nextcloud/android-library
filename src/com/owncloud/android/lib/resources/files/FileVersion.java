@@ -49,7 +49,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     private String remoteId;
 
     @Override
-    public boolean getIsFavorite() {
+    public boolean isFavorite() {
         return false;
     }
 
