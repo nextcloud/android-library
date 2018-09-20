@@ -1,4 +1,5 @@
-/* ownCloud Android Library is available under MIT license
+/*
+  *  ownCloud Android Library is available under MIT license
  *   Copyright (C) 2015 ownCloud Inc.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,7 +42,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     /**
      * Generated - should be refreshed every time the class changes!!
      */
-    private static final long serialVersionUID = 3130865437811248452L;
+    private static final long serialVersionUID = -432910968238077774L;
 
     public static final String DIRECTORY = "DIR";
 

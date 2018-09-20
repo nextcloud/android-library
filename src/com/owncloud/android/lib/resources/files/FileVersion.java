@@ -1,4 +1,5 @@
-/* ownCloud Android Library is available under MIT license
+/*
+ *   ownCloud Android Library is available under MIT license
  *   Copyright (C) 2018 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,17 +30,19 @@ import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
+import java.io.Serializable;
+
 /**
  * Contains the data of a versioned file from a WebDavEntry.
  *
  * @author Tobias Kaminsky
  */
-public class FileVersion implements Parcelable, ServerFileInterface {
+public class FileVersion implements Parcelable, Serializable, ServerFileInterface {
 
     /**
      * Generated - should be refreshed every time the class changes!!
      */
-    private static final long serialVersionUID = 3130865437811248455L;
+    private static final long serialVersionUID = 5276021208979796734L;
 
     public static final String DIRECTORY = "DIR";
 
