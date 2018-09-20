@@ -30,14 +30,12 @@ import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
-import java.io.Serializable;
-
 /**
  * Contains the data of a versioned file from a WebDavEntry.
  *
  * @author Tobias Kaminsky
  */
-public class FileVersion implements Parcelable, Serializable, ServerFileInterface {
+public class FileVersion implements Parcelable, ServerFileInterface {
 
     /**
      * Generated - should be refreshed every time the class changes!!
