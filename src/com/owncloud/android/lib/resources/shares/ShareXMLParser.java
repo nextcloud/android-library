@@ -73,6 +73,7 @@ public class ShareXMLParser {
 	private static final String NODE_MAIL_SEND = "mail_send";
 	private static final String NODE_PASSWORD = "password";
 	private static final String NODE_SHARE_WITH_DISPLAY_NAME = "share_with_displayname";
+	private static final String NODE_NOTE = "note";
 	
 	private static final String NODE_URL = "url";
 
@@ -358,6 +359,8 @@ public class ShareXMLParser {
 				String value = readNode(parser, NODE_URL);
 				share.setShareLink(value);
 
+			} else if (name.equalsIgnoreCase(NODE_NOTE)) {
+				share.setNote(readNode(parser, NODE_NOTE));
 			} else {
 				skip(parser);
 			} 
