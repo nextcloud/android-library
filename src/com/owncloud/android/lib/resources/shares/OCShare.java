@@ -26,6 +26,7 @@ package com.owncloud.android.lib.resources.shares;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
@@ -96,6 +97,7 @@ public class OCShare implements Parcelable, Serializable {
     private long mRemoteId;
     private String mShareLink;
     private boolean mIsPasswordProtected;
+    private String mNote;
     
     public OCShare() {
     	super();
@@ -131,6 +133,7 @@ public class OCShare implements Parcelable, Serializable {
         mRemoteId = -1;
         mShareLink = "";
         mIsPasswordProtected = false;
+        mNote = "";
     }	
     
     /// Getters and Setters
@@ -265,6 +268,14 @@ public class OCShare implements Parcelable, Serializable {
         } else {
             return mShareWith.length() > 0;
         }
+    }
+
+    public void setNote(@NonNull String note) {
+        this.mNote = note;
+    }
+
+    public String getNote() {
+        return this.mNote;
     }
     
     /** 
