@@ -34,7 +34,8 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200; // 11.0.2
     public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000; // 12.0
     public static final int MINIMUM_VERSION_FOR_WEB_LOGIN = 0x0C000000; // 12.0
-    public static final int MINIMUM_VERSION_FOR_MEDIA_STREAMING = 0x0E000000;
+    public static final int MINIMUM_VERSION_FOR_MEDIA_STREAMING = 0x0E000000; // 14.0
+    public static final int MINIMUM_VERSION_FOR_NOTE_ON_SHARE = 0x0E000000; // 14.0
     
     private static final int MAX_DOTS = 3;
 
@@ -127,5 +128,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     
     public boolean isMediaStreamingSupported() {
         return mVersion >= MINIMUM_VERSION_FOR_MEDIA_STREAMING;
+    }
+    
+    public boolean isNoteOnShareSupported() {
+        return mVersion >= MINIMUM_VERSION_FOR_NOTE_ON_SHARE;
     }
 }

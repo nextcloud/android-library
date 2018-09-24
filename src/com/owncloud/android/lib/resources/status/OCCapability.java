@@ -30,6 +30,7 @@ package com.owncloud.android.lib.resources.status;
 public class OCCapability {
 
     private static final String TAG = OCCapability.class.getSimpleName();
+    private static final String VERSION_DOT = ".";
 
     private long mId;
     private String mAccountName;
@@ -207,6 +208,10 @@ public class OCCapability {
 
     public void setVersionString(String versionString) {
         this.mVersionString = versionString;
+    }
+    
+    public OwnCloudVersion getVersion() {
+        return new OwnCloudVersion(mVersionMayor + VERSION_DOT + mVersionMinor + VERSION_DOT + mVersionMicro);
     }
 
     public String getServerName() {
