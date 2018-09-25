@@ -29,6 +29,7 @@ import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
+
 /**
  * Contains the data of a versioned file from a WebDavEntry.
  *
@@ -39,7 +40,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     /**
      * Generated - should be refreshed every time the class changes!!
      */
-    private static final long serialVersionUID = 3130865437811248455L;
+    private static final long serialVersionUID = 5276021208979796734L;
 
     public static final String DIRECTORY = "DIR";
 
@@ -49,7 +50,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     private String remoteId;
 
     @Override
-    public boolean getIsFavorite() {
+    public boolean isFavorite() {
         return false;
     }
 
