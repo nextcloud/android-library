@@ -29,7 +29,6 @@ import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
-import java.io.Serializable;
 
 /**
  * Contains the data of a versioned file from a WebDavEntry.
