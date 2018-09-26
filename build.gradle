@@ -2,6 +2,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+		mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
@@ -15,6 +16,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 repositories {
     jcenter()
     google()
+	mavenCentral()
 }
 
 dependencies {

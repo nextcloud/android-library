@@ -4,6 +4,7 @@ apply plugin: 'jacoco-android'
 repositories {
     jcenter()
     google()
+	mavenCentral()
 }
 
 buildscript {
@@ -13,6 +14,7 @@ buildscript {
             url 'https://oss.sonatype.org/content/repositories/snapshots/'
         }
         google()
+		mavenCentral()
     }
     dependencies {
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.3'
