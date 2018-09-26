@@ -49,6 +49,9 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
     public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
     public static final String EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type";
+    public static final String EXTENDED_PROPERTY_OWNER_ID = "owner-id";
+    public static final String EXTENDED_PROPERTY_OWNER_DISPLAY_NAME = "owner-display-name";
+    public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -76,11 +79,18 @@ public class WebdavEntry {
     private MountType mMountType;
     private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
     private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
+    private String ownerId;
+    private String ownerDisplayName;
+    private int mUnreadCommentsCount;
 
     public enum MountType {INTERNAL, EXTERNAL}
 
     public WebdavEntry(MultiStatusResponse ms, String splitElement) {
         resetData();
+
+        Namespace ocNamespace = Namespace.getNamespace(NAMESPACE_OC);
+        Namespace ncNamespace = Namespace.getNamespace(NAMESPACE_NC);
+        
         if (ms.getStatus().length != 0) {
             mUri = ms.getHref();
 
@@ -94,7 +104,7 @@ public class WebdavEntry {
             @SuppressWarnings("rawtypes")
             DavProperty prop = propSet.get(DavPropertyName.DISPLAYNAME);
             if (prop != null) {
-                mName = (String) prop.getName().toString();
+                mName = prop.getName().toString();
                 mName = mName.substring(1, mName.length()-1);
             }
             else {
@@ -135,21 +145,20 @@ public class WebdavEntry {
 
             // {DAV:}getcontentlength
             prop = propSet.get(DavPropertyName.GETCONTENTLENGTH);
-            if (prop != null)
+            if (prop != null) {
                 mContentLength = Long.parseLong((String) prop.getValue());
+            }
 
             // {DAV:}getlastmodified
             prop = propSet.get(DavPropertyName.GETLASTMODIFIED);
             if (prop != null) {
-                Date d = WebdavUtils
-                        .parseResponseDate((String) prop.getValue());
+                Date d = WebdavUtils.parseResponseDate((String) prop.getValue());
                 mModifiedTimestamp = (d != null) ? d.getTime() : 0;
             }
 
             prop = propSet.get(DavPropertyName.CREATIONDATE);
             if (prop != null) {
-                Date d = WebdavUtils
-                        .parseResponseDate((String) prop.getValue());
+                Date d = WebdavUtils.parseResponseDate((String) prop.getValue());
                 mCreateTimestamp = (d != null) ? d.getTime() : 0;
             }
 
@@ -189,32 +198,25 @@ public class WebdavEntry {
             }
 
             // OC permissions property <oc:permissions>
-            prop = propSet.get(
-            		EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(NAMESPACE_OC)
-    		);
+            prop = propSet.get(EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace);
             if (prop != null && prop.getValue() != null) {
                 mPermissions = prop.getValue().toString();
             }
 
             // OC remote id property <oc:id>
-            prop = propSet.get(
-            		EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(NAMESPACE_OC)
-    		);
+            prop = propSet.get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
             if (prop != null) {
                 mRemoteId = prop.getValue().toString();
             }
 
-            // TODO: is it necessary?
             // OC size property <oc:size>
-            prop = propSet.get(
-            		EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(NAMESPACE_OC)
-    		);
+            prop = propSet.get(EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
             if (prop != null) {
                 mSize = Long.parseLong((String) prop.getValue());
             }
 
             // OC favorite property <oc:favorite>
-            prop = propSet.get(EXTENDED_PROPERTY_FAVORITE,  Namespace.getNamespace(NAMESPACE_OC));
+            prop = propSet.get(EXTENDED_PROPERTY_FAVORITE, ocNamespace);
             if (prop != null) {
                 String favoriteValue = (String) prop.getValue();
                 mIsFavorite = IS_ENCRYPTED.equals(favoriteValue);
@@ -223,7 +225,7 @@ public class WebdavEntry {
             }
 
             // NC encrypted property <nc:is-encrypted>
-            prop = propSet.get(EXTENDED_PROPERTY_IS_ENCRYPTED,  Namespace.getNamespace(NAMESPACE_NC));
+            prop = propSet.get(EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace);
             if (prop != null) {
                 String encryptedValue = (String) prop.getValue();
                 mIsEncrypted = IS_ENCRYPTED.equals(encryptedValue);
@@ -232,7 +234,7 @@ public class WebdavEntry {
             }
 
             // NC mount-type property <nc:mount-type>
-            prop = propSet.get(EXTENDED_PROPERTY_MOUNT_TYPE, Namespace.getNamespace(NAMESPACE_NC));
+            prop = propSet.get(EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace);
             if (prop != null) {
                 if ("external".equals(prop.getValue())) {
                     mMountType = MountType.EXTERNAL;
@@ -242,21 +244,45 @@ public class WebdavEntry {
             } else {
                 mMountType = MountType.INTERNAL;
             }
+
+            // OC owner-id property <oc:owner-id>
+            prop = propSet.get(EXTENDED_PROPERTY_OWNER_ID, ocNamespace);
+            if (prop != null) {
+                ownerId = (String) prop.getValue();
+            } else {
+                ownerId = "";
+            }
+
+            // OC owner-display-name property <oc:owner-display-name>
+            prop = propSet.get(EXTENDED_PROPERTY_OWNER_DISPLAY_NAME, ocNamespace);
+            if (prop != null) {
+                ownerDisplayName = (String) prop.getValue();
+            } else {
+                ownerDisplayName = "";
+            }
+
+            // OC unread comments property <oc-comments-unread>
+            prop = propSet.get(EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace);
+            if (prop != null) {
+                mUnreadCommentsCount = Integer.valueOf(prop.getValue().toString());
+            } else {
+                mUnreadCommentsCount = 0;
+            }
             
             // NC trashbin-original-location <nc:trashbin-original-location>
-            prop = propSet.get(TRASHBIN_ORIGINAL_LOCATION, Namespace.getNamespace(NAMESPACE_NC));
+            prop = propSet.get(TRASHBIN_ORIGINAL_LOCATION, ncNamespace);
             if (prop != null) {
                 mTrashbinOriginalLocation = prop.getValue().toString();
             }
 
             // NC trashbin-filename <nc:trashbin-filename>
-            prop = propSet.get(TRASHBIN_FILENAME, Namespace.getNamespace(NAMESPACE_NC));
+            prop = propSet.get(TRASHBIN_FILENAME, ncNamespace);
             if (prop != null) {
                 mTrashbinFilename = prop.getValue().toString();
             }
 
             // NC trashbin-deletion-time <nc:trashbin-deletion-time>
-            prop = propSet.get(TRASHBIN_DELETION_TIME, Namespace.getNamespace(NAMESPACE_NC));
+            prop = propSet.get(TRASHBIN_DELETION_TIME, ncNamespace);
             if (prop != null) {
                 mTrashbinDeletionTimestamp = Long.parseLong((String) prop.getValue());
             }
@@ -351,6 +377,22 @@ public class WebdavEntry {
     
     public long getTrashbinDeletionTimestamp() {
         return mTrashbinDeletionTimestamp;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerDisplayName(String ownerDisplayName) {
+        this.ownerDisplayName = ownerDisplayName;
+    }
+
+    public String getOwnerDisplayName() {
+        return ownerDisplayName;
+    }
+
+    public int getUnreadCommentsCount() {
+        return mUnreadCommentsCount;
     }
 
     private void resetData() {
