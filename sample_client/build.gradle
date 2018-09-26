@@ -10,7 +10,7 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     sourceSets {
         main {
