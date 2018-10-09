@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class Log_OC {
@@ -34,46 +35,81 @@ public class Log_OC {
         return mNextcloudDataFolderLog;
     }
 
-    public static void i(String TAG, String message){
+    public static void i(String TAG, String message) {
         Log.i(TAG, message);
-        appendLog(TAG+" : "+ message);
+        appendLog(TAG + ": " + message);
     }
 
-    public static void d(String TAG, String message){
-        Log.d(TAG, message);
-        appendLog(TAG + " : " + message);
+    public static void i(Object object, String message) {
+        i(object.getClass().getSimpleName(), message);
     }
+
+    public static void d(String TAG, String message) {
+        Log.d(TAG, message);
+        appendLog(TAG + ": " + message);
+    }
+
+    public static void d(Object object, String message) {
+        d(object.getClass().getSimpleName(), message);
+    }
+
     public static void d(String TAG, String message, Exception e) {
         Log.d(TAG, message, e);
-        appendLog(TAG + " : " + message + " Exception : "+ Arrays.toString(e.getStackTrace()));
+        appendLog(TAG + ": " + message + " Exception: " + Arrays.toString(e.getStackTrace()));
     }
-    public static void e(String TAG, String message){
+
+    public static void d(Object object, String message, Exception e) {
+        d(object.getClass().getSimpleName(), message, e);
+    }
+
+    public static void e(String TAG, String message) {
         Log.e(TAG, message);
-        appendLog(TAG + " : " + message);
+        appendLog(TAG + ": " + message);
     }
-    
+
+    public static void e(Object object, String message) {
+        e(object.getClass().getSimpleName(), message);
+    }
+
     public static void e(String TAG, String message, Throwable e) {
         Log.e(TAG, message, e);
-        appendLog(TAG+" : " + message +" Exception : " + Arrays.toString(e.getStackTrace()));
+        appendLog(TAG + ": " + message + " Exception: " + Arrays.toString(e.getStackTrace()));
     }
-    
-    public static void v(String TAG, String message){
+
+    public static void e(Object object, String message, Throwable e) {
+        e(object.getClass().getSimpleName(), message, e);
+    }
+
+    public static void v(String TAG, String message) {
         Log.v(TAG, message);
-        appendLog(TAG+" : "+ message);
+        appendLog(TAG + ": " + message);
     }
-    
+
+    public static void v(Object object, String message) {
+        v(object.getClass().getSimpleName(), message);
+    }
+
     public static void w(String TAG, String message) {
         Log.w(TAG, message);
-        appendLog(TAG+" : "+ message);
+        appendLog(TAG + ": " + message);
     }
-    
+
+    public static void w(Object object, String message) {
+        w(object.getClass().getSimpleName(), message);
+    }
+
     public static void wtf(String TAG, String message) {
         Log.wtf(TAG, message);
-        appendLog(TAG+" : "+ message);
+        appendLog(TAG + ": " + message);
+    }
+
+    public static void wtf(Object object, String message) {
+        wtf(object.getClass().getSimpleName(), message);
     }
 
     /**
-     * Start doing logging
+     * Start logging
+     *
      * @param context Context: used for determinated app specific folder
      */
     synchronized public static void startLogging(Context context) {
@@ -81,7 +117,7 @@ public class Log_OC {
         mFolder = new File(mNextcloudDataFolderLog);
         mLogFile = new File(mFolder + File.separator + mLogFileNames[0]);
 
-        boolean isFolderCreated = false;
+        boolean isFolderCreated;
 
         if (!mFolder.exists()) {
             isFolderCreated = mFolder.mkdirs();
@@ -102,10 +138,10 @@ public class Log_OC {
         } catch (IOException e) {
             Log.e(TAG, "Log initialization failed", e);
         } finally {
-            if(mBuf != null) {
+            if (mBuf != null) {
                 try {
                     mBuf.close();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     Log.e(TAG, "Initialization finishing failed", e);
                 }
             }
@@ -114,16 +150,15 @@ public class Log_OC {
 
     synchronized public static void stopLogging() {
         try {
-            if (mBuf != null)
+            if (mBuf != null) {
                 mBuf.close();
-            isEnabled = false;
+            }
 
             mLogFile = null;
             mFolder = null;
             mBuf = null;
             isMaxFileSizeReached = false;
             isEnabled = false;
-
         } catch (IOException e) {
             // Because we are stopping logging, we only log to Android console.
             Log.e(TAG, "Closing log file failed: ", e);
@@ -140,37 +175,35 @@ public class Log_OC {
      */
     public static void deleteHistoryLogging() {
         File folderLogs = new File(mFolder + File.separator);
-        if(folderLogs.isDirectory()){
-            String[] myFiles = folderLogs.list();
-            for (int i=0; i<myFiles.length; i++) {
-                File myFile = new File(folderLogs, myFiles[i]);
-                myFile.delete();
+        if (folderLogs.isDirectory()) {
+            String[] files = folderLogs.list();
+            for (String file : files) {
+                new File(folderLogs, file).delete();
             }
         }
     }
-    
+
     /**
      * Append the info of the device
      */
     private static void appendPhoneInfo() {
-        appendLog("Model : " + android.os.Build.MODEL);
-        appendLog("Brand : " + android.os.Build.BRAND);
-        appendLog("Product : " + android.os.Build.PRODUCT);
-        appendLog("Device : " + android.os.Build.DEVICE);
-        appendLog("Version-Codename : " + android.os.Build.VERSION.CODENAME);
-        appendLog("Version-Release : " + android.os.Build.VERSION.RELEASE);
+        appendLog("Model: " + android.os.Build.MODEL);
+        appendLog("Brand: " + android.os.Build.BRAND);
+        appendLog("Product: " + android.os.Build.PRODUCT);
+        appendLog("Device: " + android.os.Build.DEVICE);
+        appendLog("Version-Codename: " + android.os.Build.VERSION.CODENAME);
+        appendLog("Version-Release: " + android.os.Build.VERSION.RELEASE);
     }
-    
+
     /**
      * Append to the log file the info passed
+     *
      * @param text : text for adding to the log file
      */
     synchronized private static void appendLog(String text) {
 
         if (isEnabled) {
-
             if (isMaxFileSizeReached) {
-
                 // Move current log file info to another file (old logs)
                 File olderFile = new File(mFolder + File.separator + mLogFileNames[1]);
                 if (mLogFile.exists()) {
@@ -182,18 +215,19 @@ public class Log_OC {
                 isMaxFileSizeReached = false;
             }
 
-	        String timeStamp = new SimpleDateFormat(SIMPLE_DATE_FORMAT).format(Calendar.getInstance().getTime());
+            String timeStamp = new SimpleDateFormat(SIMPLE_DATE_FORMAT, Locale.getDefault())
+                    .format(Calendar.getInstance().getTime());
 
-	        try {
-	            mBuf = new BufferedWriter(new FileWriter(mLogFile, true));
-	            mBuf.newLine();
-	            mBuf.write(timeStamp);
-	            mBuf.newLine();
-	            mBuf.write(text);
-	            mBuf.newLine();
-	        } catch (IOException e) {
+            try {
+                mBuf = new BufferedWriter(new FileWriter(mLogFile, true));
+                mBuf.newLine();
+                mBuf.write(timeStamp);
+                mBuf.newLine();
+                mBuf.write(text);
+                mBuf.newLine();
+            } catch (IOException e) {
                 Log.e(TAG, "Writing to logfile failed", e);
-	        } finally {
+            } finally {
                 try {
                     mBuf.close();
                 } catch (IOException e) {
