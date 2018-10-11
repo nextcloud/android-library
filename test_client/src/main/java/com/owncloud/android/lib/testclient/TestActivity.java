@@ -267,10 +267,11 @@ public class TestActivity extends Activity {
 		String fileLastModifTimestamp = getFileLastModifTimeStamp(storagePath);
 
 		UploadRemoteFileOperation uploadOperation;
+		long fileSize = (new File(storagePath)).length();
 
-		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
+		if (fileSize > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
 			uploadOperation = new ChunkedUploadRemoteFileOperation(
-					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
+					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp, fileSize
 			);
 		} else {
             uploadOperation = new UploadRemoteFileOperation(

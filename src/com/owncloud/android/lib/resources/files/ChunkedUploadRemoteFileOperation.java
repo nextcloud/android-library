@@ -57,8 +57,9 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
     private Context mContext;
 
     public ChunkedUploadRemoteFileOperation(Context context, String storagePath, String remotePath,
-                                            String mimeType, String requiredEtag, String fileLastModifTimestamp) {
-        super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
+                                            String mimeType, String requiredEtag, String fileLastModifTimestamp,
+                                            long fileSize) {
+        super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp, fileSize);
         mContext = context;
     }
 
@@ -84,7 +85,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         try {
             raf = new RandomAccessFile(file, "r");
             channel = raf.getChannel();
-            mEntity = new ChunkFromFileChannelRequestEntity(channel, mMimeType, CHUNK_SIZE, file);
+            mEntity = new ChunkFromFileChannelRequestEntity(channel, mMimeType, CHUNK_SIZE, file, mFileSize);
             synchronized (mDataTransferListeners) {
 				((ProgressiveDataTransferer)mEntity)
                         .addDatatransferProgressListeners(mDataTransferListeners);
@@ -93,10 +94,17 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
             long offset = 0;
             String uriPrefix = client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath) +
                     "-chunking-" + chunkId + "-" ;
-            long totalLength = file.length();
+            long totalLength;
+
+            if (mFileSize > 0) {
+                totalLength = mFileSize;
+            } else {
+                totalLength = file.length();
+            }
+            
             long chunkCount = (long) Math.ceil((double)totalLength / CHUNK_SIZE);
             String chunkSizeStr = String.valueOf(CHUNK_SIZE);
-            String totalLengthStr = String.valueOf(file.length());
+            String totalLengthStr = String.valueOf(totalLength);
             for (int chunkIndex = 0; chunkIndex < chunkCount ; chunkIndex++, offset += CHUNK_SIZE) {
                 if (successfulChunks.contains(String.valueOf(chunkIndex + "_" + getDateAsString()))){
                     ((ChunkFromFileChannelRequestEntity) mEntity).setmTransferred(offset);
