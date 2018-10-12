@@ -1,4 +1,5 @@
-package com.owncloud.android.util;
+package com.owncloud.android.lib;
+
 
 import android.support.test.runner.AndroidJUnit4;
 

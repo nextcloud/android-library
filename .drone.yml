@@ -44,5 +44,7 @@ pipeline:
 services:
   server:
     image: nextcloudci/server:server-1
+  server2:
+      image: nextcloudci/server:server-1
 
 branches: master

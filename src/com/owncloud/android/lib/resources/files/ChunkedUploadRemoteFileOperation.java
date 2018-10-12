@@ -76,6 +76,11 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         RandomAccessFile raf = null;
 
         File file = new File(mLocalPath);
+
+        if (!file.exists()) {
+            return new RemoteOperationResult(RemoteOperationResult.ResultCode.LOCAL_FILE_NOT_FOUND);
+        }
+        
         SharedPreferences sharedPref = mContext.getApplicationContext().
                 getSharedPreferences("com.nextcloud.PREFERENCE_upload", Context.MODE_PRIVATE);
         String chunkId = String.format("%08d", Math.abs(file.getName().hashCode()));
