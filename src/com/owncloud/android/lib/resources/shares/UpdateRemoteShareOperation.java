@@ -46,7 +46,7 @@ import java.util.List;
 
 /**
  * Updates parameters of an existing Share resource, known its remote ID.
- * <p/>
+ * 
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
 public class UpdateRemoteShareOperation extends RemoteOperation {
@@ -57,6 +57,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
     private static final String PARAM_EXPIRATION_DATE = "expireDate";
     private static final String PARAM_PERMISSIONS = "permissions";
     private static final String PARAM_PUBLIC_UPLOAD = "publicUpload";
+    private static final String PARAM_NOTE = "note";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
     private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String ENTITY_CHARSET = "UTF-8";
@@ -65,27 +66,29 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
     /**
      * Identifier of the share to update
      */
-    private long mRemoteId;
+    private long remoteId;
 
     /**
      * Password to set for the public link
      */
-    private String mPassword;
+    private String password;
 
     /**
      * Expiration date to set for the public link
      */
-    private long mExpirationDateInMillis;
+    private long expirationDateInMillis;
 
     /**
      * Access permissions for the file bound to the share
      */
-    private int mPermissions;
+    private int permissions;
 
     /**
      * Upload permissions for the public link (only folders)
      */
-    private Boolean mPublicUpload;
+    private Boolean publicUpload;
+
+    private String note;
 
 
     /**
@@ -94,10 +97,11 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      * @param remoteId Identifier of the share to update.
      */
     public UpdateRemoteShareOperation(long remoteId) {
-        mRemoteId = remoteId;
-        mPassword = null;               // no update
-        mExpirationDateInMillis = 0;    // no update
-        mPublicUpload = null;
+        this.remoteId = remoteId;
+        password = null;               // no update
+        expirationDateInMillis = 0;    // no update
+        publicUpload = null;
+        note = "";
     }
 
 
@@ -109,7 +113,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      *                 Null results in no update applied to the password.
      */
     public void setPassword(String password) {
-        mPassword = password;
+        this.password = password;
     }
 
 
@@ -122,7 +126,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      *                               the expiration date.
      */
     public void setExpirationDate(long expirationDateInMillis) {
-        mExpirationDateInMillis = expirationDateInMillis;
+        this.expirationDateInMillis = expirationDateInMillis;
     }
 
 
@@ -133,7 +137,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      *                    Values <= 0 result in no update applied to the permissions.
      */
     public void setPermissions(int permissions) {
-        mPermissions = permissions;
+        this.permissions = permissions;
     }
 
     /**
@@ -143,50 +147,56 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      *                      Null results in no update applied to the upload permission.
      */
     public void setPublicUpload(Boolean publicUpload) {
-        mPublicUpload = publicUpload;
+        this.publicUpload = publicUpload;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
-        int status = -1;
+        int status;
 
         /// prepare array of parameters to update
-        List<Pair<String, String>> parametersToUpdate = new ArrayList<Pair<String, String>>();
-        if (mPassword != null) {
-            parametersToUpdate.add(new Pair<String, String>(PARAM_PASSWORD, mPassword));
+        List<Pair<String, String>> parametersToUpdate = new ArrayList<>();
+        if (password != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_PASSWORD, password));
         }
-        if (mExpirationDateInMillis < 0) {
+        if (expirationDateInMillis < 0) {
             // clear expiration date
             parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
 
-        } else if (mExpirationDateInMillis > 0) {
+        } else if (expirationDateInMillis > 0) {
             // set expiration date
             DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE);
             Calendar expirationDate = Calendar.getInstance();
-            expirationDate.setTimeInMillis(mExpirationDateInMillis);
+            expirationDate.setTimeInMillis(expirationDateInMillis);
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
             parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
 
         } // else, ignore - no update
-        if (mPermissions > 0) {
+        if (permissions > 0) {
             // set permissions
-            parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(mPermissions)));
+            parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
         }
 
-        if (mPublicUpload != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(mPublicUpload)));
+        if (publicUpload != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(publicUpload)));
         }
+
+        parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
 
         /// perform required PUT requests
         PutMethod put = null;
-        String uriString = null;
+        String uriString;
 
         try {
             Uri requestUri = client.getBaseUri();
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(ShareUtils.SHARING_API_PATH.substring(1));
-            uriBuilder.appendEncodedPath(Long.toString(mRemoteId));
+            uriBuilder.appendEncodedPath(Long.toString(remoteId));
             uriString = uriBuilder.build().toString();
 
             for (Pair<String, String> parameter : parametersToUpdate) {

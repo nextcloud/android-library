@@ -55,6 +55,9 @@ public class RemoteFile implements Parcelable, Serializable {
     private boolean mIsFavorite;
     private boolean mIsEncrypted;
     private WebdavEntry.MountType mMountType;
+    private String ownerId;
+    private String ownerDisplayName;
+    private int unreadCommentsCount;
 
     /**
      * Getters and Setters.
@@ -156,6 +159,30 @@ public class RemoteFile implements Parcelable, Serializable {
         this.mMountType = mountType;
     }
 
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public String getOwnerDisplayName() {
+        return ownerDisplayName;
+    }
+
+    public void setOwnerDisplayName(String ownerDisplayName) {
+        this.ownerDisplayName = ownerDisplayName;
+    }
+
+    public void setUnreadCommentsCount(int unreadCommentsCount) {
+        this.unreadCommentsCount = unreadCommentsCount;
+    }
+
+    public int getUnreadCommentsCount() {
+        return unreadCommentsCount;
+    }
+
     public RemoteFile() {
         resetData();
     }
@@ -177,16 +204,18 @@ public class RemoteFile implements Parcelable, Serializable {
 
     public RemoteFile(WebdavEntry we) {
         this(we.decodedPath());
-        this.setCreationTimestamp(we.createTimestamp());
-        this.setLength(we.contentLength());
-        this.setMimeType(we.contentType());
-        this.setModifiedTimestamp(we.modifiedTimestamp());
-        this.setEtag(we.etag());
-        this.setPermissions(we.permissions());
-        this.setRemoteId(we.remoteId());
-        this.setSize(we.size());
-        this.setFavorite(we.isFavorite());
-        this.setMountType(we.getMountType());
+        setCreationTimestamp(we.createTimestamp());
+        setLength(we.contentLength());
+        setMimeType(we.contentType());
+        setModifiedTimestamp(we.modifiedTimestamp());
+        setEtag(we.etag());
+        setPermissions(we.permissions());
+        setRemoteId(we.remoteId());
+        setSize(we.size());
+        setFavorite(we.isFavorite());
+        setMountType(we.getMountType());
+        setOwnerId(we.getOwnerId());
+        setOwnerDisplayName(we.getOwnerDisplayName());
     }
 
     /**
@@ -204,6 +233,8 @@ public class RemoteFile implements Parcelable, Serializable {
         mSize = 0;
         mIsFavorite = false;
         mIsEncrypted = false;
+        ownerId = "";
+        ownerDisplayName = "";
     }
 
     /**
@@ -245,6 +276,8 @@ public class RemoteFile implements Parcelable, Serializable {
         mIsFavorite = Boolean.parseBoolean(source.readString());
         mIsEncrypted = Boolean.parseBoolean(source.readString());
         mMountType = (WebdavEntry.MountType) source.readSerializable();
+        ownerId = source.readString();
+        ownerDisplayName = source.readString();
     }
 
     @Override
@@ -266,5 +299,7 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(Boolean.toString(mIsFavorite));
         dest.writeString(Boolean.toString(mIsEncrypted));
         dest.writeSerializable(mMountType);
+        dest.writeString(ownerId);
+        dest.writeString(ownerDisplayName);
     }
 }

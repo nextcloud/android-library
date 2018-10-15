@@ -26,14 +26,14 @@
 
 package com.owncloud.android.lib.resources.shares;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
  * Provide a list shares for a specific file.
@@ -84,7 +84,8 @@ public class GetRemoteSharesForFileOperation extends RemoteOperation {
             get.setQueryString(new NameValuePair[]{
                 new NameValuePair(PARAM_PATH, mRemoteFilePath),
                 new NameValuePair(PARAM_RESHARES, String.valueOf(mReshares)),
-                new NameValuePair(PARAM_SUBFILES, String.valueOf(mSubfiles))
+                    new NameValuePair(PARAM_SUBFILES, String.valueOf(mSubfiles)) //,
+                    //new NameValuePair("shared_with_me", "true")
             });
 
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);

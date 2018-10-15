@@ -90,7 +90,9 @@ public class WebdavUtils {
      * For using instead of DavConstants.PROPFIND_ALL_PROP
      * @return
      */
-    public static DavPropertyNameSet getAllPropSet(){
+    public static DavPropertyNameSet getAllPropSet() {
+        Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
+        Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
@@ -99,12 +101,15 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.GETLASTMODIFIED);
         propSet.add(DavPropertyName.CREATIONDATE);
         propSet.add(DavPropertyName.GETETAG);
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_MOUNT_TYPE, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_OWNER_ID, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_OWNER_DISPLAY_NAME, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace);
 
         return propSet;
     }

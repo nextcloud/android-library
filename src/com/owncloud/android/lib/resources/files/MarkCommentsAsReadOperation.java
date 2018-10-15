@@ -1,26 +1,25 @@
 /*
  * Nextcloud Android client application
  *
- * @author Mario Danic
- * Copyright (C) 2017 Mario Danic
+ * @author Tobias Kaminsky
+ * Copyright (C) 2018 Tobias Kaminsky
+ * Copyright (C) 2018 Nextcloud GmbH.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.owncloud.android.lib.resources.files;
-
-import android.net.Uri;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
@@ -37,44 +36,37 @@ import org.apache.jackrabbit.webdav.xml.Namespace;
 import java.io.IOException;
 
 /**
- * Favorite or unfavorite a file.
+ * Mark all comments for a file as read
  */
-public class ToggleFavoriteOperation extends RemoteOperation {
-    private boolean makeItFavorited;
-    private String filePath;
-    private String userID;
+public class MarkCommentsAsReadOperation extends RemoteOperation {
+    private static final String COMMENTS_URL = "/comments/files/";
 
-    public ToggleFavoriteOperation(boolean makeItFavorited, String filePath, String userID) {
-        this.makeItFavorited = makeItFavorited;
-        this.filePath = filePath;
-        this.userID = userID;
+    private String fileId;
+
+    public MarkCommentsAsReadOperation(String fileId) {
+        this.fileId = fileId;
     }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+        RemoteOperationResult result;
         PropPatchMethod propPatchMethod = null;
 
         DavPropertySet newProps = new DavPropertySet();
         DavPropertyNameSet removeProperties = new DavPropertyNameSet();
 
-        if (makeItFavorited) {
-            DefaultDavProperty<String> favoriteProperty = new DefaultDavProperty<>("oc:favorite", "1",
-                    Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-            newProps.add(favoriteProperty);
-        } else {
-            removeProperties.add("oc:favorite", Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        }
+        DefaultDavProperty<String> readMarkerProperty = new DefaultDavProperty<>("oc:readMarker", "",
+                Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        newProps.add(readMarkerProperty);
 
-        String webDavUrl = client.getNewWebdavUri().toString();
-        String encodedPath = Uri.encode(userID + filePath).replace("%2F", "/");
-        String fullFilePath = webDavUrl + "/files/" + encodedPath;
+        String commentsPath = client.getNewWebdavUri() + COMMENTS_URL + fileId;
 
         try {
-            propPatchMethod = new PropPatchMethod(fullFilePath, newProps, removeProperties);
+            propPatchMethod = new PropPatchMethod(commentsPath, newProps, removeProperties);
             int status = client.executeMethod(propPatchMethod);
 
-            boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
+            boolean isSuccess = status == HttpStatus.SC_NO_CONTENT || status == HttpStatus.SC_OK ||
+                    status == HttpStatus.SC_MULTI_STATUS;
 
             if (isSuccess) {
                 result = new RemoteOperationResult(true, status, propPatchMethod.getResponseHeaders());
@@ -84,9 +76,9 @@ public class ToggleFavoriteOperation extends RemoteOperation {
             }
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
-        }  finally {
+        } finally {
             if (propPatchMethod != null) {
-                propPatchMethod.releaseConnection();  // let the connection available for other methods
+                propPatchMethod.releaseConnection();
             }
         }
 

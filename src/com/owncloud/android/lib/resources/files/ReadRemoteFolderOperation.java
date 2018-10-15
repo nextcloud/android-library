@@ -137,15 +137,14 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
      * @return
      */
     private void readData(MultiStatus remoteData, OwnCloudClient client) {
-        mFolderAndFiles = new ArrayList<Object>();
+        mFolderAndFiles = new ArrayList<>();
 
         // parse data from remote folder 
-        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0],
-            client.getWebdavUri().getPath());
+        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getWebdavUri().getPath());
         mFolderAndFiles.add(fillOCFile(we));
 
         // loop to update every child
-        RemoteFile remoteFile = null;
+        RemoteFile remoteFile;
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
             /// new OCFile instance with the data from the server
             we = new WebdavEntry(remoteData.getResponses()[i], client.getWebdavUri().getPath());
@@ -174,6 +173,10 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
         file.setFavorite(we.isFavorite());
         file.setIsEncrypted(we.isEncrypted());
         file.setMountType(we.getMountType());
+        file.setOwnerId(we.getOwnerId());
+        file.setOwnerDisplayName(we.getOwnerDisplayName());
+        file.setUnreadCommentsCount(we.getUnreadCommentsCount());
+        
         return file;
     }
 }

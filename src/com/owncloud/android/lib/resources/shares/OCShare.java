@@ -26,6 +26,7 @@ package com.owncloud.android.lib.resources.shares;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
@@ -80,22 +81,23 @@ public class OCShare implements Parcelable, Serializable {
         FEDERATED_PERMISSIONS_FOR_FOLDER_UP_TO_OC9 +
         SHARE_PERMISSION_FLAG;
 
-    private long mId;
-    private long mFileSource;
-    private long mItemSource;
-    private ShareType mShareType;
-    private String mShareWith;
-    private String mPath;
-    private int mPermissions;
-    private long mSharedDate;
-    private long mExpirationDate;
-    private String mToken;
-    private String mSharedWithDisplayName;
-    private boolean mIsFolder;
-    private long mUserId;
-    private long mRemoteId;
-    private String mShareLink;
-    private boolean mIsPasswordProtected;
+    private long id;
+    private long fileSource;
+    private long itemSource;
+    private ShareType shareType;
+    private String shareWith;
+    private String path;
+    private int permissions;
+    private long sharedDate;
+    private long expirationDate;
+    private String token;
+    private String sharedWithDisplayName;
+    private boolean isFolder;
+    private long userId;
+    private long remoteId;
+    private String shareLink;
+    private boolean isPasswordProtected;
+    private String note;
     
     public OCShare() {
     	super();
@@ -108,163 +110,172 @@ public class OCShare implements Parcelable, Serializable {
             Log_OC.e(TAG, "Trying to create a OCShare with a non valid path");
             throw new IllegalArgumentException("Trying to create a OCShare with a non valid path: " + path);
         }
-        mPath = path;
+        this.path = path;
 	}
 
 	/**
      * Used internally. Reset all file properties
      */
     private void resetData() {
-    	mId = -1;
-        mFileSource = 0;
-        mItemSource = 0;
-        mShareType = ShareType.NO_SHARED; 
-        mShareWith = "";
-        mPath = "";
-        mPermissions = -1;
-        mSharedDate = 0;
-        mExpirationDate = 0;
-        mToken = "";
-        mSharedWithDisplayName = "";
-        mIsFolder = false;
-        mUserId = -1;
-        mRemoteId = -1;
-        mShareLink = "";
-        mIsPasswordProtected = false;
+        id = -1;
+        fileSource = 0;
+        itemSource = 0;
+        shareType = ShareType.NO_SHARED;
+        shareWith = "";
+        path = "";
+        permissions = -1;
+        sharedDate = 0;
+        expirationDate = 0;
+        token = "";
+        sharedWithDisplayName = "";
+        isFolder = false;
+        userId = -1;
+        remoteId = -1;
+        shareLink = "";
+        isPasswordProtected = false;
+        note = "";
     }	
     
     /// Getters and Setters
     
     public long getId() {
-        return mId;
+        return id;
     }
     
     public void setId(long id){
-        mId = id;
+        this.id = id;
     }
     
     public long getFileSource() {
-        return mFileSource;
+        return fileSource;
     }
 
     public void setFileSource(long fileSource) {
-        this.mFileSource = fileSource;
+        this.fileSource = fileSource;
     }
 
     public long getItemSource() {
-        return mItemSource;
+        return itemSource;
     }
 
     public void setItemSource(long itemSource) {
-        this.mItemSource = itemSource;
+        this.itemSource = itemSource;
     }
 
     public ShareType getShareType() {
-        return mShareType;
+        return shareType;
     }
 
     public void setShareType(ShareType shareType) {
-        this.mShareType = shareType;
+        this.shareType = shareType;
     }
 
     public String getShareWith() {
-        return mShareWith;
+        return shareWith;
     }
 
     public void setShareWith(String shareWith) {
-        this.mShareWith = (shareWith != null) ? shareWith : "";
+        this.shareWith = (shareWith != null) ? shareWith : "";
     }
 
     public String getPath() {
-        return mPath;
+        return path;
     }
 
     public void setPath(String path) {
-        this.mPath = (path != null) ? path : "";
+        this.path = (path != null) ? path : "";
     }
 
     public int getPermissions() {
-        return mPermissions;
+        return permissions;
     }
 
     public void setPermissions(int permissions) {
-        this.mPermissions = permissions;
+        this.permissions = permissions;
     }
 
     public long getSharedDate() {
-        return mSharedDate;
+        return sharedDate;
     }
 
     public void setSharedDate(long sharedDate) {
-        this.mSharedDate = sharedDate;
+        this.sharedDate = sharedDate;
     }
 
     public long getExpirationDate() {
-        return mExpirationDate;
+        return expirationDate;
     }
 
     public void setExpirationDate(long expirationDate) {
-        this.mExpirationDate = expirationDate;
+        this.expirationDate = expirationDate;
     }
 
     public String getToken() {
-        return mToken;
+        return token;
     }
 
     public void setToken(String token) {
-        this.mToken = (token != null) ? token : "";
+        this.token = (token != null) ? token : "";
     }
 
     public String getSharedWithDisplayName() {
-        return mSharedWithDisplayName;
+        return sharedWithDisplayName;
     }
 
     public void setSharedWithDisplayName(String sharedWithDisplayName) {
-        this.mSharedWithDisplayName = (sharedWithDisplayName != null) ? sharedWithDisplayName : "";
+        this.sharedWithDisplayName = (sharedWithDisplayName != null) ? sharedWithDisplayName : "";
     }
 
     public boolean isFolder() {
-        return mIsFolder;
+        return isFolder;
     }
 
     public void setIsFolder(boolean isFolder) {
-        this.mIsFolder = isFolder;
+        this.isFolder = isFolder;
     }
 
     public long getUserId() {
-        return mUserId;
+        return userId;
     }
 
     public void setUserId(long userId) {
-        this.mUserId = userId;
+        this.userId = userId;
     }
 
     public long getRemoteId() {
-        return mRemoteId;
+        return remoteId;
     }
 
     public void setIdRemoteShared(long remoteId) {
-        this.mRemoteId = remoteId;
+        this.remoteId = remoteId;
     }
     
     public String getShareLink() {
-    	return this.mShareLink;
+        return this.shareLink;
     }
     
     public void setShareLink(String shareLink) {
-        this.mShareLink = (shareLink != null) ? shareLink : "";
+        this.shareLink = (shareLink != null) ? shareLink : "";
     }
 
     public void setIsPasswordProtected(boolean isPasswordProtected) {
-        this.mIsPasswordProtected = isPasswordProtected;
+        this.isPasswordProtected = isPasswordProtected;
     }
 
     public boolean isPasswordProtected() {
-        if (!ShareType.PUBLIC_LINK.equals(mShareType)) {
-            return mIsPasswordProtected;
+        if (!ShareType.PUBLIC_LINK.equals(shareType)) {
+            return isPasswordProtected;
         } else {
-            return mShareWith.length() > 0;
+            return shareWith.length() > 0;
         }
+    }
+
+    public void setNote(@NonNull String note) {
+        this.note = note;
+    }
+
+    public String getNote() {
+        return this.note;
     }
     
     /** 
@@ -292,27 +303,27 @@ public class OCShare implements Parcelable, Serializable {
     }
     
     public void readFromParcel(Parcel source) {
-        mId = source.readLong();
-    	
-        mFileSource = source.readLong();
-        mItemSource = source.readLong();
+        id = source.readLong();
+
+        fileSource = source.readLong();
+        itemSource = source.readLong();
         try {
-            mShareType = ShareType.valueOf(source.readString());
+            shareType = ShareType.valueOf(source.readString());
         } catch (IllegalArgumentException x) {
-            mShareType = ShareType.NO_SHARED;
+            shareType = ShareType.NO_SHARED;
         }
-        mShareWith = source.readString();
-        mPath = source.readString();
-        mPermissions = source.readInt();
-        mSharedDate = source.readLong();
-        mExpirationDate = source.readLong();
-        mToken = source.readString();
-        mSharedWithDisplayName = source.readString();
-        mIsFolder = source.readInt() == 0;
-        mUserId = source.readLong();
-        mRemoteId = source.readLong();
-        mShareLink = source.readString();
-        mIsPasswordProtected = source.readInt() == 1;
+        shareWith = source.readString();
+        path = source.readString();
+        permissions = source.readInt();
+        sharedDate = source.readLong();
+        expirationDate = source.readLong();
+        token = source.readString();
+        sharedWithDisplayName = source.readString();
+        isFolder = source.readInt() == 0;
+        userId = source.readLong();
+        remoteId = source.readLong();
+        shareLink = source.readString();
+        isPasswordProtected = source.readInt() == 1;
     }
 
 
@@ -324,21 +335,21 @@ public class OCShare implements Parcelable, Serializable {
 	
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-    	dest.writeLong(mId);
-        dest.writeLong(mFileSource);
-        dest.writeLong(mItemSource);
-        dest.writeString((mShareType == null) ? "" : mShareType.name());
-        dest.writeString(mShareWith);
-        dest.writeString(mPath);
-        dest.writeInt(mPermissions);
-        dest.writeLong(mSharedDate);
-        dest.writeLong(mExpirationDate);
-        dest.writeString(mToken);
-        dest.writeString(mSharedWithDisplayName);
-        dest.writeInt(mIsFolder ? 1 : 0);
-        dest.writeLong(mUserId);
-        dest.writeLong(mRemoteId);
-        dest.writeString(mShareLink);
-        dest.writeInt(mIsPasswordProtected ? 1 : 0);
+        dest.writeLong(id);
+        dest.writeLong(fileSource);
+        dest.writeLong(itemSource);
+        dest.writeString((shareType == null) ? "" : shareType.name());
+        dest.writeString(shareWith);
+        dest.writeString(path);
+        dest.writeInt(permissions);
+        dest.writeLong(sharedDate);
+        dest.writeLong(expirationDate);
+        dest.writeString(token);
+        dest.writeString(sharedWithDisplayName);
+        dest.writeInt(isFolder ? 1 : 0);
+        dest.writeLong(userId);
+        dest.writeLong(remoteId);
+        dest.writeString(shareLink);
+        dest.writeInt(isPasswordProtected ? 1 : 0);
     }
 }
