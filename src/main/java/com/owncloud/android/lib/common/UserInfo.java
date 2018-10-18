@@ -31,6 +31,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,4 +65,6 @@ public class UserInfo {
     public String twitter;
     @SerializedName("quota")
     public Quota quota;
+    @SerializedName("groups")
+    public ArrayList<String> groups;
 }
