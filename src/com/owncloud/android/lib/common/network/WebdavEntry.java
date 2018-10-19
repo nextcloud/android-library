@@ -319,7 +319,7 @@ public class WebdavEntry {
     }
 
     public boolean isDirectory() {
-        return contentType.equals("DIR");
+        return "DIR".equals(contentType);
     }
 
     public String contentType() {
