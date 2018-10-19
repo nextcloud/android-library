@@ -62,26 +62,29 @@ public class WebdavEntry {
     private static final String IS_ENCRYPTED = "1";
 
     private static final int CODE_PROP_NOT_FOUND = 404;
-    
 
-    private String mName;
-    private String mPath;
-    private String mUri;
-    private String mContentType;
-    private String mEtag;
-    private String mPermissions;
-    private String mRemoteId;
-    private String mTrashbinOriginalLocation;
-    private String mTrashbinFilename;
-    private long mTrashbinDeletionTimestamp;
-    private boolean mIsFavorite;
-    private boolean mIsEncrypted;
-    private MountType mMountType;
-    private long mContentLength, mCreateTimestamp, mModifiedTimestamp, mSize;
-    private BigDecimal mQuotaUsedBytes, mQuotaAvailableBytes;
+    private String name;
+    private String path;
+    private String uri;
+    private String contentType;
+    private String eTag;
+    private String permissions;
+    private String remoteId;
+    private String trashbinOriginalLocation;
+    private String trashbinFilename;
+    private long trashbinDeletionTimestamp;
+    private boolean favorite;
+    private boolean encrypted;
+    private MountType mountType;
+    private long contentLength;
+    private long createTimestamp;
+    private long modifiedTimestamp;
+    private long size;
+    private BigDecimal quotaUsedBytes;
+    private BigDecimal quotaAvailableBytes;
     private String ownerId;
     private String ownerDisplayName;
-    private int mUnreadCommentsCount;
+    private int unreadCommentsCount;
 
     public enum MountType {INTERNAL, EXTERNAL}
 
@@ -92,9 +95,9 @@ public class WebdavEntry {
         Namespace ncNamespace = Namespace.getNamespace(NAMESPACE_NC);
         
         if (ms.getStatus().length != 0) {
-            mUri = ms.getHref();
+            uri = ms.getHref();
 
-            mPath = mUri.split(splitElement, 2)[1].replace("//", "/");
+            path = uri.split(splitElement, 2)[1].replace("//", "/");
 
             int status = ms.getStatus()[0].getStatusCode();
             if ( status == CODE_PROP_NOT_FOUND ) {
@@ -104,18 +107,18 @@ public class WebdavEntry {
             @SuppressWarnings("rawtypes")
             DavProperty prop = propSet.get(DavPropertyName.DISPLAYNAME);
             if (prop != null) {
-                mName = prop.getName().toString();
-                mName = mName.substring(1, mName.length()-1);
+                name = prop.getName().toString();
+                name = name.substring(1, name.length() - 1);
             }
             else {
-                String[] tmp = mPath.split("/");
+                String[] tmp = path.split("/");
                 if (tmp.length > 0)
-                    mName = tmp[tmp.length - 1];
+                    name = tmp[tmp.length - 1];
             }
 
             // use unknown mimetype as default behavior
             // {DAV:}getcontenttype
-            mContentType = "application/octet-stream";
+            contentType = "application/octet-stream";
             prop = propSet.get(DavPropertyName.GETCONTENTTYPE);
             if (prop != null) {
                 String contentType = (String) prop.getValue();
@@ -123,9 +126,9 @@ public class WebdavEntry {
                 // to the MIME type ; if looks fixed, but let's be cautious
                 if (contentType != null) {
                     if (contentType.contains(";")) {
-                        mContentType = contentType.substring(0, contentType.indexOf(";"));
+                        this.contentType = contentType.substring(0, contentType.indexOf(";"));
                     } else {
-                        mContentType = contentType;
+                        this.contentType = contentType;
                     }
                 }
             }
@@ -136,7 +139,7 @@ public class WebdavEntry {
             if (prop!= null) {
                 Object value = prop.getValue();
                 if (value != null) {
-                    mContentType = "DIR";   // a specific attribute would be better,
+                    contentType = "DIR";   // a specific attribute would be better,
                                             // but this is enough;
                                             // unless while we have no reason to distinguish
                                             // MIME types for folders
@@ -146,27 +149,27 @@ public class WebdavEntry {
             // {DAV:}getcontentlength
             prop = propSet.get(DavPropertyName.GETCONTENTLENGTH);
             if (prop != null) {
-                mContentLength = Long.parseLong((String) prop.getValue());
+                contentLength = Long.parseLong((String) prop.getValue());
             }
 
             // {DAV:}getlastmodified
             prop = propSet.get(DavPropertyName.GETLASTMODIFIED);
             if (prop != null) {
                 Date d = WebdavUtils.parseResponseDate((String) prop.getValue());
-                mModifiedTimestamp = (d != null) ? d.getTime() : 0;
+                modifiedTimestamp = (d != null) ? d.getTime() : 0;
             }
 
             prop = propSet.get(DavPropertyName.CREATIONDATE);
             if (prop != null) {
                 Date d = WebdavUtils.parseResponseDate((String) prop.getValue());
-                mCreateTimestamp = (d != null) ? d.getTime() : 0;
+                createTimestamp = (d != null) ? d.getTime() : 0;
             }
 
             // {DAV:}getetag
             prop = propSet.get(DavPropertyName.GETETAG);
             if (prop != null) {
-                mEtag = (String) prop.getValue();
-                mEtag = WebdavUtils.parseEtag(mEtag);
+                eTag = (String) prop.getValue();
+                eTag = WebdavUtils.parseEtag(eTag);
             }
 
             // {DAV:}quota-used-bytes
@@ -174,7 +177,7 @@ public class WebdavEntry {
             if (prop != null) {
                 String quotaUsedBytesSt = (String) prop.getValue();
                 try {
-                    mQuotaUsedBytes = new BigDecimal(quotaUsedBytesSt);
+                    quotaUsedBytes = new BigDecimal(quotaUsedBytesSt);
                 } catch (NumberFormatException e) {
                     Log_OC.w(TAG, "No value for QuotaUsedBytes - NumberFormatException");
                 } catch (NullPointerException e ){
@@ -188,7 +191,7 @@ public class WebdavEntry {
             if (prop != null) {
                 String quotaAvailableBytesSt = (String) prop.getValue();
                 try {
-                    mQuotaAvailableBytes = new BigDecimal(quotaAvailableBytesSt);
+                    quotaAvailableBytes = new BigDecimal(quotaAvailableBytesSt);
                 } catch (NumberFormatException e) {
                     Log_OC.w(TAG, "No value for QuotaAvailableBytes - NumberFormatException");
                 } catch (NullPointerException e ){
@@ -200,49 +203,49 @@ public class WebdavEntry {
             // OC permissions property <oc:permissions>
             prop = propSet.get(EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace);
             if (prop != null && prop.getValue() != null) {
-                mPermissions = prop.getValue().toString();
+                permissions = prop.getValue().toString();
             }
 
             // OC remote id property <oc:id>
             prop = propSet.get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
             if (prop != null) {
-                mRemoteId = prop.getValue().toString();
+                remoteId = prop.getValue().toString();
             }
 
             // OC size property <oc:size>
             prop = propSet.get(EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
             if (prop != null) {
-                mSize = Long.parseLong((String) prop.getValue());
+                size = Long.parseLong((String) prop.getValue());
             }
 
             // OC favorite property <oc:favorite>
             prop = propSet.get(EXTENDED_PROPERTY_FAVORITE, ocNamespace);
             if (prop != null) {
                 String favoriteValue = (String) prop.getValue();
-                mIsFavorite = IS_ENCRYPTED.equals(favoriteValue);
+                favorite = IS_ENCRYPTED.equals(favoriteValue);
             } else {
-                mIsFavorite = false;
+                favorite = false;
             }
 
             // NC encrypted property <nc:is-encrypted>
             prop = propSet.get(EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace);
             if (prop != null) {
                 String encryptedValue = (String) prop.getValue();
-                mIsEncrypted = IS_ENCRYPTED.equals(encryptedValue);
+                encrypted = IS_ENCRYPTED.equals(encryptedValue);
             } else {
-                mIsEncrypted = false;
+                encrypted = false;
             }
 
             // NC mount-type property <nc:mount-type>
             prop = propSet.get(EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace);
             if (prop != null) {
                 if ("external".equals(prop.getValue())) {
-                    mMountType = MountType.EXTERNAL;
+                    mountType = MountType.EXTERNAL;
                 } else {
-                    mMountType = MountType.INTERNAL;
+                    mountType = MountType.INTERNAL;
                 }
             } else {
-                mMountType = MountType.INTERNAL;
+                mountType = MountType.INTERNAL;
             }
 
             // OC owner-id property <oc:owner-id>
@@ -264,27 +267,27 @@ public class WebdavEntry {
             // OC unread comments property <oc-comments-unread>
             prop = propSet.get(EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace);
             if (prop != null) {
-                mUnreadCommentsCount = Integer.valueOf(prop.getValue().toString());
+                unreadCommentsCount = Integer.valueOf(prop.getValue().toString());
             } else {
-                mUnreadCommentsCount = 0;
+                unreadCommentsCount = 0;
             }
             
             // NC trashbin-original-location <nc:trashbin-original-location>
             prop = propSet.get(TRASHBIN_ORIGINAL_LOCATION, ncNamespace);
             if (prop != null) {
-                mTrashbinOriginalLocation = prop.getValue().toString();
+                trashbinOriginalLocation = prop.getValue().toString();
             }
 
             // NC trashbin-filename <nc:trashbin-filename>
             prop = propSet.get(TRASHBIN_FILENAME, ncNamespace);
             if (prop != null) {
-                mTrashbinFilename = prop.getValue().toString();
+                trashbinFilename = prop.getValue().toString();
             }
 
             // NC trashbin-deletion-time <nc:trashbin-deletion-time>
             prop = propSet.get(TRASHBIN_DELETION_TIME, ncNamespace);
             if (prop != null) {
-                mTrashbinDeletionTimestamp = Long.parseLong((String) prop.getValue());
+                trashbinDeletionTimestamp = Long.parseLong((String) prop.getValue());
             }
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
@@ -292,91 +295,91 @@ public class WebdavEntry {
     }
 
     public boolean isFavorite() {
-        return mIsFavorite;
+        return favorite;
     }
 
     public void setIsFavorite(boolean mIsFavorite) {
-        this.mIsFavorite = mIsFavorite;
+        this.favorite = mIsFavorite;
     }
 
     public boolean isEncrypted() {
-        return mIsEncrypted;
+        return encrypted;
     }
 
     public String path() {
-        return mPath;
+        return path;
     }
     
     public String decodedPath() {
-        return Uri.decode(mPath);
+        return Uri.decode(path);
     }
 
     public String name() {
-        return mName;
+        return name;
     }
 
     public boolean isDirectory() {
-        return mContentType.equals("DIR");
+        return contentType.equals("DIR");
     }
 
     public String contentType() {
-        return mContentType;
+        return contentType;
     }
 
     public String uri() {
-        return mUri;
+        return uri;
     }
 
     public long contentLength() {
-        return mContentLength;
+        return contentLength;
     }
 
     public long createTimestamp() {
-        return mCreateTimestamp;
+        return createTimestamp;
     }
 
     public long modifiedTimestamp() {
-        return mModifiedTimestamp;
+        return modifiedTimestamp;
     }
     
     public String etag() {
-        return mEtag;
+        return eTag;
     }
 
     public String permissions() {
-        return mPermissions;
+        return permissions;
     }
 
     public String remoteId() {
-        return mRemoteId;
+        return remoteId;
     }
 
     public long size(){
-        return mSize;
+        return size;
     }
 
     public BigDecimal quotaUsedBytes() {
-        return mQuotaUsedBytes;
+        return quotaUsedBytes;
     }
 
     public BigDecimal quotaAvailableBytes() {
-        return mQuotaAvailableBytes;
+        return quotaAvailableBytes;
     }
 
     public MountType getMountType() {
-        return mMountType;
+        return mountType;
     }
     
     public String getTrashbinOriginalLocation() {
-        return mTrashbinOriginalLocation;
+        return trashbinOriginalLocation;
     }
     
     public String getTrashbinFilename() {
-        return mTrashbinFilename;
+        return trashbinFilename;
     }
     
     public long getTrashbinDeletionTimestamp() {
-        return mTrashbinDeletionTimestamp;
+        return trashbinDeletionTimestamp;
     }
 
     public String getOwnerId() {
@@ -392,15 +395,16 @@ public class WebdavEntry {
     }
 
     public int getUnreadCommentsCount() {
-        return mUnreadCommentsCount;
+        return unreadCommentsCount;
     }
 
     private void resetData() {
-        mName = mUri = mContentType = mPermissions = null; mRemoteId = null;
-        mContentLength = mCreateTimestamp = mModifiedTimestamp = 0;
-        mSize = 0;
-        mQuotaUsedBytes = null;
-        mQuotaAvailableBytes = null;
-        mIsFavorite = false;
+        name = uri = contentType = permissions = null;
+        remoteId = null;
+        contentLength = createTimestamp = modifiedTimestamp = 0;
+        size = 0;
+        quotaUsedBytes = null;
+        quotaAvailableBytes = null;
+        favorite = false;
     }
 }
