@@ -2,17 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'jacoco-android'
 
 repositories {
-    jcenter()
     google()
+    jcenter()
 }
 
 buildscript {
     repositories {
-        jcenter()
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
         google()
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.3'
