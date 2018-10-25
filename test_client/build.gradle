@@ -36,18 +36,15 @@ dependencies {
 
     jacocoAnt "org.jacoco:org.jacoco.ant:${project.jacocoVersion}"
     jacocoAgent "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
-    androidJacocoAgent "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
-    androidJacocoAnt "org.jacoco:org.jacoco.ant:${project.jacocoVersion}"
-    androidJacocoAnt "org.jacoco:org.jacoco.core:${project.jacocoVersion}"
-    androidJacocoAnt "org.jacoco:org.jacoco.report:${project.jacocoVersion}"
-    androidJacocoAnt "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 14
+        targetSdkVersion 28
     }
 
     buildTypes {
