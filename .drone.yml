@@ -19,12 +19,12 @@ pipeline:
         - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
       secrets: [ LOG_USERNAME, LOG_PASSWORD ]
 
-  lint:
-      image: nextcloudci/android:android-33
-      commands:
-        - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
-        - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
-      secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
+  analysis:
+    image: nextcloudci/android:android-42
+    commands:
+      - export BRANCH=$(scripts/analysis/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
+      - scripts/analysis/analysis-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER $DRONE_PULL_REQUEST
+    secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
 
   notify:
         image: drillster/drone-email
