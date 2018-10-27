@@ -55,6 +55,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.net.ssl.SSLException;
@@ -431,8 +432,16 @@ public class RemoteOperationResult implements Serializable {
         mData = files;
     }
 
+    public void setSingleData(Object object) {
+        mData = new ArrayList<>(Collections.singletonList(object));
+    }
+
     public ArrayList<Object> getData() {
         return mData;
+    }
+
+    public Object getSingleData() {
+        return mData.get(0);
     }
 
     public void setNotificationData(List<Notification> notifications) {

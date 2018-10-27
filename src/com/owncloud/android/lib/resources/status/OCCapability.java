@@ -24,6 +24,9 @@
  */
 package com.owncloud.android.lib.resources.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Contains data of the Capabilities for an account, from the Capabilities API
  */
@@ -90,10 +93,14 @@ public class OCCapability {
     private CapabilityBooleanType mFullNextSearchFiles;
 
     private CapabilityBooleanType mEndToEndEncryption;
+    
+    // Richdocuments
+    private CapabilityBooleanType mRichdocuments;
+    private List<String> mRichdocumentsMimeTypeList;
 
     private CapabilityBooleanType mActivity;
 
-    public OCCapability(){
+    public OCCapability() {
         mId = 0;
         mAccountName = "";
 
@@ -140,6 +147,9 @@ public class OCCapability {
         mEndToEndEncryption = CapabilityBooleanType.UNKNOWN;
 
         mActivity = CapabilityBooleanType.UNKNOWN;
+        
+        mRichdocuments = CapabilityBooleanType.UNKNOWN;
+        mRichdocumentsMimeTypeList = new ArrayList<>();
     }
 
 
@@ -468,5 +478,21 @@ public class OCCapability {
 
     public void setActivity(CapabilityBooleanType mActivity) {
         this.mActivity = mActivity;
+    }
+
+    public CapabilityBooleanType getRichDocuments() {
+        return mRichdocuments;
+    }
+    
+    public void setRichDocuments(CapabilityBooleanType richdocuments) {
+        mRichdocuments = richdocuments;
+    }
+    
+    public List<String> getRichDocumentsMimeTypeList() {
+        return mRichdocumentsMimeTypeList;
+    }
+    
+    public void setRichDocumentsMimeTypeList(List<String> mimeTypeList) {
+        mRichdocumentsMimeTypeList = mimeTypeList;
     }
 }
