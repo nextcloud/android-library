@@ -27,7 +27,6 @@ package com.owncloud.android.lib.resources.activities.models;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class PreviewListAdapter extends TypeAdapter<PreviewObject> {
 
     @Override
     public void write(JsonWriter out, PreviewObject value) {
-
+        // not needed
     }
 
     @Override
@@ -49,26 +48,24 @@ public class PreviewListAdapter extends TypeAdapter<PreviewObject> {
         in.beginObject();
 
         while (in.hasNext()) {
-            String name = in.nextName();
-            if (name != null && !name.isEmpty()) {
-                preview = readObject(name, in);
+            String name = in.peek().toString();
+            if (!name.isEmpty()) {
+                preview = readObject(in);
             }
         }
-
 
         in.endObject();
 
         return preview;
     }
 
-    private PreviewObject readObject(String tag, JsonReader in) throws IOException {
+    private PreviewObject readObject(JsonReader in) throws IOException {
+        String tag;
         PreviewObject preview = new PreviewObject();
 
         do {
-            if (in.peek() == JsonToken.NAME) {
-                tag = in.nextName();
-            }
-
+            tag = in.nextName();
+            
             switch (tag) {
                 case "source":
                     preview.setSource(in.nextString());

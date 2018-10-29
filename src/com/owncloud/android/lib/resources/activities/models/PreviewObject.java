@@ -38,9 +38,6 @@ public class PreviewObject {
     private String mimeType;
     private String view;
 
-    public PreviewObject() {
-    }
-
     public String getLink() {
         return link;
     }
