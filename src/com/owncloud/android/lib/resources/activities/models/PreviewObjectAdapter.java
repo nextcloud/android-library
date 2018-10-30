@@ -35,7 +35,7 @@ import java.io.IOException;
  * PreviewList Parser
  */
 
-public class PreviewListAdapter extends TypeAdapter<PreviewObject> {
+public class PreviewObjectAdapter extends TypeAdapter<PreviewObject> {
 
     @Override
     public void write(JsonWriter out, PreviewObject value) {

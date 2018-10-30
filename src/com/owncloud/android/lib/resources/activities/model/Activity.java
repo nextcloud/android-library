@@ -30,6 +30,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Activity Data Model
@@ -48,7 +49,6 @@ public class Activity {
     @SerializedName("affecteduser")
     public String affectedUser;
     public String subject;
-
     public String message;
     public String icon;
     public String link;
@@ -58,9 +58,8 @@ public class Activity {
     public String objectId;
     @SerializedName("object_name")
     public String objectName;
-
     public List<PreviewObject> previews;
-
+    public Map<Integer, String> objects;
     @SerializedName("subject_rich")
     public RichElement richSubjectElement;
 
@@ -191,5 +190,9 @@ public class Activity {
 
     public void setPreviews(ArrayList<PreviewObject> previews) {
         this.previews = previews;
+    }
+
+    public Map<Integer, String> getObjects() {
+        return objects;
     }
 }

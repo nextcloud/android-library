@@ -188,7 +188,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(RichElement.class, new RichElementTypeAdapter())
-                .registerTypeAdapter(PreviewObject.class, new PreviewListAdapter())
+                .registerTypeAdapter(PreviewObject.class, new PreviewObjectAdapter())
                 .create();
         Type listType = new TypeToken<List<Activity>>(){}.getType();
 
