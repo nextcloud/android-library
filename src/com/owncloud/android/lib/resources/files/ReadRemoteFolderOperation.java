@@ -176,6 +176,7 @@ public class ReadRemoteFolderOperation extends RemoteOperation {
         file.setOwnerId(we.getOwnerId());
         file.setOwnerDisplayName(we.getOwnerDisplayName());
         file.setUnreadCommentsCount(we.getUnreadCommentsCount());
+        file.setHasPreview(we.hasPreview());
         
         return file;
     }

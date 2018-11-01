@@ -110,6 +110,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_OWNER_ID, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_OWNER_DISPLAY_NAME, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
 
         return propSet;
     }
@@ -131,6 +132,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
 
         return propSet;
     }

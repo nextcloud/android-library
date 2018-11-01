@@ -58,6 +58,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private String ownerId;
     private String ownerDisplayName;
     private int unreadCommentsCount;
+    private boolean hasPreview;
 
     /**
      * Getters and Setters.
@@ -183,6 +184,14 @@ public class RemoteFile implements Parcelable, Serializable {
         return unreadCommentsCount;
     }
 
+    public boolean hasPreview() {
+        return hasPreview;
+    }
+
+    public void setHasPreview(boolean hasPreview) {
+        this.hasPreview = hasPreview;
+    }
+
     public RemoteFile() {
         resetData();
     }
@@ -278,6 +287,7 @@ public class RemoteFile implements Parcelable, Serializable {
         mMountType = (WebdavEntry.MountType) source.readSerializable();
         ownerId = source.readString();
         ownerDisplayName = source.readString();
+        hasPreview = Boolean.parseBoolean(source.readString());
     }
 
     @Override
@@ -301,5 +311,6 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeSerializable(mMountType);
         dest.writeString(ownerId);
         dest.writeString(ownerDisplayName);
+        dest.writeString(Boolean.toString(hasPreview));
     }
 }

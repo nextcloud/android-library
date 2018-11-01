@@ -96,6 +96,7 @@ public class WebDavFileUtils {
         file.setRemoteId(we.remoteId());
         file.setSize(we.size());
         file.setFavorite(we.isFavorite());
+        file.setHasPreview(we.hasPreview());
         return file;
     }
 }
