@@ -279,7 +279,7 @@ public class WebdavEntry {
             if (prop != null) {
                 hasPreview = Boolean.valueOf(prop.getValue().toString());
             } else {
-                hasPreview = false;
+                hasPreview = true;
             }
             
             // NC trashbin-original-location <nc:trashbin-original-location>
