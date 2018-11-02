@@ -52,6 +52,7 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_OWNER_ID = "owner-id";
     public static final String EXTENDED_PROPERTY_OWNER_DISPLAY_NAME = "owner-display-name";
     public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
+    public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -85,6 +86,7 @@ public class WebdavEntry {
     private String ownerId;
     private String ownerDisplayName;
     private int unreadCommentsCount;
+    private boolean hasPreview;
 
     public enum MountType {INTERNAL, EXTERNAL}
 
@@ -271,6 +273,14 @@ public class WebdavEntry {
             } else {
                 unreadCommentsCount = 0;
             }
+
+            // NC has preview property <nc-has-preview>
+            prop = propSet.get(EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
+            if (prop != null) {
+                hasPreview = Boolean.valueOf(prop.getValue().toString());
+            } else {
+                hasPreview = true;
+            }
             
             // NC trashbin-original-location <nc:trashbin-original-location>
             prop = propSet.get(TRASHBIN_ORIGINAL_LOCATION, ncNamespace);
@@ -398,6 +408,14 @@ public class WebdavEntry {
         return unreadCommentsCount;
     }
 
+    public boolean hasPreview() {
+        return hasPreview;
+    }
+
+    public void setHasPreview(boolean hasPreview) {
+        this.hasPreview = hasPreview;
+    }
+
     private void resetData() {
         name = uri = contentType = permissions = null;
         remoteId = null;
@@ -406,5 +424,6 @@ public class WebdavEntry {
         quotaUsedBytes = null;
         quotaAvailableBytes = null;
         favorite = false;
+        hasPreview = false;
     }
 }
