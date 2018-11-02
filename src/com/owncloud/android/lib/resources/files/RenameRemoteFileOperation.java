@@ -31,7 +31,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
+import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
 
 import java.io.File;
 
@@ -87,7 +87,7 @@ public class RenameRemoteFileOperation extends RemoteOperation {
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
 
-        LocalMoveMethod move = null;
+        MoveMethod move = null;
         try {
             if (mNewName.equals(mOldName)) {
                 return new RemoteOperationResult(ResultCode.OK);
@@ -98,9 +98,8 @@ public class RenameRemoteFileOperation extends RemoteOperation {
                 return new RemoteOperationResult(ResultCode.INVALID_OVERWRITE);
             }
 
-            move = new LocalMoveMethod(client.getWebdavUri() +
-                    WebdavUtils.encodePath(mOldRemotePath),
-                    client.getWebdavUri() + WebdavUtils.encodePath(mNewRemotePath));
+            move = new MoveMethod(client.getWebdavUri() + WebdavUtils.encodePath(mOldRemotePath),
+                    client.getWebdavUri() + WebdavUtils.encodePath(mNewRemotePath), true);
             client.executeMethod(move, RENAME_READ_TIMEOUT, RENAME_CONNECTION_TIMEOUT);
             result = new RemoteOperationResult(move.succeeded(), move);
             Log_OC.i(TAG, "Rename " + mOldRemotePath + " to " + mNewRemotePath + ": " +
@@ -121,27 +120,4 @@ public class RenameRemoteFileOperation extends RemoteOperation {
 
         return result;
     }
-
-    /**
-     * Move operation
-     */
-    private class LocalMoveMethod extends DavMethodBase {
-
-        public LocalMoveMethod(String uri, String dest) {
-            super(uri);
-            addRequestHeader(new org.apache.commons.httpclient.Header("Destination", dest));
-        }
-
-        @Override
-        public String getName() {
-            return "MOVE";
-        }
-
-        @Override
-        protected boolean isSuccess(int status) {
-            return status == 201 || status == 204;
-        }
-
-    }
-
 }
