@@ -74,6 +74,7 @@ public class ShareXMLParser {
 	private static final String NODE_PASSWORD = "password";
 	private static final String NODE_SHARE_WITH_DISPLAY_NAME = "share_with_displayname";
 	private static final String NODE_NOTE = "note";
+    private static final String NODE_HIDE_DOWNLOAD = "hide_download";
 	
 	private static final String NODE_URL = "url";
 
@@ -137,14 +138,12 @@ public class ShareXMLParser {
 
 	/**
 	 * Parse is as response of Share API
-	 * @param is
+     * @param is InputStream to parse
 	 * @return List of ShareRemoteFiles
 	 * @throws XmlPullParserException
 	 * @throws IOException
 	 */
-	public ArrayList<OCShare> parseXMLResponse(InputStream is) throws XmlPullParserException,
-			IOException {
-
+    public ArrayList<OCShare> parseXMLResponse(InputStream is) throws XmlPullParserException, IOException {
 		try {
 			// XMLPullParser
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -359,11 +358,16 @@ public class ShareXMLParser {
 				String value = readNode(parser, NODE_URL);
 				share.setShareLink(value);
 
-			} else if (name.equalsIgnoreCase(NODE_NOTE)) {
-				share.setNote(readNode(parser, NODE_NOTE));
-			} else {
-				skip(parser);
-			} 
+            } else if (name.equalsIgnoreCase(NODE_NOTE)) {
+                share.setNote(readNode(parser, NODE_NOTE));
+
+            } else if (name.equalsIgnoreCase(NODE_HIDE_DOWNLOAD)) {
+                boolean b = "1".equalsIgnoreCase(readNode(parser, NODE_HIDE_DOWNLOAD));
+                share.setHideFileDownload(b);
+
+            } else {
+                skip(parser);
+            } 
 		}		
 
 		if (isValidShare(share)) {
