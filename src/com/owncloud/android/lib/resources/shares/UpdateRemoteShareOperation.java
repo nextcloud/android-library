@@ -58,6 +58,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
     private static final String PARAM_PERMISSIONS = "permissions";
     private static final String PARAM_PUBLIC_UPLOAD = "publicUpload";
     private static final String PARAM_NOTE = "note";
+    private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
     private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String ENTITY_CHARSET = "UTF-8";
@@ -87,6 +88,11 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      * Upload permissions for the public link (only folders)
      */
     private Boolean publicUpload;
+
+    /**
+     * Permission if file can be downloaded via share link (only for single file)
+     */
+    private Boolean hideFileDownload;
 
     private String note;
 
@@ -150,6 +156,10 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
         this.publicUpload = publicUpload;
     }
 
+    public void setHideFileDownload(Boolean hideFileDownload) {
+        this.hideFileDownload = hideFileDownload;
+    }
+
     public void setNote(String note) {
         this.note = note;
     }
@@ -164,10 +174,10 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
         if (password != null) {
             parametersToUpdate.add(new Pair<>(PARAM_PASSWORD, password));
         }
+
         if (expirationDateInMillis < 0) {
             // clear expiration date
             parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
-
         } else if (expirationDateInMillis > 0) {
             // set expiration date
             DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE);
@@ -175,8 +185,8 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
             expirationDate.setTimeInMillis(expirationDateInMillis);
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
             parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
-
-        } // else, ignore - no update
+        }
+        
         if (permissions > 0) {
             // set permissions
             parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
@@ -184,6 +194,10 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
 
         if (publicUpload != null) {
             parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(publicUpload)));
+        }
+
+        if (hideFileDownload != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
         }
 
         parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));

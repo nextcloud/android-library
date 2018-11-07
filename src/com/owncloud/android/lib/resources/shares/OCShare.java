@@ -98,6 +98,7 @@ public class OCShare implements Parcelable, Serializable {
     private String shareLink;
     private boolean isPasswordProtected;
     private String note;
+    private boolean hideFileDownload;
     
     public OCShare() {
     	super();
@@ -134,6 +135,7 @@ public class OCShare implements Parcelable, Serializable {
         shareLink = "";
         isPasswordProtected = false;
         note = "";
+        hideFileDownload = false;
     }	
     
     /// Getters and Setters
@@ -277,7 +279,15 @@ public class OCShare implements Parcelable, Serializable {
     public String getNote() {
         return this.note;
     }
-    
+
+    public boolean isHideFileDownload() {
+        return hideFileDownload;
+    }
+
+    public void setHideFileDownload(boolean hideFileDownload) {
+        this.hideFileDownload = hideFileDownload;
+    }
+
     /** 
      * Parcelable Methods
      */
@@ -324,6 +334,7 @@ public class OCShare implements Parcelable, Serializable {
         remoteId = source.readLong();
         shareLink = source.readString();
         isPasswordProtected = source.readInt() == 1;
+        hideFileDownload = source.readInt() == 1;
     }
 
 
@@ -351,5 +362,6 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeLong(remoteId);
         dest.writeString(shareLink);
         dest.writeInt(isPasswordProtected ? 1 : 0);
+        dest.writeInt(hideFileDownload ? 1 : 0);
     }
 }
