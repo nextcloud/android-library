@@ -60,8 +60,8 @@ android {
         abortOnError false
         htmlReport true
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
-        disable 'MissingTranslation'
     }
+
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28

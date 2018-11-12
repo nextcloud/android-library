@@ -39,9 +39,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class WebdavUtils {
-    public static final SimpleDateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat(
-            "dd.MM.yyyy hh:mm");
-    
     private static final SimpleDateFormat DATETIME_FORMATS[] = {
     	new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
     	new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),	
