@@ -25,11 +25,14 @@
 
 package com.owncloud.android.lib.resources.status;
 
+import android.support.annotation.NonNull;
+
 public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
     public static final OwnCloudVersion nextcloud_12 = new OwnCloudVersion(0x0C000000); // 12.0
     public static final OwnCloudVersion nextcloud_13 = new OwnCloudVersion(0x0D000000); // 13.0
     public static final OwnCloudVersion nextcloud_14 = new OwnCloudVersion(0x0E000000); // 14.0
+    public static final OwnCloudVersion nextcloud_15 = new OwnCloudVersion(0x0F000000); // 15.0
 
     public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200; // 11.0.2
     public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000; // 12.0
@@ -64,7 +67,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
 
         parseVersion(versionWithDots.toString());
     }
-    
+
+    @NonNull
+    @Override
     public String toString() {
     	String versionToString = String.valueOf((mVersion >> (8*MAX_DOTS)) % 256);
     	for (int i = MAX_DOTS - 1; i >= 0; i-- ) {
@@ -82,9 +87,12 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     }
 
     @Override
-    public int compareTo(OwnCloudVersion another) {
-        return another.mVersion == mVersion ? 0
-                : another.mVersion < mVersion ? 1 : -1;
+    public int compareTo(@NonNull OwnCloudVersion another) {
+        return another.mVersion == mVersion ? 0 : another.mVersion < mVersion ? 1 : -1;
+    }
+
+    public boolean isNewerOrEqual(@NonNull OwnCloudVersion another) {
+        return mVersion >= another.mVersion;
     }
 
     private void parseVersion(String version) {
@@ -132,5 +140,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     
     public boolean isNoteOnShareSupported() {
         return mVersion >= MINIMUM_VERSION_FOR_NOTE_ON_SHARE;
+    }
+
+    public boolean isHideFileDownloadSupported() {
+        return isNewerOrEqual(nextcloud_15);
     }
 }
