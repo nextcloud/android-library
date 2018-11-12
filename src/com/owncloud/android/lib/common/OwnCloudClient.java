@@ -51,6 +51,7 @@ import org.apache.commons.httpclient.params.HttpParams;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 public class OwnCloudClient extends HttpClient {
 	
@@ -383,13 +384,14 @@ public class OwnCloudClient extends HttpClient {
 
 	private void logCookiesAtRequest(Header[] headers, String when) {
         int counter = 0;
-        for (int i=0; i<headers.length; i++) {
-        	if (headers[i].getName().toLowerCase().equals("cookie")) {
-        		Log_OC.d(TAG + " #" + mInstanceNumber, 
-        				"Cookies at request (" + when + ") (" + counter++ + "): " + 
-        						headers[i].getValue());
-        	}
+        for (Header header : headers) {
+            if ("cookie".equals(header.getName().toLowerCase(Locale.US))) {
+                Log_OC.d(TAG + " #" + mInstanceNumber,
+                        "Cookies at request (" + when + ") (" + counter++ + "): " +
+                                header.getValue());
+            }
         }
+
         if (counter == 0) {
             Log_OC.d(TAG + " #" + mInstanceNumber, "No cookie at request (" + when + ")");
         }
@@ -414,11 +416,10 @@ public class OwnCloudClient extends HttpClient {
 
 	private void logSetCookiesAtResponse(Header[] headers) {
         int counter = 0;
-        for (int i=0; i<headers.length; i++) {
-        	if (headers[i].getName().toLowerCase().equals("set-cookie")) {
-        		Log_OC.d(TAG + " #" + mInstanceNumber, 
-        				"Set-Cookie (" + counter++ + "): " + headers[i].getValue());
-        	}
+        for (Header header : headers) {
+            if ("set-cookie".equals(header.getName().toLowerCase(Locale.US))) {
+                Log_OC.d(TAG + " #" + mInstanceNumber, "Set-Cookie (" + counter++ + "): " + header.getValue());
+            }
         }
         if (counter == 0) {
     		Log_OC.d(TAG + " #" + mInstanceNumber, "No set-cookie");

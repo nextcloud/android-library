@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -180,7 +181,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
             parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
         } else if (expirationDateInMillis > 0) {
             // set expiration date
-            DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE);
+            DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE, Locale.US);
             Calendar expirationDate = Calendar.getInstance();
             expirationDate.setTimeInMillis(expirationDateInMillis);
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
