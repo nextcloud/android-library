@@ -42,6 +42,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Calendar;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 
@@ -78,7 +79,7 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
         File file = new File(mLocalPath);
         SharedPreferences sharedPref = mContext.getApplicationContext().
                 getSharedPreferences("com.nextcloud.PREFERENCE_upload", Context.MODE_PRIVATE);
-        String chunkId = String.format("%08d", Math.abs(file.getName().hashCode()));
+        String chunkId = String.format(Locale.ROOT, "%08d", Math.abs(file.getName().hashCode()));
         Set<String> successfulChunks = sharedPref.getStringSet(chunkId, new LinkedHashSet<String>());
 
         try {

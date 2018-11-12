@@ -57,6 +57,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.net.ssl.SSLException;
 
@@ -205,17 +206,15 @@ public class RemoteOperationResult implements Serializable {
 
     public RemoteOperationResult(boolean success, int httpCode, Header[] headers) {
         this(success, httpCode);
+
         if (headers != null) {
-            Header current;
-            for (int i = 0; i < headers.length; i++) {
-                current = headers[i];
-                if ("location".equals(current.getName().toLowerCase())) {
-                    mRedirectedLocation = current.getValue();
+            for (Header header : headers) {
+                if ("location".equals(header.getName().toLowerCase(Locale.US))) {
+                    mRedirectedLocation = header.getValue();
                     continue;
                 }
-                if ("www-authenticate".equals(current.getName().toLowerCase())) {
-                    mAuthenticateHeaders.add(current.getValue());
-                    continue;
+                if ("www-authenticate".equals(header.getName().toLowerCase(Locale.US))) {
+                    mAuthenticateHeaders.add(header.getValue());
                 }
             }
         }
@@ -316,7 +315,7 @@ public class RemoteOperationResult implements Serializable {
      * @param httpMethod HTTP/DAV method already executed which response will be examined to interpret the
      *                   result.
      */
-    public RemoteOperationResult(boolean success, HttpMethod httpMethod) throws IOException {
+    public RemoteOperationResult(boolean success, HttpMethod httpMethod) {
         this(success, httpMethod.getStatusCode(), httpMethod.getStatusText(), httpMethod.getResponseHeaders());
 
         if (mHttpCode == HttpStatus.SC_BAD_REQUEST || mHttpCode == HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE) {
@@ -364,11 +363,11 @@ public class RemoteOperationResult implements Serializable {
             Header current;
             for (Header httpHeader : httpHeaders) {
                 current = httpHeader;
-                if ("location".equals(current.getName().toLowerCase())) {
+                if ("location".equals(current.getName().toLowerCase(Locale.US))) {
                     mRedirectedLocation = current.getValue();
                     continue;
                 }
-                if ("www-authenticate".equals(current.getName().toLowerCase())) {
+                if ("www-authenticate".equals(current.getName().toLowerCase(Locale.US))) {
                     mAuthenticateHeaders.add(current.getValue());
                     break;
                 }
@@ -620,8 +619,8 @@ public class RemoteOperationResult implements Serializable {
 
     public boolean isIdPRedirection() {
         return (mRedirectedLocation != null &&
-                (mRedirectedLocation.toUpperCase().contains("SAML") ||
-                        mRedirectedLocation.toLowerCase().contains("wayf")));
+                (mRedirectedLocation.toUpperCase(Locale.US).contains("SAML") ||
+                        mRedirectedLocation.toLowerCase(Locale.US).contains("wayf")));
     }
 
     /**
@@ -630,7 +629,7 @@ public class RemoteOperationResult implements Serializable {
      * @return boolean true/false
      */
     public boolean isNonSecureRedirection() {
-        return (mRedirectedLocation != null && !(mRedirectedLocation.toLowerCase().startsWith("https://")));
+        return (mRedirectedLocation != null && !(mRedirectedLocation.toLowerCase(Locale.US).startsWith("https://")));
     }
 
     public ArrayList<String> getAuthenticateHeaders() {

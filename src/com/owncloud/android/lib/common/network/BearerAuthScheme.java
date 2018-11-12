@@ -24,7 +24,7 @@
 
 package com.owncloud.android.lib.common.network;
 
-import java.util.Map;
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpMethod;
@@ -34,7 +34,8 @@ import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.httpclient.auth.InvalidCredentialsException;
 import org.apache.commons.httpclient.auth.MalformedChallengeException;
 
-import com.owncloud.android.lib.common.utils.Log_OC;
+import java.util.Locale;
+import java.util.Map;
 
 
 
@@ -262,7 +263,7 @@ public class BearerAuthScheme implements AuthScheme /*extends RFC2617Scheme*/ {
         if (mParams == null) {
             return null;
         }
-        return (String) mParams.get(name.toLowerCase());
+        return (String) mParams.get(name.toLowerCase(Locale.US));
     }
 
     /**
