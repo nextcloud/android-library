@@ -118,9 +118,6 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_NOTIFICATIONS = "notifications";
     private static final String PROPERTY_OCSENDPOINT = "ocs-endpoints";
 
-    private static final String PROPERTY_LIST = "list";
-    private static final String PROPERTY_GET = "get";
-    private static final String PROPERTY_DELETE = "delete";
     // v2 notifications
     private static final String PROPERTY_ICONS = "icons";
     private static final String PROPERTY_RICH_STRINGS = "rich-strings";
@@ -136,6 +133,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     // Richdocuments
     private static final String NODE_RICHDOCUMENTS = "richdocuments";
     private static final String NODE_MIMETYPES = "mimetypes";
+    private static final String NODE_RICHDOCUMENTS_DIRECT_EDITING = "direct_editing";
 
     // activity
     private static final String NODE_ACTIVITY = "activity";
@@ -150,7 +148,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+        RemoteOperationResult result;
         int status;
         GetMethod get = null;
 
@@ -177,12 +175,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                 JSONObject respData = respOCS.getJSONObject(NODE_DATA);
 
                 // Read meta
-                boolean statusProp = respMeta.getString(PROPERTY_STATUS).equalsIgnoreCase("ok");
-                int statuscode = respMeta.getInt(PROPERTY_STATUSCODE);
+                boolean statusProp = "ok".equalsIgnoreCase(respMeta.getString(PROPERTY_STATUS));
+                int statusCode = respMeta.getInt(PROPERTY_STATUSCODE);
                 String message = respMeta.getString(PROPERTY_MESSAGE);
 
                 if (statusProp) {
-                    ArrayList<Object> data = new ArrayList<Object>(); // For result data
+                    ArrayList<Object> data = new ArrayList<>(); // For result data
                     OCCapability capability = new OCCapability();
                     // Add Version
                     if (respData.has(NODE_VERSION)) {
@@ -199,10 +197,10 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                     if (respData.has(NODE_CAPABILITIES)) {
                         JSONObject respCapabilities = respData.getJSONObject(NODE_CAPABILITIES);
 
-                        // Add Core: pollinterval
+                        // Add Core: pollInterval
                         if (respCapabilities.has(NODE_CORE)) {
                             JSONObject respCore = respCapabilities.getJSONObject(NODE_CORE);
-                            capability.setCorePollinterval(respCore.getInt(PROPERTY_POLLINTERVAL));
+                            capability.setCorePollInterval(respCore.getInt(PROPERTY_POLLINTERVAL));
                             Log_OC.d(TAG, "*** Added " + NODE_CORE);
                         }
 
@@ -348,7 +346,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
                                 String element = (String) respExternalLinksV1.get(0);
 
-                                if (element.equalsIgnoreCase(NODE_EXTERNAL_LINKS_SITES)) {
+                                if (NODE_EXTERNAL_LINKS_SITES.equalsIgnoreCase(element)) {
                                     capability.setExternalLinks(CapabilityBooleanType.TRUE);
                                 } else {
                                     capability.setExternalLinks(CapabilityBooleanType.FALSE);
@@ -377,8 +375,10 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                     case "files":
                                         capability.setFullNextSearchFiles(CapabilityBooleanType.TRUE);
                                         Log_OC.d(TAG, "full next search: file provider enabled");
+                                        break;
                                     default:
                                         // do nothing
+                                        break;
                                 }
                             }
                         }
@@ -415,6 +415,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             }
                             
                             capability.setRichDocumentsMimeTypeList(mimeTypes);
+
+                            if (respCapabilities.has(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
+                                capability.setRichDocumentsDirectEditing(CapabilityBooleanType.TRUE);
+                            } else {
+                                capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
+                            }
                         } else {
                             capability.setRichDocuments(CapabilityBooleanType.FALSE);
                         }
@@ -427,7 +433,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
                     Log_OC.d(TAG, "*** Get Capabilities completed ");
                 } else {
-                    result = new RemoteOperationResult(statusProp, statuscode, null, null);
+                    result = new RemoteOperationResult(statusProp, statusCode, null, null);
                     Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
                     Log_OC.e(TAG, "*** status: " + statusProp + "; message: " + message);
                 }
