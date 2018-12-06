@@ -59,6 +59,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private String ownerDisplayName;
     private int unreadCommentsCount;
     private boolean hasPreview;
+    private String note;
 
     /**
      * Getters and Setters.
@@ -191,6 +192,14 @@ public class RemoteFile implements Parcelable, Serializable {
     public void setHasPreview(boolean hasPreview) {
         this.hasPreview = hasPreview;
     }
+    
+    public String getNote() {
+        return note;
+    }
+    
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public RemoteFile() {
         resetData();
@@ -225,6 +234,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setMountType(we.getMountType());
         setOwnerId(we.getOwnerId());
         setOwnerDisplayName(we.getOwnerDisplayName());
+        setNote(we.getNote());
     }
 
     /**
@@ -244,6 +254,7 @@ public class RemoteFile implements Parcelable, Serializable {
         mIsEncrypted = false;
         ownerId = "";
         ownerDisplayName = "";
+        note = "";
     }
 
     /**
@@ -288,6 +299,7 @@ public class RemoteFile implements Parcelable, Serializable {
         ownerId = source.readString();
         ownerDisplayName = source.readString();
         hasPreview = Boolean.parseBoolean(source.readString());
+        note = source.readString();
     }
 
     @Override
@@ -312,5 +324,6 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(ownerId);
         dest.writeString(ownerDisplayName);
         dest.writeString(Boolean.toString(hasPreview));
+        dest.writeString(note);
     }
 }

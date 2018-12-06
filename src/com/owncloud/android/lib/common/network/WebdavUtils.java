@@ -108,6 +108,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_OWNER_DISPLAY_NAME, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NOTE, ncNamespace);
 
         return propSet;
     }
