@@ -53,6 +53,7 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_OWNER_DISPLAY_NAME = "owner-display-name";
     public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
     public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
+    public static final String EXTENDED_PROPERTY_NOTE = "note";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -87,6 +88,7 @@ public class WebdavEntry {
     private String ownerDisplayName;
     private int unreadCommentsCount;
     private boolean hasPreview;
+    private String note = "";
 
     public enum MountType {INTERNAL, EXTERNAL}
 
@@ -299,6 +301,12 @@ public class WebdavEntry {
             if (prop != null) {
                 trashbinDeletionTimestamp = Long.parseLong((String) prop.getValue());
             }
+
+            // NC note property <nc-note>
+            prop = propSet.get(EXTENDED_PROPERTY_NOTE, ncNamespace);
+            if (prop != null) {
+                note = prop.getValue().toString();
+            }
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
@@ -414,6 +422,10 @@ public class WebdavEntry {
 
     public void setHasPreview(boolean hasPreview) {
         this.hasPreview = hasPreview;
+    }
+    
+    public String getNote() { 
+        return note;
     }
 
     private void resetData() {
