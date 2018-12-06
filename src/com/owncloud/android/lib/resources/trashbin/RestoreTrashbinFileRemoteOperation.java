@@ -19,14 +19,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.owncloud.android.lib.resources.files;
+package com.owncloud.android.lib.resources.trashbin;
 
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.model.FileVersion;
+import com.owncloud.android.lib.resources.trashbin.model.TrashbinFile;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
@@ -35,27 +36,27 @@ import java.io.IOException;
 
 
 /**
- * Restore a {@link FileVersion}.
+ * Restore a {@link TrashbinFile}.
  */
-public class RestoreFileVersionRemoteOperation extends RemoteOperation {
+public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = RestoreFileVersionRemoteOperation.class.getSimpleName();
+    private static final String TAG = RestoreTrashbinFileRemoteOperation.class.getSimpleName();
     private static final int RESTORE_READ_TIMEOUT = 30000;
     private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
-    private String fileId;
+    private String sourcePath;
     private String fileName;
     private String userId;
 
     /**
      * Constructor
      *
-     * @param fileId   fileId
-     * @param fileName version date in unixtime
-     * @param userId   userId to access correct dav endpoint
+     * @param sourcePath Remote path of the {@link TrashbinFile} to restore
+     * @param fileName   original filename
+     * @param userId     userId to access correct trashbin
      */
-    public RestoreFileVersionRemoteOperation(String fileId, String fileName, String userId) {
-        this.fileId = fileId;
+    public RestoreTrashbinFileRemoteOperation(String sourcePath, String fileName, String userId) {
+        this.sourcePath = sourcePath;
         this.fileName = fileName;
         this.userId = userId;
     }
@@ -70,8 +71,8 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
 
         RemoteOperationResult result;
         try {
-            String source = client.getNewWebdavUri() + "/versions/" + userId + "/versions/" + fileId + "/" + fileName;
-            String target = client.getNewWebdavUri() + "/versions/" + userId + "/restore/" + fileId;
+            String source = client.getNewWebdavUri() + WebdavUtils.encodePath(sourcePath);
+            String target = client.getNewWebdavUri() + "/trashbin/" + userId + "/restore/" + fileName;
 
             MoveMethod move = new MoveMethod(source, target, true);
             int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
@@ -81,7 +82,7 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
             client.exhaustResponse(move.getResponseBodyAsStream());
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
-            Log.e(TAG, "Restore file version with id " + fileId + " failed: " + result.getLogMessage(), e);
+            Log.e(TAG, "Restore trashbin file " + sourcePath + " failed: " + result.getLogMessage(), e);
         }
 
         return result;

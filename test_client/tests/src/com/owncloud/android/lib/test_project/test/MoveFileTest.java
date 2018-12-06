@@ -49,7 +49,7 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
- * Class to test MoveRemoteFileOperation
+ * Class to test MoveFileRemoteOperation
  *
  * With this TestCase we are experimenting a bit to improve the test suite design, in two aspects:
  * 

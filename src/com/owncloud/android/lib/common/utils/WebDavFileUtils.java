@@ -21,7 +21,7 @@ package com.owncloud.android.lib.common.utils;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
-import com.owncloud.android.lib.resources.files.RemoteFile;
+import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;

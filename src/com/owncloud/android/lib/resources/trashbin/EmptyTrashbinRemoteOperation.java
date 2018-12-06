@@ -19,75 +19,65 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.owncloud.android.lib.resources.files;
+package com.owncloud.android.lib.resources.trashbin;
 
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.model.FileVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 
 import java.io.IOException;
 
 
 /**
- * Restore a {@link FileVersion}.
+ * Empty trashbin.
  */
-public class RestoreFileVersionRemoteOperation extends RemoteOperation {
+public class EmptyTrashbinRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = RestoreFileVersionRemoteOperation.class.getSimpleName();
+    private static final String TAG = EmptyTrashbinRemoteOperation.class.getSimpleName();
     private static final int RESTORE_READ_TIMEOUT = 30000;
     private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
-    private String fileId;
-    private String fileName;
     private String userId;
 
     /**
      * Constructor
      *
-     * @param fileId   fileId
-     * @param fileName version date in unixtime
-     * @param userId   userId to access correct dav endpoint
+     * @param userId to access correct trashbin
      */
-    public RestoreFileVersionRemoteOperation(String fileId, String fileName, String userId) {
-        this.fileId = fileId;
-        this.fileName = fileName;
+    public EmptyTrashbinRemoteOperation(String userId) {
         this.userId = userId;
     }
 
     /**
      * Performs the operation.
      *
-     * @param client Client object to communicate with the remote ownCloud server.
+     * @param client Client object to communicate with the remote Nextcloud server.
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
 
         RemoteOperationResult result;
         try {
-            String source = client.getNewWebdavUri() + "/versions/" + userId + "/versions/" + fileId + "/" + fileName;
-            String target = client.getNewWebdavUri() + "/versions/" + userId + "/restore/" + fileId;
+            DeleteMethod delete = new DeleteMethod(client.getNewWebdavUri() + "/trashbin/" + userId + "/trash");
+            int status = client.executeMethod(delete, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
 
-            MoveMethod move = new MoveMethod(source, target, true);
-            int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
+            result = new RemoteOperationResult(isSuccess(status), delete);
 
-            result = new RemoteOperationResult(isSuccess(status), move);
-
-            client.exhaustResponse(move.getResponseBodyAsStream());
+            client.exhaustResponse(delete.getResponseBodyAsStream());
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
-            Log.e(TAG, "Restore file version with id " + fileId + " failed: " + result.getLogMessage(), e);
+            Log.e(TAG, "Empty trashbin failed: " + result.getLogMessage(), e);
         }
 
         return result;
     }
 
     private boolean isSuccess(int status) {
-        return status == HttpStatus.SC_CREATED || status == HttpStatus.SC_NO_CONTENT;
+        return status == HttpStatus.SC_NO_CONTENT;
     }
 }
