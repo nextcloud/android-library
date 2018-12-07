@@ -53,9 +53,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 
 public class UploadFileRemoteOperation extends RemoteOperation {
-
-	private static final String TAG = UploadFileRemoteOperation.class.getSimpleName();
-
 	protected static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
 	protected static final String IF_MATCH_HEADER = "If-Match";
     protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";

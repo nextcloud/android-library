@@ -1,4 +1,6 @@
 /* Nextcloud Android Library is available under MIT license
+ *
+ *   @author Bartosz Przybylski
  *   Copyright (C) 2018 Bartosz Przybylski
  *   Copyright (C) 2018 Nextcloud GmbH
  *
@@ -30,12 +32,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.ocs.ServerResponse;
 
 import org.apache.commons.httpclient.HttpMethodBase;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  *

@@ -40,7 +40,7 @@ public class RichElementTypeAdapter extends TypeAdapter<RichElement> {
 
     @Override
     public void write(JsonWriter out, RichElement value) {
-
+        // not needed, only read support
     }
 
     @Override

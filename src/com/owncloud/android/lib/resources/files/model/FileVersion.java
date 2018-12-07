@@ -1,4 +1,7 @@
-/* ownCloud Android Library is available under MIT license
+/* Nextcloud Android Library is available under MIT license
+ *
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2018 Tobias Kaminsky
  *   Copyright (C) 2018 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,8 +35,6 @@ import com.owncloud.android.lib.common.network.WebdavEntry;
 
 /**
  * Contains the data of a versioned file from a WebDavEntry.
- *
- * @author Tobias Kaminsky
  */
 public class FileVersion implements Parcelable, ServerFileInterface {
 

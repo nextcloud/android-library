@@ -1,5 +1,8 @@
-/* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2018 Nextcloud GmbH.
+/* Nextcloud Android Library is available under MIT license
+ *
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2018 Tobias Kaminsky
+ *   Copyright (C) 2018 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
