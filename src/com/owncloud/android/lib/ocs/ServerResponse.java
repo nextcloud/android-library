@@ -1,4 +1,6 @@
-/* ownCloud Android Library is available under MIT license
+/* Nextcloud Android Library is available under MIT license
+ *
+ *   @author Bartosz Przybylski
  *   Copyright (C) 2018 Bartosz Przybylski
  *   Copyright (C) 2018 Nextcloud GmbH
  *

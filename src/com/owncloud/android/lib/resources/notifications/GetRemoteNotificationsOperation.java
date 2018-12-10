@@ -1,11 +1,10 @@
-/*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Andy Scherzinger
- *   Copyright (C) 2017 Mario Danic
- *   Copyright (C) 2017 Nextcloud GmbH
+/* Nextcloud Android Library is available under MIT license
  *
  *   @author Andy Scherzinger
  *   @author Mario Danic
- *
+ *   Copyright (C) 2017 Andy Scherzinger
+ *   Copyright (C) 2017 Mario Danic
+ *   Copyright (C) 2017 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal

@@ -52,7 +52,7 @@ import java.security.GeneralSecurityException;
 //import android.test.AndroidTestCase;
 
 /**
- * Class to test CopyRemoteFileOperation
+ * Class to test CopyFileRemoteOperation
  * <p/>
  * With this TestCase we are experimenting a bit to improve the test suite design, in two aspects:
  * <p/>

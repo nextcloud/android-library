@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.owncloud.android.lib.resources.files.RemoteFile;
+import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
 public class FilesArrayAdapter extends ArrayAdapter<RemoteFile> {
 	

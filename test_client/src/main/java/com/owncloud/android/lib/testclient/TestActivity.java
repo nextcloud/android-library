@@ -36,14 +36,14 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.ChunkedUploadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.CreateRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.RenameRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.UploadRemoteFileOperation;
+import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation;
+import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
+import com.owncloud.android.lib.resources.files.DownloadFileRemoteOperation;
+import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
+import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
+import com.owncloud.android.lib.resources.files.RenameFileRemoteOperation;
+import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
+import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
 import com.owncloud.android.lib.resources.shares.GetRemoteSharesOperation;
 import com.owncloud.android.lib.resources.shares.RemoveRemoteShareOperation;
@@ -152,9 +152,9 @@ public class TestActivity extends Activity {
 	public static RemoteOperationResult createFolder(
 			String remotePath, boolean createFullPath, OwnCloudClient client
 		) {
-		
-		CreateRemoteFolderOperation createOperation = 
-				new CreateRemoteFolderOperation(remotePath, createFullPath);
+
+        CreateFolderRemoteOperation createOperation =
+                new CreateFolderRemoteOperation(remotePath, createFullPath);
 		RemoteOperationResult result =  createOperation.execute(client);
 		
 		return result;
@@ -171,8 +171,8 @@ public class TestActivity extends Activity {
      */
 
 	public RemoteOperationResult renameFile(String oldName, String oldRemotePath, String newName, boolean isFolder) {
-		
-		RenameRemoteFileOperation renameOperation = new RenameRemoteFileOperation(oldName, oldRemotePath, newName, isFolder);
+
+        RenameFileRemoteOperation renameOperation = new RenameFileRemoteOperation(oldName, oldRemotePath, newName, isFolder);
 		RemoteOperationResult result = renameOperation.execute(mClient);
 		
 		return result;
@@ -185,7 +185,7 @@ public class TestActivity extends Activity {
 	 * @return
 	 */
 	public RemoteOperationResult removeFile(String remotePath) {
-		RemoveRemoteFileOperation removeOperation = new RemoveRemoteFileOperation(remotePath);
+        RemoveFileRemoteOperation removeOperation = new RemoveFileRemoteOperation(remotePath);
 		RemoteOperationResult result = removeOperation.execute(mClient);
 		return result;
 	}
@@ -197,7 +197,7 @@ public class TestActivity extends Activity {
 	 * @return
 	 */
 	public static RemoteOperationResult removeFile(String remotePath, OwnCloudClient client) {
-		RemoveRemoteFileOperation removeOperation = new RemoveRemoteFileOperation(remotePath);
+        RemoveFileRemoteOperation removeOperation = new RemoveFileRemoteOperation(remotePath);
 		RemoteOperationResult result = removeOperation.execute(client);
 		return result;
 	}
@@ -210,8 +210,8 @@ public class TestActivity extends Activity {
 	 * @return
 	 */
 	public RemoteOperationResult readFile(String remotePath) {
-		
-		ReadRemoteFolderOperation readOperation= new ReadRemoteFolderOperation(remotePath);
+
+        ReadFolderRemoteOperation readOperation = new ReadFolderRemoteOperation(remotePath);
 		RemoteOperationResult result = readOperation.execute(mClient);
 
 		return result;
@@ -230,8 +230,8 @@ public class TestActivity extends Activity {
 		File privateFolder = getFilesDir();
 		File folder = new File(privateFolder.getAbsolutePath() + "/" + path);
 		folder.mkdirs();
-		
-		DownloadRemoteFileOperation downloadOperation = new DownloadRemoteFileOperation(remoteFile.getRemotePath(), folder.getAbsolutePath());
+
+        DownloadFileRemoteOperation downloadOperation = new DownloadFileRemoteOperation(remoteFile.getRemotePath(), folder.getAbsolutePath());
 		RemoteOperationResult result = downloadOperation.execute(mClient);
 
 		return result;
@@ -266,14 +266,14 @@ public class TestActivity extends Activity {
 
 		String fileLastModifTimestamp = getFileLastModifTimeStamp(storagePath);
 
-		UploadRemoteFileOperation uploadOperation;
+        UploadFileRemoteOperation uploadOperation;
 
-		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE) {
-			uploadOperation = new ChunkedUploadRemoteFileOperation(
+        if ((new File(storagePath)).length() > ChunkedFileUploadRemoteOperation.CHUNK_SIZE) {
+            uploadOperation = new ChunkedFileUploadRemoteOperation(
 					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
 			);
 		} else {
-            uploadOperation = new UploadRemoteFileOperation(
+            uploadOperation = new UploadFileRemoteOperation(
                     storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
     		);
         }
