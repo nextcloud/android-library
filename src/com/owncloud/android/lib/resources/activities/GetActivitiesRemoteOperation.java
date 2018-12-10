@@ -40,6 +40,8 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.model.Activity;
 import com.owncloud.android.lib.resources.activities.model.RichElement;
 import com.owncloud.android.lib.resources.activities.model.RichElementTypeAdapter;
+import com.owncloud.android.lib.resources.activities.models.PreviewObject;
+import com.owncloud.android.lib.resources.activities.models.PreviewObjectAdapter;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.Header;

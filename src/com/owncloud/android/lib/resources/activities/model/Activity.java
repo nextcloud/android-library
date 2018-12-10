@@ -26,6 +26,7 @@
 package com.owncloud.android.lib.resources.activities.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.owncloud.android.lib.resources.activities.models.PreviewObject;
 
 import java.util.ArrayList;
 import java.util.Date;
