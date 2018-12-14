@@ -1,7 +1,7 @@
 /*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Alejandro Bautista
+ *   Copyright (C) 2017 Joas Schilling
  *
- *   @author Alejandro Bautista
+ *   @author Joas Schilling
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -23,35 +23,66 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
-
-import java.util.ArrayList;
+package com.owncloud.android.lib.resources.activities.models;
 
 /**
- * RichElement Data Model
+ * PreviewObject Data Model
  */
 
-public class RichElement {
+public class PreviewObject {
 
-    private String richSubject;
-    private ArrayList<RichObject> richObjectList = new ArrayList<>();
+    private int fileId;
+    private String source;
+    private String link;
+    private Boolean isMimeTypeIcon;
+    private String mimeType;
+    private String view;
 
-
-    public String getRichSubject() {
-        return richSubject;
+    public String getLink() {
+        return link;
     }
 
-    public void setRichSubject(String richSubject) {
-        this.richSubject = richSubject;
+    public void setLink(String link) {
+        this.link = link;
     }
 
-    public ArrayList<RichObject> getRichObjectList() {
-        return richObjectList;
+    public String getSource() {
+        return source;
     }
 
-    public void setRichObjectList(ArrayList<RichObject> richObjectList) {
-        this.richObjectList = richObjectList;
+    public void setSource(String source) {
+        this.source = source;
     }
 
+    public Boolean isMimeTypeIcon() {
+        return isMimeTypeIcon;
+    }
 
+    public void setMimeTypeIcon(Boolean mimeTypeIcon) {
+        isMimeTypeIcon = mimeTypeIcon;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
+    }
 }

@@ -40,12 +40,14 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.model.Activity;
 import com.owncloud.android.lib.resources.activities.model.RichElement;
 import com.owncloud.android.lib.resources.activities.model.RichElementTypeAdapter;
+import com.owncloud.android.lib.resources.activities.models.PreviewObject;
+import com.owncloud.android.lib.resources.activities.models.PreviewObjectAdapter;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -63,7 +65,6 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     // OCS Routes
     private static final String OCS_ROUTE_V12_AND_UP = "/ocs/v2.php/apps/activity/api/v2/activity";
     private static final String OCS_ROUTE_PRE_V12 = "/ocs/v1.php/cloud/activity";
-    private static final String FORMAT_JSON = "?format=json";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
@@ -104,9 +105,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         
         // add filter for fileId, if available
         if (!fileId.isEmpty()) {
-            url = url + "/filter" + FORMAT_JSON + "&sort=desc&object_type=files&object_id=" + fileId;
-        } else if (nextUrl.isEmpty()){
-            url = url + FORMAT_JSON;
+            url = url + "/filter";
         }
         
         Log_OC.d(TAG, "URL: " + url);
@@ -114,6 +113,21 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         try {
             get = new GetMethod(url);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            ArrayList<NameValuePair> parameters = new ArrayList<>();
+            parameters.add(new NameValuePair("format", "json"));
+
+            if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
+                parameters.add(new NameValuePair("previews", "true"));
+            }
+
+            if (!fileId.isEmpty()) {
+                parameters.add(new NameValuePair("sort", "desc"));
+                parameters.add(new NameValuePair("object_type", "files"));
+                parameters.add(new NameValuePair("object_id", fileId));
+            }
+
+            get.setQueryString(parameters.toArray(new NameValuePair[]{}));
 
             status = client.executeMethod(get);
             String response = get.getResponseBodyAsString();
@@ -169,13 +183,14 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         return !nextUrl.isEmpty();
     }
 
-    private ArrayList<Activity> parseResult(String response) throws JSONException {
+    private ArrayList<Activity> parseResult(String response) {
         JsonParser jsonParser = new JsonParser();
         JsonObject jo = (JsonObject)jsonParser.parse(response);
         JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
 
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(RichElement.class,new RichElementTypeAdapter())//Add TypeAdapter to parse RichElement
+                .registerTypeAdapter(RichElement.class, new RichElementTypeAdapter())
+                .registerTypeAdapter(PreviewObject.class, new PreviewObjectAdapter())
                 .create();
         Type listType = new TypeToken<List<Activity>>(){}.getType();
 
