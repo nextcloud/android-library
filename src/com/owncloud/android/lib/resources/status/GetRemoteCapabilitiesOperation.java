@@ -134,6 +134,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_RICHDOCUMENTS = "richdocuments";
     private static final String NODE_MIMETYPES = "mimetypes";
     private static final String NODE_RICHDOCUMENTS_DIRECT_EDITING = "direct_editing";
+    private static final String NODE_RICHDOCUMENTS_TEMPLATES = "templates";
 
     // activity
     private static final String NODE_ACTIVITY = "activity";
@@ -424,6 +425,16 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 }
                             } else {
                                 capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
+                            }
+
+                            if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_TEMPLATES)) {
+                                if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_TEMPLATES)) {
+                                    capability.setRichdocumentsTemplatesAvailable(CapabilityBooleanType.TRUE);
+                                } else {
+                                    capability.setRichdocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
+                                }
+                            } else {
+                                capability.setRichdocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
                             }
                         } else {
                             capability.setRichDocuments(CapabilityBooleanType.FALSE);
