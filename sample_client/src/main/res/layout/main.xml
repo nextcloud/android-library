@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--  ownCloud Android Library is available under MIT license
+<?xml version="1.0" encoding="utf-8"?><!--  ownCloud Android Library is available under MIT license
    Copyright (C) 2015 ownCloud Inc.
     
    Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,11 +21,10 @@
    THE SOFTWARE.
 
  -->
- 
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <Button
         android:id="@+id/button_refresh"
@@ -34,19 +32,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/refresh"
-        android:onClick="onClickHandler" 
-        />
+        android:onClick="onClickHandler" />
 
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-		android:layout_below="@+id/button_refresh" 
+        android:layout_below="@+id/button_refresh"
         android:layout_above="@+id/button_upload"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        >
-    </ListView>
+        android:layout_alignParentRight="true"></ListView>
 
     <Button
         android:id="@+id/button_upload"
@@ -54,8 +49,7 @@
         android:layout_alignParentLeft="true"
         android:layout_above="@+id/frame"
         android:text="@string/upload"
-        android:onClick="onClickHandler" 
-        />
+        android:onClick="onClickHandler" />
 
     <TextView
         android:id="@+id/upload_progress"
@@ -66,17 +60,15 @@
         android:layout_toLeftOf="@+id/button_delete_remote"
         android:gravity="center"
         android:textSize="14sp"
-        android:text="0%"
-        />
+        android:text="0%" />
 
     <Button
         android:id="@id/button_delete_remote"
         style="@style/ButtonStyle"
         android:layout_alignParentRight="true"
         android:layout_above="@id/frame"
-        android:text="@string/delete_remote_file" 
-        android:onClick="onClickHandler" 
-        />
+        android:text="@string/delete_remote_file"
+        android:onClick="onClickHandler" />
 
     <FrameLayout
         android:id="@id/frame"
@@ -84,18 +76,15 @@
         android:layout_height="@dimen/frame_height"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_above="@+id/button_download"
-        >
-    </FrameLayout>
+        android:layout_above="@+id/button_download"></FrameLayout>
 
     <Button
         android:id="@id/button_download"
         style="@style/ButtonStyle"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:text="@string/download" 
-        android:onClick="onClickHandler" 
-        />
+        android:text="@string/download"
+        android:onClick="onClickHandler" />
 
     <TextView
         android:id="@+id/download_progress"
@@ -106,17 +95,15 @@
         android:layout_toLeftOf="@+id/button_delete_local"
         android:gravity="center"
         android:textSize="14sp"
-        android:text="0%"
-        />
+        android:text="0%" />
 
     <Button
         android:id="@id/button_delete_local"
         style="@style/ButtonStyle"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="@string/delete_local_file" 
-        android:onClick="onClickHandler" 
-        />
+        android:text="@string/delete_local_file"
+        android:onClick="onClickHandler" />
 
 </RelativeLayout>
 

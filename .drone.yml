@@ -11,8 +11,9 @@ pipeline:
       commands:
         - emulator -avd android-27 -no-window -no-audio &
         - ./wait_for_emulator.sh
+        - ./gradlew assembleDebug
         - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "Unit"
-        - ./gradlew assembleDebug installDebugAndroidTest
+        - ./gradlew installDebugAndroidTest
         - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "IT"
         - ./gradlew combinedTestReport
         - curl -o codecov.sh https://codecov.io/bash
@@ -43,6 +44,6 @@ pipeline:
 
 services:
   server:
-    image: nextcloudci/server:server-1
+    image: nextcloudci/server:server-3
 
 branches: master
