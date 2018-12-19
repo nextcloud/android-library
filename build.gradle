@@ -2,20 +2,41 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath('com.dicedmelon.gradle:jacoco-android:0.1.3') {
+            exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        }
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'findbugs'
+//apply plugin: 'jacoco'
+apply plugin: 'jacoco-android'
 
 repositories {
     google()
     jcenter()
+    maven { url "https://jitpack.io" }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+configurations.all {
+    exclude group: 'com.google.firebase', module: 'firebase-core'
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {
@@ -27,33 +48,25 @@ dependencies {
     
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.8.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.3'
+    
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+    
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
 }
 
 android {
     compileSdkVersion 28
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
+    buildTypes {
+        debug {
+            testCoverageEnabled true
         }
-
-        // Move the tests to tests/java, tests/res, etc...
-        // instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
 
     lintOptions {
@@ -65,13 +78,18 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
+        testInstrumentationRunnerArgument "TEST_SERVER_USERNAME", "${NC_TEST_SERVER_USERNAME}"
+        testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
     }
 
     tasks.register("findbugs", FindBugs) {
         ignoreFailures = false
         effort = "max"
         reportLevel = "medium"
-        classes = fileTree("$project.buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes/")
+        classes = fileTree("$project.buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/")
         excludeFilter = file("${project.rootDir}/scripts/analysis/findbugs-filter.xml")
         source = fileTree('src/main/java')
         pluginClasspath = project.configurations.findbugsPlugins
@@ -87,4 +105,26 @@ android {
             }
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+task combinedTestReport(type: JacocoReport) {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes/", excludes: fileFilter)
+    def mainSrc = "$project.projectDir/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/debugAndroidTest/connected/*coverage.ec'
+    ])
 }
