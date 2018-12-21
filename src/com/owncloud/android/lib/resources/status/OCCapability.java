@@ -91,6 +91,7 @@ public class OCCapability {
     // Richdocuments
     private CapabilityBooleanType richdocuments;
     private CapabilityBooleanType richdocumentsDirectEditing;
+    private CapabilityBooleanType richdocumentsTemplatesAvailable;
     private List<String> richdocumentsMimeTypeList;
 
     private CapabilityBooleanType activity;
@@ -145,6 +146,7 @@ public class OCCapability {
         richdocuments = CapabilityBooleanType.UNKNOWN;
         richdocumentsMimeTypeList = new ArrayList<>();
         richdocumentsDirectEditing = CapabilityBooleanType.FALSE;
+        richdocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
     }
 
 
@@ -495,5 +497,13 @@ public class OCCapability {
 
     public CapabilityBooleanType getRichDocumentsDirectEditing() {
         return richdocumentsDirectEditing;
+    }
+
+    public CapabilityBooleanType getRichdocumentsTemplatesAvailable() {
+        return richdocumentsTemplatesAvailable;
+    }
+
+    public void setRichdocumentsTemplatesAvailable(CapabilityBooleanType richdocumentsTemplatesAvailable) {
+        this.richdocumentsTemplatesAvailable = richdocumentsTemplatesAvailable;
     }
 }
