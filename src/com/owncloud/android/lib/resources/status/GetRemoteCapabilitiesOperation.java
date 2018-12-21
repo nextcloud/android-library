@@ -403,10 +403,10 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                         }
                         
                         if (respCapabilities.has(NODE_RICHDOCUMENTS)) {
+                            JSONObject richDocumentsCapability = respCapabilities.getJSONObject(NODE_RICHDOCUMENTS);
                             capability.setRichDocuments(CapabilityBooleanType.TRUE);
 
-                            JSONArray mimeTypesArray = respCapabilities.getJSONObject(NODE_RICHDOCUMENTS)
-                                    .getJSONArray(NODE_MIMETYPES);
+                            JSONArray mimeTypesArray = richDocumentsCapability.getJSONArray(NODE_MIMETYPES);
                             
                             ArrayList<String> mimeTypes = new ArrayList<>();
 
@@ -416,8 +416,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             
                             capability.setRichDocumentsMimeTypeList(mimeTypes);
 
-                            if (respCapabilities.has(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
-                                capability.setRichDocumentsDirectEditing(CapabilityBooleanType.TRUE);
+                            if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
+                                if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
+                                    capability.setRichDocumentsDirectEditing(CapabilityBooleanType.TRUE);
+                                } else {
+                                    capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
+                                }
                             } else {
                                 capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
                             }
