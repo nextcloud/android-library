@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.apache.jackrabbit:jackrabbit-webdav:2.12.6'
+    compile 'org.apache.jackrabbit:jackrabbit-webdav:2.19.0'
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
