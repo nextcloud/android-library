@@ -344,6 +344,10 @@ public class OwnCloudClient extends HttpClient {
     	}
     }
 
+    public Uri getUploadUri() {
+        return Uri.parse(mBaseUri + AccountUtils.DAV_UPLOAD);
+    }
+
     public Uri getNewWebdavUri() {
         if (mCredentials instanceof OwnCloudBearerCredentials) {
             return Uri.parse(mBaseUri + AccountUtils.ODAV_PATH);
