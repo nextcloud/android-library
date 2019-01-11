@@ -45,16 +45,16 @@ import java.util.Set;
  * A RequestEntity that represents a File.
  * 
  */
-public class FileRequestEntity implements RequestEntity, ProgressiveDataTransferer {
+public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer {
 
-    final File mFile;
-    final String mContentType;
-    Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
+    private final File file;
+    private final String contentType;
+    private final Set<OnDatatransferProgressListener> dataTransferListeners = new HashSet<>();
 
     public FileRequestEntity(final File file, final String contentType) {
         super();
-        this.mFile = file;
-        this.mContentType = contentType;
+        this.file = file;
+        this.contentType = contentType;
         if (file == null) {
             throw new IllegalArgumentException("File may not be null");
         }
@@ -62,12 +62,12 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
     
     @Override
     public long getContentLength() {
-        return mFile.length();
+        return file.length();
     }
 
     @Override
     public String getContentType() {
-        return mContentType;
+        return contentType;
     }
 
     @Override
@@ -76,23 +76,23 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
     }
 
     @Override
-    public void addDatatransferProgressListener(OnDatatransferProgressListener listener) {
-        synchronized (mDataTransferListeners) {
-            mDataTransferListeners.add(listener);
+    public void addDataTransferProgressListener(OnDatatransferProgressListener listener) {
+        synchronized (dataTransferListeners) {
+            dataTransferListeners.add(listener);
         }
     }
     
     @Override
-    public void addDatatransferProgressListeners(Collection<OnDatatransferProgressListener> listeners) {
-        synchronized (mDataTransferListeners) {
-            mDataTransferListeners.addAll(listeners);
+    public void addDataTransferProgressListeners(Collection<OnDatatransferProgressListener> listeners) {
+        synchronized (dataTransferListeners) {
+            dataTransferListeners.addAll(listeners);
         }
     }
     
     @Override
-    public void removeDatatransferProgressListener(OnDatatransferProgressListener listener) {
-        synchronized (mDataTransferListeners) {
-            mDataTransferListeners.remove(listener);
+    public void removeDataTransferProgressListener(OnDatatransferProgressListener listener) {
+        synchronized (dataTransferListeners) {
+            dataTransferListeners.remove(listener);
         }
     }
     
@@ -100,13 +100,13 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
     @Override
     public void writeRequest(final OutputStream out) throws IOException {
         ByteBuffer tmp = ByteBuffer.allocate(4096);
-        int readResult = 0;
-        
-        RandomAccessFile raf = new RandomAccessFile(mFile, "r");
+        int readResult;
+
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
         FileChannel channel = raf.getChannel();
-        Iterator<OnDatatransferProgressListener> it = null;
+        Iterator<OnDatatransferProgressListener> it;
         long transferred = 0;
-        long size = mFile.length();
+        long size = file.length();
         if (size == 0) size = -1;
         try {
             while ((readResult = channel.read(tmp)) >= 0) {
@@ -118,10 +118,10 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
                 }
                 tmp.clear();
                 transferred += readResult;
-                synchronized (mDataTransferListeners) {
-                    it = mDataTransferListeners.iterator();
+                synchronized (dataTransferListeners) {
+                    it = dataTransferListeners.iterator();
                     while (it.hasNext()) {
-                        it.next().onTransferProgress(readResult, transferred, size, mFile.getAbsolutePath());
+                        it.next().onTransferProgress(readResult, transferred, size, file.getAbsolutePath());
                     }
                 }
             }
@@ -149,14 +149,14 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
         }
     }
 
-    protected static class WriteException extends Exception {
+    static class WriteException extends Exception {
         IOException mWrapped;
 
         WriteException(IOException wrapped) {
             mWrapped = wrapped;
         }
 
-        public IOException getWrapped() {
+        IOException getWrapped() {
             return mWrapped;
         }
     }

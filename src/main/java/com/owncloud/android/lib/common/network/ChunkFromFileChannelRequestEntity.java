@@ -43,47 +43,38 @@ import java.util.Set;
  * 
  * @author David A. Velasco
  */
-public class ChunkFromFileChannelRequestEntity implements RequestEntity, ProgressiveDataTransferer {
-
-    private static final String TAG = ChunkFromFileChannelRequestEntity.class.getSimpleName();
-    
-    //private final File mFile;
+public class ChunkFromFileChannelRequestEntity implements RequestEntity, ProgressiveDataTransfer {
     private final FileChannel mChannel;
     private final String mContentType;
-    private final long mChunkSize;
+    private final long length;
     private final File mFile;
     private long mOffset;
     private long mTransferred;
-    Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<OnDatatransferProgressListener>();
+    private final Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<>();
     private ByteBuffer mBuffer = ByteBuffer.allocate(4096);
 
-    public ChunkFromFileChannelRequestEntity(
-        final FileChannel channel, final String contentType, long chunkSize, final File file
-    ) {
+    public ChunkFromFileChannelRequestEntity(final FileChannel channel, final String contentType, long offset, 
+                                             long chunkSize, final File file) {
         super();
         if (channel == null) {
             throw new IllegalArgumentException("File may not be null");
         }
         if (chunkSize <= 0) {
-            throw new IllegalArgumentException("Chunk size must be greater than zero");
+            throw new IllegalArgumentException("Chunk length must be greater than zero");
         }
         mChannel = channel;
         mContentType = contentType;
-        mChunkSize = chunkSize;
+        length = chunkSize;
         mFile = file;
-        mOffset = 0;
-        mTransferred = 0;
-    }
-    
-    public void setOffset(long offset) {
         mOffset = offset;
+        mTransferred = offset;
     }
     
     public long getContentLength() {
         try {
-            return Math.min(mChunkSize, mChannel.size() - mOffset);
+            return Math.min(length, mChannel.size() - mOffset);
         } catch (IOException e) {
-            return mChunkSize;
+            return length;
         }
     }
 
@@ -96,40 +87,37 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     }
     
     @Override
-    public void addDatatransferProgressListener(OnDatatransferProgressListener listener) {
+    public void addDataTransferProgressListener(OnDatatransferProgressListener listener) {
         synchronized (mDataTransferListeners) {
             mDataTransferListeners.add(listener);
         }
     }
     
     @Override
-    public void addDatatransferProgressListeners(Collection<OnDatatransferProgressListener> listeners) {
+    public void addDataTransferProgressListeners(Collection<OnDatatransferProgressListener> listeners) {
         synchronized (mDataTransferListeners) {
             mDataTransferListeners.addAll(listeners);
         }
     }
     
     @Override
-    public void removeDatatransferProgressListener(OnDatatransferProgressListener listener) {
+    public void removeDataTransferProgressListener(OnDatatransferProgressListener listener) {
         synchronized (mDataTransferListeners) {
             mDataTransferListeners.remove(listener);
         }
     }
 
-
-    public void setmTransferred(long value) {
-        mTransferred = value;
-    }
-
     public void writeRequest(final OutputStream out) throws IOException {
-        int readCount = 0;
-        Iterator<OnDatatransferProgressListener> it = null;
+        int readCount;
+        Iterator<OnDatatransferProgressListener> progressListenerIterator;
 
         try {
             mChannel.position(mOffset);
             long size = mFile.length();
-            if (size == 0) size = -1;
-            long maxCount = Math.min(mOffset + mChunkSize, mChannel.size());
+            if (size == 0) {
+                size = -1;
+            }
+            long maxCount = Math.min(mOffset + length - 1, mChannel.size());
             while (mChannel.position() < maxCount) {
                 readCount = mChannel.read(mBuffer);
                 try {
@@ -143,9 +131,11 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
                     mTransferred += readCount;
                 }
                 synchronized (mDataTransferListeners) {
-                    it = mDataTransferListeners.iterator();
-                    while (it.hasNext()) {
-                        it.next().onTransferProgress(readCount, mTransferred, size, mFile.getAbsolutePath());
+                    progressListenerIterator = mDataTransferListeners.iterator();
+
+                    while (progressListenerIterator.hasNext()) {
+                        progressListenerIterator.next().onTransferProgress(readCount, mTransferred, size, 
+                                                                           mFile.getAbsolutePath());
                     }
                 }
             }

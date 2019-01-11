@@ -257,10 +257,9 @@ public class TestActivity extends Activity {
 
         UploadFileRemoteOperation uploadOperation;
 
-        if ((new File(storagePath)).length() > ChunkedFileUploadRemoteOperation.CHUNK_SIZE) {
+		if ((new File(storagePath)).length() > ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE) {
             uploadOperation = new ChunkedFileUploadRemoteOperation(
-					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp
-			);
+					context, storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp, "test", false);
 		} else {
             uploadOperation = new UploadFileRemoteOperation(
                     storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp

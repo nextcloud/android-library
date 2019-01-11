@@ -52,7 +52,9 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
 
     private static final String NON_OFFICIAL_AVATAR_PATH = "/index.php/avatar/";
 
-    /** Desired size in pixels of the squared image */
+    /**
+     * Desired size in pixels of the squared image
+     */
     private int mDimension;
 
     /**
