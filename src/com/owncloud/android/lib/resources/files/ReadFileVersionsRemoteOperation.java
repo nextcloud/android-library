@@ -27,8 +27,6 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import android.support.annotation.NonNull;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -44,6 +42,8 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
 
 /**
  * Remote operation performing the read of remote trashbin folder on Nextcloud server.

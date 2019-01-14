@@ -28,9 +28,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.23.4'
     // dependencies for instrumented tests
     // JUnit4 Rules
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
     // Android JUnit Runner
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
 
     jacocoAnt "org.jacoco:org.jacoco.ant:${project.jacocoVersion}"
     jacocoAgent "org.jacoco:org.jacoco.agent:${project.jacocoVersion}"
@@ -40,7 +40,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         minSdkVersion 14
         targetSdkVersion 28
     }
