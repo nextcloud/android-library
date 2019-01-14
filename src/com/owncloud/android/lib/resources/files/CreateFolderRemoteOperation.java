@@ -90,7 +90,6 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
         MkColMethod mkCol = null;
         try {
             mkCol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
-            client.setUseNextcloudUserAgent(true);
             client.executeMethod(mkCol, READ_TIMEOUT, CONNECTION_TIMEOUT);
 
             if (HttpStatus.SC_METHOD_NOT_ALLOWED == mkCol.getStatusCode()) {
