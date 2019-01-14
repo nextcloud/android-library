@@ -25,7 +25,7 @@
 
 package com.owncloud.android.lib.resources.status;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
