@@ -72,8 +72,7 @@ import javax.net.ssl.SSLException;
  */
 public class RemoteOperationResult implements Serializable {
 
-	/** Generated - should be refreshed every time the class changes!! */;
-    
+    // Generated - should be refreshed every time the class changes!!
     private static final long serialVersionUID = -1909603208238358633L;
     private static final String TAG = RemoteOperationResult.class.getSimpleName();
 
@@ -136,7 +135,8 @@ public class RemoteOperationResult implements Serializable {
         ETAG_CHANGED,
         ETAG_UNCHANGED,
         VIRUS_DETECTED,
-        FOLDER_ALREADY_EXISTS
+        FOLDER_ALREADY_EXISTS,
+        CANNOT_CREATE_FILE
     }
 
     private boolean mSuccess = false;
@@ -503,7 +503,7 @@ public class RemoteOperationResult implements Serializable {
             previousCause = cause;
             cause = cause.getCause();
         }
-        if (cause != null && cause instanceof CertificateCombinedException) {
+        if (cause instanceof CertificateCombinedException) {
             result = (CertificateCombinedException) cause;
         }
         return result;
