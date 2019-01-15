@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
@@ -67,7 +67,7 @@ android {
         targetSdkVersion 28
     }
 
-    task findbugs(type: FindBugs) {
+    tasks.register("findbugs", FindBugs) {
         ignoreFailures = false
         effort = "max"
         reportLevel = "medium"
