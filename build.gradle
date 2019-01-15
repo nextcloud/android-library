@@ -67,7 +67,7 @@ android {
         targetSdkVersion 28
     }
 
-    task findbugs(type: FindBugs) {
+    tasks.register("findbugs", FindBugs) {
         ignoreFailures = false
         effort = "max"
         reportLevel = "medium"
