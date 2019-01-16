@@ -72,3 +72,12 @@ Licensed under Apache License, Version 2.0.
 Nextcloud Android library is valid for Android version 3.0 and up (with ```android:minSdkVersion="11"``` and ```android:targetSdkVersion="24"```).
 
 Nextcloud Android library supports Nextcloud server from version 9+.
+
+When using newer libraries in your application that integrates with the Nextcloud Android library you could hit a conflict issue with the logging libraries used by our (outdated) HTTPClient. In order to mitigate the issues, please add the following in your build.gradle for the time being:
+
+```
+configurations.all {
+    exclude group: "org.slf4j", module: "slf4j-log4j12"
+    exclude group: "log4j", module: "log4j"
+}
+```
