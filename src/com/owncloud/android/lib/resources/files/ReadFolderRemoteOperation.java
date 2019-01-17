@@ -159,7 +159,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
      * Creates and populates a new {@link RemoteFile} object with the data read from the server.
      *
      * @param we WebDAV entry read from the server for a WebDAV resource (remote file or folder).
-     * @return New OCFile instance representing the remote resource described by we.
+     * @return New RemoteFile instance representing the remote resource described by we.
      */
     private RemoteFile fillOCFile(WebdavEntry we) {
         RemoteFile file = new RemoteFile(we.decodedPath());
