@@ -146,12 +146,26 @@ public class GetRemoteShareesOperation extends RemoteOperation{
                 JSONArray respExactUsers = respExact.getJSONArray(NODE_USERS);
                 JSONArray respExactGroups = respExact.getJSONArray(NODE_GROUPS);
                 JSONArray respExactRemotes = respExact.getJSONArray(NODE_REMOTES);
-                JSONArray respExactRooms = respExact.getJSONArray(NODE_ROOMS);
+
+                JSONArray respExactRooms;
+                if (respExact.has(NODE_ROOMS)) {
+                    respExactRooms = respExact.getJSONArray(NODE_ROOMS);
+                } else {
+                    respExactRooms = new JSONArray();
+                }
                 JSONArray respExactEmails = respExact.getJSONArray(NODE_EMAILS);
                 JSONArray respPartialUsers = respData.getJSONArray(NODE_USERS);
                 JSONArray respPartialGroups = respData.getJSONArray(NODE_GROUPS);
                 JSONArray respPartialRemotes = respData.getJSONArray(NODE_REMOTES);
-                JSONArray respPartialRooms = respData.getJSONArray(NODE_ROOMS);
+
+                JSONArray respPartialRooms;
+                
+                if (respData.has(NODE_ROOMS)) {
+                    respPartialRooms = respData.getJSONArray(NODE_ROOMS);
+                } else {
+                    respPartialRooms = new JSONArray();
+                }
+                
                 JSONArray[] jsonResults = {
                         respExactUsers,
                         respExactGroups,
