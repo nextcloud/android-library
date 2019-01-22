@@ -108,7 +108,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
         password = null;               // no update
         expirationDateInMillis = 0;    // no update
         publicUpload = null;
-        note = "";
+        note = null;
     }
 
 
@@ -201,7 +201,9 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
             parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
         }
 
-        parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
+        if (note != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
+        }
 
         /// perform required PUT requests
         PutMethod put = null;
