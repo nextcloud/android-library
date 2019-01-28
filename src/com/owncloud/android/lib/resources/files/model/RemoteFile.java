@@ -232,10 +232,13 @@ public class RemoteFile implements Parcelable, Serializable {
         setRemoteId(we.remoteId());
         setSize(we.size());
         setFavorite(we.isFavorite());
+        setIsEncrypted(we.isEncrypted());
         setMountType(we.getMountType());
         setOwnerId(we.getOwnerId());
         setOwnerDisplayName(we.getOwnerDisplayName());
         setNote(we.getNote());
+        setUnreadCommentsCount(we.getUnreadCommentsCount());
+        setHasPreview(we.hasPreview());
     }
 
     /**
