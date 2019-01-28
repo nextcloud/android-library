@@ -50,7 +50,7 @@ public class ChunkedFileUploadRemoteOperationTest {
         expectedMissingChunks.add(new Chunk(1024, 2047));
         expectedMissingChunks.add(new Chunk(2048, 2048));
 
-        test(existingChunks, expectedMissingChunks, chunkSize, length);
+        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class ChunkedFileUploadRemoteOperationTest {
         expectedMissingChunks.add(new Chunk(3072, 4095));
         expectedMissingChunks.add(new Chunk(4096, 4096));
 
-        test(existingChunks, expectedMissingChunks, chunkSize, length);
+        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ChunkedFileUploadRemoteOperationTest {
         expectedMissingChunks.add(new Chunk(1536, 2047));
         expectedMissingChunks.add(new Chunk(2048, 2048));
 
-        test(existingChunks, expectedMissingChunks, chunkSize, length);
+        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class ChunkedFileUploadRemoteOperationTest {
         expectedMissingChunks.add(new Chunk(1093, 1604));
         expectedMissingChunks.add(new Chunk(1605, 2048));
 
-        test(existingChunks, expectedMissingChunks, chunkSize, length);
+        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class ChunkedFileUploadRemoteOperationTest {
         expectedMissingChunks.add(new Chunk(1024, 1027));
         expectedMissingChunks.add(new Chunk(1101, 2048));
 
-        test(existingChunks, expectedMissingChunks, chunkSize, length);
+        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
     @Test
@@ -133,10 +133,10 @@ public class ChunkedFileUploadRemoteOperationTest {
         expectedMissingChunks.add(new Chunk(1024, 1027));
         expectedMissingChunks.add(new Chunk(1101, 2048));
 
-        test(existingChunks, expectedMissingChunks, chunkSize, length);
+        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
-    private void test(List<Chunk> existingChunks, List<Chunk> expectedMissingChunks, long chunkSize, long length) {
+    private boolean test(List<Chunk> existingChunks, List<Chunk> expectedMissingChunks, long chunkSize, long length) {
         ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null, null, null, null, null, null,
                                                                                     false);
 
@@ -147,5 +147,7 @@ public class ChunkedFileUploadRemoteOperationTest {
         for (Chunk expectedMissingChunk : expectedMissingChunks) {
             assertTrue(missingChunks.contains(expectedMissingChunk));
         }
+
+        return true;
     }
 }
