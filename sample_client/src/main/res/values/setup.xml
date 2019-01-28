@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--  ownCloud Android Library is available under MIT license
+<?xml version="1.0" encoding="utf-8"?><!--  ownCloud Android Library is available under MIT license
    Copyright (C) 2015 ownCloud Inc.
     
    Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,10 +21,10 @@
    THE SOFTWARE.
 
  -->
- 
+
 <resources>
     <string name="server_base_url"></string>
     <string name="username"></string>
     <string name="password"></string>
-    <string name ="user_agent">Mozilla/5.0 (Android) ownCloud sample </string>
+    <string name="user_agent">Mozilla/5.0 (Android) ownCloud sample </string>
 </resources>

@@ -7,13 +7,13 @@ PASS=$2
 TYPE=$4
 
 if [ $TYPE = "IT" ]; then
-    cd test_client/build/reports/androidTests/connected/
+    cd build/reports/androidTests/connected/
 else 
-    cd test_client/build/reports/tests/testDebugUnitTest
+    cd build/reports/tests/testDebugUnitTest
 fi
 
 find . -type d -exec curl -u $USER:$PASS -X MKCOL $URL/$ID/$(echo {} | sed s#\./##) \;
 find . -type f -exec curl -u $USER:$PASS -X PUT $URL/$ID/$(echo {} | sed s#\./##) --upload-file {} \;
 
-echo "Uploaded failing library tests to https://nextcloud.kaminsky.me/index.php/s/Pfc8NMxTStWtmMC -> $ID" 
+echo "Uploaded failing library tests to https://www.kaminsky.me/nc-dev/library-integrationTests/$ID"
 exit 1
