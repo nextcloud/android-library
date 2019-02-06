@@ -183,7 +183,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         return !nextUrl.isEmpty();
     }
 
-    private ArrayList<Activity> parseResult(String response) {
+    protected ArrayList<Activity> parseResult(String response) {
         JsonParser jsonParser = new JsonParser();
         JsonObject jo = (JsonObject)jsonParser.parse(response);
         JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);

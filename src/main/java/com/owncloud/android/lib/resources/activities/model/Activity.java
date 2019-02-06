@@ -28,10 +28,8 @@ package com.owncloud.android.lib.resources.activities.model;
 import com.google.gson.annotations.SerializedName;
 import com.owncloud.android.lib.resources.activities.models.PreviewObject;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Activity Data Model
@@ -40,160 +38,90 @@ import java.util.Map;
 public class Activity {
 
     @SerializedName("activity_id")
-    public int activityId;
-    public Date datetime;
+    private int activityId;
+    private Date datetime;
     // legacy purposes
-    public Date date;
-    public String app;
-    public String type;
-    public String user;
+    private Date date;
+    private String app;
+    private String type;
+    private String user;
     @SerializedName("affecteduser")
-    public String affectedUser;
-    public String subject;
-    public String message;
-    public String icon;
-    public String link;
+    private String affectedUser;
+    private String subject;
+    private String message;
+    private String icon;
+    private String link;
     @SerializedName("object_type")
-    public String objectType;
+    private String objectType;
     @SerializedName("object_id")
-    public String objectId;
+    private String objectId;
     @SerializedName("object_name")
-    public String objectName;
-    public List<PreviewObject> previews;
-    public Map<Integer, String> objects;
+    private String objectName;
+    private List<PreviewObject> previews;
     @SerializedName("subject_rich")
-    public RichElement richSubjectElement;
+    private RichElement richSubjectElement;
 
     public Date getDate() {
         return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public int getActivityId() {
         return activityId;
     }
 
-    public void setActivityId(int activityId) {
-        this.activityId = activityId;
-    }
-
     public Date getDatetime() {
         return datetime;
-    }
-
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
     }
 
     public String getApp() {
         return app;
     }
 
-    public void setApp(String app) {
-        this.app = app;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getUser() {
         return user;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
     public String getAffectedUser() {
         return affectedUser;
-    }
-
-    public void setAffectedUser(String affectedUser) {
-        this.affectedUser = affectedUser;
     }
 
     public String getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public String getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
     public String getLink() {
         return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getObjectType() {
         return objectType;
     }
 
-    public void setObjectType(String objectType) {
-        this.objectType = objectType;
-    }
-
-
     public String getObjectId() {
         return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
     }
 
     public String getObjectName() {
         return objectName;
     }
 
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
-    }
-
     public RichElement getRichSubjectElement() {
         return richSubjectElement;
     }
 
-    public void setRichSubjectElement(RichElement richSubjectElement) {
-        this.richSubjectElement = richSubjectElement;
-    }
-
     public List<PreviewObject> getPreviews() {
         return previews;
-    }
-
-    public void setPreviews(ArrayList<PreviewObject> previews) {
-        this.previews = previews;
-    }
-
-    public Map<Integer, String> getObjects() {
-        return objects;
     }
 }
