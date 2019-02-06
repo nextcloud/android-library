@@ -94,10 +94,10 @@ public class OCCapability {
     private CapabilityBooleanType endToEndEncryption;
 
     // Richdocuments
-    private CapabilityBooleanType richdocuments;
-    private CapabilityBooleanType richdocumentsDirectEditing;
-    private CapabilityBooleanType richdocumentsTemplatesAvailable;
-    private List<String> richdocumentsMimeTypeList;
+    private CapabilityBooleanType richDocuments;
+    private CapabilityBooleanType richDocumentsDirectEditing;
+    private CapabilityBooleanType richDocumentsTemplatesAvailable;
+    private List<String> richDocumentsMimeTypeList;
 
     private CapabilityBooleanType activity;
 
@@ -148,10 +148,10 @@ public class OCCapability {
 
         activity = CapabilityBooleanType.UNKNOWN;
 
-        richdocuments = CapabilityBooleanType.UNKNOWN;
-        richdocumentsMimeTypeList = new ArrayList<>();
-        richdocumentsDirectEditing = CapabilityBooleanType.FALSE;
-        richdocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
+        richDocuments = CapabilityBooleanType.UNKNOWN;
+        richDocumentsMimeTypeList = new ArrayList<>();
+        richDocumentsDirectEditing = CapabilityBooleanType.FALSE;
+        richDocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
     }
 
     public OwnCloudVersion getVersion() {

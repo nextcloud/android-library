@@ -271,7 +271,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                         if (respCapabilities.has(NODE_FILES)) {
                             JSONObject respFiles = respCapabilities.getJSONObject(NODE_FILES);
                             // Add files
-                            capability.setFilesBigFileChuncking(CapabilityBooleanType.fromBooleanValue(
+                            capability.setFilesBigFileChunking(CapabilityBooleanType.fromBooleanValue(
                                     respFiles.getBoolean(PROPERTY_BIGFILECHUNKING)));
                             if (respFiles.has(PROPERTY_UNDELETE)) {
                                 capability.setFilesUndelete(CapabilityBooleanType.fromBooleanValue(
@@ -429,12 +429,12 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
                             if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_TEMPLATES)) {
                                 if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_TEMPLATES)) {
-                                    capability.setRichdocumentsTemplatesAvailable(CapabilityBooleanType.TRUE);
+                                    capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.TRUE);
                                 } else {
-                                    capability.setRichdocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
+                                    capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
                                 }
                             } else {
-                                capability.setRichdocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
+                                capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
                             }
                         } else {
                             capability.setRichDocuments(CapabilityBooleanType.FALSE);

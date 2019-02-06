@@ -172,7 +172,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
         file.setRemoteId(we.remoteId());
         file.setSize(we.size());
         file.setFavorite(we.isFavorite());
-        file.setIsEncrypted(we.isEncrypted());
+        file.setEncrypted(we.isEncrypted());
         file.setMountType(we.getMountType());
         file.setOwnerId(we.getOwnerId());
         file.setOwnerDisplayName(we.getOwnerDisplayName());
