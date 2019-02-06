@@ -1,4 +1,4 @@
-/*  Nextcloud Android Library is available under MIT license
+/*   Nextcloud Android Library is available under MIT license
  *   Copyright (C) 2017 Alejandro Bautista
  *
  *   @author Alejandro Bautista
@@ -31,10 +31,12 @@ import com.owncloud.android.lib.resources.activities.models.PreviewObject;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Getter;
+
 /**
  * Activity Data Model
  */
-
+@Getter
 public class Activity {
 
     @SerializedName("activity_id")
@@ -60,68 +62,4 @@ public class Activity {
     private List<PreviewObject> previews;
     @SerializedName("subject_rich")
     private RichElement richSubjectElement;
-
-    public Date getDate() {
-        return date;
-    }
-
-    public int getActivityId() {
-        return activityId;
-    }
-
-    public Date getDatetime() {
-        return datetime;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getAffectedUser() {
-        return affectedUser;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public String getObjectType() {
-        return objectType;
-    }
-
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public String getObjectName() {
-        return objectName;
-    }
-
-    public RichElement getRichSubjectElement() {
-        return richSubjectElement;
-    }
-
-    public List<PreviewObject> getPreviews() {
-        return previews;
-    }
 }
