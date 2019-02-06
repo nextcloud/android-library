@@ -267,7 +267,7 @@ public class RemoteOperationResult implements Serializable {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && e instanceof ErrnoException && ((ErrnoException) e).errno == OsConstants.ENOTCONN) {
             mCode = ResultCode.NO_NETWORK_CONNECTION;
         } else if (e instanceof ConnectException) {
-            mCode = ResultCode.NO_NETWORK_CONNECTION;
+            mCode = ResultCode.HOST_NOT_AVAILABLE;
         } else if (e instanceof SocketException) {
             mCode = ResultCode.WRONG_CONNECTION;
         } else if (e instanceof SocketTimeoutException) {
