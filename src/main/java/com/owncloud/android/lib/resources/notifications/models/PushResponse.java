@@ -26,43 +26,19 @@
  */
 package com.owncloud.android.lib.resources.notifications.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PushResponse {
     public String publicKey;
 
     public String deviceIdentifier;
 
     public String signature;
-
-    public PushResponse() {
-    }
-
-    public PushResponse(String publicKey, String deviceIdentifier, String signature) {
-        this.publicKey = publicKey;
-        this.deviceIdentifier = deviceIdentifier;
-        this.signature = signature;
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public String getDeviceIdentifier() {
-        return deviceIdentifier;
-    }
-
-    public void setDeviceIdentifier(String deviceIdentifier) {
-        this.deviceIdentifier = deviceIdentifier;
-    }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
 }

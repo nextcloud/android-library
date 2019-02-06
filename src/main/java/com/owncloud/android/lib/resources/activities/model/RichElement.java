@@ -27,31 +27,15 @@ package com.owncloud.android.lib.resources.activities.model;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * RichElement Data Model
  */
-
+@Getter
+@Setter
 public class RichElement {
-
     private String richSubject;
     private ArrayList<RichObject> richObjectList = new ArrayList<>();
-
-
-    public String getRichSubject() {
-        return richSubject;
-    }
-
-    public void setRichSubject(String richSubject) {
-        this.richSubject = richSubject;
-    }
-
-    public ArrayList<RichObject> getRichObjectList() {
-        return richObjectList;
-    }
-
-    public void setRichObjectList(ArrayList<RichObject> richObjectList) {
-        this.richObjectList = richObjectList;
-    }
-
-
 }

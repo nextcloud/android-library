@@ -27,10 +27,19 @@
 
 package com.owncloud.android.lib.resources.notifications.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Rich object data model providing rich data to be used within rich content, e.g.
  * in {@link Notification}s.
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RichObject {
     /**
      * A unique identifier for the object type.
@@ -46,38 +55,4 @@ public class RichObject {
      * A name which should be used in the visual representation.
      */
     public String name;
-
-    public RichObject() {
-
-    }
-
-    public RichObject(String type, String id, String name) {
-        this.type = type;
-        this.id = id;
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

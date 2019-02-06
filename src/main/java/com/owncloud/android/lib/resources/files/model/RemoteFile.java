@@ -32,175 +32,39 @@ import com.owncloud.android.lib.resources.files.FileUtils;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Contains the data of a Remote File from a WebDavEntry.
  *
  * @author masensio
  */
+@Getter
+@Setter
 public class RemoteFile implements Parcelable, Serializable {
-
     /**
      * Generated - should be refreshed every time the class changes!!
      */
     private static final long serialVersionUID = 3130865437811248451L;
 
-    private String mRemotePath;
-    private String mMimeType;
-    private long mLength;
-    private long mCreationTimestamp;
-    private long mModifiedTimestamp;
-    private String mEtag;
-    private String mPermissions;
-    private String mRemoteId;
-    private long mSize;
-    private boolean mIsFavorite;
-    private boolean mIsEncrypted;
-    private WebdavEntry.MountType mMountType;
+    private String remotePath;
+    private String mimeType;
+    private long length;
+    private long creationTimestamp;
+    private long modifiedTimestamp;
+    private String etag;
+    private String permissions;
+    private String remoteId;
+    private long size;
+    private boolean favorite;
+    private boolean encrypted;
+    private WebdavEntry.MountType mountType;
     private String ownerId;
     private String ownerDisplayName;
     private int unreadCommentsCount;
     private boolean hasPreview;
     private String note;
-
-    /**
-     * Getters and Setters.
-     */
-
-    public boolean getIsFavorite() {
-        return mIsFavorite;
-    }
-
-    public void setFavorite(boolean mIsFavorite) {
-        this.mIsFavorite = mIsFavorite;
-    }
-
-    public boolean getIsEncrypted() {
-        return mIsEncrypted;
-    }
-
-    public void setIsEncrypted(boolean mIsEncrypted) {
-        this.mIsEncrypted = mIsEncrypted;
-    }
-
-    public String getRemotePath() {
-        return mRemotePath;
-    }
-
-    public void setRemotePath(String remotePath) {
-        this.mRemotePath = remotePath;
-    }
-
-    public String getMimeType() {
-        return mMimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mMimeType = mimeType;
-    }
-
-    public long getLength() {
-        return mLength;
-    }
-
-    public void setLength(long length) {
-        this.mLength = length;
-    }
-
-    public long getCreationTimestamp() {
-        return mCreationTimestamp;
-    }
-
-    public void setCreationTimestamp(long creationTimestamp) {
-        this.mCreationTimestamp = creationTimestamp;
-    }
-
-    public long getModifiedTimestamp() {
-        return mModifiedTimestamp;
-    }
-
-    public void setModifiedTimestamp(long modifiedTimestamp) {
-        this.mModifiedTimestamp = modifiedTimestamp;
-    }
-
-    public String getEtag() {
-        return mEtag;
-    }
-
-    public void setEtag(String etag) {
-        this.mEtag = etag;
-    }
-
-    public String getPermissions() {
-        return mPermissions;
-    }
-
-    public void setPermissions(String permissions) {
-        this.mPermissions = permissions;
-    }
-
-    public String getRemoteId() {
-        return mRemoteId;
-    }
-
-    public void setRemoteId(String remoteId) {
-        this.mRemoteId = remoteId;
-    }
-
-    public long getSize() {
-        return mSize;
-    }
-
-    public void setSize(long size) {
-        mSize = size;
-    }
-
-    public WebdavEntry.MountType getMountType() {
-        return mMountType;
-    }
-
-    public void setMountType(WebdavEntry.MountType mountType) {
-        this.mMountType = mountType;
-    }
-
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public String getOwnerDisplayName() {
-        return ownerDisplayName;
-    }
-
-    public void setOwnerDisplayName(String ownerDisplayName) {
-        this.ownerDisplayName = ownerDisplayName;
-    }
-
-    public void setUnreadCommentsCount(int unreadCommentsCount) {
-        this.unreadCommentsCount = unreadCommentsCount;
-    }
-
-    public int getUnreadCommentsCount() {
-        return unreadCommentsCount;
-    }
-
-    public boolean hasPreview() {
-        return hasPreview;
-    }
-
-    public void setHasPreview(boolean hasPreview) {
-        this.hasPreview = hasPreview;
-    }
-    
-    public String getNote() {
-        return note;
-    }
-    
-    public void setNote(String note) {
-        this.note = note;
-    }
 
     public RemoteFile() {
         resetData();
@@ -218,7 +82,7 @@ public class RemoteFile implements Parcelable, Serializable {
         if (path == null || path.length() <= 0 || !path.startsWith(FileUtils.PATH_SEPARATOR)) {
             throw new IllegalArgumentException("Trying to create a OCFile with a non valid remote path: " + path);
         }
-        mRemotePath = path;
+        remotePath = path;
     }
 
     public RemoteFile(WebdavEntry we) {
@@ -232,7 +96,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setRemoteId(we.remoteId());
         setSize(we.size());
         setFavorite(we.isFavorite());
-        setIsEncrypted(we.isEncrypted());
+        setEncrypted(we.isEncrypted());
         setMountType(we.getMountType());
         setOwnerId(we.getOwnerId());
         setOwnerDisplayName(we.getOwnerDisplayName());
@@ -245,17 +109,17 @@ public class RemoteFile implements Parcelable, Serializable {
      * Used internally. Reset all file properties
      */
     private void resetData() {
-        mRemotePath = null;
-        mMimeType = null;
-        mLength = 0;
-        mCreationTimestamp = 0;
-        mModifiedTimestamp = 0;
-        mEtag = null;
-        mPermissions = null;
-        mRemoteId = null;
-        mSize = 0;
-        mIsFavorite = false;
-        mIsEncrypted = false;
+        remotePath = null;
+        mimeType = null;
+        length = 0;
+        creationTimestamp = 0;
+        modifiedTimestamp = 0;
+        etag = null;
+        permissions = null;
+        remoteId = null;
+        size = 0;
+        favorite = false;
+        encrypted = false;
         ownerId = "";
         ownerDisplayName = "";
         note = "";
@@ -288,18 +152,18 @@ public class RemoteFile implements Parcelable, Serializable {
     }
 
     public void readFromParcel(Parcel source) {
-        mRemotePath = source.readString();
-        mMimeType = source.readString();
-        mLength = source.readLong();
-        mCreationTimestamp = source.readLong();
-        mModifiedTimestamp = source.readLong();
-        mEtag = source.readString();
-        mPermissions = source.readString();
-        mRemoteId = source.readString();
-        mSize = source.readLong();
-        mIsFavorite = Boolean.parseBoolean(source.readString());
-        mIsEncrypted = Boolean.parseBoolean(source.readString());
-        mMountType = (WebdavEntry.MountType) source.readSerializable();
+        remotePath = source.readString();
+        mimeType = source.readString();
+        length = source.readLong();
+        creationTimestamp = source.readLong();
+        modifiedTimestamp = source.readLong();
+        etag = source.readString();
+        permissions = source.readString();
+        remoteId = source.readString();
+        size = source.readLong();
+        favorite = Boolean.parseBoolean(source.readString());
+        encrypted = Boolean.parseBoolean(source.readString());
+        mountType = (WebdavEntry.MountType) source.readSerializable();
         ownerId = source.readString();
         ownerDisplayName = source.readString();
         hasPreview = Boolean.parseBoolean(source.readString());
@@ -313,18 +177,18 @@ public class RemoteFile implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mRemotePath);
-        dest.writeString(mMimeType);
-        dest.writeLong(mLength);
-        dest.writeLong(mCreationTimestamp);
-        dest.writeLong(mModifiedTimestamp);
-        dest.writeString(mEtag);
-        dest.writeString(mPermissions);
-        dest.writeString(mRemoteId);
-        dest.writeLong(mSize);
-        dest.writeString(Boolean.toString(mIsFavorite));
-        dest.writeString(Boolean.toString(mIsEncrypted));
-        dest.writeSerializable(mMountType);
+        dest.writeString(remotePath);
+        dest.writeString(mimeType);
+        dest.writeLong(length);
+        dest.writeLong(creationTimestamp);
+        dest.writeLong(modifiedTimestamp);
+        dest.writeString(etag);
+        dest.writeString(permissions);
+        dest.writeString(remoteId);
+        dest.writeLong(size);
+        dest.writeString(Boolean.toString(favorite));
+        dest.writeString(Boolean.toString(encrypted));
+        dest.writeSerializable(mountType);
         dest.writeString(ownerId);
         dest.writeString(ownerDisplayName);
         dest.writeString(Boolean.toString(hasPreview));

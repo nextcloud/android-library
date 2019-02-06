@@ -25,64 +25,19 @@
  */
 package com.owncloud.android.lib.resources.activities.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * PreviewObject Data Model
  */
-
+@Getter
+@Setter
 public class PreviewObject {
-
     private int fileId;
     private String source;
     private String link;
-    private Boolean isMimeTypeIcon;
+    private Boolean mimeTypeIcon;
     private String mimeType;
     private String view;
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public Boolean isMimeTypeIcon() {
-        return isMimeTypeIcon;
-    }
-
-    public void setMimeTypeIcon(Boolean mimeTypeIcon) {
-        isMimeTypeIcon = mimeTypeIcon;
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public int getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(int fileId) {
-        this.fileId = fileId;
-    }
-
-    public String getView() {
-        return view;
-    }
-
-    public void setView(String view) {
-        this.view = view;
-    }
 }

@@ -27,9 +27,14 @@
 
 package com.owncloud.android.lib.resources.notifications.models;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 /**
  * Action data model.
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class Action {
 
     /**
@@ -49,15 +54,4 @@ public class Action {
      * If the action is the primary action for the notification or not.
      */
     public boolean primary;
-
-    public Action() {
-
-    }
-
-    public Action(String label, String link, String type, boolean primary) {
-        this.label = label;
-        this.link = link;
-        this.type = type;
-        this.primary = primary;
-    }
 }

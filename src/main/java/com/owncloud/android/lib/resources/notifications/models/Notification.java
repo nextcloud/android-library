@@ -33,9 +33,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Notification data model.
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
     /**
      * Unique identifier of the notification, can be used to dismiss a notification.
@@ -116,158 +125,4 @@ public class Notification {
      * (Optional) An array of action elements.
      */
     public Collection<Action> actions;
-
-    public Notification() {
-    }
-
-    public Notification(int notificationId,
-                        String app,
-                        String user,
-                        Date datetime,
-                        String objectType,
-                        String objectId,
-                        String subject,
-                        String subjectRich,
-                        Map<String, RichObject> subjectRichParameters,
-                        String message, String messageRich,
-                        Map<String, RichObject> messageRichParameters,
-                        String link,
-                        String icon,
-                        Collection<Action> actions) {
-        this.notificationId = notificationId;
-        this.app = app;
-        this.user = user;
-        this.datetime = datetime;
-        this.objectType = objectType;
-        this.objectId = objectId;
-        this.subject = subject;
-        this.subjectRich = subjectRich;
-        this.subjectRichParameters = subjectRichParameters;
-        this.message = message;
-        this.messageRich = messageRich;
-        this.messageRichParameters = messageRichParameters;
-        this.link = link;
-        this.icon = icon;
-        this.actions = actions;
-    }
-
-    public int getNotificationId() {
-        return notificationId;
-    }
-
-    public void setNotificationId(int notificationId) {
-        this.notificationId = notificationId;
-    }
-
-    public String getApp() {
-        return app;
-    }
-
-    public void setApp(String app) {
-        this.app = app;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public Date getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
-    }
-
-    public String getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(String objectType) {
-        this.objectType = objectType;
-    }
-
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getSubjectRich() {
-        return subjectRich;
-    }
-
-    public void setSubjectRich(String subjectRich) {
-        this.subjectRich = subjectRich;
-    }
-
-    public Map<String, RichObject> getSubjectRichParameters() {
-        return subjectRichParameters;
-    }
-
-    public void setSubjectRichParameters(Map<String, RichObject> subjectRichParameters) {
-        this.subjectRichParameters = subjectRichParameters;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessageRich() {
-        return messageRich;
-    }
-
-    public void setMessageRich(String messageRich) {
-        this.messageRich = messageRich;
-    }
-
-    public Map<String, RichObject> getMessageRichParameters() {
-        return messageRichParameters;
-    }
-
-    public void setMessageRichParameters(Map<String, RichObject> messageRichParameters) {
-        this.messageRichParameters = messageRichParameters;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Collection<Action> getActions() {
-        return actions;
-    }
-
-    public void setActions(Collection<Action> actions) {
-        this.actions = actions;
-    }
 }
