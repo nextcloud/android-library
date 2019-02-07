@@ -1,4 +1,4 @@
-/* Nextcloud Android Library is available under MIT license
+/*   Nextcloud Android Library is available under MIT license
  *
  *   @author Tobias Kaminsky
  *   Copyright (C) 2017 Tobias Kaminsky
@@ -29,11 +29,15 @@ package com.owncloud.android.lib.common;
 
 import org.parceler.Parcel;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 /**
  * Quota data model
  */
-
 @Parcel
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExternalLink {
     public Integer id;
     public String iconUrl;
@@ -42,20 +46,4 @@ public class ExternalLink {
     public String name;
     public String url;
     public boolean redirect;
-
-    public ExternalLink() {
-
-    }
-
-    public ExternalLink(Integer id, String iconUrl, String language, ExternalLinkType type, String name, String url, 
-                        boolean redirect) {
-        this.id = id;
-        this.iconUrl = iconUrl;
-        this.language = language;
-        this.type = type;
-        this.name = name;
-        this.url = url;
-        this.redirect = redirect;
-    }
 }
-

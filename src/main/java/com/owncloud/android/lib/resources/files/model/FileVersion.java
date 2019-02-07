@@ -86,15 +86,15 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     public FileVersion(String fileId, WebdavEntry we) {
         remoteId = fileId;
-        setMimeType(we.contentType());
+        setMimeType(we.getContentType());
 
         if (isFolder()) {
-            setFileLength(we.size());
+            setFileLength(we.getSize());
         } else {
-            setFileLength(we.contentLength());
+            setFileLength(we.getContentLength());
         }
 
-        setModifiedTimestamp(we.modifiedTimestamp());
+        setModifiedTimestamp(we.getModifiedTimestamp());
     }
 
     /**

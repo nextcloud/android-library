@@ -39,6 +39,7 @@ import java.util.ArrayList;
 
 /**
  * Parser for Share API Response
+ *
  * @author masensio
  *
  */
@@ -247,7 +248,7 @@ public class ShareXMLParser {
 			}  else if (name.equalsIgnoreCase(NODE_ID)) {// Parse Create XML Response
 				share = new OCShare();
 				String value = readNode(parser, NODE_ID);
-				share.setIdRemoteShared(Integer.parseInt(value));
+				share.setRemoteId(Integer.parseInt(value));
 
 			} else if (name.equalsIgnoreCase(NODE_URL)) {
 				share.setShareType(ShareType.PUBLIC_LINK);
@@ -301,10 +302,10 @@ public class ShareXMLParser {
 				readElement(parser, shares);
 
 			} else if (name.equalsIgnoreCase(NODE_ID)) {
-				share.setIdRemoteShared(Integer.parseInt(readNode(parser, NODE_ID)));
+				share.setRemoteId(Integer.parseInt(readNode(parser, NODE_ID)));
 
 			} else if (name.equalsIgnoreCase(NODE_ITEM_TYPE)) {
-				share.setIsFolder(readNode(parser, NODE_ITEM_TYPE).equalsIgnoreCase(TYPE_FOLDER));
+				share.setFolder(readNode(parser, NODE_ITEM_TYPE).equalsIgnoreCase(TYPE_FOLDER));
 				fixPathForFolder(share);
 
 			} else if (name.equalsIgnoreCase(NODE_ITEM_SOURCE)) {
@@ -340,7 +341,7 @@ public class ShareXMLParser {
 				}
 
 			} else if (name.equalsIgnoreCase(NODE_PASSWORD)) {
-				share.setIsPasswordProtected(readNode(parser, NODE_PASSWORD).length() > 0);
+				share.setPasswordProtected(readNode(parser, NODE_PASSWORD).length() > 0);
 
 			} else if (name.equalsIgnoreCase(NODE_TOKEN)) {
 				share.setToken(readNode(parser, NODE_TOKEN));
@@ -441,5 +442,4 @@ public class ShareXMLParser {
 			}
 		}
 	}
-
 }

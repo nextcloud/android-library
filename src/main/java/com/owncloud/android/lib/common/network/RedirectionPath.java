@@ -121,6 +121,4 @@ public class RedirectionPath {
     public int getRedirectionsCount() {
         return mLastLocation + 1;
     }
-
-
 }

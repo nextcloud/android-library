@@ -29,16 +29,15 @@ package com.owncloud.android.lib.ocs;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.Getter;
+
 /**
  * Wrapper for server response
  *
  * @author Bartosz Przybylski
  */
+@Getter
 public class ServerResponse<T extends Object> {
     @SerializedName("ocs")
     public OCSResponse<T> ocs;
-
-    public OCSResponse<T> getOcs() {
-        return ocs;
-    }
 }

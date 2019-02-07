@@ -32,19 +32,21 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class OwnCloudBearerCredentials implements OwnCloudCredentials {
 
-	private String mAccessToken;
+	@Getter private String authToken;
 	
 	public OwnCloudBearerCredentials(String accessToken) {
-		mAccessToken = accessToken != null ? accessToken : "";
+		authToken = accessToken != null ? accessToken : "";
 	}
 
 	@Override
 	public void applyTo(OwnCloudClient client) {
 	    AuthPolicy.registerAuthScheme(BearerAuthScheme.AUTH_POLICY, BearerAuthScheme.class);
 	    
-	    List<String> authPrefs = new ArrayList<String>(1);
+	    List<String> authPrefs = new ArrayList<>(1);
 	    authPrefs.add(BearerAuthScheme.AUTH_POLICY);
 	    client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);        
 	    
@@ -52,7 +54,7 @@ public class OwnCloudBearerCredentials implements OwnCloudCredentials {
         client.getParams().setCredentialCharset(OwnCloudCredentialsFactory.CREDENTIAL_CHARSET);
 	    client.getState().setCredentials(
 	    		AuthScope.ANY, 
-	    		new BearerCredentials(mAccessToken)
+	    		new BearerCredentials(authToken)
 		);
 	}
 
@@ -60,11 +62,6 @@ public class OwnCloudBearerCredentials implements OwnCloudCredentials {
 	public String getUsername() {
 		// its unknown
 		return null;
-	}
-	
-	@Override
-	public String getAuthToken() {
-		return mAccessToken;
 	}
 
 	@Override

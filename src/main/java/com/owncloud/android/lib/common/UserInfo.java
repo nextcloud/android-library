@@ -1,4 +1,4 @@
-/* Nextcloud Android Library is available under MIT license
+/*   Nextcloud Android Library is available under MIT license
  *
  *   @author Mario Danic
  *   Copyright (C) 2017 Mario Danic
@@ -31,11 +31,19 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * User information data model
  */
-
 @Parcel
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserInfo {
     @SerializedName("id")
     public String id;
@@ -55,92 +63,4 @@ public class UserInfo {
     public String twitter;
     @SerializedName("quota")
     public Quota quota;
-
-    public UserInfo() {
-    }
-
-    public UserInfo(String id, Boolean enabled, String displayName, String email, String phone, String address,
-                    String website, String twitter, Quota quota) {
-        this.id = id;
-        this.enabled = enabled;
-        this.displayName = displayName;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.website = website;
-        this.twitter = twitter;
-        this.quota = quota;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getTwitter() {
-        return twitter;
-    }
-
-    public void setTwitter(String twitter) {
-        this.twitter = twitter;
-    }
-
-    public Quota getQuota() {
-        return quota;
-    }
-
-    public void setQuota(Quota quota) {
-        this.quota = quota;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 }

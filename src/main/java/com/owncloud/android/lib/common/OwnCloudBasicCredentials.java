@@ -30,48 +30,39 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
-    private String mUsername;
-    private String mPassword;
+    @Getter private String username;
+    @Getter private String authToken;
     private boolean mAuthenticationPreemptive;
 
     public OwnCloudBasicCredentials(String username, String password) {
-        mUsername = username != null ? username : "";
-        mPassword = password != null ? password : "";
+        this.username = username != null ? username : "";
+        authToken = password != null ? password : "";
         mAuthenticationPreemptive = true;
     }
 
     public OwnCloudBasicCredentials(String username, String password, boolean preemptiveMode) {
-        mUsername = username != null ? username : "";
-        mPassword = password != null ? password : "";
+        this.username = username != null ? username : "";
+        authToken = password != null ? password : "";
         mAuthenticationPreemptive = preemptiveMode;
     }
 
     @Override
     public void applyTo(OwnCloudClient client) {
-        List<String> authPrefs = new ArrayList<String>(1);
+        List<String> authPrefs = new ArrayList<>(1);
         authPrefs.add(AuthPolicy.BASIC);
 
         client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
         client.getParams().setAuthenticationPreemptive(mAuthenticationPreemptive);
         client.getParams().setCredentialCharset(OwnCloudCredentialsFactory.CREDENTIAL_CHARSET);
-        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(mUsername, mPassword));
-    }
-
-    @Override
-    public String getUsername() {
-        return mUsername;
-    }
-
-    @Override
-    public String getAuthToken() {
-        return mPassword;
+        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, authToken));
     }
 
     @Override
     public boolean authTokenExpires() {
         return false;
     }
-
 }

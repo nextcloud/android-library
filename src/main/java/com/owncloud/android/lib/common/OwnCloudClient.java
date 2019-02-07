@@ -53,6 +53,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class OwnCloudClient extends HttpClient {
 	
     private static final String TAG = OwnCloudClient.class.getSimpleName();
@@ -64,15 +67,14 @@ public class OwnCloudClient extends HttpClient {
     private static byte[] sExhaustBuffer = new byte[1024];
     
     private static int sIntanceCounter = 0;
-    private boolean mFollowRedirects = true;
-    private OwnCloudCredentials mCredentials = null;
+    @Getter @Setter private boolean followRedirects = true;
+    @Getter private OwnCloudCredentials credentials = null;
     private int mInstanceNumber = 0;
     
-    private Uri mBaseUri;
+    @Getter private Uri baseUri;
+    @Getter @Setter private OwnCloudVersion ownCloudVersion = null;
 
-    private OwnCloudVersion mVersion = null;
-    
-    private boolean mUseNextcloudUserAgent = false;
+    @Getter private boolean useNextcloudUserAgent = false;
     
     /**
      * Constructor
@@ -83,8 +85,8 @@ public class OwnCloudClient extends HttpClient {
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
-        mBaseUri = baseUri;
-        mUseNextcloudUserAgent = useNextcloudUserAgent;
+        this.baseUri = baseUri;
+        this.useNextcloudUserAgent = useNextcloudUserAgent;
         
         mInstanceNumber = sIntanceCounter++;
         Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
@@ -131,18 +133,18 @@ public class OwnCloudClient extends HttpClient {
 
 	public void setCredentials(OwnCloudCredentials credentials) {
     	if (credentials != null) {
-    		mCredentials = credentials;
-    		mCredentials.applyTo(this);
+    		this.credentials = credentials;
+            this.credentials.applyTo(this);
     	} else {
     		clearCredentials();
     	}
     }
     
     public void clearCredentials() {
-		if (!(mCredentials instanceof OwnCloudAnonymousCredentials)) {
-			mCredentials = OwnCloudCredentialsFactory.getAnonymousCredentials();
+		if (!(credentials instanceof OwnCloudAnonymousCredentials)) {
+			credentials = OwnCloudCredentialsFactory.getAnonymousCredentials();
 		}
-		mCredentials.applyTo(this);
+		credentials.applyTo(this);
 	}
     
     /**
@@ -216,7 +218,7 @@ public class OwnCloudClient extends HttpClient {
             HttpParams params = method.getParams();
 
             String userAgent;
-            if (mUseNextcloudUserAgent) {
+            if (useNextcloudUserAgent) {
                 userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
             } else {
                 userAgent = OwnCloudClientManagerFactory.getUserAgent();
@@ -232,7 +234,7 @@ public class OwnCloudClient extends HttpClient {
 
             int status = super.executeMethod(method);
 
-            if (mFollowRedirects) {
+            if (followRedirects) {
                 status = followRedirection(method).getLastStatus();
             }
 
@@ -282,12 +284,12 @@ public class OwnCloudClient extends HttpClient {
                 }
                 if (destination != null) {
                 	int suffixIndex = locationStr.lastIndexOf(
-                            (mCredentials instanceof OwnCloudBearerCredentials) ?
+                            (credentials instanceof OwnCloudBearerCredentials) ?
                                     AccountUtils.ODAV_PATH : AccountUtils.WEBDAV_PATH_4_0);
                     String redirectionBase = locationStr.substring(0, suffixIndex);
 
                     String destinationStr = destination.getValue();
-                	String destinationPath = destinationStr.substring(mBaseUri.toString().length());
+                	String destinationPath = destinationStr.substring(baseUri.toString().length());
                 	String redirectedDestination = redirectionBase + destinationPath;
                 	
                 	destination.setValue(redirectedDestination);
@@ -337,22 +339,22 @@ public class OwnCloudClient extends HttpClient {
     }
 
     public Uri getWebdavUri() {
-    	if (mCredentials instanceof OwnCloudBearerCredentials) {
-    		return Uri.parse(mBaseUri + AccountUtils.ODAV_PATH);
+    	if (credentials instanceof OwnCloudBearerCredentials) {
+    		return Uri.parse(baseUri + AccountUtils.ODAV_PATH);
     	} else {
-    		return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_4_0);
+    		return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_4_0);
     	}
     }
 
     public Uri getUploadUri() {
-        return Uri.parse(mBaseUri + AccountUtils.DAV_UPLOAD);
+        return Uri.parse(baseUri + AccountUtils.DAV_UPLOAD);
     }
 
     public Uri getNewWebdavUri() {
-        if (mCredentials instanceof OwnCloudBearerCredentials) {
-            return Uri.parse(mBaseUri + AccountUtils.ODAV_PATH);
+        if (credentials instanceof OwnCloudBearerCredentials) {
+            return Uri.parse(baseUri + AccountUtils.ODAV_PATH);
         } else {
-            return Uri.parse(mBaseUri + AccountUtils.WEBDAV_PATH_9_0);
+            return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_9_0);
         }
     }
     
@@ -367,23 +369,7 @@ public class OwnCloudClient extends HttpClient {
         if (uri == null) {
         	throw new IllegalArgumentException("URI cannot be NULL");
         }
-        mBaseUri = uri;
-    }
-
-    public Uri getBaseUri() {
-        return mBaseUri;
-    }
-
-    public final OwnCloudCredentials getCredentials() {
-        return mCredentials;
-    }
-    
-    public void setFollowRedirects(boolean followRedirects) {
-        mFollowRedirects = followRedirects;
-    }
-
-    public boolean getFollowRedirects() {
-        return mFollowRedirects;
+        baseUri = uri;
     }
 
 	private void logCookiesAtRequest(Header[] headers, String when) {
@@ -464,25 +450,12 @@ public class OwnCloudClient extends HttpClient {
     	Log_OC.d(TAG, "       secure: "+ cookie.getSecure() );
     }
 
-
-    public void setOwnCloudVersion(OwnCloudVersion version){
-        mVersion = version;
-    }
-
-    public OwnCloudVersion getOwnCloudVersion(){
-        return mVersion;
-    }
-
     public void setUseNextcloudUserAgent(boolean nextcloudUserAgent) {
-        mUseNextcloudUserAgent = nextcloudUserAgent;
+        useNextcloudUserAgent = nextcloudUserAgent;
 
         String userAgent = nextcloudUserAgent ? OwnCloudClientManagerFactory.getNextcloudUserAgent() :
                 OwnCloudClientManagerFactory.getUserAgent();
 
         getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
-    }
-
-    public boolean useNextcloudUserAgent() {
-        return mUseNextcloudUserAgent;
     }
 }

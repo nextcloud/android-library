@@ -37,6 +37,9 @@ import org.apache.jackrabbit.webdav.xml.Namespace;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class WebdavEntry {
 
     private static final String TAG = WebdavEntry.class.getSimpleName();
@@ -65,30 +68,30 @@ public class WebdavEntry {
 
     private static final int CODE_PROP_NOT_FOUND = 404;
 
-    private String name;
-    private String path;
-    private String uri;
-    private String contentType;
-    private String eTag;
-    private String permissions;
-    private String remoteId;
-    private String trashbinOriginalLocation;
-    private String trashbinFilename;
-    private long trashbinDeletionTimestamp;
-    private boolean favorite;
-    private boolean encrypted;
-    private MountType mountType;
-    private long contentLength;
-    private long createTimestamp;
-    private long modifiedTimestamp;
-    private long size;
-    private BigDecimal quotaUsedBytes;
-    private BigDecimal quotaAvailableBytes;
-    private String ownerId;
-    private String ownerDisplayName;
-    private int unreadCommentsCount;
-    private boolean hasPreview;
-    private String note = "";
+    @Getter private String name;
+    @Getter private String path;
+    @Getter private String uri;
+    @Getter private String contentType;
+    @Getter private String eTag;
+    @Getter private String permissions;
+    @Getter private String remoteId;
+    @Getter private String trashbinOriginalLocation;
+    @Getter private String trashbinFilename;
+    @Getter private long trashbinDeletionTimestamp;
+    @Getter @Setter private boolean favorite;
+    @Getter private boolean encrypted;
+    @Getter private MountType mountType;
+    @Getter private long contentLength;
+    @Getter private long createTimestamp;
+    @Getter private long modifiedTimestamp;
+    @Getter private long size;
+    @Getter private BigDecimal quotaUsedBytes;
+    @Getter private BigDecimal quotaAvailableBytes;
+    @Getter private String ownerId;
+    @Getter @Setter private String ownerDisplayName;
+    @Getter private int unreadCommentsCount;
+    @Getter @Setter private boolean hasPreview;
+    @Getter private String note = "";
 
     public enum MountType {INTERNAL, EXTERNAL}
 
@@ -311,121 +314,13 @@ public class WebdavEntry {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
     }
-
-    public boolean isFavorite() {
-        return favorite;
-    }
-
-    public void setIsFavorite(boolean mIsFavorite) {
-        this.favorite = mIsFavorite;
-    }
-
-    public boolean isEncrypted() {
-        return encrypted;
-    }
-
-    public String path() {
-        return path;
-    }
     
     public String decodedPath() {
         return Uri.decode(path);
     }
 
-    public String name() {
-        return name;
-    }
-
     public boolean isDirectory() {
         return "DIR".equals(contentType);
-    }
-
-    public String contentType() {
-        return contentType;
-    }
-
-    public String uri() {
-        return uri;
-    }
-
-    public long contentLength() {
-        return contentLength;
-    }
-
-    public long createTimestamp() {
-        return createTimestamp;
-    }
-
-    public long modifiedTimestamp() {
-        return modifiedTimestamp;
-    }
-    
-    public String etag() {
-        return eTag;
-    }
-
-    public String permissions() {
-        return permissions;
-    }
-
-    public String remoteId() {
-        return remoteId;
-    }
-
-    public long size(){
-        return size;
-    }
-
-    public BigDecimal quotaUsedBytes() {
-        return quotaUsedBytes;
-    }
-
-    public BigDecimal quotaAvailableBytes() {
-        return quotaAvailableBytes;
-    }
-
-    public MountType getMountType() {
-        return mountType;
-    }
-    
-    public String getTrashbinOriginalLocation() {
-        return trashbinOriginalLocation;
-    }
-    
-    public String getTrashbinFilename() {
-        return trashbinFilename;
-    }
-    
-    public long getTrashbinDeletionTimestamp() {
-        return trashbinDeletionTimestamp;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerDisplayName(String ownerDisplayName) {
-        this.ownerDisplayName = ownerDisplayName;
-    }
-
-    public String getOwnerDisplayName() {
-        return ownerDisplayName;
-    }
-
-    public int getUnreadCommentsCount() {
-        return unreadCommentsCount;
-    }
-
-    public boolean hasPreview() {
-        return hasPreview;
-    }
-
-    public void setHasPreview(boolean hasPreview) {
-        this.hasPreview = hasPreview;
-    }
-    
-    public String getNote() { 
-        return note;
     }
 
     private void resetData() {

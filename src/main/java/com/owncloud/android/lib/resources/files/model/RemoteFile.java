@@ -87,14 +87,14 @@ public class RemoteFile implements Parcelable, Serializable {
 
     public RemoteFile(WebdavEntry we) {
         this(we.decodedPath());
-        setCreationTimestamp(we.createTimestamp());
-        setLength(we.contentLength());
-        setMimeType(we.contentType());
-        setModifiedTimestamp(we.modifiedTimestamp());
-        setEtag(we.etag());
-        setPermissions(we.permissions());
-        setRemoteId(we.remoteId());
-        setSize(we.size());
+        setCreationTimestamp(we.getCreateTimestamp());
+        setLength(we.getContentLength());
+        setMimeType(we.getContentType());
+        setModifiedTimestamp(we.getModifiedTimestamp());
+        setEtag(we.getETag());
+        setPermissions(we.getPermissions());
+        setRemoteId(we.getRemoteId());
+        setSize(we.getSize());
         setFavorite(we.isFavorite());
         setEncrypted(we.isEncrypted());
         setMountType(we.getMountType());
@@ -102,7 +102,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setOwnerDisplayName(we.getOwnerDisplayName());
         setNote(we.getNote());
         setUnreadCommentsCount(we.getUnreadCommentsCount());
-        setHasPreview(we.hasPreview());
+        setHasPreview(we.isHasPreview());
     }
 
     /**

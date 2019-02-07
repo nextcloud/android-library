@@ -1,4 +1,4 @@
-/* ownCloud Android Library is available under MIT license
+/*   ownCloud Android Library is available under MIT license
  *   Copyright (C) 2015 ownCloud Inc.
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,6 +37,8 @@ import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundExce
 
 import java.io.IOException;
 
+import lombok.Getter;
+
 /**
  * OwnCloud Account
  * 
@@ -44,16 +46,13 @@ import java.io.IOException;
  */
 public class OwnCloudAccount {
 
-    private Uri mBaseUri; 
-    
-    private OwnCloudCredentials mCredentials;
+    @Getter private Uri baseUri;
+    @Getter private OwnCloudCredentials credentials;
 
-    private String mDisplayName;
-    
-    private String mSavedAccountName;
+    private String displayName;
 
-    private Account mSavedAccount;
-
+    @Getter private String name;
+    @Getter private Account savedAccount;
 
     /**
      * Constructor for already saved OC accounts.
@@ -69,17 +68,17 @@ public class OwnCloudAccount {
             throw new IllegalArgumentException("Parameter 'context' cannot be null");
         }
 
-        mSavedAccount = savedAccount;
-        mSavedAccountName = savedAccount.name;
-        mCredentials = null;    // load of credentials is delayed
+        this.savedAccount = savedAccount;
+        name = savedAccount.name;
+        credentials = null;    // load of credentials is delayed
 
         AccountManager ama = AccountManager.get(context.getApplicationContext());
-        String baseUrl = ama.getUserData(mSavedAccount, AccountUtils.Constants.KEY_OC_BASE_URL);
+        String baseUrl = ama.getUserData(this.savedAccount, AccountUtils.Constants.KEY_OC_BASE_URL);
         if (baseUrl == null ) {
-            throw new AccountNotFoundException(mSavedAccount, "Account not found", null);
+            throw new AccountNotFoundException(this.savedAccount, "Account not found", null);
         }
-        mBaseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(context, mSavedAccount));
-        mDisplayName = ama.getUserData(mSavedAccount, AccountUtils.Constants.KEY_DISPLAY_NAME);
+        baseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(context, this.savedAccount));
+        displayName = ama.getUserData(this.savedAccount, AccountUtils.Constants.KEY_DISPLAY_NAME);
     }
 
 
@@ -93,14 +92,14 @@ public class OwnCloudAccount {
         if (baseUri == null) {
             throw new IllegalArgumentException("Parameter 'baseUri' cannot be null");
         }
-        mSavedAccount = null;
-        mSavedAccountName = null;
-        mBaseUri = baseUri;
-        mCredentials = credentials != null ?
+        savedAccount = null;
+        name = null;
+        this.baseUri = baseUri;
+        this.credentials = credentials != null ?
             credentials : OwnCloudCredentialsFactory.getAnonymousCredentials();
-        String username = mCredentials.getUsername();
+        String username = this.credentials.getUsername();
         if (username != null) {
-            mSavedAccountName = AccountUtils.buildAccountName(mBaseUri, username);
+            name = AccountUtils.buildAccountName(this.baseUri, username);
         }
     }
 
@@ -121,37 +120,20 @@ public class OwnCloudAccount {
             throw new IllegalArgumentException("Parameter 'context' cannot be null");
         }
 
-		if (mSavedAccount != null) {
-			mCredentials = AccountUtils.getCredentialsForAccount(context, mSavedAccount);
+		if (savedAccount != null) {
+			credentials = AccountUtils.getCredentialsForAccount(context, savedAccount);
 		}
 	}
 
-    public Uri getBaseUri() {
-        return mBaseUri;
-    }
-            
-    public OwnCloudCredentials getCredentials() {
-        return mCredentials;
-    }
-    
-    public String getName() {
-    	return mSavedAccountName;
-    }
-
-    public Account getSavedAccount() {
-        return mSavedAccount;
-    }
-
     public String getDisplayName() {
-        if (mDisplayName != null && mDisplayName.length() > 0) {
-            return mDisplayName;
-        } else if (mCredentials != null) {
-            return mCredentials.getUsername();
-        } else if (mSavedAccount != null) {
-            return AccountUtils.getUsernameForAccount(mSavedAccount);
+        if (displayName != null && displayName.length() > 0) {
+            return displayName;
+        } else if (credentials != null) {
+            return credentials.getUsername();
+        } else if (savedAccount != null) {
+            return AccountUtils.getUsernameForAccount(savedAccount);
         } else {
             return null;
         }
     }
-
 }

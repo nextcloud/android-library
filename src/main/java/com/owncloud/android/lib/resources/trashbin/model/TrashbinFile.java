@@ -93,18 +93,18 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         fullRemotePath = path;
         remotePath = fullRemotePath.replace("/trashbin/" + Uri.encode(userId) + "/trash", "");
         
-        setMimeType(we.contentType());
+        setMimeType(we.getContentType());
 
         if (isFolder()) {
-            setFileLength(we.size());
+            setFileLength(we.getSize());
         } else {
-            setFileLength(we.contentLength());
+            setFileLength(we.getContentLength());
         }
         
         setFileName(we.getTrashbinFilename());
         setOriginalLocation(we.getTrashbinOriginalLocation());
         setDeletionTimestamp(we.getTrashbinDeletionTimestamp());
-        setRemoteId(we.remoteId());
+        setRemoteId(we.getRemoteId());
     }
 
     /**
