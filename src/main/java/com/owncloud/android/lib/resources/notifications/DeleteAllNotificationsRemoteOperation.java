@@ -37,7 +37,8 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 
 /**
- * Delete all notification, specified at {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
+ * Delete all notification, specified at 
+ * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
 public class DeleteAllNotificationsRemoteOperation extends RemoteOperation {
 

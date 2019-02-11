@@ -53,7 +53,7 @@ import java.util.List;
  * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
-public class GetRemoteNotificationsOperation extends RemoteOperation {
+public class GetNotificationsRemoteOperation extends RemoteOperation {
 
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
@@ -62,7 +62,7 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
         "/ocs/v2.php/apps/notifications/api/v1/notifications?format=json";
 
 
-    private static final String TAG = GetRemoteNotificationsOperation.class.getSimpleName();
+    private static final String TAG = GetNotificationsRemoteOperation.class.getSimpleName();
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
