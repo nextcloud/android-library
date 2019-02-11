@@ -48,8 +48,6 @@ public class DeleteAllNotificationsRemoteOperation extends RemoteOperation {
     private static final String OCS_ROUTE_LIST_V9_AND_UP =
             "/ocs/v2.php/apps/notifications/api/v1/notifications";
 
-    private static final String TAG = DeleteAllNotificationsRemoteOperation.class.getSimpleName();
-
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
@@ -71,19 +69,19 @@ public class DeleteAllNotificationsRemoteOperation extends RemoteOperation {
 
             if (isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, delete.getResponseHeaders());
-                Log_OC.d(TAG, "Successful response: " + response);
+                Log_OC.d(this, "Successful response: " + response);
             } else {
                 result = new RemoteOperationResult(false, status, delete.getResponseHeaders());
-                Log_OC.e(TAG, "Failed response while getting user notifications ");
+                Log_OC.e(this, "Failed response while getting user notifications ");
                 if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
+                    Log_OC.e(this, "*** status code: " + status + " ;response message: " + response);
                 } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
+                    Log_OC.e(this, "*** status code: " + status);
                 }
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Exception while getting remote notifications", e);
+            Log_OC.e(this, "Exception while getting remote notifications", e);
         } finally {
             if (delete != null) {
                 delete.releaseConnection();
