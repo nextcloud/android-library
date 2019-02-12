@@ -27,6 +27,7 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -76,8 +77,9 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
 
         RemoteOperationResult result;
         try {
-            String source = client.getNewWebdavUri() + "/versions/" + userId + "/versions/" + fileId + "/" + fileName;
-            String target = client.getNewWebdavUri() + "/versions/" + userId + "/restore/" + fileId;
+            String source = client.getNewWebdavUri() + "/versions/" + Uri.encode(userId) + "/versions/" + fileId + "/"
+                    + Uri.encode(fileName);
+            String target = client.getNewWebdavUri() + "/versions/" + Uri.encode(userId) + "/restore/" + fileId;
 
             MoveMethod move = new MoveMethod(source, target, true);
             int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);

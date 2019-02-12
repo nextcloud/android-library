@@ -24,6 +24,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import android.net.Uri;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
@@ -80,7 +82,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             // prevent that uploads are retried automatically by network library
             client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
-            String uploadFolderUri = client.getUploadUri() + "/" + userId + "/" + file.hashCode();
+            String uploadFolderUri = client.getUploadUri() + "/" + Uri.encode(userId) + "/" + file.hashCode();
 
             // create folder
             MkColMethod createFolder = new MkColMethod(uploadFolderUri);
