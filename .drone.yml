@@ -40,10 +40,10 @@ pipeline:
         when:
           event: push
           status: failure
-          branch: master
+          branch: stable-1.3
 
 services:
   server:
     image: nextcloudci/server:server-3
 
-branches: master
+branches: stable-1.3
