@@ -24,6 +24,7 @@
 
 package com.owncloud.android.lib.resources.trashbin.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -155,7 +156,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         }
         
         fullRemotePath = path;
-        remotePath = fullRemotePath.replace("/trashbin/"+userId+"/trash", "");
+        remotePath = fullRemotePath.replace("/trashbin/" + Uri.encode(userId) + "/trash", "");
         
         setMimeType(we.contentType());
 
