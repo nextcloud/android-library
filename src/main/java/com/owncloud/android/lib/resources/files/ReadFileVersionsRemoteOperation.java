@@ -27,6 +27,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import android.net.Uri;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -83,7 +85,7 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
                 throw new IllegalArgumentException("UserId may not be empty!");
             }
 
-            String uri = client.getNewWebdavUri() + "/versions/" + userId + "/versions/" + fileId;
+            String uri = client.getNewWebdavUri() + "/versions/" + Uri.encode(userId) + "/versions/" + fileId;
             DavPropertyNameSet propSet = WebdavUtils.getFileVersionPropSet();
 
             query = new PropFindMethod(uri, propSet, DavConstants.DEPTH_1);

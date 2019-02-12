@@ -27,6 +27,8 @@
 
 package com.owncloud.android.lib.resources.trashbin;
 
+import android.net.Uri;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -81,7 +83,7 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
                 throw new IllegalArgumentException("UserId may not be empty!");
             }
 
-            String baseUri = client.getNewWebdavUri() + "/trashbin/" + userId + "/trash/";
+            String baseUri = client.getNewWebdavUri() + "/trashbin/" + Uri.encode(userId) + "/trash/";
             DavPropertyNameSet propSet = WebdavUtils.getTrashbinPropSet();
                 
             query = new PropFindMethod(baseUri + WebdavUtils.encodePath(remotePath), propSet, DavConstants.DEPTH_1);

@@ -27,6 +27,7 @@
 
 package com.owncloud.android.lib.resources.trashbin;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -78,7 +79,8 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
         RemoteOperationResult result;
         try {
             String source = client.getNewWebdavUri() + WebdavUtils.encodePath(sourcePath);
-            String target = client.getNewWebdavUri() + "/trashbin/" + userId + "/restore/" + fileName;
+            String target = client.getNewWebdavUri() + "/trashbin/" + Uri.encode(userId) + "/restore/" +
+                    Uri.encode(fileName);
 
             MoveMethod move = new MoveMethod(source, target, true);
             int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
