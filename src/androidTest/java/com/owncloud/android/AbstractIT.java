@@ -11,8 +11,8 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 /**
  * Common base for all integration tests
@@ -25,7 +25,7 @@ public abstract class AbstractIT {
     @BeforeClass
     public static void beforeAll() {
         Bundle arguments = InstrumentationRegistry.getArguments();
-        Context context = InstrumentationRegistry.getTargetContext();
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         Uri url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
         String username = arguments.getString("TEST_SERVER_USERNAME");
