@@ -1,10 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
- *   @author Andy Scherzinger
- *   @author Mario Danic
- *   Copyright (C) 2017 Andy Scherzinger
- *   Copyright (C) 2017 Mario Danic
- *   Copyright (C) 2017 Nextcloud GmbH
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2019 Tobias Kaminsky
+ *   Copyright (C) 2019 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +28,6 @@
 package com.owncloud.android.lib.resources.notifications;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -46,46 +43,47 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONException;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Provides the remote notifications from the server handling the following data structure
  * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
-public class GetRemoteNotificationsOperation extends RemoteOperation {
+public class GetNotificationRemoteOperation extends RemoteOperation {
 
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
-            "/ocs/v2.php/apps/notifications/api/v2/notifications?format=json";
+            "/ocs/v2.php/apps/notifications/api/v2/notifications/";
     private static final String OCS_ROUTE_LIST_V9_AND_UP =
-        "/ocs/v2.php/apps/notifications/api/v1/notifications?format=json";
-
-
-    private static final String TAG = GetRemoteNotificationsOperation.class.getSimpleName();
+            "/ocs/v2.php/apps/notifications/api/v1/notifications/";
+    private static final String FORMAT_JSON = "?format=json";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
-
     private static final String NODE_DATA = "data";
 
-    /**
-     * This status code means that there is no app that can generate notifications.
-     * Slow down the polling to once per hour.
-     */
-    public static final String STATUS_NO_CONTENT = "204";
+    private int id;
 
+    public GetNotificationRemoteOperation(int id) {
+        this.id = id;
+    }
+
+    @SuppressFBWarnings("HTTP_PARAMETER_POLLUTION")
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+        RemoteOperationResult result;
+        int status;
         GetMethod get = null;
-        List<Notification> notifications;
+        List<Notification> notifications = new ArrayList<>();
         String url;
         if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
+            url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP + id + FORMAT_JSON;
         } else {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V9_AND_UP;
+            url = client.getBaseUri() + OCS_ROUTE_LIST_V9_AND_UP + id + FORMAT_JSON;
         }
 
         // get the notifications
@@ -98,23 +96,23 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
 
             if (isSuccess(status)) {
                 result = new RemoteOperationResult(true, status, get.getResponseHeaders());
-                Log_OC.d(TAG, "Successful response: " + response);
+                Log_OC.d(this, "Successful response: " + response);
 
                 // Parse the response
-                notifications = parseResult(response);
+                notifications.add(parseResult(response));
                 result.setNotificationData(notifications);
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
-                Log_OC.e(TAG, "Failed response while getting user notifications ");
+                Log_OC.e(this, "Failed response while getting user notifications ");
                 if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
+                    Log_OC.e(this, "*** status code: " + status + " ; response message: " + response);
                 } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
+                    Log_OC.e(this, "*** status code: " + status);
                 }
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Exception while getting remote notifications", e);
+            Log_OC.e(this, "Exception while getting remote notifications", e);
         } finally {
             if (get != null) {
                 get.releaseConnection();
@@ -124,15 +122,16 @@ public class GetRemoteNotificationsOperation extends RemoteOperation {
         return result;
     }
 
-    private List<Notification> parseResult(String response) throws JSONException {
+    private Notification parseResult(String response) throws JSONException {
         JsonParser jsonParser = new JsonParser();
-        JsonObject jo = (JsonObject)jsonParser.parse(response);
-        JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
+        JsonObject jo = (JsonObject) jsonParser.parse(response);
+        JsonObject jsonDataObject = jo.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA);
 
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<Notification>>(){}.getType();
+        Type type = new TypeToken<Notification>() {
+        }.getType();
 
-        return gson.fromJson(jsonDataArray, listType);
+        return gson.fromJson(jsonDataObject, type);
     }
 
     private boolean isSuccess(int status) {
