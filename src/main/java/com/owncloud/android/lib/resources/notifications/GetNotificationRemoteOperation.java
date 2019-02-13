@@ -46,6 +46,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Provides the remote notifications from the server handling the following data structure
  * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
@@ -70,6 +72,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
         this.id = id;
     }
 
+    @SuppressFBWarnings("HTTP_PARAMETER_POLLUTION")
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
