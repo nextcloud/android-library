@@ -26,6 +26,7 @@
 package com.owncloud.android.lib.resources.status;
 
 import androidx.annotation.NonNull;
+import lombok.Getter;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
@@ -47,17 +48,17 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     // 0xAABBCCDD
     // for version AA.BB.CC.DD
     // ie version 2.0.3 will be stored as 0x02000300
-    private int mVersion;
-    private boolean mIsValid;
+    private int version;
+    @Getter private boolean versionValid;
 
     protected OwnCloudVersion(int version) {
-        mVersion = version;
-        mIsValid = true;
+        this.version = version;
+        versionValid = true;
     }
 
     public OwnCloudVersion(String version) {
-        mVersion = 0;
-        mIsValid = false;
+        this.version = 0;
+        versionValid = false;
         int countDots = version.length() - version.replace(".", "").length();
 
         // Complete the version. Version must have 3 dots
@@ -72,9 +73,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     @NonNull
     @Override
     public String toString() {
-    	String versionToString = String.valueOf((mVersion >> (8*MAX_DOTS)) % 256);
+    	String versionToString = String.valueOf((version >> (8*MAX_DOTS)) % 256);
     	for (int i = MAX_DOTS - 1; i >= 0; i-- ) {
-    		versionToString = versionToString + "." + String.valueOf((mVersion >> (8*i)) % 256);
+    		versionToString = versionToString + "." + String.valueOf((version >> (8*i)) % 256);
     	}
         return versionToString;
     }
@@ -82,27 +83,23 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public String getVersion() {
     	return toString();
     }
-    
-    public boolean isVersionValid() {
-        return mIsValid;
-    }
 
     @Override
     public int compareTo(@NonNull OwnCloudVersion another) {
-        return another.mVersion == mVersion ? 0 : another.mVersion < mVersion ? 1 : -1;
+        return another.version == version ? 0 : another.version < version ? 1 : -1;
     }
 
     public boolean isNewerOrEqual(@NonNull OwnCloudVersion another) {
-        return mVersion >= another.mVersion;
+        return version >= another.version;
     }
 
     private void parseVersion(String version) {
     	try {
-    		mVersion = getParsedVersion(version);
-    		mIsValid = true;
+    		this.version = getParsedVersion(version);
+            versionValid = true;
     		
     	} catch (Exception e) {
-    		mIsValid = false;
+            versionValid = false;
         }
     }
     
@@ -124,23 +121,23 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     }
 
     public boolean isSelfSupported() {
-        return (mVersion >= MINIMUM_VERSION_FOR_SELF_API);
+        return (version >= MINIMUM_VERSION_FOR_SELF_API);
     }
 
     public boolean isSearchSupported() {
-        return (mVersion >= MINIMUM_VERSION_FOR_SEARCH_API);
+        return (version >= MINIMUM_VERSION_FOR_SEARCH_API);
     }
 
     public boolean isWebLoginSupported() {
-        return mVersion >= MINIMUM_VERSION_FOR_WEB_LOGIN;
+        return version >= MINIMUM_VERSION_FOR_WEB_LOGIN;
     }
     
     public boolean isMediaStreamingSupported() {
-        return mVersion >= MINIMUM_VERSION_FOR_MEDIA_STREAMING;
+        return version >= MINIMUM_VERSION_FOR_MEDIA_STREAMING;
     }
     
     public boolean isNoteOnShareSupported() {
-        return mVersion >= MINIMUM_VERSION_FOR_NOTE_ON_SHARE;
+        return version >= MINIMUM_VERSION_FOR_NOTE_ON_SHARE;
     }
 
     public boolean isHideFileDownloadSupported() {

@@ -25,64 +25,19 @@
  */
 package com.owncloud.android.lib.resources.activities.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * RichObject Data Model
  */
-
+@Getter
+@Setter
 public class RichObject {
-
-    String type;
-    String id;
-    String name;
-    String path;
-    String link;
-    String tag;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+    private String type;
+    private String id;
+    private String name;
+    private String path;
+    private String link;
+    private String tag;
 }

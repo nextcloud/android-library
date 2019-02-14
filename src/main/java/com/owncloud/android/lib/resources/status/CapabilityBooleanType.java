@@ -24,27 +24,22 @@
  */
 package com.owncloud.android.lib.resources.status;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Enum for Boolean Type in OCCapability parameters, with values:
  * -1 - Unknown
  *  0 - False
  *  1 - True
  */
+@AllArgsConstructor
 public enum CapabilityBooleanType {
     UNKNOWN (-1),
     FALSE (0),
     TRUE (1);
 
-    private int value;
-
-    CapabilityBooleanType(int value)
-    {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
+    @Getter private int value;
 
     public static CapabilityBooleanType fromValue(int value)
     {
@@ -79,5 +74,4 @@ public enum CapabilityBooleanType {
     public boolean isTrue(){
         return getValue() == 1;
     }
-
 }

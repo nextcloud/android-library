@@ -84,7 +84,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
 	protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
         HeadMethod head = null;
-        boolean previousFollowRedirects = client.getFollowRedirects();
+        boolean previousFollowRedirects = client.isFollowRedirects();
         try {
             head = new HeadMethod(client.getWebdavUri() + WebdavUtils.encodePath(mPath));
             client.setFollowRedirects(false);

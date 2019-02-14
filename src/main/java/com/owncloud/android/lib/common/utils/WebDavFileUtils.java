@@ -95,16 +95,16 @@ public class WebDavFileUtils {
      */
     private RemoteFile fillOCFile(WebdavEntry we) {
         RemoteFile file = new RemoteFile(we.decodedPath());
-        file.setCreationTimestamp(we.createTimestamp());
-        file.setLength(we.contentLength());
-        file.setMimeType(we.contentType());
-        file.setModifiedTimestamp(we.modifiedTimestamp());
-        file.setEtag(we.etag());
-        file.setPermissions(we.permissions());
-        file.setRemoteId(we.remoteId());
-        file.setSize(we.size());
+        file.setCreationTimestamp(we.getCreateTimestamp());
+        file.setLength(we.getContentLength());
+        file.setMimeType(we.getContentType());
+        file.setModifiedTimestamp(we.getModifiedTimestamp());
+        file.setEtag(we.getETag());
+        file.setPermissions(we.getPermissions());
+        file.setRemoteId(we.getRemoteId());
+        file.setSize(we.getSize());
         file.setFavorite(we.isFavorite());
-        file.setHasPreview(we.hasPreview());
+        file.setHasPreview(we.isHasPreview());
         return file;
     }
 }

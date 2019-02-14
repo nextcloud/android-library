@@ -32,6 +32,9 @@ import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * Contains the data of a versioned file from a WebDavEntry.
@@ -45,10 +48,10 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     public static final String DIRECTORY = "DIR";
 
-    private String mimeType;
-    private long length;
-    private long modifiedTimestamp;
-    private String remoteId;
+    @Getter @Setter private String mimeType;
+    @Getter @Setter private long fileLength;
+    @Getter @Setter private long modifiedTimestamp;
+    @Getter private String remoteId;
 
     @Override
     public boolean isFavorite() {
@@ -58,10 +61,6 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     @Override
     public String getFileName() {
         return String.valueOf(modifiedTimestamp / 1000);
-    }
-
-    public String getMimeType() {
-        return mimeType;
     }
 
     @Override
@@ -77,23 +76,6 @@ public class FileVersion implements Parcelable, ServerFileInterface {
         return getRemoteId();
     }
 
-    @Override
-    public String getRemoteId() {
-        return remoteId;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public long getFileLength() {
-        return length;
-    }
-
-    public void setFileLength(long length) {
-        this.length = length;
-    }
-
     public boolean isFolder() {
         return mimeType != null && mimeType.equals(DIRECTORY);
     }
@@ -101,26 +83,18 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     public boolean isHidden() {
         return getFileName().startsWith(".");
     }
-    
-    public void setModifiedTimestamp(long modifiedTimestamp) {
-        this.modifiedTimestamp = modifiedTimestamp;
-    }
-    
-    public long getModifiedTimestamp() {
-        return modifiedTimestamp;
-    }
 
     public FileVersion(String fileId, WebdavEntry we) {
         remoteId = fileId;
-        setMimeType(we.contentType());
+        setMimeType(we.getContentType());
 
         if (isFolder()) {
-            setFileLength(we.size());
+            setFileLength(we.getSize());
         } else {
-            setFileLength(we.contentLength());
+            setFileLength(we.getContentLength());
         }
 
-        setModifiedTimestamp(we.modifiedTimestamp());
+        setModifiedTimestamp(we.getModifiedTimestamp());
     }
 
     /**
@@ -150,7 +124,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     public void readFromParcel(Parcel source) {
         mimeType = source.readString();
-        length = source.readLong();
+        fileLength = source.readLong();
     }
 
     @Override
@@ -161,6 +135,6 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mimeType);
-        dest.writeLong(length);
+        dest.writeLong(fileLength);
     }
 }

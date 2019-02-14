@@ -1,4 +1,4 @@
-/* Nextcloud Android Library is available under MIT license
+/*   Nextcloud Android Library is available under MIT license
  *
  *   @author Mario Danic
  *   Copyright (C) 2017 Mario Danic
@@ -31,11 +31,20 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Quota data model
  */
 
 @Parcel
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Quota {
     @SerializedName("free")
     public long free;
@@ -43,60 +52,8 @@ public class Quota {
     public long used;
     @SerializedName("total")
     public long total;
-    @SerializedName("quota")
-    public long quota;
     @SerializedName("relative")
     public double relative;
-
-    public Quota() {
-    }
-
-    public Quota(long free, long used, long total, double relative, long quota) {
-
-        this.free = free;
-        this.used = used;
-        this.total = total;
-        this.quota = quota;
-        this.relative = relative;
-    }
-
-    public long getFree() {
-        return free;
-    }
-
-    public void setFree(long free) {
-        this.free = free;
-    }
-
-    public long getUsed() {
-        return used;
-    }
-
-    public void setUsed(long used) {
-        this.used = used;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public long getQuota() {
-        return quota;
-    }
-
-    public void setQuota(long quota) {
-        this.quota = quota;
-    }
-
-    public double getRelative() {
-        return relative;
-    }
-
-    public void setRelative(double relative) {
-        this.relative = relative;
-    }
+    @SerializedName("quota")
+    public long quota;
 }

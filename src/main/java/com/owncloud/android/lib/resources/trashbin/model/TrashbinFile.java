@@ -34,13 +34,17 @@ import com.owncloud.android.lib.resources.files.model.ServerFileInterface;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Contains the data of a Trashbin File from a WebDavEntry.
  *
  * @author Tobias Kaminsky
  */
+@Getter
+@Setter
 public class TrashbinFile implements Parcelable, Serializable, ServerFileInterface {
-
     /**
      * Generated - should be refreshed every time the class changes!!
      */
@@ -51,60 +55,11 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     private String fullRemotePath;
     private String remotePath;
     private String mimeType;
-    private long length;
+    private long fileLength;
     private String remoteId;
     private String fileName;
     private String originalLocation;
     private long deletionTimestamp;
-
-    /**
-     * Getters and Setters.
-     */
-
-    public String getFullRemotePath() {
-        return fullRemotePath;
-    }
-
-    @Override
-    public boolean isFavorite() {
-        return false;
-    }
-
-    @Override
-    public String getRemotePath() {
-        return remotePath;
-    }
-
-    public void setFullRemotePath(String fullRemotePath) {
-        this.fullRemotePath = fullRemotePath;
-    }
-
-    @Override
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    @Override
-    public long getFileLength() {
-        return length;
-    }
-
-    public void setFileLength(long length) {
-        this.length = length;
-    }
-
-    @Override
-    public String getRemoteId() {
-        return remoteId;
-    }
-    
-    public void setRemoteId(String remoteId) {
-        this.remoteId = remoteId;
-    }
 
     /**
      * For trashbin this is the same as remoteId
@@ -112,31 +67,6 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     @Override
     public String getLocalId() {
         return getRemoteId();
-    }
-    
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    @Override
-    public String getFileName() {
-        return fileName;
-    }
-    
-    public void setOriginalLocation(String originalLocation) {
-        this.originalLocation = originalLocation;
-    }
-    
-    public String getOriginalLocation() {
-        return originalLocation;
-    }
-    
-    public void setDeletionTimestamp(long deletionTimestamp) {
-        this.deletionTimestamp = deletionTimestamp;
-    }
-    
-    public long getDeletionTimestamp() {
-        return deletionTimestamp;
     }
 
     @Override
@@ -146,6 +76,11 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
 
     public boolean isHidden() {
         return getFileName().startsWith(".");
+    }
+
+    @Override
+    public boolean isFavorite() {
+        return false;
     }
 
     public TrashbinFile(WebdavEntry we, String userId) {
@@ -158,18 +93,18 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         fullRemotePath = path;
         remotePath = fullRemotePath.replace("/trashbin/" + Uri.encode(userId) + "/trash", "");
         
-        setMimeType(we.contentType());
+        setMimeType(we.getContentType());
 
         if (isFolder()) {
-            setFileLength(we.size());
+            setFileLength(we.getSize());
         } else {
-            setFileLength(we.contentLength());
+            setFileLength(we.getContentLength());
         }
         
         setFileName(we.getTrashbinFilename());
         setOriginalLocation(we.getTrashbinOriginalLocation());
         setDeletionTimestamp(we.getTrashbinDeletionTimestamp());
-        setRemoteId(we.remoteId());
+        setRemoteId(we.getRemoteId());
     }
 
     /**
@@ -200,7 +135,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     public void readFromParcel(Parcel source) {
         fullRemotePath = source.readString();
         mimeType = source.readString();
-        length = source.readLong();
+        fileLength = source.readLong();
         remoteId = source.readString();
     }
 
@@ -213,7 +148,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(fullRemotePath);
         dest.writeString(mimeType);
-        dest.writeLong(length);
+        dest.writeLong(fileLength);
         dest.writeString(remoteId);
     }
 }

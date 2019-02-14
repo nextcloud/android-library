@@ -107,8 +107,8 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             for (MultiStatusResponse response : dataInServer.getResponses()) {
                 we = new WebdavEntry(response, client.getUploadUri().getPath());
 
-                if (!we.name().equalsIgnoreCase(".file") && !we.isDirectory()) {
-                    String[] part = we.name().split("-");
+                if (!we.getName().equalsIgnoreCase(".file") && !we.isDirectory()) {
+                    String[] part = we.getName().split("-");
                     chunksOnServer.add(new Chunk(Long.valueOf(part[0]), Long.valueOf(part[1])));
                 }
             }

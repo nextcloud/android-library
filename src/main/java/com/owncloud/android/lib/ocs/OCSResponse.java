@@ -29,11 +29,14 @@ package com.owncloud.android.lib.ocs;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.Getter;
+
 /**
  * Wrapper for server OCS response
  *
  * @author Bartosz Przybylski
  */
+@Getter
 public class OCSResponse<T extends Object> {
 
     @SerializedName("data")
@@ -41,12 +44,4 @@ public class OCSResponse<T extends Object> {
 
     @SerializedName("meta")
     public OCSMeta meta;
-
-    public T getData() {
-        return data;
-    }
-
-    public OCSMeta getMeta() {
-        return meta;
-    }
 }

@@ -28,14 +28,16 @@ import android.net.Uri;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 
+import lombok.Getter;
+
 public class OwnCloudSamlSsoCredentials implements OwnCloudCredentials {
 
-	private String mUsername;
-	private String mSessionCookie;
+	@Getter private String username;
+	@Getter private String authToken;
 
 	public OwnCloudSamlSsoCredentials(String username, String sessionCookie) {
-		mUsername = username != null ? username : "";
-		mSessionCookie = sessionCookie != null ? sessionCookie : "";
+		this.username = username != null ? username : "";
+		authToken = sessionCookie != null ? sessionCookie : "";
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class OwnCloudSamlSsoCredentials implements OwnCloudCredentials {
         
     	Uri serverUri = client.getBaseUri();
         
-        String[] cookies = mSessionCookie.split(";");
+        String[] cookies = authToken.split(";");
         if (cookies.length > 0) {
         	Cookie cookie = null;
             for (int i=0; i<cookies.length; i++) {
@@ -65,19 +67,7 @@ public class OwnCloudSamlSsoCredentials implements OwnCloudCredentials {
 	}
 
 	@Override
-	public String getUsername() {
-		// not relevant for authentication, but relevant for informational purposes
-		return mUsername;
-	}
-	
-	@Override
-	public String getAuthToken() {
-		return mSessionCookie;
-	}
-
-	@Override
 	public boolean authTokenExpires() {
 		return true;
 	}
-
 }
