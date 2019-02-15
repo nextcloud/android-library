@@ -1,5 +1,7 @@
 package com.owncloud.android;
 
+import android.net.Uri;
+
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
@@ -7,10 +9,10 @@ import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests related to file operations
@@ -57,5 +59,17 @@ public class FileIT extends AbstractIT {
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(top).execute(client).isSuccess());
+    }
+
+    @Test
+    public void testCreateFolderWithWrongURL() {
+        String path = "/testFolder/";
+        Uri uri = client.getBaseUri();
+        client.setBaseUri(Uri.parse(uri.toString() + "/remote.php/webdav"));
+
+        // create folder
+        assertFalse(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+
+        client.setBaseUri(uri);
     }
 }

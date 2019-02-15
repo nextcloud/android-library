@@ -74,7 +74,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
 
         result = createFolder(client);
         if (!result.isSuccess() && mCreateFullPath &&
-                RemoteOperationResult.ResultCode.CONFLICT == result.getCode()) {
+                RemoteOperationResult.ResultCode.CONFLICT == result.getCode() &&
+                !"/".equals(mRemotePath)) { // this must already exists
             result = createParentFolder(FileUtils.getParentPath(mRemotePath), client);
             if (result.isSuccess()) {
                 result = createFolder(client);    // second (and last) try
