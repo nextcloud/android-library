@@ -307,7 +307,7 @@ public class WebdavEntry {
 
             // NC note property <nc-note>
             prop = propSet.get(EXTENDED_PROPERTY_NOTE, ncNamespace);
-            if (prop != null) {
+            if (prop != null && prop.getValue() != null) {
                 note = prop.getValue().toString();
             }
         } else {
