@@ -76,6 +76,7 @@ public class ShareXMLParser {
 	private static final String NODE_SHARE_WITH_DISPLAY_NAME = "share_with_displayname";
 	private static final String NODE_NOTE = "note";
     private static final String NODE_HIDE_DOWNLOAD = "hide_download";
+    private static final String NODE_UID_OWNER = "uid_owner";
 	
 	private static final String NODE_URL = "url";
 
@@ -363,8 +364,10 @@ public class ShareXMLParser {
                 share.setNote(readNode(parser, NODE_NOTE));
 
             } else if (name.equalsIgnoreCase(NODE_HIDE_DOWNLOAD)) {
-                boolean b = "1".equalsIgnoreCase(readNode(parser, NODE_HIDE_DOWNLOAD));
-                share.setHideFileDownload(b);
+				boolean b = "1".equalsIgnoreCase(readNode(parser, NODE_HIDE_DOWNLOAD));
+				share.setHideFileDownload(b);
+			} else if (name.equalsIgnoreCase(NODE_UID_OWNER)) {
+				share.setUserId(readNode(parser, NODE_UID_OWNER));
 
             } else {
                 skip(parser);
