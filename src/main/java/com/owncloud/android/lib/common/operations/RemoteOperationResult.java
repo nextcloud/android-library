@@ -61,6 +61,8 @@ import java.util.Locale;
 
 import javax.net.ssl.SSLException;
 
+import lombok.ToString;
+
 
 /**
  * The result of a remote operation required to an ownCloud server.
@@ -70,6 +72,7 @@ import javax.net.ssl.SSLException;
  *
  * @author David A. Velasco
  */
+@ToString
 public class RemoteOperationResult implements Serializable {
 
     // Generated - should be refreshed every time the class changes!!
@@ -144,13 +147,13 @@ public class RemoteOperationResult implements Serializable {
     private String mHttpPhrase = null;
     private Exception mException = null;
     private ResultCode mCode = ResultCode.UNKNOWN_ERROR;
-    private String mRedirectedLocation;
-    private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
-    private String mLastPermanentLocation = null;
+    @ToString.Exclude private String mRedirectedLocation;
+    @ToString.Exclude private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
+    @ToString.Exclude private String mLastPermanentLocation = null;
 
-    private ArrayList<Object> mData;
-    private List<Notification> mNotificationData;
-    private PushResponse mPushResponse;
+    @ToString.Exclude private ArrayList<Object> mData;
+    @ToString.Exclude private List<Notification> mNotificationData;
+    @ToString.Exclude private PushResponse mPushResponse;
 
     /**
      * Public constructor from result code.
@@ -509,6 +512,7 @@ public class RemoteOperationResult implements Serializable {
         return result;
     }
 
+    @ToString.Include
     public String getLogMessage() {
 
         if (mException != null) {
@@ -643,5 +647,4 @@ public class RemoteOperationResult implements Serializable {
     public void setLastPermanentLocation(String lastPermanentLocation) {
         mLastPermanentLocation = lastPermanentLocation;
     }
-
 }
