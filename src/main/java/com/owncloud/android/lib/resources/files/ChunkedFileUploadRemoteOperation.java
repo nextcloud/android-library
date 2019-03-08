@@ -80,9 +80,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
         try {
             // prevent that uploads are retried automatically by network library
-            client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+            client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                                            new DefaultHttpMethodRetryHandler(0, false));
 
-            String uploadFolderUri = client.getUploadUri() + "/" + Uri.encode(userId) + "/" + file.hashCode();
+            String uploadFolderUri = client.getUploadUri() + "/" + Uri.encode(userId) + "/" + FileUtils.md5Sum(file);
 
             // create folder
             MkColMethod createFolder = new MkColMethod(uploadFolderUri);
@@ -107,9 +108,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             for (MultiStatusResponse response : dataInServer.getResponses()) {
                 we = new WebdavEntry(response, client.getUploadUri().getPath());
 
-                if (!we.getName().equalsIgnoreCase(".file") && !we.isDirectory()) {
+                if (!".file".equalsIgnoreCase(we.getName()) && !we.isDirectory()) {
                     String[] part = we.getName().split("-");
-                    chunksOnServer.add(new Chunk(Long.valueOf(part[0]), Long.valueOf(part[1])));
+                    chunksOnServer.add(new Chunk(Long.parseLong(part[0]), Long.parseLong(part[1])));
                 }
             }
 
