@@ -29,18 +29,17 @@ import androidx.annotation.NonNull;
 import lombok.Getter;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
-    public static final OwnCloudVersion nextcloud_10 = new OwnCloudVersion(0x0A000000); // 10.0
-    public static final OwnCloudVersion nextcloud_11 = new OwnCloudVersion(0x0B000000); // 10.0
     public static final OwnCloudVersion nextcloud_12 = new OwnCloudVersion(0x0C000000); // 12.0
     public static final OwnCloudVersion nextcloud_13 = new OwnCloudVersion(0x0D000000); // 13.0
     public static final OwnCloudVersion nextcloud_14 = new OwnCloudVersion(0x0E000000); // 14.0
     public static final OwnCloudVersion nextcloud_15 = new OwnCloudVersion(0x0F000000); // 15.0
+    public static final OwnCloudVersion nextcloud_16 = new OwnCloudVersion(0x10000000); // 16.0
+    public static final OwnCloudVersion nextcloud_17 = new OwnCloudVersion(0x11000000); // 17.0
 
-    public static final int MINIMUM_VERSION_FOR_SELF_API = 0x0B000200; // 11.0.2
-    public static final int MINIMUM_VERSION_FOR_SEARCH_API = 0x0C000000; // 12.0
-    public static final int MINIMUM_VERSION_FOR_WEB_LOGIN = 0x0C000000; // 12.0
-    public static final int MINIMUM_VERSION_FOR_MEDIA_STREAMING = 0x0E000000; // 14.0
-    public static final int MINIMUM_VERSION_FOR_NOTE_ON_SHARE = 0x0E000000; // 14.0
+    public static final int MINIMUM_VERSION_FOR_SEARCH_API = nextcloud_12.version;
+    public static final int MINIMUM_VERSION_FOR_WEB_LOGIN = nextcloud_12.version;
+    public static final int MINIMUM_VERSION_FOR_MEDIA_STREAMING = nextcloud_14.version; // 14.0
+    public static final int MINIMUM_VERSION_FOR_NOTE_ON_SHARE = nextcloud_14.version; // 14.0
     
     private static final int MAX_DOTS = 3;
 
@@ -120,10 +119,6 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     	return versionValue; 
     }
 
-    public boolean isSelfSupported() {
-        return (version >= MINIMUM_VERSION_FOR_SELF_API);
-    }
-
     public boolean isSearchSupported() {
         return (version >= MINIMUM_VERSION_FOR_SEARCH_API);
     }
@@ -142,5 +137,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
 
     public boolean isHideFileDownloadSupported() {
         return isNewerOrEqual(nextcloud_15);
+    }
+
+    public boolean isShareesOnDavSupported() {
+        return isNewerOrEqual(nextcloud_17);
     }
 }

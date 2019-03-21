@@ -28,7 +28,6 @@
 package com.owncloud.android.utils;
 
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -50,56 +49,62 @@ public class OwncloudVersionTest {
     }
 
     @Test
-    public void testSupportNC10() {
-        assertFalse(OwnCloudVersion.nextcloud_10.isSelfSupported());
-        assertFalse(OwnCloudVersion.nextcloud_10.isSearchSupported());
-        assertFalse(OwnCloudVersion.nextcloud_10.isWebLoginSupported());
-        assertFalse(OwnCloudVersion.nextcloud_10.isMediaStreamingSupported());
-        assertFalse(OwnCloudVersion.nextcloud_10.isNoteOnShareSupported());
-    }
-
-    @Test
-    public void testSupportNC11() {
-        assertFalse(OwnCloudVersion.nextcloud_11.isSelfSupported());
-        assertFalse(OwnCloudVersion.nextcloud_11.isSearchSupported());
-        assertFalse(OwnCloudVersion.nextcloud_11.isWebLoginSupported());
-        assertFalse(OwnCloudVersion.nextcloud_11.isMediaStreamingSupported());
-        assertFalse(OwnCloudVersion.nextcloud_11.isNoteOnShareSupported());
-    }
-
-    @Test
     public void testSupportNC12() {
-        assertTrue(OwnCloudVersion.nextcloud_12.isSelfSupported());
         assertTrue(OwnCloudVersion.nextcloud_12.isSearchSupported());
         assertTrue(OwnCloudVersion.nextcloud_12.isWebLoginSupported());
         assertFalse(OwnCloudVersion.nextcloud_12.isMediaStreamingSupported());
         assertFalse(OwnCloudVersion.nextcloud_12.isNoteOnShareSupported());
+        assertFalse(OwnCloudVersion.nextcloud_12.isHideFileDownloadSupported());
+        assertFalse(OwnCloudVersion.nextcloud_12.isShareesOnDavSupported());
     }
 
     @Test
     public void testSupportNC13() {
-        assertTrue(OwnCloudVersion.nextcloud_13.isSelfSupported());
         assertTrue(OwnCloudVersion.nextcloud_13.isSearchSupported());
         assertTrue(OwnCloudVersion.nextcloud_13.isWebLoginSupported());
         assertFalse(OwnCloudVersion.nextcloud_13.isMediaStreamingSupported());
         assertFalse(OwnCloudVersion.nextcloud_13.isNoteOnShareSupported());
+        assertFalse(OwnCloudVersion.nextcloud_12.isHideFileDownloadSupported());
+        assertFalse(OwnCloudVersion.nextcloud_12.isShareesOnDavSupported());
     }
 
     @Test
     public void testSupportNC14() {
-        assertTrue(OwnCloudVersion.nextcloud_14.isSelfSupported());
         assertTrue(OwnCloudVersion.nextcloud_14.isSearchSupported());
         assertTrue(OwnCloudVersion.nextcloud_14.isWebLoginSupported());
         assertTrue(OwnCloudVersion.nextcloud_14.isMediaStreamingSupported());
         assertTrue(OwnCloudVersion.nextcloud_14.isNoteOnShareSupported());
+        assertFalse(OwnCloudVersion.nextcloud_14.isHideFileDownloadSupported());
+        assertFalse(OwnCloudVersion.nextcloud_14.isShareesOnDavSupported());
     }
 
     @Test
     public void testSupportNC15() {
-        assertTrue(OwnCloudVersion.nextcloud_15.isSelfSupported());
         assertTrue(OwnCloudVersion.nextcloud_15.isSearchSupported());
         assertTrue(OwnCloudVersion.nextcloud_15.isWebLoginSupported());
         assertTrue(OwnCloudVersion.nextcloud_15.isMediaStreamingSupported());
         assertTrue(OwnCloudVersion.nextcloud_15.isNoteOnShareSupported());
+        assertTrue(OwnCloudVersion.nextcloud_15.isHideFileDownloadSupported());
+        assertFalse(OwnCloudVersion.nextcloud_15.isShareesOnDavSupported());
+    }
+
+    @Test
+    public void testSupportNC16() {
+        assertTrue(OwnCloudVersion.nextcloud_16.isSearchSupported());
+        assertTrue(OwnCloudVersion.nextcloud_16.isWebLoginSupported());
+        assertTrue(OwnCloudVersion.nextcloud_16.isMediaStreamingSupported());
+        assertTrue(OwnCloudVersion.nextcloud_16.isNoteOnShareSupported());
+        assertTrue(OwnCloudVersion.nextcloud_16.isHideFileDownloadSupported());
+        assertFalse(OwnCloudVersion.nextcloud_16.isShareesOnDavSupported());
+    }
+
+    @Test
+    public void testSupportNC17() {
+        assertTrue(OwnCloudVersion.nextcloud_17.isSearchSupported());
+        assertTrue(OwnCloudVersion.nextcloud_17.isWebLoginSupported());
+        assertTrue(OwnCloudVersion.nextcloud_17.isMediaStreamingSupported());
+        assertTrue(OwnCloudVersion.nextcloud_17.isNoteOnShareSupported());
+        assertTrue(OwnCloudVersion.nextcloud_17.isHideFileDownloadSupported());
+        assertTrue(OwnCloudVersion.nextcloud_17.isShareesOnDavSupported());
     }
 }
