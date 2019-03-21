@@ -28,7 +28,6 @@
 package com.owncloud.android.lib.resources.users;
 
 import android.text.TextUtils;
-
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -38,8 +37,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
 import com.owncloud.android.lib.resources.OCSRemoteOperation;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -59,7 +56,6 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
 
     // OCS Route
     private static final String OCS_ROUTE_SELF = "/ocs/v1.php/cloud/user";
-    private static final String OCS_ROUTE_SEARCH = "/ocs/v1.php/cloud/users/";
 
     /**
      * Quota return value for a not computed space value.
@@ -92,21 +88,11 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+        RemoteOperationResult result;
+        int status;
         GetMethod get = null;
 
-        OwnCloudVersion version = client.getOwnCloudVersion();
-        boolean versionWithSelfAPI = version != null && version.isSelfSupported();
-
-        String url = "";
-
-        if (!versionWithSelfAPI && !TextUtils.isEmpty(userID)) {
-            url = client.getBaseUri() + OCS_ROUTE_SEARCH + userID;
-        } else {
-            url = client.getBaseUri() + OCS_ROUTE_SELF;
-        }
-
+        String url = client.getBaseUri() + OCS_ROUTE_SELF;
 
         OwnCloudBasicCredentials credentials = (OwnCloudBasicCredentials) client.getCredentials();
         
