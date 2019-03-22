@@ -61,12 +61,19 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.0.0'
     
+
+
+    // dependencies for instrumented tests
+    // JUnit4 Rules
     androidTestImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    // Android JUnit Runner
+    androidTestImplementation 'androidx.test:runner:1.1.1'
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'commons-io:commons-io:2.6'
 }
 
 spotbugs {

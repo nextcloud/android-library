@@ -140,11 +140,12 @@ public class ChunkedFileUploadRemoteOperationTest {
                          List<Chunk> expectedMissingChunks,
                          long chunkSize,
                          long length) {
+        String modificationTimestamp = String.valueOf(System.currentTimeMillis() / 1000);
         ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null,
                                                                                     null,
                                                                                     null,
                                                                                     null,
-                                                                                    null,
+                                                                                    modificationTimestamp,
                                                                                     false);
 
         List<Chunk> missingChunks = sut.checkMissingChunks(existingChunks, length, chunkSize);

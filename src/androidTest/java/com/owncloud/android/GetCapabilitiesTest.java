@@ -27,57 +27,32 @@
 package com.owncloud.android;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.testclient.TestActivity;
+import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
+import com.owncloud.android.lib.resources.status.GetRemoteCapabilitiesOperation;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
-import java.io.File;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * Class to test Read File Operation
- *
- * @author masensio
- * @author David A. Velasco
+ * Class to test GetRemoteCapabilitiesOperation
  */
-
-public class ReadFileTest extends RemoteTest {
-
-    private static final String LOG_TAG = ReadFileTest.class.getCanonicalName();
-
-    private String FILE_PATH = "/fileToRead.txt";
-    private String mFullPath2File;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        setActivityInitialTouchMode(false);
-        mFullPath2File = mBaseFolderPath + FILE_PATH;
-
-        File textFile = getFile(TestActivity.ASSETS__TEXT_FILE_NAME);
-        RemoteOperationResult uploadResult = mActivity.uploadFile(textFile.getAbsolutePath(), mFullPath2File,
-                "txt/plain", null);
-
-        if (!uploadResult.isSuccess()) {
-            Utils.logAndThrow(LOG_TAG, uploadResult);
-        }
-    }
-
+public class GetCapabilitiesTest extends AbstractIT {
     /**
-     * Test Read File
+     * Test get capabilities
      */
-    public void testReadFile() {
-        RemoteOperationResult result = mActivity.readFile(mFullPath2File);
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+    @Test
+    public void testGetRemoteCapabilitiesOperation() {
+        // get capabilities
+        RemoteOperationResult result = new GetRemoteCapabilitiesOperation().execute(client);
         assertTrue(result.isSuccess());
-        // TODO check more properties of the result
-    }
+        assertTrue(result.getData() != null && result.getData().size() == 1);
 
-    @Override
-    protected void tearDown() throws Exception {
-        RemoteOperationResult removeResult = mActivity.removeFile(mFullPath2File);
-        if (!removeResult.isSuccess()) {
-            Utils.logAndThrow(LOG_TAG, removeResult);
-        }
+        OCCapability capability = (OCCapability) result.getData().get(0);
 
-        super.tearDown();
+        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
+        // TODO assert basic capabilities
     }
 }

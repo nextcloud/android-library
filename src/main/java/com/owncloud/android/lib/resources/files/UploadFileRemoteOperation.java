@@ -74,6 +74,13 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 		this.localPath = localPath;
 		this.remotePath = remotePath;
 		this.mimeType = mimeType;
+
+        if (lastModificationTimestamp == null) {
+            throw new AssertionError("LastModificationTimestamp may NOT be null!");
+        }
+
+        // TODO check for max value of lastModificationTimestamp
+		
 		this.lastModificationTimestamp = lastModificationTimestamp;
 	}
 
