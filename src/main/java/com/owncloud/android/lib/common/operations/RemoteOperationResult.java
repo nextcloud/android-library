@@ -164,9 +164,22 @@ public class RemoteOperationResult implements Serializable {
      */
     public RemoteOperationResult(ResultCode code) {
         mCode = code;
-		mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL ||
-                code == ResultCode.OK_NO_SSL ||
-                code == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION);
+
+        switch (code) {
+            case OK:
+            case OK_SSL:
+            case OK_NO_SSL:
+            case OK_REDIRECT_TO_NON_SECURE_CONNECTION:
+            case ETAG_CHANGED:
+            case ETAG_UNCHANGED:
+                mSuccess = true;
+                break;
+
+            default:
+                mSuccess = false;
+                break;
+        }
+        
         mData = null;
     }
 
