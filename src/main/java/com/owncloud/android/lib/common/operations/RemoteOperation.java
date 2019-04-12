@@ -101,7 +101,7 @@ public abstract class RemoteOperation implements Runnable {
      * @param context   Android context for the component calling the method.
      * @return          Result of the operation.
      */
-    public RemoteOperationResult execute(Account account, Context context, boolean useNextcloudUserAgent) {
+    public RemoteOperationResult execute(Account account, Context context) {
         if (account == null)
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL " +
                     "Account");
@@ -112,8 +112,7 @@ public abstract class RemoteOperation implements Runnable {
         mContext = context.getApplicationContext();
         try {
         	OwnCloudAccount ocAccount = new OwnCloudAccount(mAccount, mContext);
-            mClient = OwnCloudClientManagerFactory.getDefaultSingleton().getClientFor(ocAccount, mContext,
-                    useNextcloudUserAgent);
+            mClient = OwnCloudClientManagerFactory.getDefaultSingleton().getClientFor(ocAccount, mContext);
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while trying to access to " + mAccount.name, e);
             return new RemoteOperationResult(e);
@@ -121,11 +120,6 @@ public abstract class RemoteOperation implements Runnable {
         return run(mClient);
     }
 
-    public RemoteOperationResult execute(Account account, Context context) {
-        return execute(account, context, false);
-    }
-    
-	
 	/**
 	 * Synchronously executes the remote operation
 	 * 
@@ -135,21 +129,15 @@ public abstract class RemoteOperation implements Runnable {
      *                  the operation.
 	 * @return			Result of the operation.
 	 */
-    public RemoteOperationResult execute(OwnCloudClient client, boolean useNextcloudUserAgent) {
+    public RemoteOperationResult execute(OwnCloudClient client) {
         if (client == null)
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL " +
                     "OwnCloudClient");
 		mClient = client;
-        mClient.setUseNextcloudUserAgent(useNextcloudUserAgent);
 
         return run(client);
     }
 
-    public RemoteOperationResult execute(OwnCloudClient client) {
-        return execute(client, false);
-    }
-
-	
     /**
      * Asynchronously executes the remote operation
      * 

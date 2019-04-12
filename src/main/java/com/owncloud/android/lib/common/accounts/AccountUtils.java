@@ -51,27 +51,7 @@ public class AccountUtils {
 	public static final String WEBDAV_PATH_9_0 = "/remote.php/dav";
     public static final String DAV_UPLOAD = "/remote.php/dav/uploads";
 	public static final String ODAV_PATH = "/remote.php/odav";
-	private static final String SAML_SSO_PATH = "/remote.php/webdav";
     public static final String STATUS_PATH = "/status.php";
-
-    /**
-     * Returns the proper URL path to access the WebDAV interface of an ownCloud server,
-     * according to its authorization method used.
-     *
-     * @param    supportsOAuth        If true, access with OAuth 2 authorization is considered. 
-     * @param    supportsSamlSso        If true, and supportsOAuth is false, access with SAML-based single-sign-on is considered.
-     * @return default WebDAV path, if no OAuth/Samal
-     */
-    public static String getWebdavPath(boolean supportsOAuth, boolean supportsSamlSso) {
-        if (supportsOAuth) {
-            return ODAV_PATH;
-        }
-            if (supportsSamlSso) {
-                return SAML_SSO_PATH;
-            }
-
-		return WEBDAV_PATH_4_0;
-	}
 
     /**
      * Constructs full url to host and webdav resource basing on host version
@@ -87,15 +67,11 @@ public class AccountUtils {
     public static String constructFullURLForAccount(Context context, Account account) throws AccountNotFoundException {
         AccountManager ama = AccountManager.get(context);
         String baseurl = ama.getUserData(account, Constants.KEY_OC_BASE_URL);
-        String version  = ama.getUserData(account, Constants.KEY_OC_VERSION);
-        boolean supportsOAuth = (ama.getUserData(account, Constants.KEY_SUPPORTS_OAUTH2) != null);
-        boolean supportsSamlSso = (ama.getUserData(account, Constants.KEY_SUPPORTS_SAML_WEB_SSO) != null);
-        String webdavpath = getWebdavPath(supportsOAuth, supportsSamlSso);
 
-        if (baseurl == null || webdavpath == null) 
+		if (baseurl == null) 
             throw new AccountNotFoundException(account, "Account not found", null);
-        
-        return baseurl + webdavpath;
+
+		return baseurl + WEBDAV_PATH_4_0;
     }
     
     /**
@@ -178,41 +154,19 @@ public class AccountUtils {
      * @throws AuthenticatorException 
      * @throws OperationCanceledException 
      */
-	public static OwnCloudCredentials getCredentialsForAccount(Context context, Account account) 
+	public static OwnCloudCredentials getCredentialsForAccount(Context context, Account account)
 			throws OperationCanceledException, AuthenticatorException, IOException {
-		
-		OwnCloudCredentials credentials = null;
+
+		OwnCloudCredentials credentials;
         AccountManager am = AccountManager.get(context);
-        
-        boolean isOauth2 = am.getUserData(
-        		account, 
-        		AccountUtils.Constants.KEY_SUPPORTS_OAUTH2) != null;
-        
-        boolean isSamlSso = am.getUserData(
-        		account, 
-        		AccountUtils.Constants.KEY_SUPPORTS_SAML_WEB_SSO) != null;
 
         String username = AccountUtils.getUsernameForAccount(account);
 
-        if (isOauth2) {
-            String accessToken = am.blockingGetAuthToken(account,
-                    AccountTypeUtils.getAuthTokenTypeAccessToken(account.type), false);
+		String password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type),
+												  false);
 
-            credentials = OwnCloudCredentialsFactory.newBearerCredentials(accessToken);
+		credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
 
-        } else if (isSamlSso) {
-            String accessToken = am.blockingGetAuthToken(account,
-                    AccountTypeUtils.getAuthTokenTypeSamlSessionCookie(account.type), false);
-
-            credentials = OwnCloudCredentialsFactory.newSamlSsoCredentials(username, accessToken);
-
-        } else {
-            String password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type),
-                    false);
-
-            credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
-        }
-        
         return credentials;
 	}
 
@@ -238,9 +192,8 @@ public class AccountUtils {
         if (url.contains("://")) {
             url = url.substring(serverBaseUrl.toString().indexOf("://") + 3);
         }
-        String accountName = username + "@" + url;
 
-        return accountName;
+		return username + "@" + url;
     }
 
 	public static void saveClient(OwnCloudClient client, Account savedAccount, Context context) {
@@ -364,19 +317,6 @@ public class AccountUtils {
 	     * http://server/path or https://owncloud.server
 	     */
 	    public static final String KEY_OC_BASE_URL = "oc_base_url";
-	    /**
-	     * Flag signaling if the ownCloud server can be accessed with OAuth2 access tokens.
-	     */
-	    public static final String KEY_SUPPORTS_OAUTH2 = "oc_supports_oauth2";
-	    /**
-	     * Flag signaling if the ownCloud server can be accessed with session cookies from SAML-based web single-sign-on.
-	     */
-	    public static final String KEY_SUPPORTS_SAML_WEB_SSO = "oc_supports_saml_web_sso";
-	    /**
-	    * Flag signaling if the ownCloud server supports Share API"
-        * @deprecated
-        */
-	    public static final String KEY_SUPPORTS_SHARE_API = "oc_supports_share_api";
 	    /**
 	     * OC account cookies
 	     */

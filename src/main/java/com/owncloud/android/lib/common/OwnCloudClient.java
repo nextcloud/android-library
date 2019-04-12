@@ -69,35 +69,31 @@ public class OwnCloudClient extends HttpClient {
     private static int sIntanceCounter = 0;
     @Getter @Setter private boolean followRedirects = true;
     @Getter private OwnCloudCredentials credentials = null;
-    private int mInstanceNumber = 0;
+    private int mInstanceNumber;
     
     @Getter private Uri baseUri;
     @Getter @Setter private OwnCloudVersion ownCloudVersion = null;
+    @Getter @Setter private String userId;
 
     @Getter private boolean useNextcloudUserAgent = false;
     
     /**
      * Constructor
      */
-    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr, boolean useNextcloudUserAgent) {
+    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr) {
         super(connectionMgr);
         
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
         this.baseUri = baseUri;
-        this.useNextcloudUserAgent = useNextcloudUserAgent;
         
         mInstanceNumber = sIntanceCounter++;
         Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
 
         String userAgent;
 
-        if (useNextcloudUserAgent) {
-            userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
-        } else {
-            userAgent = OwnCloudClientManagerFactory.getUserAgent();
-        }
+        userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
         
         getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
         getParams().setParameter(PARAM_PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -218,11 +214,7 @@ public class OwnCloudClient extends HttpClient {
             HttpParams params = method.getParams();
 
             String userAgent;
-            if (useNextcloudUserAgent) {
-                userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
-            } else {
-                userAgent = OwnCloudClientManagerFactory.getUserAgent();
-            }
+            userAgent = OwnCloudClientManagerFactory.getNextcloudUserAgent();
             params.setParameter(HttpMethodParams.USER_AGENT, userAgent);
 
             Log_OC.d(TAG + " #" + mInstanceNumber, "REQUEST " +
@@ -448,14 +440,5 @@ public class OwnCloudClient extends HttpClient {
     			(cookie.getExpiryDate() != null ? cookie.getExpiryDate().toString() : "--"));
     	Log_OC.d(TAG, "       comment: "+ cookie.getComment() );
     	Log_OC.d(TAG, "       secure: "+ cookie.getSecure() );
-    }
-
-    public void setUseNextcloudUserAgent(boolean nextcloudUserAgent) {
-        useNextcloudUserAgent = nextcloudUserAgent;
-
-        String userAgent = nextcloudUserAgent ? OwnCloudClientManagerFactory.getNextcloudUserAgent() :
-                OwnCloudClientManagerFactory.getUserAgent();
-
-        getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
     }
 }
