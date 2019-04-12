@@ -135,8 +135,7 @@ public class OwnCloudClientFactory {
      * @param context   Android context where the OwnCloudClient is being created.
      * @return          A OwnCloudClient object ready to be used
      */
-    public static OwnCloudClient createOwnCloudClient(Uri uri, Context context, boolean followRedirects,
-                                                      boolean useNextcloudUserAgent) {
+    public static OwnCloudClient createOwnCloudClient(Uri uri, Context context, boolean followRedirects) {
         try {
             NetworkUtils.registerAdvancedSslContext(true, context);
         }  catch (GeneralSecurityException e) {
@@ -153,9 +152,5 @@ public class OwnCloudClientFactory {
         client.setFollowRedirects(followRedirects);
         
         return client;
-    }
-
-    public static OwnCloudClient createOwnCloudClient(Uri uri, Context context, boolean followRedirects) {
-        return createOwnCloudClient(uri, context, followRedirects, false);
     }
 }

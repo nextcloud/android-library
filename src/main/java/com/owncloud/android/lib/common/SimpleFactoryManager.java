@@ -30,7 +30,6 @@ import android.accounts.OperationCanceledException;
 import android.content.Context;
 
 import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
@@ -39,21 +38,14 @@ public class SimpleFactoryManager implements OwnCloudClientManager {
     
 	private static final String TAG = SimpleFactoryManager.class.getSimpleName();
 
-	@Override
-    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
-            throws AccountNotFoundException, OperationCanceledException, AuthenticatorException, IOException {
-        return getClientFor(account, context, false);
-    }
-
     @Override
-    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context, boolean useNextcloudUserAgent)
-            throws AccountNotFoundException, OperationCanceledException, AuthenticatorException,
-            IOException {
+	public OwnCloudClient getClientFor(OwnCloudAccount account, Context context) throws OperationCanceledException,
+			AuthenticatorException, IOException {
 
 		Log_OC.d(TAG, "getClientFor(OwnCloudAccount ... : ");
 
         OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(account.getBaseUri(),
-                context.getApplicationContext(), true, useNextcloudUserAgent);
+																		   context.getApplicationContext(), true);
 
 		Log_OC.v(TAG, "    new client {" +
                 (account.getName() != null ? account.getName() : AccountUtils.buildAccountName(account.getBaseUri(), "")

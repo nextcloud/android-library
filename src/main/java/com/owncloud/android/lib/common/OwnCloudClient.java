@@ -75,8 +75,6 @@ public class OwnCloudClient extends HttpClient {
     @Getter @Setter private OwnCloudVersion ownCloudVersion = null;
     @Getter @Setter private String userId;
 
-    @Getter private boolean useNextcloudUserAgent = false;
-    
     /**
      * Constructor
      */

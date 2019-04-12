@@ -25,17 +25,10 @@ public class DynamicSessionManager implements OwnCloudClientManager {
 
     @Override
     public OwnCloudClient getClientFor(OwnCloudAccount account, Context context)
-            throws AccountUtils.AccountNotFoundException, OperationCanceledException, AuthenticatorException,
-            IOException {
-        return getClientFor(account, context, false);
-    }
-
-    @Override
-    public OwnCloudClient getClientFor(OwnCloudAccount account, Context context, boolean useNextcloudUserAgent)
             throws AccountUtils.AccountNotFoundException,
             OperationCanceledException, AuthenticatorException, IOException {
 
-            return mSingleSessionManager.getClientFor(account, context, useNextcloudUserAgent);
+        return mSingleSessionManager.getClientFor(account, context);
     }
 
     @Override
