@@ -60,18 +60,15 @@ public class CommentFileRemoteOperation extends RemoteOperation {
 
     private String message;
     private String fileId;
-    private String userId;
 
     /**
      * Constructor
      *
      * @param message Comment to store
-     * @param userId  userId to access correct dav endpoint
      */
-    public CommentFileRemoteOperation(String message, String fileId, String userId) {
+    public CommentFileRemoteOperation(String message, String fileId) {
         this.message = message;
         this.fileId = fileId;
-        this.userId = userId;
     }
 
     /**
@@ -89,7 +86,7 @@ public class CommentFileRemoteOperation extends RemoteOperation {
             postMethod.addRequestHeader("Content-type", "application/json");
 
             Map<String, String> values = new HashMap<>();
-            values.put(ACTOR_ID, userId);
+            values.put(ACTOR_ID, client.getUserId());
             values.put(ACTOR_TYPE, ACTOR_TYPE_VALUE);
             values.put(VERB, VERB_VALUE);
             values.put(MESSAGE, message);

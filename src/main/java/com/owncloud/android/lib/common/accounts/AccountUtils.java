@@ -182,7 +182,7 @@ public class AccountUtils {
         return accountName;
     }
 
-    public static String buildAccountName(Uri serverBaseUrl, String username) {
+	public static String buildAccountName(Uri serverBaseUrl, String loginName) {
     	if (serverBaseUrl.getScheme() == null) {
     		serverBaseUrl = Uri.parse("https://" + serverBaseUrl.toString());
     	}
@@ -193,7 +193,7 @@ public class AccountUtils {
             url = url.substring(serverBaseUrl.toString().indexOf("://") + 3);
         }
 
-		return username + "@" + url;
+		return loginName + "@" + url;
     }
 
 	public static void saveClient(OwnCloudClient client, Account savedAccount, Context context) {
@@ -328,12 +328,12 @@ public class AccountUtils {
         public static final String KEY_OC_ACCOUNT_VERSION = "oc_account_version";
 
 		/**
-		 * User's display name
+		 * User's display name, name chosen by user, only displayed, no real usage
 		 */
 		public static final String KEY_DISPLAY_NAME = "oc_display_name";
 
 		/**
-		 * User ID
+		 * User ID, internally and never changing id of user, used by e.g. dav/trashbin/$userId/trash
 		 */
 		public static final String KEY_USER_ID = "oc_id";
 	}

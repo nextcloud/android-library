@@ -136,8 +136,15 @@ public class ChunkedFileUploadRemoteOperationTest {
         assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
-    private boolean test(List<Chunk> existingChunks, List<Chunk> expectedMissingChunks, long chunkSize, long length) {
-        ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null, null, null, null, null, null,
+    private boolean test(List<Chunk> existingChunks,
+                         List<Chunk> expectedMissingChunks,
+                         long chunkSize,
+                         long length) {
+        ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
                                                                                     false);
 
         List<Chunk> missingChunks = sut.checkMissingChunks(existingChunks, length, chunkSize);

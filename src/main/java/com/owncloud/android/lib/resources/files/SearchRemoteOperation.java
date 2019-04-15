@@ -75,15 +75,13 @@ public class SearchRemoteOperation extends RemoteOperation {
     }
 
     private String searchQuery;
-    private String userId;
     private SearchType searchType;
     private boolean filterOutFiles;
 
-    public SearchRemoteOperation(String query, SearchType searchType, boolean filterOutFiles, String userId) {
+    public SearchRemoteOperation(String query, SearchType searchType, boolean filterOutFiles) {
         this.searchQuery = query;
         this.searchType = searchType;
         this.filterOutFiles = filterOutFiles;
-        this.userId = userId;
     }
 
     @Override
@@ -112,7 +110,7 @@ public class SearchRemoteOperation extends RemoteOperation {
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
                     WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
                     ArrayList<Object> mFolderAndFiles = webDavFileUtils.readData(dataInServer, client, false, true,
-                            userId);
+                                                                                 client.getUserId());
 
                     // Result of the operation
                     result = new RemoteOperationResult(true, status, searchMethod.getResponseHeaders());
@@ -216,7 +214,7 @@ public class SearchRemoteOperation extends RemoteOperation {
         Element scopeElement = query.createElementNS(DAV_NAMESPACE, "d:scope");
         Element hrefElement = query.createElementNS(DAV_NAMESPACE, "d:href");
         Element depthElement = query.createElementNS(DAV_NAMESPACE, "d:depth");
-        Text hrefTextElement = query.createTextNode("/files/" + userId);
+        Text hrefTextElement = query.createTextNode("/files/" + getClient().getUserId());
         Text depthTextElement = query.createTextNode("infinity");
         Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
         Element folderElement = null;

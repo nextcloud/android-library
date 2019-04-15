@@ -27,19 +27,20 @@ import java.util.ArrayList;
 @RunWith(AndroidJUnit4.class)
 public abstract class AbstractIT {
     protected static OwnCloudClient client;
-    protected static String userId;
+    protected static Context context;
 
     @BeforeClass
     public static void beforeAll() {
         Bundle arguments = InstrumentationRegistry.getArguments();
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         Uri url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
-        userId = arguments.getString("TEST_SERVER_USERNAME");
+        String loginName = arguments.getString("TEST_SERVER_USERNAME");
         String password = arguments.getString("TEST_SERVER_PASSWORD");
 
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
-        client.setCredentials(new OwnCloudBasicCredentials(userId, password));
+        client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
+        client.setUserId(loginName); // for test same as userId
     }
 
     @After

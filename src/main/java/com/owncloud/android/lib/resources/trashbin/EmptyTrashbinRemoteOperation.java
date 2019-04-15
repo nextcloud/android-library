@@ -27,7 +27,6 @@
 
 package com.owncloud.android.lib.resources.trashbin;
 
-import android.net.Uri;
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -49,17 +48,6 @@ public class EmptyTrashbinRemoteOperation extends RemoteOperation {
     private static final int RESTORE_READ_TIMEOUT = 30000;
     private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
-    private String userId;
-
-    /**
-     * Constructor
-     *
-     * @param userId to access correct trashbin
-     */
-    public EmptyTrashbinRemoteOperation(String userId) {
-        this.userId = userId;
-    }
-
     /**
      * Performs the operation.
      *
@@ -70,7 +58,7 @@ public class EmptyTrashbinRemoteOperation extends RemoteOperation {
 
         RemoteOperationResult result;
         try {
-            DeleteMethod delete = new DeleteMethod(client.getNewWebdavUri() + "/trashbin/" + Uri.encode(userId) +
+            DeleteMethod delete = new DeleteMethod(client.getNewWebdavUri() + "/trashbin/" + client.getUserId() +
                                                            "/trash");
             int status = client.executeMethod(delete, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
 

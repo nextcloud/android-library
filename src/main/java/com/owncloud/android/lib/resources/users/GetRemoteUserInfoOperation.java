@@ -27,9 +27,7 @@
 
 package com.owncloud.android.lib.resources.users;
 
-import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
-import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
@@ -37,6 +35,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
 import com.owncloud.android.lib.resources.OCSRemoteOperation;
+
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -77,13 +76,7 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
      */
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
 
-    private String userID;
-
     public GetRemoteUserInfoOperation() {
-    }
-
-    public GetRemoteUserInfoOperation(String userID) {
-        this.userID = userID;
     }
 
     @Override
@@ -94,9 +87,7 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
 
         String url = client.getBaseUri() + OCS_ROUTE_SELF;
 
-        OwnCloudBasicCredentials credentials = (OwnCloudBasicCredentials) client.getCredentials();
-        
-        //Get the user
+        // get the user
         try {
 
             get = new GetMethod(url);
@@ -108,13 +99,6 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
                 ServerResponse<UserInfo> ocsResponse = getServerResponse(get, new TypeToken<ServerResponse<UserInfo>>(){});
 
                 UserInfo userInfo = ocsResponse.getOcs().getData();
-
-                if (userInfo.getId() == null) {
-                    if (TextUtils.isEmpty(userID))
-                        userInfo.setId(credentials.getUsername());
-                    else
-                        userInfo.setId(userID);
-                }
 
                 if (userInfo.getQuota() == null) {
                     userInfo.setQuota(new Quota());

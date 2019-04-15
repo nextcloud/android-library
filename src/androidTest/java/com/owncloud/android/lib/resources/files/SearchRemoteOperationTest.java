@@ -40,8 +40,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
     public void testSearchByFileIdEmpty() {
         SearchRemoteOperation sut = new SearchRemoteOperation("123123",
                                                               SearchRemoteOperation.SearchType.FILE_ID_SEARCH,
-                                                              false,
-                                                              userId);
+                                                              false);
 
         RemoteOperationResult result = sut.execute(client);
         assertTrue(result.isSuccess());
@@ -60,8 +59,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
 
         SearchRemoteOperation sut = new SearchRemoteOperation(localId,
                                                               SearchRemoteOperation.SearchType.FILE_ID_SEARCH,
-                                                              false,
-                                                              userId);
+                                                              false);
 
         RemoteOperationResult result = sut.execute(client);
         assertTrue(result.isSuccess());

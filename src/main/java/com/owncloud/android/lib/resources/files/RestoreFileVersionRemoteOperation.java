@@ -52,19 +52,16 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
 
     private String fileId;
     private String fileName;
-    private String userId;
 
     /**
      * Constructor
      *
      * @param fileId   fileId
      * @param fileName version date in unixtime
-     * @param userId   userId to access correct dav endpoint
      */
-    public RestoreFileVersionRemoteOperation(String fileId, String fileName, String userId) {
+    public RestoreFileVersionRemoteOperation(String fileId, String fileName) {
         this.fileId = fileId;
         this.fileName = fileName;
-        this.userId = userId;
     }
 
     /**
@@ -77,9 +74,9 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
 
         RemoteOperationResult result;
         try {
-            String source = client.getNewWebdavUri() + "/versions/" + Uri.encode(userId) + "/versions/" + fileId + "/"
+            String source = client.getNewWebdavUri() + "/versions/" + client.getUserId() + "/versions/" + fileId + "/"
                     + Uri.encode(fileName);
-            String target = client.getNewWebdavUri() + "/versions/" + Uri.encode(userId) + "/restore/" + fileId;
+            String target = client.getNewWebdavUri() + "/versions/" + client.getUserId() + "/restore/" + fileId;
 
             MoveMethod move = new MoveMethod(source, target, true);
             int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);

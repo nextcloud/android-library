@@ -26,11 +26,10 @@ package com.owncloud.android.lib.common;
 public class OwnCloudClientManagerFactory {
     private static OwnCloudClientManager sDefaultSingleton;
     private static String sUserAgent;
-    private static String sNextcloudUserAgent;
 
     public static OwnCloudClientManager getDefaultSingleton() {
         if (sDefaultSingleton == null) {
-            sDefaultSingleton = new DynamicSessionManager();
+            sDefaultSingleton = new OwnCloudClientManager();
         }
         return sDefaultSingleton;
     }
@@ -41,13 +40,5 @@ public class OwnCloudClientManagerFactory {
 
     public static String getUserAgent() {
         return sUserAgent;
-    }
-
-    public static void setNextcloudUserAgent(String userAgent) {
-        sNextcloudUserAgent = userAgent;
-    }
-
-    public static String getNextcloudUserAgent() {
-        return sNextcloudUserAgent;
     }
 }

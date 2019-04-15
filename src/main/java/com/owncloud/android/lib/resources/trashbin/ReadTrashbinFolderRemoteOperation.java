@@ -27,8 +27,6 @@
 
 package com.owncloud.android.lib.resources.trashbin;
 
-import android.net.Uri;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -55,16 +53,14 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
     
     private String remotePath;
     private ArrayList<Object> folderAndFiles;
-    private String userId;
     
     /**
      * Constructor
      *
      * @param remotePath Remote path of the file.
      */
-    public ReadTrashbinFolderRemoteOperation(String remotePath, String userId) {
+    public ReadTrashbinFolderRemoteOperation(String remotePath) {
         this.remotePath = remotePath;
-        this.userId = userId;
     }
 
     /**
@@ -78,12 +74,7 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
         PropFindMethod query = null;
 
         try {
-            // remote request
-            if (userId.isEmpty()) {
-                throw new IllegalArgumentException("UserId may not be empty!");
-            }
-
-            String baseUri = client.getNewWebdavUri() + "/trashbin/" + Uri.encode(userId) + "/trash/";
+            String baseUri = client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/trash/";
             DavPropertyNameSet propSet = WebdavUtils.getTrashbinPropSet();
                 
             query = new PropFindMethod(baseUri + WebdavUtils.encodePath(remotePath), propSet, DavConstants.DEPTH_1);
@@ -151,7 +142,7 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
             we = new WebdavEntry(remoteData.getResponses()[i], splitElement);
-            folderAndFiles.add(new TrashbinFile(we, userId));
+            folderAndFiles.add(new TrashbinFile(we, client.getUserId()));
         }
     }
 }
