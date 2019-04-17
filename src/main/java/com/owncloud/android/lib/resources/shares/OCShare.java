@@ -96,7 +96,7 @@ public class OCShare implements Parcelable, Serializable {
     @Getter private String token;
     @Getter private String sharedWithDisplayName;
     @Getter @Setter private boolean folder;
-    @Getter @Setter private long userId;
+    @Getter @Setter private String userId;
     @Getter @Setter private long remoteId;
     @Getter private String shareLink;
     @Setter private boolean isPasswordProtected;
@@ -133,7 +133,7 @@ public class OCShare implements Parcelable, Serializable {
         token = "";
         sharedWithDisplayName = "";
         folder = false;
-        userId = -1;
+        userId = "";
         remoteId = -1;
         shareLink = "";
         isPasswordProtected = false;
@@ -216,7 +216,7 @@ public class OCShare implements Parcelable, Serializable {
         token = source.readString();
         sharedWithDisplayName = source.readString();
         folder = source.readInt() == 0;
-        userId = source.readLong();
+        userId = source.readString();
         remoteId = source.readLong();
         shareLink = source.readString();
         isPasswordProtected = source.readInt() == 1;
@@ -244,7 +244,7 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeString(token);
         dest.writeString(sharedWithDisplayName);
         dest.writeInt(folder ? 1 : 0);
-        dest.writeLong(userId);
+        dest.writeString(userId);
         dest.writeLong(remoteId);
         dest.writeString(shareLink);
         dest.writeInt(isPasswordProtected ? 1 : 0);
