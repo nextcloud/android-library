@@ -86,9 +86,14 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
     private int permissions;
 
     /**
-     * Upload permissions for the public link (only folders)
+     * Upload permissions for the public link on folder
      */
-    private Boolean publicUpload;
+    private Boolean publicUploadOnFolder;
+
+    /**
+     * Upload permissions for the public link on file
+     */
+    private Boolean publicUploadOnFile;
 
     /**
      * Permission if file can be downloaded via share link (only for single file)
@@ -107,7 +112,8 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
         this.remoteId = remoteId;
         password = null;               // no update
         expirationDateInMillis = 0;    // no update
-        publicUpload = null;
+        publicUploadOnFolder = null;
+        publicUploadOnFile = null;
         note = null;
     }
 
@@ -150,11 +156,15 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
     /**
      * Enable upload permissions to update in Share resource.
      *
-     * @param publicUpload  Upload permission to set to the target share.
+     * @param publicUploadOnFolder  Upload permission to set to the target share.
      *                      Null results in no update applied to the upload permission.
      */
-    public void setPublicUpload(Boolean publicUpload) {
-        this.publicUpload = publicUpload;
+    public void setPublicUploadOnFolder(Boolean publicUploadOnFolder) {
+        this.publicUploadOnFolder = publicUploadOnFolder;
+    }
+
+    public void setPublicUploadOnFile(Boolean value) {
+        this.publicUploadOnFile = value;
     }
 
     public void setHideFileDownload(Boolean hideFileDownload) {
@@ -193,9 +203,17 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
             parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
         }
 
-        if (publicUpload != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(publicUpload)));
+        if (publicUploadOnFolder != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(publicUploadOnFolder)));
         }
+
+        if (publicUploadOnFile != null) {
+            if (publicUploadOnFile) {
+                parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, "3"));
+            } else {
+                parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, "1"));
+            }
+        } 
 
         if (hideFileDownload != null) {
             parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
