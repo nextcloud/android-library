@@ -70,7 +70,8 @@ public class SearchRemoteOperation extends RemoteOperation {
         RECENTLY_MODIFIED_SEARCH,
         RECENTLY_ADDED_SEARCH,
         SHARED_SEARCH,
-        GALLERY_SEARCH
+        GALLERY_SEARCH,
+        FILE_ID_SEARCH
     }
 
     private String searchQuery;
@@ -223,7 +224,7 @@ public class SearchRemoteOperation extends RemoteOperation {
             folderElement = query.createElementNS(DAV_NAMESPACE, "d:is-collection");
         }
         Element equalsElement;
-        if (searchType == SearchType.FAVORITE_SEARCH) {
+        if (searchType == SearchType.FAVORITE_SEARCH || searchType == SearchType.FILE_ID_SEARCH) {
             equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
         } else if (searchType == SearchType.RECENTLY_MODIFIED_SEARCH ||
                 searchType == SearchType.RECENTLY_ADDED_SEARCH) {
@@ -254,6 +255,8 @@ public class SearchRemoteOperation extends RemoteOperation {
                 queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
             } else if (searchType == SearchType.RECENTLY_ADDED_SEARCH) {
                 queryElement = query.createElementNS(DAV_NAMESPACE, "d:creationdate");
+            } else if (searchType == SearchType.FILE_ID_SEARCH) {
+                queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:fileid");
             }
             literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");
             if (searchType != SearchType.RECENTLY_MODIFIED_SEARCH && searchType != SearchType.RECENTLY_ADDED_SEARCH) {
