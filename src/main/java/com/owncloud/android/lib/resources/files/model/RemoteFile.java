@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.FileUtils;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -65,6 +66,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private int unreadCommentsCount;
     private boolean hasPreview;
     private String note;
+    private List<String> sharees;
 
     public RemoteFile() {
         resetData();
@@ -103,6 +105,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setNote(we.getNote());
         setUnreadCommentsCount(we.getUnreadCommentsCount());
         setHasPreview(we.isHasPreview());
+        setSharees(we.getSharees());
     }
 
     /**
@@ -168,6 +171,7 @@ public class RemoteFile implements Parcelable, Serializable {
         ownerDisplayName = source.readString();
         hasPreview = Boolean.parseBoolean(source.readString());
         note = source.readString();
+        source.readStringList(sharees);
     }
 
     @Override
@@ -193,5 +197,6 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(ownerDisplayName);
         dest.writeString(Boolean.toString(hasPreview));
         dest.writeString(note);
+        dest.writeStringList(sharees);
     }
 }
