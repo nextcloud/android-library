@@ -35,7 +35,10 @@ import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +60,7 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
     public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
     public static final String EXTENDED_PROPERTY_NOTE = "note";
+    public static final String EXTENDED_PROPERTY_SHAREES = "sharees";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -92,6 +96,7 @@ public class WebdavEntry {
     @Getter private int unreadCommentsCount;
     @Getter @Setter private boolean hasPreview;
     @Getter private String note = "";
+    @Getter private List<String> sharees = new ArrayList<>();
 
     public enum MountType {INTERNAL, EXTERNAL}
 
@@ -309,6 +314,12 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_NOTE, ncNamespace);
             if (prop != null && prop.getValue() != null) {
                 note = prop.getValue().toString();
+            }
+
+            // NC sharees property <nc-sharees>
+            prop = propSet.get(EXTENDED_PROPERTY_SHAREES, ncNamespace);
+            if (prop != null && prop.getValue() != null) {
+                Collections.addAll(sharees, prop.getValue().toString().split(", "));
             }
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
