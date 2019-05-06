@@ -105,6 +105,7 @@ public class WebDavFileUtils {
         file.setSize(we.getSize());
         file.setFavorite(we.isFavorite());
         file.setHasPreview(we.isHasPreview());
+        file.setSharees(we.getSharees());
         return file;
     }
 }
