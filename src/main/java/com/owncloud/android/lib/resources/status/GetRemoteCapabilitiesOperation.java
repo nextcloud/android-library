@@ -136,6 +136,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_OPTIONAL_MIMETYPES = "mimetypesNoDefaultOpen";
     private static final String NODE_RICHDOCUMENTS_DIRECT_EDITING = "direct_editing";
     private static final String NODE_RICHDOCUMENTS_TEMPLATES = "templates";
+    private static final String NODE_RICHDOCUMENTS_PRODUCT_NAME = "productName";
 
     // activity
     private static final String NODE_ACTIVITY = "activity";
@@ -449,6 +450,11 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 }
                             } else {
                                 capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
+                            }
+
+                            if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_PRODUCT_NAME)) {
+                                capability.setRichDocumentsProductName(
+                                        richDocumentsCapability.getString(NODE_RICHDOCUMENTS_PRODUCT_NAME));
                             }
                         } else {
                             capability.setRichDocuments(CapabilityBooleanType.FALSE);

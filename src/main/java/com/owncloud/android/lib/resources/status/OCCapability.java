@@ -99,6 +99,7 @@ public class OCCapability {
     private CapabilityBooleanType richDocumentsTemplatesAvailable;
     private List<String> richDocumentsMimeTypeList;
     private List<String> richDocumentsOptionalMimeTypeList;
+    private String richDocumentsProductName;
 
     private CapabilityBooleanType activity;
 
@@ -154,6 +155,7 @@ public class OCCapability {
         richDocumentsOptionalMimeTypeList = new ArrayList<>();
         richDocumentsDirectEditing = CapabilityBooleanType.FALSE;
         richDocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
+        richDocumentsProductName = "Collabora Online";
     }
 
     public OwnCloudVersion getVersion() {
