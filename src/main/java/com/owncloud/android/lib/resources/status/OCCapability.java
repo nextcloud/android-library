@@ -98,6 +98,7 @@ public class OCCapability {
     private CapabilityBooleanType richDocumentsDirectEditing;
     private CapabilityBooleanType richDocumentsTemplatesAvailable;
     private List<String> richDocumentsMimeTypeList;
+    private List<String> richDocumentsOptionalMimeTypeList;
 
     private CapabilityBooleanType activity;
 
@@ -150,6 +151,7 @@ public class OCCapability {
 
         richDocuments = CapabilityBooleanType.UNKNOWN;
         richDocumentsMimeTypeList = new ArrayList<>();
+        richDocumentsOptionalMimeTypeList = new ArrayList<>();
         richDocumentsDirectEditing = CapabilityBooleanType.FALSE;
         richDocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
     }
