@@ -133,6 +133,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     // Richdocuments
     private static final String NODE_RICHDOCUMENTS = "richdocuments";
     private static final String NODE_MIMETYPES = "mimetypes";
+    private static final String NODE_OPTIONAL_MIMETYPES = "mimetypesNoDefaultOpen";
     private static final String NODE_RICHDOCUMENTS_DIRECT_EDITING = "direct_editing";
     private static final String NODE_RICHDOCUMENTS_TEMPLATES = "templates";
 
@@ -416,6 +417,19 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                             }
                             
                             capability.setRichDocumentsMimeTypeList(mimeTypes);
+
+                            if (richDocumentsCapability.has(NODE_OPTIONAL_MIMETYPES)) {
+                                JSONArray optionalMimeTypesArray = richDocumentsCapability
+                                        .getJSONArray(NODE_OPTIONAL_MIMETYPES);
+
+                                ArrayList<String> optionalMimeTypes = new ArrayList<>();
+
+                                for (int i = 0; i < optionalMimeTypesArray.length(); i++) {
+                                    optionalMimeTypes.add(optionalMimeTypesArray.getString(i));
+                                }
+
+                                capability.setRichDocumentsOptionalMimeTypeList(optionalMimeTypes);
+                            }
 
                             if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
                                 if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
