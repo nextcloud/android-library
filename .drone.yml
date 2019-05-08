@@ -27,6 +27,10 @@ steps:
       from_secret: LOG_USERNAME
     LOG_PASSWORD:
       from_secret: LOG_PASSWORD
+    GIT_USERNAME:
+      from_secret: GIT_USERNAME
+    GIT_TOKEN:
+      from_secret: GIT_TOKEN
   commands:
     - emulator -avd android-27 -no-window -no-audio &
     - ./wait_for_emulator.sh
