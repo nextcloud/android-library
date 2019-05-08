@@ -28,11 +28,7 @@ package com.owncloud.android;
 
 import com.owncloud.android.lib.common.OwnCloudClientManager;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
-import com.owncloud.android.lib.common.OwnCloudClientManagerFactory.Policy;
-import com.owncloud.android.lib.common.SimpleFactoryManager;
-import com.owncloud.android.lib.common.SingleSessionManager;
 
-import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 /**
@@ -42,93 +38,18 @@ import junit.framework.TestCase;
  */
 public class OwnCloudClientManagerFactoryTest extends TestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        OwnCloudClientManagerFactory.setDefaultPolicy(Policy.ALWAYS_NEW_CLIENT);
-    }
-
-    public void testGetDefaultPolicy() {
-        Policy defaultPolicy = OwnCloudClientManagerFactory.getDefaultPolicy();
-        assertNotNull("Returned null value", defaultPolicy);
-        assertTrue("Returned unknown value", (Policy.ALWAYS_NEW_CLIENT.equals(defaultPolicy) ||
-                (Policy.SINGLE_SESSION_PER_ACCOUNT.equals(defaultPolicy))));
-    }
-
-    public void testSetDefaultPolicy() {
-        OwnCloudClientManagerFactory.setDefaultPolicy(Policy.SINGLE_SESSION_PER_ACCOUNT);
-        Policy defaultPolicy = OwnCloudClientManagerFactory.getDefaultPolicy();
-        assertEquals("SINGLE_SESSION_PER_ACCOUNT not set", Policy.SINGLE_SESSION_PER_ACCOUNT, defaultPolicy);
-
-        OwnCloudClientManagerFactory.setDefaultPolicy(Policy.ALWAYS_NEW_CLIENT);
-        defaultPolicy = OwnCloudClientManagerFactory.getDefaultPolicy();
-        assertEquals("ALWAYS_NEW_CLIENT not set", Policy.ALWAYS_NEW_CLIENT, defaultPolicy);
-
-        try {
-            OwnCloudClientManagerFactory.setDefaultPolicy(null);
-            throw new AssertionFailedError("Accepted NULL parameter");
-
-        } catch (IllegalArgumentException e) {
-            // Expected exception when setting default policy null
-            return;
-        } catch (Exception e) {
-            fail("Unexpected exception when setting default policy null");
-        }
-        defaultPolicy = OwnCloudClientManagerFactory.getDefaultPolicy();
-        assertEquals("ALWAYS_NEW_CLIENT changed after setting null", Policy.ALWAYS_NEW_CLIENT, defaultPolicy);
-    }
-
-
     public void testGetDefaultSingleton() {
         OwnCloudClientManager mgr = OwnCloudClientManagerFactory.getDefaultSingleton();
         assertNotNull("Returned NULL default singleton", mgr);
-        assertTrue("Default singleton does not implement default policy", mgr instanceof SimpleFactoryManager);
 
         OwnCloudClientManager mgr2 = OwnCloudClientManagerFactory.getDefaultSingleton();
         assertSame("Not singleton", mgr, mgr2);
 
-        OwnCloudClientManagerFactory.setDefaultPolicy(Policy.SINGLE_SESSION_PER_ACCOUNT);
         mgr = OwnCloudClientManagerFactory.getDefaultSingleton();
         assertNotNull("Returned NULL default singleton", mgr);
-        assertTrue("Default singleton does not implement default policy", mgr instanceof SingleSessionManager);
 
         mgr2 = OwnCloudClientManagerFactory.getDefaultSingleton();
         assertSame("Not singleton", mgr, mgr2);
     }
 
-    public void testNewDefaultOwnCloudClientManager() {
-        OwnCloudClientManager mgr = OwnCloudClientManagerFactory.newDefaultOwnCloudClientManager();
-        assertNotNull("Returned NULL default manager", mgr);
-        assertTrue("New manager does not implement default policy", mgr instanceof SimpleFactoryManager);
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.getDefaultSingleton());
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.newDefaultOwnCloudClientManager());
-
-        OwnCloudClientManagerFactory.setDefaultPolicy(Policy.SINGLE_SESSION_PER_ACCOUNT);
-        mgr = OwnCloudClientManagerFactory.newDefaultOwnCloudClientManager();
-        assertNotNull("Returned NULL default manager", mgr);
-        assertTrue("New manager does not implement default policy", mgr instanceof SingleSessionManager);
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.getDefaultSingleton());
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.newDefaultOwnCloudClientManager());
-    }
-
-    public void testNewOwnCloudClientManager() {
-        OwnCloudClientManager mgr = OwnCloudClientManagerFactory.newOwnCloudClientManager(Policy.ALWAYS_NEW_CLIENT);
-
-        assertNotNull("Returned NULL manager", mgr);
-        assertTrue("New manager does not implement policy ALWAYS_NEW_CLIENT", mgr instanceof SimpleFactoryManager);
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.getDefaultSingleton());
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.newDefaultOwnCloudClientManager());
-        assertNotSame("Not new instance", mgr, OwnCloudClientManagerFactory.newOwnCloudClientManager(
-                Policy.ALWAYS_NEW_CLIENT));
-
-        OwnCloudClientManager mgr2 = OwnCloudClientManagerFactory.newOwnCloudClientManager(Policy.SINGLE_SESSION_PER_ACCOUNT);
-
-        assertNotNull("Returned NULL manager", mgr2);
-        assertTrue("New manager does not implement policy SINGLE_SESSION_PER_ACCOUNT",
-                   mgr2 instanceof SingleSessionManager);
-        assertNotSame("Not new instance", mgr2, OwnCloudClientManagerFactory.getDefaultSingleton());
-        assertNotSame("Not new instance", mgr2, OwnCloudClientManagerFactory.newDefaultOwnCloudClientManager());
-        assertNotSame("Not new instance", mgr2, OwnCloudClientManagerFactory.newOwnCloudClientManager(
-                Policy.SINGLE_SESSION_PER_ACCOUNT));
-    }
 }

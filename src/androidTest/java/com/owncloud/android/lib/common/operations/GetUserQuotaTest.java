@@ -24,12 +24,16 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android;
+package com.owncloud.android.lib.common.operations;
 
+import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.users.GetRemoteUserInfoOperation;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -37,19 +41,11 @@ import com.owncloud.android.lib.resources.users.GetRemoteUserInfoOperation;
  *
  * @author Bartosz Przybylski
  */
-public class GetUserQuotaTest extends RemoteTest {
+public class GetUserQuotaTest extends AbstractIT {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        setActivityInitialTouchMode(false);
-    }
-
-    /**
-     * Test GetUserQuota
-     */
+    @Test
     public void testGetUserQuota() {
-        RemoteOperationResult result = new GetRemoteUserInfoOperation().execute(mClient);
+        RemoteOperationResult result = new GetRemoteUserInfoOperation().execute(client);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() != null && result.getData().size() == 1);
 

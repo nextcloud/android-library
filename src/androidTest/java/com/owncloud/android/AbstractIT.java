@@ -30,7 +30,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
@@ -42,9 +41,9 @@ import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,7 +56,6 @@ import static junit.framework.TestCase.assertTrue;
  * Common base for all integration tests
  */
 
-@RunWith(AndroidJUnit4.class)
 public abstract class AbstractIT {
     private static final int BUFFER_SIZE = 1024;
     

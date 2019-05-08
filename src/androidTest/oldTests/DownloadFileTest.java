@@ -24,14 +24,15 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android;
+package com.owncloud.android.lib.common.operations;
 
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 import com.owncloud.android.lib.testclient.TestActivity;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,9 +44,7 @@ import java.io.FileNotFoundException;
  * @author David A. Velasco
  */
 
-public class DownloadFileTest extends RemoteTest {
-
-
+public class DownloadFileTest extends AbstractIT {
     private static final String LOG_TAG = DownloadFileTest.class.getCanonicalName();
 
     /* Files to download. These files must exist on the account */
@@ -58,38 +57,39 @@ public class DownloadFileTest extends RemoteTest {
     private String mFullPath2ImageNotFound;
     private String mDownloadedFilePath;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        setActivityInitialTouchMode(false);
-        mDownloadedFilePath = null;
-        mFullPath2Image = mBaseFolderPath + IMAGE_PATH;
-        mFullPath2ImageWitSpecialChars = mBaseFolderPath + IMAGE_PATH_WITH_SPECIAL_CHARS;
-        mFullPath2ImageNotFound = mBaseFolderPath + IMAGE_NOT_FOUND;
-
-        File imageFile = getFile(TestActivity.ASSETS__IMAGE_FILE_NAME);
-
-        RemoteOperationResult result = mActivity.uploadFile(imageFile.getAbsolutePath(), mFullPath2Image,
-                "image/png", null);
-
-        if (!result.isSuccess()) {
-            Utils.logAndThrow(LOG_TAG, result);
-        }
-
-        result = mActivity.uploadFile(imageFile.getAbsolutePath(), mFullPath2ImageWitSpecialChars, "image/png", null);
-        if (!result.isSuccess()) {
-            Utils.logAndThrow(LOG_TAG, result);
-        }
-
-        result = mActivity.removeFile(mFullPath2ImageNotFound);
-        if (!result.isSuccess() && result.getCode() != ResultCode.FILE_NOT_FOUND) {
-            Utils.logAndThrow(LOG_TAG, result);
-        }
-    }
+//    @Override
+//    protected void setUp() throws Exception {
+//        super.setUp();
+//        setActivityInitialTouchMode(false);
+//        mDownloadedFilePath = null;
+//        mFullPath2Image = mBaseFolderPath + IMAGE_PATH;
+//        mFullPath2ImageWitSpecialChars = mBaseFolderPath + IMAGE_PATH_WITH_SPECIAL_CHARS;
+//        mFullPath2ImageNotFound = mBaseFolderPath + IMAGE_NOT_FOUND;
+//
+//        File imageFile = getFile(TestActivity.ASSETS__IMAGE_FILE_NAME);
+//
+//        RemoteOperationResult result = mActivity.uploadFile(imageFile.getAbsolutePath(), mFullPath2Image,
+//                "image/png", null);
+//
+//        if (!result.isSuccess()) {
+//            Utils.logAndThrow(LOG_TAG, result);
+//        }
+//
+//        result = mActivity.uploadFile(imageFile.getAbsolutePath(), mFullPath2ImageWitSpecialChars, "image/png", null);
+//        if (!result.isSuccess()) {
+//            Utils.logAndThrow(LOG_TAG, result);
+//        }
+//
+//        result = mActivity.removeFile(mFullPath2ImageNotFound);
+//        if (!result.isSuccess() && result.getCode() != ResultCode.FILE_NOT_FOUND) {
+//            Utils.logAndThrow(LOG_TAG, result);
+//        }
+//    }
 
     /**
      * Test Download a File
      */
+    @Test
     public void testDownloadFile() throws FileNotFoundException {
         RemoteOperationResult result = mActivity.downloadFile(new RemoteFile(mFullPath2Image), "");
         mDownloadedFilePath = mFullPath2Image;
