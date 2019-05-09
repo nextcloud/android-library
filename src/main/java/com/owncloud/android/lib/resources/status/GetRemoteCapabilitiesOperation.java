@@ -71,6 +71,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String NODE_FILES_SHARING = "files_sharing";
     private static final String NODE_PUBLIC = "public";
     private static final String NODE_PASSWORD = "password";
+    private static final String NODE_ASK_FOR_OPTIONAL_PASSWORD = "askForOptionalPassword";
     private static final String NODE_FILES_DROP = "upload_files_drop";
     private static final String NODE_EXPIRE_DATE = "expire_date";
     private static final String NODE_USER = "user";
@@ -220,9 +221,21 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 capability.setFilesSharingPublicEnabled(CapabilityBooleanType.fromBooleanValue(
                                         respPublic.getBoolean(PROPERTY_ENABLED)));
                                 if(respPublic.has(NODE_PASSWORD)) {
+                                    JSONObject passwordJson = respPublic.getJSONObject(NODE_PASSWORD);
+                                    
                                     capability.setFilesSharingPublicPasswordEnforced(
                                             CapabilityBooleanType.fromBooleanValue(
-                                                    respPublic.getJSONObject(NODE_PASSWORD).getBoolean(PROPERTY_ENFORCED)));
+                                                    passwordJson.getBoolean(PROPERTY_ENFORCED)));
+
+                                    if (passwordJson.has(NODE_ASK_FOR_OPTIONAL_PASSWORD)) {
+                                        capability.setFilesSharingPublicAskForOptionalPassword(
+                                                CapabilityBooleanType.fromBooleanValue(
+                                                        passwordJson.getBoolean(NODE_ASK_FOR_OPTIONAL_PASSWORD))
+                                        );
+                                    } else {
+                                        capability.setFilesSharingPublicAskForOptionalPassword(
+                                                CapabilityBooleanType.FALSE);
+                                    }
                                 }
                                 if(respPublic.has(NODE_FILES_DROP)) {
                                     capability.setFilesFileDrop(
@@ -373,15 +386,11 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                                 JSONObject provider = (JSONObject) providers.get(i);
                                 
                                 String id = provider.getString("id");
-                                
-                                switch (id) {
-                                    case "files":
-                                        capability.setFullNextSearchFiles(CapabilityBooleanType.TRUE);
-                                        Log_OC.d(TAG, "full next search: file provider enabled");
-                                        break;
-                                    default:
-                                        // do nothing
-                                        break;
+
+                                // do nothing
+                                if ("files".equals(id)) {
+                                    capability.setFullNextSearchFiles(CapabilityBooleanType.TRUE);
+                                    Log_OC.d(TAG, "full next search: file provider enabled");
                                 }
                             }
                         }
