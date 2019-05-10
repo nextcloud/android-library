@@ -24,8 +24,6 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import android.net.Uri;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
@@ -60,14 +58,12 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     public static final long CHUNK_SIZE_WIFI = 10240000;
     private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
-    private final String userId;
     private final boolean onWifiConnection;
 
     public ChunkedFileUploadRemoteOperation(String storagePath, String remotePath, String mimeType, String requiredEtag,
-                                            String lastModificationTimestamp, String userId, 
+                                            String lastModificationTimestamp,
                                             boolean onWifiConnection) {
         super(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp);
-        this.userId = userId;
         this.onWifiConnection = onWifiConnection;
     }
 
@@ -83,7 +79,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                                             new DefaultHttpMethodRetryHandler(0, false));
 
-            String uploadFolderUri = client.getUploadUri() + "/" + Uri.encode(userId) + "/" + FileUtils.md5Sum(file);
+            String uploadFolderUri = client.getUploadUri() + "/" + client.getUserId() + "/" + FileUtils.md5Sum(file);
 
             // create folder
             MkColMethod createFolder = new MkColMethod(uploadFolderUri);
@@ -139,7 +135,8 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             }
 
             // assemble
-            String destinationUri = client.getNewWebdavUri() + "/files/" + userId + WebdavUtils.encodePath(remotePath);
+            String destinationUri = client.getNewWebdavUri() + "/files/" + client.getUserId() +
+                    WebdavUtils.encodePath(remotePath);
             String originUri = uploadFolderUri + "/.file";
             MoveMethod moveMethod = new MoveMethod(originUri, destinationUri, true);
             moveMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, String.valueOf(file.lastModified() / 1000));

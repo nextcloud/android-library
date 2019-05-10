@@ -70,7 +70,7 @@ public class OwnCloudClientFactory {
      *                                      authorization token for the account.
      * @throws AccountNotFoundException     If 'account' is unknown for the AccountManager
      */
-    public static OwnCloudClient createOwnCloudClient (Account account, Context appContext)
+    public static OwnCloudClient createOwnCloudClient(Account account, Context appContext)
             throws OperationCanceledException, AuthenticatorException, IOException,
             AccountNotFoundException {
         //Log_OC.d(TAG, "Creating OwnCloudClient associated to " + account.name);

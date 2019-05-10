@@ -49,12 +49,10 @@ import java.io.IOException;
 public class ToggleFavoriteRemoteOperation extends RemoteOperation {
     private boolean makeItFavorited;
     private String filePath;
-    private String userID;
 
-    public ToggleFavoriteRemoteOperation(boolean makeItFavorited, String filePath, String userID) {
+    public ToggleFavoriteRemoteOperation(boolean makeItFavorited, String filePath) {
         this.makeItFavorited = makeItFavorited;
         this.filePath = filePath;
-        this.userID = userID;
     }
 
     @Override
@@ -74,7 +72,7 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
         }
 
         String webDavUrl = client.getNewWebdavUri().toString();
-        String encodedPath = Uri.encode(userID + filePath).replace("%2F", "/");
+        String encodedPath = (client.getUserId() + Uri.encode(filePath)).replace("%2F", "/");
         String fullFilePath = webDavUrl + "/files/" + encodedPath;
 
         try {
