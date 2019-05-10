@@ -66,6 +66,7 @@ public class OCCapability {
     private CapabilityBooleanType filesSharingApiEnabled;
     private CapabilityBooleanType filesSharingPublicEnabled;
     private CapabilityBooleanType filesSharingPublicPasswordEnforced;
+    private CapabilityBooleanType filesSharingPublicAskForOptionalPassword;
     private CapabilityBooleanType filesSharingPublicExpireDateEnabled;
     private int filesSharingPublicExpireDateDays;
     private CapabilityBooleanType filesSharingPublicExpireDateEnforced;
@@ -126,6 +127,7 @@ public class OCCapability {
         filesSharingApiEnabled = CapabilityBooleanType.UNKNOWN;
         filesSharingPublicEnabled = CapabilityBooleanType.UNKNOWN;
         filesSharingPublicPasswordEnforced = CapabilityBooleanType.UNKNOWN;
+        filesSharingPublicAskForOptionalPassword = CapabilityBooleanType.UNKNOWN;
         filesSharingPublicExpireDateEnabled = CapabilityBooleanType.UNKNOWN;
         filesSharingPublicExpireDateDays = 0;
         filesSharingPublicExpireDateEnforced = CapabilityBooleanType.UNKNOWN;
