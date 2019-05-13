@@ -111,9 +111,14 @@ public class OwnCloudClientManager {
             account.loadCredentials(context);
             client.setCredentials(account.getCredentials());
 
-            AccountManager am = AccountManager.get(context);
-            String userId = am.getUserData(account.getSavedAccount(), AccountUtils.Constants.KEY_USER_ID);
-            client.setUserId(userId);
+            AccountManager accountManager = AccountManager.get(context);
+            Account savedAccount = account.getSavedAccount();
+
+            if (savedAccount != null) {
+                String userId = accountManager.getUserData(account.getSavedAccount(),
+                                                           AccountUtils.Constants.KEY_USER_ID);
+                client.setUserId(userId);
+            }
 
             if (accountName != null) {
                 mClientsWithKnownUsername.put(accountName, client);
