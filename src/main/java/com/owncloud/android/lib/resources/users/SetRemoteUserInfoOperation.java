@@ -58,14 +58,12 @@ public class SetRemoteUserInfoOperation extends RemoteOperation {
         }
     }
 
-    private String mUserId;
-    private Field mFieldName;
-    private String mValue;
+    private Field field;
+    private String value;
 
-    public SetRemoteUserInfoOperation(String userId, Field fieldName, String value) {
-        mUserId = userId;
-        mFieldName = fieldName;
-        mValue = value;
+    public SetRemoteUserInfoOperation(Field field, String value) {
+        this.field = field;
+        this.value = value;
     }
 
     @Override
@@ -74,12 +72,12 @@ public class SetRemoteUserInfoOperation extends RemoteOperation {
         PutMethod method = null;
 
         try {
-            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + mUserId);
+            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserId());
             method.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             NameValuePair[] putParams = new NameValuePair[2];
-            putParams[0] = new NameValuePair("key", mFieldName.getFieldName());
-            putParams[1] = new NameValuePair("value", mValue);
+            putParams[0] = new NameValuePair("key", field.getFieldName());
+            putParams[1] = new NameValuePair("value", value);
             method.setQueryString(putParams);
 
             int status = client.executeMethod(method);
