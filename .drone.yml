@@ -2,37 +2,32 @@ kind: pipeline
 name: compile
 
 steps:
-- name: compile
-  image: nextcloudci/android:android-44
-  commands:
-    - ./gradlew assemble
+  - name: compile
+    image: nextcloudci/android:android-44
+    commands:
+      - ./gradlew assemble
 
-- name: notify
-  image: drillster/drone-email
-  host: $EMAIL_HOST
-  port: 587
-  username: $EMAIL_USERNAME
-  password: $EMAIL_PASSWORD
-  from: nextcloud-drone@kaminsky.me
-  skip_verify: true
-  recipients_only: true
-  recipients: [ $EMAIL_RECIPIENTS ]
-  environment:
-    EMAIL_USERNAME:
-      from_secret: EMAIL_USERNAME
-    EMAIL_PASSWORD:
-      from_secret: EMAIL_PASSWORD
-    EMAIL_RECIPIENTS:
-      from_secret: EMAIL_RECIPIENTS
-    EMAIL_HOST:
-      from_secret: EMAIL_HOST
-  when:
-    event:
-      - push
-    status:
-      - failure
-    branch:
-      - master
+  - name: notify
+    image: drillster/drone-email
+    settings:
+      port: 587
+      from: nextcloud-drone@kaminsky.me
+      recipients_only: true
+      username:
+        from_secret: EMAIL_USERNAME
+      password:
+        from_secret: EMAIL_PASSWORD
+      recipients:
+        from_secret: EMAIL_RECIPIENTS
+      host:
+        from_secret: EMAIL_HOST
+    when:
+      event:
+        - push
+      status:
+        - failure
+      branch:
+        - master
 
 trigger:
   branch:
@@ -71,22 +66,17 @@ steps:
 
 - name: notify
   image: drillster/drone-email
-  host: $EMAIL_HOST
-  port: 587
-  username: $EMAIL_USERNAME
-  password: $EMAIL_PASSWORD
-  from: nextcloud-drone@kaminsky.me
-  skip_verify: true
-  recipients_only: true
-  recipients: [ $EMAIL_RECIPIENTS ]
-  environment:
-    EMAIL_USERNAME:
+  settings:
+    port: 587
+    from: nextcloud-drone@kaminsky.me
+    recipients_only: true
+    username:
       from_secret: EMAIL_USERNAME
-    EMAIL_PASSWORD:
+    password:
       from_secret: EMAIL_PASSWORD
-    EMAIL_RECIPIENTS:
+    recipients:
       from_secret: EMAIL_RECIPIENTS
-    EMAIL_HOST:
+    host:
       from_secret: EMAIL_HOST
   when:
     event:
@@ -97,8 +87,8 @@ steps:
       - master
 
 services:
-- name: server
-  image: nextcloudci/server:server-3
+  - name: server
+    image: nextcloudci/server:server-3
 
 trigger:
   branch:
@@ -111,47 +101,42 @@ kind: pipeline
 name: analysis
 
 steps:
-- name: analysis
-  image: nextcloudci/android:android-44
-  environment:
-    GIT_USERNAME:
-      from_secret: GIT_USERNAME
-    GIT_TOKEN:
-      from_secret: GIT_TOKEN
-    LOG_USERNAME:
-      from_secret: LOG_USERNAME
-    LOG_PASSWORD:
-      from_secret: LOG_PASSWORD
-  commands:
-    - export BRANCH=$(scripts/analysis/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
-    - scripts/analysis/analysis-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER $DRONE_PULL_REQUEST
+  - name: analysis
+    image: nextcloudci/android:android-44
+    environment:
+      GIT_USERNAME:
+        from_secret: GIT_USERNAME
+      GIT_TOKEN:
+        from_secret: GIT_TOKEN
+      LOG_USERNAME:
+        from_secret: LOG_USERNAME
+      LOG_PASSWORD:
+        from_secret: LOG_PASSWORD
+    commands:
+      - export BRANCH=$(scripts/analysis/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
+      - scripts/analysis/analysis-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER $DRONE_PULL_REQUEST
 
-- name: notify
-  image: drillster/drone-email
-  host: $EMAIL_HOST
-  port: 587
-  username: $EMAIL_USERNAME
-  password: $EMAIL_PASSWORD
-  from: nextcloud-drone@kaminsky.me
-  skip_verify: true
-  recipients_only: true
-  recipients: [ $EMAIL_RECIPIENTS ]
-  environment:
-    EMAIL_USERNAME:
-      from_secret: EMAIL_USERNAME
-    EMAIL_PASSWORD:
-      from_secret: EMAIL_PASSWORD
-    EMAIL_RECIPIENTS:
-      from_secret: EMAIL_RECIPIENTS
-    EMAIL_HOST:
-      from_secret: EMAIL_HOST
-  when:
-    event:
-      - push
-    status:
-      - failure
-    branch:
-      - master
+  - name: notify
+    image: drillster/drone-email
+    settings:
+      port: 587
+      from: nextcloud-drone@kaminsky.me
+      recipients_only: true
+      username:
+        from_secret: EMAIL_USERNAME
+      password:
+        from_secret: EMAIL_PASSWORD
+      recipients:
+        from_secret: EMAIL_RECIPIENTS
+      host:
+        from_secret: EMAIL_HOST
+    when:
+      event:
+        - push
+      status:
+        - failure
+      branch:
+        - master
 
 trigger:
   branch:
