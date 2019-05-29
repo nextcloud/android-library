@@ -53,7 +53,7 @@ dependencies {
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.5'
     
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.27.0'
+    testImplementation 'org.mockito:mockito-core:2.28.1'
     
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:rules:1.1.1'
