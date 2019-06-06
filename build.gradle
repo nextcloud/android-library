@@ -1,9 +1,14 @@
+import com.github.spotbugs.SpotBugsTask
+
 buildscript {
     repositories {
         google()
         jcenter()
         maven {
             url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        maven {
+            url 'https://plugins.gradle.org/m2/'
         }
         mavenCentral()
     }
@@ -13,13 +18,14 @@ buildscript {
         classpath('com.dicedmelon.gradle:jacoco-android:0.1.4') {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         }
+        classpath 'gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.6'
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'findbugs'
 apply plugin: 'jacoco-android'
+apply plugin: "com.github.spotbugs"
 
 repositories {
     google()
@@ -49,8 +55,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
     
-    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
-    findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.5'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.5'
     
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.28.2'
@@ -61,6 +67,10 @@ dependencies {
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+}
+
+spotbugs {
+    toolVersion = '3.1.12'
 }
 
 android {
@@ -88,14 +98,13 @@ android {
         testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
     }
 
-    tasks.register("findbugs", FindBugs) {
+    tasks.register("spotbugs", SpotBugsTask) {
         ignoreFailures = false
         effort = "max"
         reportLevel = "medium"
         classes = fileTree("$project.buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/")
-        excludeFilter = file("${project.rootDir}/scripts/analysis/findbugs-filter.xml")
+        excludeFilter = file("${project.rootDir}/scripts/analysis/spotbugs-filter.xml")
         source = fileTree('src/main/java')
-        pluginClasspath = project.configurations.findbugsPlugins
         classpath = files()
         include '**/*.java'
         exclude '**/gen/**'
@@ -104,7 +113,7 @@ android {
             xml.enabled = false
             html.enabled = true
             html {
-                destination = file("$project.buildDir/reports/findbugs/findbugs.html")
+                destination = file("$project.buildDir/reports/spotbugs/spotbugs.html")
             }
         }
     }

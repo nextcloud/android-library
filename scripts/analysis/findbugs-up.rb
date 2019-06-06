@@ -18,7 +18,7 @@ TRAVIS_GIT_USERNAME = String.new("Drone CI server")
 #   lintOptions {
 #       htmlOutput file("[FILE_NAME].html")
 #   }
-FINDBUGS_REPORT_FILE = String.new("build/reports/findbugs/findbugs.html")
+FINDBUGS_REPORT_FILE = String.new("build/reports/spotbugs/spotbugs.html")
 
 # File name and relative path of previous results of this script.
 PREVIOUS_FINDBUGS_RESULTS_FILE=String.new("scripts/analysis/findbugs-results.txt")
@@ -47,18 +47,18 @@ require 'xmlsimple'
 
 # run FindBugs
 puts "running FindBugs..."
-system './gradlew findbugs'
+system './gradlew compileDebugSources spotbugs'
 
 # find FindBugs report file
 findbugs_reports = Dir.glob(FINDBUGS_REPORT_FILE)
 if findbugs_reports.length == 0
-    puts "Findbugs HTML report not found."
+    puts "SpotBugs HTML report not found."
     exit 1
 end
 findbugs_report = String.new(findbugs_reports[0])
 
 # find number of warnings
-current_warning_count = `grep -A 3 "<b>Total</b>" build/reports/findbugs/findbugs.html | tail -n1 | cut -f2 -d">" | cut -f1 -d"<"`.to_i
+current_warning_count = `grep -A 3 "<b>Total</b>" build/reports/spotbugs/spotbugs.html | tail -n1 | cut -f2 -d">" | cut -f1 -d"<"`.to_i
 puts "found warnings: " + current_warning_count.to_s
 
 # get warning counts from last successful build

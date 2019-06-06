@@ -25,10 +25,10 @@ findbugsValue=$?
 echo "Branch: $3"
 
 if [ $3 = $stableBranch ]; then
-    echo "New findbugs result for $stableBranch at: https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html"
-    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.html --upload-file build/reports/findbugs/findbugs.html
+    echo "New SpotBugs result for $stableBranch at: https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html"
+    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.html --upload-file build/reports/spotbugs/spotbugs.html
 
-    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/findbugs/findbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"/Summary/FindBugs ($stableBranch)/" | tr "\"" "\'" | tr -d "\r\n")
+    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/spotbugs/spotbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"/Summary/SpotBugs ($stableBranch)/" | tr "\"" "\'" | tr -d "\r\n")
     curl -u $4:$5 -X PUT -d "$summary" https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/findbugs-summary-$stableBranch.html
 
     if [ $lintValue -ne 1 ]; then
@@ -43,8 +43,8 @@ else
     echo "New lint results at https://www.kaminsky.me/nc-dev/$repository-lint/$6.html"
     curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-lint/$6.html --upload-file build/reports/lint/lint.html
 
-    echo "New findbugs results at https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html"
-    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$6.html --upload-file build/reports/findbugs/findbugs.html
+    echo "New SpotBugs results at https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html"
+    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$6.html --upload-file build/reports/spotbugs/spotbugs.html
 
     # delete all old comments
     oldComments=$(curl 2>/dev/null -u $1:$2 -X GET https://api.github.com/repos/nextcloud/android-library/issues/$7/comments | jq '.[] | (.id |tostring) + "|" + (.user.login | test("nextcloud-android-bot") | tostring) ' | grep true | tr -d "\"" | cut -f1 -d"|")
@@ -53,14 +53,14 @@ else
         curl 2>/dev/null -u $1:$2 -X DELETE https://api.github.com/repos/nextcloud/android-library/issues/comments/$comment
     done
 
-    # lint and findbugs file must exist
+    # lint and spotbugs file must exist
     if [ ! -s build/reports/lint/lint.html ] ; then
         echo "lint.html file is missing!"
         exit 1
     fi
 
-    if [ ! -s build/reports/findbugs/findbugs.html ] ; then
-        echo "findbugs.html file is missing!"
+    if [ ! -s build/reports/spotbugs/spotbugs.html ] ; then
+        echo "spotbugs.html file is missing!"
         exit 1
     fi
 
@@ -89,8 +89,8 @@ else
     fi
 
     lintResult="<h1>Lint</h1><table width='500' cellpadding='5' cellspacing='2'><tr class='tablerow0'><td>Type</td><td><a href='https://www.kaminsky.me/nc-dev/"$repository"-lint/"$stableBranch".html'>$stableBranch</a></td><td><a href='https://www.kaminsky.me/nc-dev/"$repository"-lint/"$6".html'>PR</a></td></tr><tr class='tablerow1'><td>Warnings</td><td>"$lintWarningOld"</td><td>"$lintWarningNew"</td></tr><tr class='tablerow0'><td>Errors</td><td>"$lintErrorOld"</td><td>"$lintErrorNew"</td></tr></table>"
-    findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/findbugs/findbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html\">FindBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n")
-    findbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/$repository-findbugs/findbugs-summary-$stableBranch.html | tr "\"" "\'" | tr -d "\r\n" | sed s"#FindBugs#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html\">FindBugs</a>#" | tr "\"" "\'" | tr -d "\n")
+    findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/spotbugs/spotbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html\">SpotBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n")
+    findbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/$repository-findbugs/findbugs-summary-$stableBranch.html | tr "\"" "\'" | tr -d "\r\n" | sed s"#SpotBugs#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html\">SpotBugs</a>#" | tr "\"" "\'" | tr -d "\n")
 
 
     if ( [ $lintValue -eq 1 ] ) ; then
@@ -98,7 +98,7 @@ else
     fi
 
     if ( [ $findbugsValue -eq 1 ] ) ; then
-        findbugsMessage="<h1>Findbugs increased!</h1>"
+        findbugsMessage="<h1>SpotBugs increased!</h1>"
     fi
 
     curl -u $1:$2 -X POST https://api.github.com/repos/nextcloud/android-library/issues/$7/comments -d "{ \"body\" : \"$lintResult $findbugsResultNew $findbugsResultOld $lintMessage $findbugsMessage \" }"
