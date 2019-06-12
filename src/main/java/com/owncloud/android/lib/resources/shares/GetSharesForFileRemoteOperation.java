@@ -40,9 +40,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * The input is the full path of the desired file.
  * The output is a list of everyone who has the file shared with them.
  */
-public class GetRemoteSharesForFileOperation extends RemoteOperation {
+public class GetSharesForFileRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = GetRemoteSharesForFileOperation.class.getSimpleName();
+    private static final String TAG = GetSharesForFileRemoteOperation.class.getSimpleName();
 
     private static final String PARAM_PATH = "path";
     private static final String PARAM_RESHARES = "reshares";
@@ -62,7 +62,7 @@ public class GetRemoteSharesForFileOperation extends RemoteOperation {
      * @param subfiles       If set to false (default), lists only the folder being shared
      *                       If set to true, all shared files within the folder are returned.
      */
-    public GetRemoteSharesForFileOperation(String remoteFilePath, boolean reshares,
+    public GetSharesForFileRemoteOperation(String remoteFilePath, boolean reshares,
                                            boolean subfiles) {
         mRemoteFilePath = remoteFilePath;
         mReshares = reshares;

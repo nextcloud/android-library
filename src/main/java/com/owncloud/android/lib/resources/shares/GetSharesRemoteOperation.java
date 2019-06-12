@@ -1,4 +1,5 @@
 /* ownCloud Android Library is available under MIT license
+ *   @author masensio
  *   @author David A. Velasco
  *   Copyright (C) 2015 ownCloud Inc.
  *   
@@ -34,20 +35,11 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
- * Get the data about a Share resource, known its remote ID.
+ * Get the data from the server about ALL the known shares owned by the requester.
  */
+public class GetSharesRemoteOperation extends RemoteOperation {
 
-public class GetRemoteShareOperation extends RemoteOperation {
-
-    private static final String TAG = GetRemoteShareOperation.class.getSimpleName();
-
-    private long mRemoteId;
-
-
-    public GetRemoteShareOperation(long remoteId) {
-        mRemoteId = remoteId;
-    }
-
+    private static final String TAG = GetSharesRemoteOperation.class.getSimpleName();
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
@@ -59,9 +51,8 @@ public class GetRemoteShareOperation extends RemoteOperation {
 
         // Get the response
         try {
-            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + Long.toString(mRemoteId));
+            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
             status = client.executeMethod(get);
 
             if (isSuccess(status)) {
@@ -71,11 +62,9 @@ public class GetRemoteShareOperation extends RemoteOperation {
                 ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
                     new ShareXMLParser()
                 );
-                parser.setOneOrMoreSharesRequired(true);
                 parser.setOwnCloudVersion(client.getOwnCloudVersion());
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
-
             } else {
                 result = new RemoteOperationResult(false, get);
             }

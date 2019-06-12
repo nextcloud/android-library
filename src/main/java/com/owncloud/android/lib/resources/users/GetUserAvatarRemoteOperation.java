@@ -46,9 +46,9 @@ import java.util.ArrayList;
 /**
  * Gets avatar about the user logged in, if available
  */
-public class GetRemoteUserAvatarOperation extends RemoteOperation {
+public class GetUserAvatarRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = GetRemoteUserAvatarOperation.class.getSimpleName();
+    private static final String TAG = GetUserAvatarRemoteOperation.class.getSimpleName();
 
     private static final String NON_OFFICIAL_AVATAR_PATH = "/index.php/avatar/";
 
@@ -62,8 +62,7 @@ public class GetRemoteUserAvatarOperation extends RemoteOperation {
      * if its Etag changed.
      */
     //private String mCurrentEtag;
-
-    public GetRemoteUserAvatarOperation(int dimension, String currentEtag) {
+    public GetUserAvatarRemoteOperation(int dimension, String currentEtag) {
         mDimension = dimension;
         //mCurrentEtag = currentEtag;
     }

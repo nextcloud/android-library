@@ -44,9 +44,9 @@ import java.util.ArrayList;
  *
  * Save in Result.getData in a OCCapability object
  */
-public class GetRemoteCapabilitiesOperation extends RemoteOperation {
+public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = GetRemoteCapabilitiesOperation.class.getSimpleName();
+    private static final String TAG = GetCapabilitiesRemoteOperation.class.getSimpleName();
 
     // OCS Routes
     private static final String OCS_ROUTE = "ocs/v1.php/cloud/capabilities";
@@ -142,14 +142,6 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
 
     // activity
     private static final String NODE_ACTIVITY = "activity";
-
-    /**
-     * Constructor
-     *
-     */
-    public GetRemoteCapabilitiesOperation() {
-
-    }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {

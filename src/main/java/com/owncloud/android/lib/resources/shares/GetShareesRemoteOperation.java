@@ -62,9 +62,9 @@ import java.util.ArrayList;
  * Status codes:
  *    100 - successful
  */
-public class GetRemoteShareesOperation extends RemoteOperation{
+public class GetShareesRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = GetRemoteShareesOperation.class.getSimpleName();
+    private static final String TAG = GetShareesRemoteOperation.class.getSimpleName();
 
     // OCS Routes
     private static final String OCS_ROUTE = "ocs/v2.php/apps/files_sharing/api/v1/sharees";    // from OC 8.2
@@ -106,7 +106,7 @@ public class GetRemoteShareesOperation extends RemoteOperation{
      * @param page			    page index in the list of results; beginning in 1
      * @param perPage           maximum number of results in a single page
      */
-    public GetRemoteShareesOperation(String searchString, int page, int perPage) {
+    public GetShareesRemoteOperation(String searchString, int page, int perPage) {
         mSearchString = searchString;
         mPage = page;
         mPerPage = perPage;

@@ -37,9 +37,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 /**
  * Creates a new share.  This allows sharing with a user or group or as a link.
  */
-public class CreateRemoteShareOperation extends RemoteOperation {
+public class CreateShareRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = CreateRemoteShareOperation.class.getSimpleName();
+    private static final String TAG = CreateShareRemoteOperation.class.getSimpleName();
 
     private static final String PARAM_PATH = "path";
     private static final String PARAM_SHARE_TYPE = "shareType";
@@ -76,7 +76,7 @@ public class CreateRemoteShareOperation extends RemoteOperation {
      *                       To obtain combinations, add the desired values together.
      *                       For instance, for Re-Share, delete, read, update, add 16+8+2+1 = 27.
      */
-    public CreateRemoteShareOperation(
+    public CreateShareRemoteOperation(
         String remoteFilePath,
         ShareType shareType,
         String shareWith,
@@ -146,7 +146,7 @@ public class CreateRemoteShareOperation extends RemoteOperation {
                 if (result.isSuccess() && mGetShareDetails) {
                     // retrieve more info - POST only returns the index of the new share
                     OCShare emptyShare = (OCShare) result.getData().get(0);
-                    GetRemoteShareOperation getInfo = new GetRemoteShareOperation(
+                    GetShareRemoteOperation getInfo = new GetShareRemoteOperation(
                         emptyShare.getRemoteId()
                     );
                     result = getInfo.execute(client);
