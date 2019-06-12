@@ -61,6 +61,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
     
     private static final String NODE_INSTALLED = "installed";
     private static final String NODE_VERSION = "version";
+    private static final String NODE_EXTENDED_SUPPORT = "extendedSupport";
     private static final String PROTOCOL_HTTPS = "https://";
     private static final String PROTOCOL_HTTP = "http://";
     private static final int UNTRUSTED_DOMAIN_ERROR_CODE = 15;
@@ -111,19 +112,21 @@ public class GetRemoteStatusOperation extends RemoteOperation {
                     mLatestResult = new RemoteOperationResult(
                     		RemoteOperationResult.ResultCode.INSTANCE_NOT_CONFIGURED);
                 } else {
+                    boolean extendedSupport = false;
+                    if (json.has(NODE_EXTENDED_SUPPORT)) {
+                        extendedSupport = json.getBoolean(NODE_EXTENDED_SUPPORT);
+                    }
+                    
                     String version = json.getString(NODE_VERSION);
 					OwnCloudVersion ocVersion = new OwnCloudVersion(version);
+					
                     if (!ocVersion.isVersionValid()) {
-                        mLatestResult = new RemoteOperationResult(
-                        		RemoteOperationResult.ResultCode.BAD_OC_VERSION);
-                        
+                        mLatestResult = new RemoteOperationResult(RemoteOperationResult.ResultCode.BAD_OC_VERSION);
                     } else {
                     	// success
                     	if (isRedirectToNonSecureConnection) {
                     		mLatestResult = new RemoteOperationResult(
-                    				RemoteOperationResult.ResultCode.
-                    					OK_REDIRECT_TO_NON_SECURE_CONNECTION
-        					);
+                    		        RemoteOperationResult.ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION);
                     	} else {
                     		mLatestResult = new RemoteOperationResult(
                     				baseUrlSt.startsWith(PROTOCOL_HTTPS) ?
@@ -134,11 +137,11 @@ public class GetRemoteStatusOperation extends RemoteOperation {
 
 						ArrayList<Object> data = new ArrayList<>();
 						data.add(ocVersion);
+						data.add(extendedSupport);
 						mLatestResult.setData(data);
 						retval = true;
                     }
                 }
-                
             } else if (status == HttpStatus.SC_BAD_REQUEST) {
                 try {
                     JSONObject json = new JSONObject(response);
