@@ -49,9 +49,9 @@ import java.util.ArrayList;
  * @author David A. Velasco
  * @author Mario Danic
  */
-public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
+public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
 
-    private static final String TAG = GetRemoteUserInfoOperation.class.getSimpleName();
+    private static final String TAG = GetUserInfoRemoteOperation.class.getSimpleName();
 
     // OCS Route
     private static final String OCS_ROUTE_SELF = "/ocs/v1.php/cloud/user";
@@ -75,9 +75,6 @@ public class GetRemoteUserInfoOperation extends OCSRemoteOperation {
      * Quota return value for quota information not available.
      */
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
-
-    public GetRemoteUserInfoOperation() {
-    }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {

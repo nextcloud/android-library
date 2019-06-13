@@ -1,5 +1,4 @@
 /* ownCloud Android Library is available under MIT license
- *   @author masensio
  *   @author David A. Velasco
  *   Copyright (C) 2015 ownCloud Inc.
  *   
@@ -35,11 +34,20 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
- * Get the data from the server about ALL the known shares owned by the requester.
+ * Get the data about a Share resource, known its remote ID.
  */
-public class GetRemoteSharesOperation extends RemoteOperation {
 
-    private static final String TAG = GetRemoteSharesOperation.class.getSimpleName();
+public class GetShareRemoteOperation extends RemoteOperation {
+
+    private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
+
+    private long mRemoteId;
+
+
+    public GetShareRemoteOperation(long remoteId) {
+        mRemoteId = remoteId;
+    }
+
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
@@ -51,8 +59,9 @@ public class GetRemoteSharesOperation extends RemoteOperation {
 
         // Get the response
         try {
-            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + Long.toString(mRemoteId));
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
             status = client.executeMethod(get);
 
             if (isSuccess(status)) {
@@ -62,9 +71,11 @@ public class GetRemoteSharesOperation extends RemoteOperation {
                 ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
                     new ShareXMLParser()
                 );
+                parser.setOneOrMoreSharesRequired(true);
                 parser.setOwnCloudVersion(client.getOwnCloudVersion());
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
+
             } else {
                 result = new RemoteOperationResult(false, get);
             }

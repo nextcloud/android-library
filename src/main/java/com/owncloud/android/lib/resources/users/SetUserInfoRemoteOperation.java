@@ -33,9 +33,9 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PutMethod;
 
 
-public class SetRemoteUserInfoOperation extends RemoteOperation {
+public class SetUserInfoRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = SetRemoteUserInfoOperation.class.getSimpleName();
+    private static final String TAG = SetUserInfoRemoteOperation.class.getSimpleName();
 
     private static final String OCS_ROUTE_PATH = "/ocs/v1.php/cloud/users/";
 
@@ -61,7 +61,7 @@ public class SetRemoteUserInfoOperation extends RemoteOperation {
     private Field field;
     private String value;
 
-    public SetRemoteUserInfoOperation(Field field, String value) {
+    public SetUserInfoRemoteOperation(Field field, String value) {
         this.field = field;
         this.value = value;
     }

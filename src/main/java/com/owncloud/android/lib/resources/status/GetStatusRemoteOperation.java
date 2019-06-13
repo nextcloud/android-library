@@ -50,14 +50,14 @@ import java.util.ArrayList;
  * @author David A. Velasco
  * @author masensio
  */
-public class GetRemoteStatusOperation extends RemoteOperation {
+public class GetStatusRemoteOperation extends RemoteOperation {
     
     /** 
      * Maximum time to wait for a response from the server when the connection is being tested, in MILLISECONDs.
      */
     private static final int TRY_CONNECTION_TIMEOUT = 50000;
 
-    private static final String TAG = GetRemoteStatusOperation.class.getSimpleName();
+    private static final String TAG = GetStatusRemoteOperation.class.getSimpleName();
     
     private static final String NODE_INSTALLED = "installed";
     private static final String NODE_VERSION = "version";
@@ -69,7 +69,7 @@ public class GetRemoteStatusOperation extends RemoteOperation {
     private RemoteOperationResult mLatestResult;
     private Context mContext;
 
-    public GetRemoteStatusOperation(Context context) {
+    public GetStatusRemoteOperation(Context context) {
         mContext = context;
     }
     

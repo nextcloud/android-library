@@ -38,9 +38,9 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
  * Remove a share
  */
 
-public class RemoveRemoteShareOperation extends RemoteOperation {
+public class RemoveShareRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = RemoveRemoteShareOperation.class.getSimpleName();
+    private static final String TAG = RemoveShareRemoteOperation.class.getSimpleName();
 
     private int mRemoteShareId;
 
@@ -50,7 +50,7 @@ public class RemoveRemoteShareOperation extends RemoteOperation {
      * @param remoteShareId Share ID
      */
 
-    public RemoveRemoteShareOperation(int remoteShareId) {
+    public RemoveShareRemoteOperation(int remoteShareId) {
         mRemoteShareId = remoteShareId;
 
     }

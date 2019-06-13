@@ -50,9 +50,9 @@ import java.util.Locale;
  * 
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-public class UpdateRemoteShareOperation extends RemoteOperation {
+public class UpdateShareRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = GetRemoteShareOperation.class.getSimpleName();
+    private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 
     private static final String PARAM_PASSWORD = "password";
     private static final String PARAM_EXPIRATION_DATE = "expireDate";
@@ -108,7 +108,7 @@ public class UpdateRemoteShareOperation extends RemoteOperation {
      *
      * @param remoteId Identifier of the share to update.
      */
-    public UpdateRemoteShareOperation(long remoteId) {
+    public UpdateShareRemoteOperation(long remoteId) {
         this.remoteId = remoteId;
         password = null;               // no update
         expirationDateInMillis = 0;    // no update

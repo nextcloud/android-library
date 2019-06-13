@@ -33,7 +33,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.GetRemoteCapabilitiesOperation;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -76,7 +76,7 @@ public class ExternalLinksOperation extends RemoteOperation {
 
         try {
             // check capabilities
-            RemoteOperation getCapabilities = new GetRemoteCapabilitiesOperation();
+            RemoteOperation getCapabilities = new GetCapabilitiesRemoteOperation();
             RemoteOperationResult capabilitiesResult = getCapabilities.execute(client);
             OCCapability capability = (OCCapability) capabilitiesResult.getData().get(0);
 
