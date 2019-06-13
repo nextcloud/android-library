@@ -90,6 +90,7 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
     private static final String PROPERTY_MICRO = "micro";
     private static final String PROPERTY_STRING = "string";
     private static final String PROPERTY_EDITION = "edition";
+    private static final String NODE_HAS_EXTENDED_SUPPORT = "extendedSupport";
 
     private static final String PROPERTY_API_ENABLED = "api_enabled";
     private static final String PROPERTY_ENABLED = "enabled";
@@ -194,6 +195,15 @@ public class GetRemoteCapabilitiesOperation extends RemoteOperation {
                         capability.setVersionMicro(respVersion.getInt(PROPERTY_MICRO));
                         capability.setVersionString(respVersion.getString(PROPERTY_STRING));
                         capability.setVersionEdition(respVersion.getString(PROPERTY_EDITION));
+                        
+                        if (respVersion.has(NODE_HAS_EXTENDED_SUPPORT)) {
+                            if (respVersion.getBoolean(NODE_HAS_EXTENDED_SUPPORT)) {
+                                capability.setExtendedSupport(CapabilityBooleanType.TRUE);
+                            } else {
+                                capability.setExtendedSupport(CapabilityBooleanType.FALSE);
+                            }
+                        }
+                        
                         Log_OC.d(TAG, "*** Added " + NODE_VERSION);
                     }
 

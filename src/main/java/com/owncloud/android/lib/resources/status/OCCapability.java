@@ -103,6 +103,8 @@ public class OCCapability {
     private String richDocumentsProductName;
 
     private CapabilityBooleanType activity;
+    
+    private CapabilityBooleanType extendedSupport;
 
     public OCCapability() {
         id = 0;
@@ -158,6 +160,8 @@ public class OCCapability {
         richDocumentsDirectEditing = CapabilityBooleanType.FALSE;
         richDocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
         richDocumentsProductName = "Collabora Online";
+        
+        extendedSupport = CapabilityBooleanType.UNKNOWN;
     }
 
     public OwnCloudVersion getVersion() {
