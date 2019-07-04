@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-URL=https://nextcloud.kaminsky.me/remote.php/webdav/integrationTests-library
+URL=https://nextcloud.kaminsky.me/remote.php/webdav/library-integrationTests
 ID=$3
 USER=$1
 PASS=$2
