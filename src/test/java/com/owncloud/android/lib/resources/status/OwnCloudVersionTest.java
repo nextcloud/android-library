@@ -25,20 +25,41 @@
  *
  */
 
-package com.owncloud.android.utils;
+package com.owncloud.android.lib.resources.status;
 
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-import org.junit.Test;
+        import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class OwncloudVersionTest {
+public class OwnCloudVersionTest {
     @Test
     public void testOwnCloudVersion() {
         OwnCloudVersion version = new OwnCloudVersion("12.0.0");
 
-        assertTrue(version.isNewerOrEqual(OwnCloudVersion.nextcloud_12));
+        assertEquals(0, version.compareTo(OwnCloudVersion.nextcloud_12));
+
+        version = new OwnCloudVersion("12.99.99");
+
+        assertEquals(0, version.compareTo(new OwnCloudVersion(0x0C636300))); // 12.99.99 in hex
+    }
+    
+    @Test
+    public void testGetMajorVersion() {
+        OwnCloudVersion version = new OwnCloudVersion("12.0.0");
+        assertEquals(12, version.getMajorVersionNumber());
+
+        version = new OwnCloudVersion("19.0.0");
+        assertEquals(19, version.getMajorVersionNumber());
+    }
+    
+    @Test
+    public void testSamMajorVersion() {
+        OwnCloudVersion version = new OwnCloudVersion("12.0.0");
+        
+        assertTrue(version.isSameMajorVersion(new OwnCloudVersion("12.99.99")));
+        assertFalse(version.isSameMajorVersion(new OwnCloudVersion("13.0.0")));
     }
 
     @Test

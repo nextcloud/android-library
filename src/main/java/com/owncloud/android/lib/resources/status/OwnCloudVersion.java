@@ -91,6 +91,14 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public boolean isNewerOrEqual(@NonNull OwnCloudVersion another) {
         return version >= another.version;
     }
+    
+    public boolean isSameMajorVersion(@NonNull OwnCloudVersion another) {
+        return this.getMajorVersionNumber() == another.getMajorVersionNumber();
+    }
+
+    protected int getMajorVersionNumber() {
+        return version >> (8 * MAX_DOTS) % 256;
+    }
 
     private void parseVersion(String version) {
     	try {
