@@ -27,7 +27,6 @@ package com.owncloud.android.lib.common;
 
 import android.net.Uri;
 
-import com.owncloud.android.lib.common.OwnCloudCredentialsFactory.OwnCloudAnonymousCredentials;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -270,9 +269,7 @@ public class OwnCloudClient extends HttpClient {
                 	destination = method.getRequestHeader("destination");
                 }
                 if (destination != null) {
-                	int suffixIndex = locationStr.lastIndexOf(
-                            (credentials instanceof OwnCloudBearerCredentials) ?
-                                    AccountUtils.ODAV_PATH : AccountUtils.WEBDAV_PATH_4_0);
+                    int suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0);
                     String redirectionBase = locationStr.substring(0, suffixIndex);
 
                     String destinationStr = destination.getValue();
@@ -326,11 +323,7 @@ public class OwnCloudClient extends HttpClient {
     }
 
     public Uri getWebdavUri() {
-    	if (credentials instanceof OwnCloudBearerCredentials) {
-    		return Uri.parse(baseUri + AccountUtils.ODAV_PATH);
-    	} else {
-    		return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_4_0);
-    	}
+        return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_4_0);
     }
 
     public Uri getUploadUri() {
@@ -338,11 +331,7 @@ public class OwnCloudClient extends HttpClient {
     }
 
     public Uri getNewWebdavUri() {
-        if (credentials instanceof OwnCloudBearerCredentials) {
-            return Uri.parse(baseUri + AccountUtils.ODAV_PATH);
-        } else {
-            return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_9_0);
-        }
+        return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_9_0);
     }
     
     /**
