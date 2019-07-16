@@ -95,8 +95,7 @@ public class OwnCloudAccount {
         savedAccount = null;
         name = null;
         this.baseUri = baseUri;
-        this.credentials = credentials != null ?
-            credentials : OwnCloudCredentialsFactory.getAnonymousCredentials();
+        this.credentials = credentials != null ? credentials : OwnCloudCredentialsFactory.getAnonymousCredentials();
         String username = this.credentials.getUsername();
         if (username != null) {
             name = AccountUtils.buildAccountName(this.baseUri, username);
