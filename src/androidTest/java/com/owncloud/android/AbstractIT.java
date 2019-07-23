@@ -35,7 +35,7 @@ public abstract class AbstractIT {
     private static final int BUFFER_SIZE = 1024;
     
     protected static OwnCloudClient client;
-    protected static Context context;
+    private static Context context;
 
     @BeforeClass
     public static void beforeAll() {
@@ -55,7 +55,10 @@ public abstract class AbstractIT {
         File tempDir = context.getFilesDir();
 
         File file = new File(tempDir + File.separator + name);
-        file.createNewFile();
+
+        if (!file.createNewFile()) {
+            throw new IOException("Cannot create file: " + file.getAbsolutePath());
+        }
 
         assertTrue(file.exists());
 
@@ -72,10 +75,8 @@ public abstract class AbstractIT {
     public static File extractAsset(String fileName, Context context) throws IOException {
         File extractedFile = new File(context.getCacheDir() + File.separator + fileName);
         if (!extractedFile.exists()) {
-            InputStream in = null;
-            FileOutputStream out = null;
-            in = context.getAssets().open(fileName);
-            out = new FileOutputStream(extractedFile);
+            InputStream in = context.getAssets().open(fileName);
+            FileOutputStream out = new FileOutputStream(extractedFile);
             byte[] buffer = new byte[BUFFER_SIZE];
             int readCount;
             while ((readCount = in.read(buffer)) != -1) {
