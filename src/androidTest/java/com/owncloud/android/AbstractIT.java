@@ -66,10 +66,8 @@ public abstract class AbstractIT {
 
         File file = new File(tempDir + File.separator + name);
 
-        if (!file.exists()) {
-            if (!file.createNewFile()) {
-                throw new IOException("Cannot create file: " + file.getAbsolutePath());
-            }
+        if (!file.exists() && !file.createNewFile()) {
+            throw new IOException("Cannot create file: " + file.getAbsolutePath());
         }
 
         assertTrue(file.exists());
