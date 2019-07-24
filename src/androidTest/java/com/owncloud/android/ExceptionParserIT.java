@@ -4,20 +4,16 @@ import com.owncloud.android.lib.common.operations.ExceptionParser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 
 /**
  * Created by tobi on 3/21/18.
  */
 
-@RunWith(AndroidJUnit4.class)
 public class ExceptionParserIT {
 
     @Test
