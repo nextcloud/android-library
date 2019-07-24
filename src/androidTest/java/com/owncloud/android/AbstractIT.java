@@ -52,7 +52,17 @@ public abstract class AbstractIT {
     }
 
     public String createFile(String name) throws IOException {
-        File tempDir = context.getFilesDir();
+        File tempDir = context.getExternalCacheDir();
+
+        if (tempDir == null) {
+            throw new IOException("Temp dir is null");
+        }
+
+        if (!tempDir.exists()) {
+            if (!tempDir.mkdirs()) {
+                throw new IOException("Cannot create temp dir: " + tempDir.getAbsolutePath());
+            }
+        }
 
         File file = new File(tempDir + File.separator + name);
 
