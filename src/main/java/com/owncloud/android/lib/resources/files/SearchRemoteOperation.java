@@ -53,7 +53,9 @@ public class SearchRemoteOperation extends RemoteOperation {
         PHOTO_SEARCH, // gets all files with mimetype "image/%"
         SHARED_SEARCH, // show all shares
         GALLERY_SEARCH, // combined photo and video
-        FILE_ID_SEARCH // search one file specified by file id
+        FILE_ID_SEARCH, // search one file specified by file id
+        CONTENT_TYPE_SEARCH,
+        RECENTLY_ADDED_SEARCH 
     }
 
     private String searchQuery;
