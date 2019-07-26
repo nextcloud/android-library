@@ -65,8 +65,6 @@ public abstract class AbstractIT {
     protected String baseFolderPath = "/test_for_build/";
 
     public static final String ASSETS__TEXT_FILE_NAME = "textFile.txt";
-    
-    private static Context context;
 
     @BeforeClass
     public static void beforeAll() {
