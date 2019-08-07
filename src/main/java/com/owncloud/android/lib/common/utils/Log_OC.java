@@ -14,6 +14,82 @@ import java.util.Locale;
 
 
 public class Log_OC {
+
+    private static Adapter impl = new LegacyImpl();
+
+    /**
+     * This adapter allows external library users to hook up
+     * application-specific logging framework, redirecting calls to legacy
+     * logging functions to new or custom implementation.
+     */
+    public interface Adapter {
+        void i(String tag, String message);
+        void d(String tag, String message);
+        void d(String tag, String message, Exception e);
+        void e(String tag, String message);
+        void e(String tag, String message, Throwable t);
+        void v(String tag, String message);
+        void w(String tag, String message);
+        void wtf(String tag, String message);
+    }
+
+    /**
+     * This is legacy logger implementation extracted to allow
+     * the code to compile and run without hiccup.
+     *
+     * Generally don't use it.
+     */
+    static class LegacyImpl implements Adapter {
+
+        @Override
+        public void i(String tag, String message) {
+            Log.i(tag, message);
+            appendLog(tag + ": " + message);
+        }
+
+        @Override
+        public void d(String tag, String message) {
+            Log.d(tag, message);
+            appendLog(tag + ": " + message);
+        }
+
+        @Override
+        public void d(String tag, String message, Exception e) {
+            Log.d(tag, message, e);
+            appendLog(tag + ": " + message + " Exception: " + Arrays.toString(e.getStackTrace()));
+        }
+
+        @Override
+        public void e(String tag, String message) {
+            Log.e(tag, message);
+            appendLog(tag + ": " + message);
+        }
+
+        @Override
+        public void e(String tag, String message, Throwable t) {
+            Log.e(tag, message, t);
+            appendLog(tag + ": " + message + " Exception: " + Arrays.toString(t.getStackTrace()));
+        }
+
+        @Override
+        public void v(String tag, String message) {
+            Log.v(tag, message);
+            appendLog(tag + ": " + message);
+        }
+
+        @Override
+        public void w(String tag, String message) {
+            Log.w(tag, message);
+            appendLog(tag + ": " + message);
+        }
+
+        @Override
+        public void wtf(String tag, String message) {
+            Log.wtf(tag, message);
+            appendLog(tag + ": " + message);
+        }
+    }
+
     private static final String SIMPLE_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
     private static final String LOG_FOLDER_NAME = "log";
     private static final long MAX_FILE_SIZE = 1000000; // 1MB
@@ -35,9 +111,17 @@ public class Log_OC {
         return mNextcloudDataFolderLog;
     }
 
+    /**
+     * Plug your own logger implementation. Call this as early as possible.
+     *
+     * @param adapter Custom logger implementation.
+     */
+    public static void setLoggerImplementation(Adapter adapter) {
+        impl = adapter;
+    }
+
     public static void i(String TAG, String message) {
-        Log.i(TAG, message);
-        appendLog(TAG + ": " + message);
+        impl.i(TAG, message);
     }
 
     public static void i(Object object, String message) {
@@ -45,8 +129,7 @@ public class Log_OC {
     }
 
     public static void d(String TAG, String message) {
-        Log.d(TAG, message);
-        appendLog(TAG + ": " + message);
+        impl.d(TAG, message);
     }
 
     public static void d(Object object, String message) {
@@ -54,8 +137,7 @@ public class Log_OC {
     }
 
     public static void d(String TAG, String message, Exception e) {
-        Log.d(TAG, message, e);
-        appendLog(TAG + ": " + message + " Exception: " + Arrays.toString(e.getStackTrace()));
+        impl.d(TAG, message, e);
     }
 
     public static void d(Object object, String message, Exception e) {
@@ -63,8 +145,7 @@ public class Log_OC {
     }
 
     public static void e(String TAG, String message) {
-        Log.e(TAG, message);
-        appendLog(TAG + ": " + message);
+        impl.e(TAG, message);
     }
 
     public static void e(Object object, String message) {
@@ -72,8 +153,7 @@ public class Log_OC {
     }
 
     public static void e(String TAG, String message, Throwable e) {
-        Log.e(TAG, message, e);
-        appendLog(TAG + ": " + message + " Exception: " + Arrays.toString(e.getStackTrace()));
+        impl.e(TAG, message, e);
     }
 
     public static void e(Object object, String message, Throwable e) {
@@ -81,8 +161,7 @@ public class Log_OC {
     }
 
     public static void v(String TAG, String message) {
-        Log.v(TAG, message);
-        appendLog(TAG + ": " + message);
+        impl.v(TAG, message);
     }
 
     public static void v(Object object, String message) {
@@ -90,8 +169,7 @@ public class Log_OC {
     }
 
     public static void w(String TAG, String message) {
-        Log.w(TAG, message);
-        appendLog(TAG + ": " + message);
+        impl.w(TAG, message);
     }
 
     public static void w(Object object, String message) {
@@ -99,8 +177,7 @@ public class Log_OC {
     }
 
     public static void wtf(String TAG, String message) {
-        Log.wtf(TAG, message);
-        appendLog(TAG + ": " + message);
+        impl.wtf(TAG, message);
     }
 
     public static void wtf(Object object, String message) {
