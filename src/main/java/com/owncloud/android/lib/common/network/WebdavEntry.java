@@ -98,7 +98,7 @@ public class WebdavEntry {
     @Getter private String note = "";
     @Getter private List<String> sharees = new ArrayList<>();
 
-    public enum MountType {INTERNAL, EXTERNAL}
+    public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
     public WebdavEntry(MultiStatusResponse ms, String splitElement) {
         resetData();
@@ -253,6 +253,8 @@ public class WebdavEntry {
             if (prop != null) {
                 if ("external".equals(prop.getValue())) {
                     mountType = MountType.EXTERNAL;
+                } else if ("group".equals(prop.getValue())) {
+                    mountType = MountType.GROUP;
                 } else {
                     mountType = MountType.INTERNAL;
                 }
