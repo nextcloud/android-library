@@ -80,6 +80,8 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+            
+            client.clearCredentials();
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
