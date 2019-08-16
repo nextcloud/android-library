@@ -81,6 +81,8 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
 
             post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
+            client.clearCredentials();
+
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
