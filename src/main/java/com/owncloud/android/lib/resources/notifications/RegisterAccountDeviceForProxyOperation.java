@@ -26,17 +26,19 @@
  */
 package com.owncloud.android.lib.resources.notifications;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.net.URLEncoder;
 
-public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
+import static com.owncloud.android.lib.common.operations.RemoteOperation.CONTENT_TYPE;
+import static com.owncloud.android.lib.common.operations.RemoteOperation.FORM_URLENCODED;
+
+public class RegisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
 
     private static final String TAG = RegisterAccountDeviceForProxyOperation.class.getSimpleName();
@@ -62,10 +64,9 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
         this.userPublicKey = userPublicKey;
     }
 
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+    public RemoteOperationResult run() {
+        RemoteOperationResult result;
+        int status;
         PostMethod post = null;
 
         try {
@@ -77,13 +78,9 @@ public class RegisterAccountDeviceForProxyOperation extends RemoteOperation {
             uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
 
             post = new PostMethod(uriToPost);
-            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
             post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
             
-            client.clearCredentials();
-
-            status = client.executeMethod(post);
+            status = new HttpClient().executeMethod(post);
             String response = post.getResponseBodyAsString();
 
             if(isSuccess(status)) {

@@ -75,8 +75,8 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+        RemoteOperationResult result;
+        int status;
         PushResponse pushResponse;
         PostMethod post = null;
 
@@ -109,11 +109,9 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                     result = new RemoteOperationResult(false, status, post.getResponseHeaders());
                 }
             }
-
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while registering device for notifications", e);
-
         } finally {
             if (post != null) {
                 post.releaseConnection();
