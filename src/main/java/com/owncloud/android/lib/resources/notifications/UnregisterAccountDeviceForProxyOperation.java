@@ -26,17 +26,19 @@
  */
 package com.owncloud.android.lib.resources.notifications;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.HttpDeleteWithBody;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 
 import java.net.URLEncoder;
 
-public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
+import static com.owncloud.android.lib.common.operations.RemoteOperation.CONTENT_TYPE;
+import static com.owncloud.android.lib.common.operations.RemoteOperation.FORM_URLENCODED;
+
+public class UnregisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
 
     private static final String TAG = RegisterAccountDeviceForProxyOperation.class.getSimpleName();
@@ -59,10 +61,9 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
         this.userPublicKey = userPublicKey;
     }
 
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+    public RemoteOperationResult run() {
+        RemoteOperationResult result;
+        int status;
         HttpDeleteWithBody delete = null;
 
         try {
@@ -73,12 +74,9 @@ public class UnregisterAccountDeviceForProxyOperation extends RemoteOperation {
             uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
 
             delete = new HttpDeleteWithBody(uriToPost);
-            delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             delete.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
-            client.clearCredentials();
-
-            status = client.executeMethod(delete);
+            status = new HttpClient().executeMethod(delete);
             String response = delete.getResponseBodyAsString();
 
             if(isSuccess(status)) {
