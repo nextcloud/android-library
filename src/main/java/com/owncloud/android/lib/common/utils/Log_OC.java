@@ -264,12 +264,12 @@ public class Log_OC {
      * Append the info of the device
      */
     private static void appendPhoneInfo() {
-        appendLog("Model: " + android.os.Build.MODEL);
-        appendLog("Brand: " + android.os.Build.BRAND);
-        appendLog("Product: " + android.os.Build.PRODUCT);
-        appendLog("Device: " + android.os.Build.DEVICE);
-        appendLog("Version-Codename: " + android.os.Build.VERSION.CODENAME);
-        appendLog("Version-Release: " + android.os.Build.VERSION.RELEASE);
+        i("Device", "Model: " + android.os.Build.MODEL);
+        i("Device", "Brand: " + android.os.Build.BRAND);
+        i("Device", "Product: " + android.os.Build.PRODUCT);
+        i("Device", "Device: " + android.os.Build.DEVICE);
+        i("Device", "Version-Codename: " + android.os.Build.VERSION.CODENAME);
+        i("Device", "Version-Release: " + android.os.Build.VERSION.RELEASE);
     }
 
     /**
