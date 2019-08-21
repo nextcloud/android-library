@@ -26,13 +26,15 @@ package com.owncloud.android.lib.resources.shares;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
+
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
+
+import androidx.annotation.NonNull;
+import lombok.Getter;
+import lombok.Setter;
 
 
 /**
@@ -161,10 +163,10 @@ public class OCShare implements Parcelable, Serializable {
     }
 
     public boolean isPasswordProtected() {
-        if (!ShareType.PUBLIC_LINK.equals(shareType)) {
-            return isPasswordProtected;
-        } else {
+        if (ShareType.PUBLIC_LINK == shareType) {
             return shareWith.length() > 0;
+        } else {
+            return isPasswordProtected;
         }
     }
 

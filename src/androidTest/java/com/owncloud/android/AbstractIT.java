@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -101,13 +101,15 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        ArrayList list = new ReadFolderRemoteOperation("/").execute(client).getData();
+        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        assertTrue(result.getLogMessage(), result.isSuccess());
 
-        for (Object object : list) {
+        for (Object object : result.getData()) {
             RemoteFile remoteFile = (RemoteFile) object;
 
             if (!remoteFile.getRemotePath().equals("/")) {
-                new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(client);
+                assertTrue(new RemoveFileRemoteOperation(remoteFile.getRemotePath())
+                                   .execute(client).isSuccess());
             }
         }
     }

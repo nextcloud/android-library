@@ -303,7 +303,7 @@ public abstract class RemoteOperation implements Runnable {
         	 * 						to trigger authentication update */
             if (mCallerActivity != null && mAccount != null && mContext != null &&
                     !result.isSuccess() &&
-                    ResultCode.UNAUTHORIZED.equals(result.getCode())
+                    ResultCode.UNAUTHORIZED == result.getCode()
                 ) {
                 /// possible fail due to lack of authorization
                 // in an operation performed in foreground

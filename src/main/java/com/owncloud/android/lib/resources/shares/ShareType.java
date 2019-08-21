@@ -58,29 +58,27 @@ public enum ShareType {
     public int getValue() {
         return value;
     }
-    
-    public static ShareType fromValue(int value)
-    {
-        switch (value)
-        {
-        case -1:
-            return NO_SHARED;
-        case 0:
-            return USER;
-        case 1:
-            return GROUP;
-        case 3:
-            return PUBLIC_LINK;
-        case 4:
-            return EMAIL;
-        case 5:
-            return CONTACT;
-        case 6:
-            return FEDERATED;
+
+    public static ShareType fromValue(int value) {
+        switch (value) {
+            case -1:
+                return NO_SHARED;
+            case 0:
+                return USER;
+            case 1:
+                return GROUP;
+            case 3:
+                return PUBLIC_LINK;
+            case 4:
+                return EMAIL;
+            case 5:
+                return CONTACT;
+            case 6:
+                return FEDERATED;
             case 10:
-                return ROOM;    
-        default:
-            return NO_SHARED;
+                return ROOM;
+            default:
+                return NO_SHARED;
         }
     }
 }

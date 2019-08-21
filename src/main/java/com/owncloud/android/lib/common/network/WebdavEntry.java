@@ -27,18 +27,23 @@ package com.owncloud.android.lib.common.network;
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.shares.ShareType;
+import com.owncloud.android.lib.resources.shares.ShareeUser;
 
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -64,6 +69,9 @@ public class WebdavEntry {
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
+    public static final String SHAREES_DISPLAY_NAME = "display-name";
+    public static final String SHAREES_ID = "id";
+    public static final String SHAREES_SHARE_TYPE = "type";
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
@@ -96,7 +104,7 @@ public class WebdavEntry {
     @Getter private int unreadCommentsCount;
     @Getter @Setter private boolean hasPreview;
     @Getter private String note = "";
-    @Getter private List<String> sharees = new ArrayList<>();
+    @Getter private ShareeUser[] sharees = new ShareeUser[0];
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -321,11 +329,79 @@ public class WebdavEntry {
             // NC sharees property <nc-sharees>
             prop = propSet.get(EXTENDED_PROPERTY_SHAREES, ncNamespace);
             if (prop != null && prop.getValue() != null) {
-                Collections.addAll(sharees, prop.getValue().toString().split(", "));
+                if (prop.getValue() instanceof ArrayList) {
+                    ArrayList list = (ArrayList) prop.getValue();
+
+                    List<ShareeUser> tempList = new ArrayList<>();
+                    
+                    for (int i = 0; i < list.size(); i++) {
+                        Element element = (Element) list.get(i);
+
+                        ShareeUser user = createShareeUser(element);
+
+                        if (user != null) {
+                            tempList.add(user);
+                        }
+                    }
+
+                    sharees = tempList.toArray(new ShareeUser[0]);
+
+                } else {
+                    // single item or empty
+                    Element element = (Element) prop.getValue();
+
+                    ShareeUser user = createShareeUser(element);
+
+                    if (user != null) {
+                        sharees = new ShareeUser[]{user};
+                    }
+                }
             }
         } else {
             Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
         }
+    }
+
+    private @Nullable
+    ShareeUser createShareeUser(Element element) {
+        String displayName = extractDisplayName(element);
+        String userId = extractUserId(element);
+        ShareType shareType = extractShareType(element);
+
+        if ((ShareType.GROUP == shareType || !displayName.isEmpty()) && !userId.isEmpty()) {
+            return new ShareeUser(userId, displayName, shareType);
+        } else {
+            return null;
+        }
+    }
+    
+    private String extractDisplayName(Element element) {
+        Node displayName = element.getElementsByTagNameNS(NAMESPACE_NC, SHAREES_DISPLAY_NAME).item(0);
+        if (displayName != null && displayName.getFirstChild() != null) {
+            return displayName.getFirstChild().getNodeValue();
+        }
+
+        return "";
+    }
+
+    private String extractUserId(Element element) {
+        Node userId = element.getElementsByTagNameNS(NAMESPACE_NC, SHAREES_ID).item(0);
+        if (userId != null && userId.getFirstChild() != null) {
+            return userId.getFirstChild().getNodeValue();
+        }
+
+        return "";
+    }
+
+    private ShareType extractShareType(Element element) {
+        Node shareType = element.getElementsByTagNameNS(NAMESPACE_NC, SHAREES_SHARE_TYPE).item(0);
+        if (shareType != null && shareType.getFirstChild() != null) {
+            int value = Integer.parseInt(shareType.getFirstChild().getNodeValue());
+
+            return ShareType.fromValue(value);
+        }
+
+        return ShareType.NO_SHARED;
     }
     
     public String decodedPath() {
