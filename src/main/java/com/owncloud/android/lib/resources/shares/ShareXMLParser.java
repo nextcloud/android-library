@@ -36,6 +36,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Parser for Share API Response
@@ -81,6 +82,8 @@ public class ShareXMLParser {
 	private static final String NODE_URL = "url";
 
 	private static final String TYPE_FOLDER = "folder";
+
+	private static final String TRUE = "1";
 	
 	private static final int SUCCESS = 100;
 	private static final int OK = 200;
@@ -287,91 +290,118 @@ public class ShareXMLParser {
 		parser.require(XmlPullParser.START_TAG, ns, NODE_ELEMENT);
 		
 		OCShare share = new OCShare();
-		
+
 		//Log_OC.d(TAG, "---- NODE ELEMENT ---");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
-	            continue;
-	        }
-			
+				continue;
+			}
+
 			String name = parser.getName();
 
-			if (name.equalsIgnoreCase(NODE_ELEMENT)) {
-				// patch to work around servers responding with extra <element> surrounding all
-				// the shares on the same file before
-				// https://github.com/owncloud/core/issues/6992 was fixed
-				readElement(parser, shares);
+			switch (name) {
+				case NODE_ELEMENT:
+					// patch to work around servers responding with extra <element> surrounding all
+					// the shares on the same file before
+					// https://github.com/owncloud/core/issues/6992 was fixed
+					readElement(parser, shares);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_ID)) {
-				share.setRemoteId(Integer.parseInt(readNode(parser, NODE_ID)));
+				case NODE_ID:
+					share.setRemoteId(Integer.parseInt(readNode(parser, NODE_ID)));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_ITEM_TYPE)) {
-				share.setFolder(readNode(parser, NODE_ITEM_TYPE).equalsIgnoreCase(TYPE_FOLDER));
-				fixPathForFolder(share);
+				case NODE_ITEM_TYPE:
+					share.setFolder(TYPE_FOLDER.equalsIgnoreCase(readNode(parser, NODE_ITEM_TYPE)));
+					fixPathForFolder(share);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_ITEM_SOURCE)) {
-				share.setItemSource(Long.parseLong(readNode(parser, NODE_ITEM_SOURCE)));
+				case NODE_ITEM_SOURCE:
+					share.setItemSource(Long.parseLong(readNode(parser, NODE_ITEM_SOURCE)));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_PARENT)) {
-				readNode(parser, NODE_PARENT);
+				case NODE_PARENT:
+					readNode(parser, NODE_PARENT);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_SHARE_TYPE)) {
-				int value = Integer.parseInt(readNode(parser, NODE_SHARE_TYPE));
-				share.setShareType(ShareType.fromValue(value));
+				case NODE_SHARE_TYPE:
+					int value = Integer.parseInt(readNode(parser, NODE_SHARE_TYPE));
+					share.setShareType(ShareType.fromValue(value));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_SHARE_WITH)) {
-				share.setShareWith(readNode(parser, NODE_SHARE_WITH));
+				case NODE_SHARE_WITH:
+					share.setShareWith(readNode(parser, NODE_SHARE_WITH));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_FILE_SOURCE)) {
-				share.setFileSource(Long.parseLong(readNode(parser, NODE_FILE_SOURCE)));
+				case NODE_FILE_SOURCE:
+					share.setFileSource(Long.parseLong(readNode(parser, NODE_FILE_SOURCE)));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_PATH)) {
-				share.setPath(readNode(parser, NODE_PATH));
-				fixPathForFolder(share);
+				case NODE_PATH:
+					share.setPath(readNode(parser, NODE_PATH));
+					fixPathForFolder(share);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_PERMISSIONS)) {
-				share.setPermissions(Integer.parseInt(readNode(parser, NODE_PERMISSIONS)));
+				case NODE_PERMISSIONS:
+					share.setPermissions(Integer.parseInt(readNode(parser, NODE_PERMISSIONS)));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_STIME)) {
-				share.setSharedDate(Long.parseLong(readNode(parser, NODE_STIME)));
+				case NODE_STIME:
+					share.setSharedDate(Long.parseLong(readNode(parser, NODE_STIME)));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_EXPIRATION)) {
-				String value = readNode(parser, NODE_EXPIRATION);
-				if (!(value.length() == 0)) {
-					share.setExpirationDate(WebdavUtils.parseResponseDate(value).getTime()); 
-				}
+				case NODE_EXPIRATION:
+					String expirationValue = readNode(parser, NODE_EXPIRATION);
+                    if (expirationValue.length() > 0) {
+						Date date = WebdavUtils.parseResponseDate(expirationValue);
+						if (date != null) {
+							share.setExpirationDate(date.getTime());
+						}
+					}
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_PASSWORD)) {
-				share.setPasswordProtected(readNode(parser, NODE_PASSWORD).length() > 0);
+				case NODE_PASSWORD:
+					share.setPasswordProtected(readNode(parser, NODE_PASSWORD).length() > 0);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_TOKEN)) {
-				share.setToken(readNode(parser, NODE_TOKEN));
+				case NODE_TOKEN:
+					share.setToken(readNode(parser, NODE_TOKEN));
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_STORAGE)) {
-				readNode(parser, NODE_STORAGE);
-			} else if (name.equalsIgnoreCase(NODE_MAIL_SEND)) {
-				readNode(parser, NODE_MAIL_SEND);
+				case NODE_STORAGE:
+					readNode(parser, NODE_STORAGE);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_SHARE_WITH_DISPLAY_NAME)) {
-				share.setSharedWithDisplayName(readNode(parser, NODE_SHARE_WITH_DISPLAY_NAME));
+				case NODE_MAIL_SEND:
+					readNode(parser, NODE_MAIL_SEND);
+					break;
 
-			} else if (name.equalsIgnoreCase(NODE_URL)) {
-				share.setShareType(ShareType.PUBLIC_LINK);
-				String value = readNode(parser, NODE_URL);
-				share.setShareLink(value);
+				case NODE_SHARE_WITH_DISPLAY_NAME:
+					share.setSharedWithDisplayName(readNode(parser, NODE_SHARE_WITH_DISPLAY_NAME));
+					break;
 
-            } else if (name.equalsIgnoreCase(NODE_NOTE)) {
-                share.setNote(readNode(parser, NODE_NOTE));
+				case NODE_URL:
+					share.setShareType(ShareType.PUBLIC_LINK);
+					share.setShareLink(readNode(parser, NODE_URL));
+					break;
 
-            } else if (name.equalsIgnoreCase(NODE_HIDE_DOWNLOAD)) {
-				boolean b = "1".equalsIgnoreCase(readNode(parser, NODE_HIDE_DOWNLOAD));
-				share.setHideFileDownload(b);
-			} else if (name.equalsIgnoreCase(NODE_UID_OWNER)) {
-				share.setUserId(readNode(parser, NODE_UID_OWNER));
+				case NODE_NOTE:
+					share.setNote(readNode(parser, NODE_NOTE));
+					break;
 
-            } else {
-                skip(parser);
-            } 
+				case NODE_HIDE_DOWNLOAD:
+					boolean b = TRUE.equalsIgnoreCase(readNode(parser, NODE_HIDE_DOWNLOAD));
+					share.setHideFileDownload(b);
+					break;
+
+				case NODE_UID_OWNER:
+					share.setUserId(readNode(parser, NODE_UID_OWNER));
+					break;
+
+				default:
+					skip(parser);
+                    break;
+			}
 		}		
 
 		if (isValidShare(share)) {
