@@ -49,6 +49,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
     private static final String NODE_DATA = "data";
 
-    private String nextUrl = "";
+    private int lastGiven = -1;
     
     private String fileId = "";
 
@@ -81,27 +82,23 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     public GetActivitiesRemoteOperation(String fileId) {
         this.fileId = fileId;
     }
-
-    public void setNextUrl(String url) {
-        nextUrl = url;
+    
+    public GetActivitiesRemoteOperation(String fileId, int lastGiven) {
+        this.fileId = fileId;
+        this.lastGiven = lastGiven;
+    }
+    
+    public GetActivitiesRemoteOperation(int lastGiven) {
+        this.lastGiven = lastGiven;
     }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
-        int status = -1;
+        int status;
         GetMethod get = null;
         ArrayList<Activity> activities;
-        String url;
-        if (nextUrl.isEmpty()) {
-            if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-                url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
-            } else {
-                url = client.getBaseUri() + OCS_ROUTE_PRE_V12;
-            }
-        } else {
-            url = nextUrl;
-        }
+        String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
         
         // add filter for fileId, if available
         if (!fileId.isEmpty()) {
@@ -120,6 +117,10 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
             if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
                 parameters.add(new NameValuePair("previews", "true"));
             }
+            
+            if (lastGiven != -1) {
+                parameters.add(new NameValuePair("since", String.valueOf(lastGiven)));
+            }
 
             if (!fileId.isEmpty()) {
                 parameters.add(new NameValuePair("sort", "desc"));
@@ -132,16 +133,11 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
             status = client.executeMethod(get);
             String response = get.getResponseBodyAsString();
 
-            Header nextPageHeader = get.getResponseHeader("Link");
+            Header nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
             if (nextPageHeader != null) {
-                String link = nextPageHeader.getValue();
-                if (link.startsWith("<") && link.endsWith(">; rel=\"next\"")) {
-                    nextUrl = nextPageHeader.getValue().substring(1, link.length() - 13);
-                } else {
-                    nextUrl = "";
-                }
+                lastGiven = Integer.parseInt(nextPageHeader.getValue());
             } else {
-                nextUrl = "";
+                lastGiven = -1;
             }
 
             if (isSuccess(status)) {
@@ -156,7 +152,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
                 ArrayList<Object> data = new ArrayList<>();
                 data.add(activities);
-                data.add(nextUrl);
+                data.add(lastGiven);
                 result.setData(data);
             } else {
                 result = new RemoteOperationResult(false, status, get.getResponseHeaders());
@@ -167,7 +163,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                     Log_OC.e(TAG, "*** status code: " + status);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while getting remote activities", e);
         } finally {
@@ -180,7 +176,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     }
 
     public boolean hasMoreActivities() {
-        return !nextUrl.isEmpty();
+        return lastGiven> 0;
     }
 
     protected ArrayList<Activity> parseResult(String response) {
