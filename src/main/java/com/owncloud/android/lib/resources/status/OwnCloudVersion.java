@@ -150,4 +150,8 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion> {
     public boolean isShareesOnDavSupported() {
         return isNewerOrEqual(nextcloud_17);
     }
+
+    public boolean isRemoteWipeSupported() {
+        return isNewerOrEqual(nextcloud_17);
+    }
 }
