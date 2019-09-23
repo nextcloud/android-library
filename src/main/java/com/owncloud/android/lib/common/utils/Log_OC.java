@@ -42,51 +42,69 @@ public class Log_OC {
     static class LegacyImpl implements Adapter {
 
         @Override
-        public void i(String tag, String message) {
-            Log.i(tag, message);
-            appendLog(tag + ": " + message);
+        public void i(final String tag, final String message) {
+            if (tag != null && message != null) {
+                Log.i(tag, message);
+                appendLog(tag + ": " + message);
+            }
         }
 
         @Override
-        public void d(String tag, String message) {
-            Log.d(tag, message);
-            appendLog(tag + ": " + message);
+        public void d(final String tag, final String message) {
+            if (tag != null && message != null) {
+                Log.d(tag, message);
+                appendLog(tag + ": " + message);
+            }
         }
 
         @Override
-        public void d(String tag, String message, Exception e) {
-            Log.d(tag, message, e);
-            appendLog(tag + ": " + message + " Exception: " + Arrays.toString(e.getStackTrace()));
+        public void d(final String tag, final String message, Exception e) {
+            if (tag != null && message != null && e != null) {
+                Log.d(tag, message, e);
+                StackTraceElement[] trace = e.getStackTrace();
+                appendLog(tag + ": " + message + " Exception: " + Arrays.toString(trace));
+            }
         }
 
         @Override
-        public void e(String tag, String message) {
-            Log.e(tag, message);
-            appendLog(tag + ": " + message);
+        public void e(final String tag, final String message) {
+            if (tag != null && message != null) {
+                Log.e(tag, message);
+                appendLog(tag + ": " + message);
+            }
         }
 
         @Override
-        public void e(String tag, String message, Throwable t) {
-            Log.e(tag, message, t);
-            appendLog(tag + ": " + message + " Exception: " + Arrays.toString(t.getStackTrace()));
+        public void e(final String tag, final String message, final Throwable t) {
+            if (tag != null && message != null && t != null) {
+                Log.e(tag, message, t);
+                StackTraceElement[] trace = t.getStackTrace();
+                appendLog(tag + ": " + message + " Exception: " + Arrays.toString(trace));
+            }
         }
 
         @Override
-        public void v(String tag, String message) {
-            Log.v(tag, message);
-            appendLog(tag + ": " + message);
+        public void v(final String tag, final String message) {
+            if (tag != null && message != null) {
+                Log.v(tag, message);
+                appendLog(tag + ": " + message);
+            }
         }
 
         @Override
-        public void w(String tag, String message) {
-            Log.w(tag, message);
-            appendLog(tag + ": " + message);
+        public void w(final String tag, final String message) {
+            if (tag != null && message != null) {
+                Log.w(tag, message);
+                appendLog(tag + ": " + message);
+            }
         }
 
         @Override
-        public void wtf(String tag, String message) {
-            Log.wtf(tag, message);
-            appendLog(tag + ": " + message);
+        public void wtf(final String tag, final String message) {
+            if (tag != null && message != null) {
+                Log.wtf(tag, message);
+                appendLog(tag + ": " + message);
+            }
         }
     }
 
