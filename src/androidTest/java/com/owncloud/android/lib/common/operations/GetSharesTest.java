@@ -28,8 +28,8 @@ package com.owncloud.android.lib.common.operations;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
-import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
-import com.owncloud.android.lib.resources.shares.GetRemoteSharesOperation;
+import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
+import com.owncloud.android.lib.resources.shares.GetSharesRemoteOperation;
 import com.owncloud.android.lib.resources.shares.OCShare;
 import com.owncloud.android.lib.resources.shares.ShareType;
 
@@ -48,7 +48,7 @@ public class GetSharesTest extends AbstractIT {
     @Test    
     public void testGetShares() {
         assertTrue(new CreateFolderRemoteOperation("/1/", true).execute(client).isSuccess());
-        assertTrue(new CreateRemoteShareOperation("/1/",
+        assertTrue(new CreateShareRemoteOperation("/1/",
                                                   ShareType.PUBLIC_LINK,
                                                   "",
                                                   false,
@@ -56,14 +56,14 @@ public class GetSharesTest extends AbstractIT {
                                                   1).execute(client).isSuccess());
 
         assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(client).isSuccess());
-        assertTrue(new CreateRemoteShareOperation("/2/",
+        assertTrue(new CreateShareRemoteOperation("/2/",
                                                   ShareType.PUBLIC_LINK,
                                                   "",
                                                   false,
                                                   "",
                                                   1).execute(client).isSuccess());
 
-        RemoteOperationResult result = new GetRemoteSharesOperation().execute(client);
+        RemoteOperationResult result = new GetSharesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
         assertEquals(2, result.getData().size());
         assertEquals("/1/", ((OCShare) result.getData().get(0)).getPath());

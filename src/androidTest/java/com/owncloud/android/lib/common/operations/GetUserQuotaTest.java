@@ -29,7 +29,7 @@ package com.owncloud.android.lib.common.operations;
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
-import com.owncloud.android.lib.resources.users.GetRemoteUserInfoOperation;
+import com.owncloud.android.lib.resources.users.GetUserInfoRemoteOperation;
 
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public class GetUserQuotaTest extends AbstractIT {
 
     @Test
     public void testGetUserQuota() {
-        RemoteOperationResult result = new GetRemoteUserInfoOperation().execute(client);
+        RemoteOperationResult result = new GetUserInfoRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() != null && result.getData().size() == 1);
 

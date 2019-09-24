@@ -28,7 +28,7 @@ package com.owncloud.android;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
-import com.owncloud.android.lib.resources.status.GetRemoteCapabilitiesOperation;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.junit.Assert;
@@ -46,7 +46,7 @@ public class GetCapabilitiesTest extends AbstractIT {
     @Test
     public void testGetRemoteCapabilitiesOperation() {
         // get capabilities
-        RemoteOperationResult result = new GetRemoteCapabilitiesOperation().execute(client);
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
         assertTrue(result.getData() != null && result.getData().size() == 1);
 

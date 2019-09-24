@@ -28,9 +28,9 @@ package com.owncloud.android.lib.common.operations;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
-import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
+import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
 import com.owncloud.android.lib.resources.shares.OCShare;
-import com.owncloud.android.lib.resources.shares.RemoveRemoteShareOperation;
+import com.owncloud.android.lib.resources.shares.RemoveShareRemoteOperation;
 import com.owncloud.android.lib.resources.shares.ShareType;
 
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class RemoveShareTest extends AbstractIT {
                                                  String.valueOf(System.currentTimeMillis() / 1000))
                            .execute(client).isSuccess());
 
-        RemoteOperationResult result = new CreateRemoteShareOperation(FILE_TO_UNSHARE,
+        RemoteOperationResult result = new CreateShareRemoteOperation(FILE_TO_UNSHARE,
                                                                       ShareType.PUBLIC_LINK,
                                                                       "",
                                                                       false,
@@ -67,7 +67,7 @@ public class RemoveShareTest extends AbstractIT {
 
         OCShare ocShare = (OCShare) result.getData().get(0);
 
-        assertTrue(new RemoveRemoteShareOperation((int) ocShare.getRemoteId()).execute(client)
+        assertTrue(new RemoveShareRemoteOperation((int) ocShare.getRemoteId()).execute(client)
                            .isSuccess());
     }
 }

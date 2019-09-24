@@ -30,13 +30,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import org.apache.commons.io.FileUtils;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
@@ -49,6 +46,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import static junit.framework.TestCase.assertTrue;
 
