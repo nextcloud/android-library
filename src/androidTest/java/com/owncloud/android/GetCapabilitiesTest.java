@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
- *   Copyright (C) 2016 Nextcloud
- *   Copyright (C) 2015 ownCloud Inc.
- *   Copyright (C) 2015 Bartosz Przybylski
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2019 Tobias Kaminsky
+ *   Copyright (C) 2019 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -24,45 +24,35 @@
  *   THE SOFTWARE.
  *
  */
-
-package com.owncloud.android.lib.test_project.test;
+package com.owncloud.android;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.test_project.TestActivity;
+import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * Class to test Get User Quota
- *
- * @author Bartosz Przybylski
+ * Class to test GetRemoteCapabilitiesOperation
  */
-public class GetUserQuotaTest extends RemoteTest {
-
-    private static final String LOG_TAG = GetUserQuotaTest.class.getCanonicalName();
-
-    /* Files to download. These files must exist on the account */
-    private static final String IMAGE_PATH = "/fileToDownload.png";
-    private static final String IMAGE_PATH_WITH_SPECIAL_CHARS = "/@file@download.png";
-    private static final String IMAGE_NOT_FOUND = "/fileNotFound.png";
-
-    private TestActivity mActivity;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        setActivityInitialTouchMode(false);
-        mActivity = getActivity();
-    }
-
+public class GetCapabilitiesTest extends AbstractIT {
     /**
-     * Test GetUserQuota
+     * Test get capabilities
      */
-    public void testGetUserQuota() {
-        RemoteOperationResult result = mActivity.getQuota();
+    @Test
+    public void testGetRemoteCapabilitiesOperation() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
-        Quota quota = (Quota)((ArrayList<Object>)result.getData()).get(0);
-        assertTrue(quota.getFree() >= 0);
-        assertTrue(quota.getUsed() >= 0);
-        assertTrue(quota.getTotal() > 0);
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+
+        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
+        // TODO assert basic capabilities
     }
 }
