@@ -36,7 +36,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -58,8 +57,6 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
             "/ocs/v2.php/apps/notifications/api/v2/notifications/";
-    private static final String OCS_ROUTE_LIST_V9_AND_UP =
-            "/ocs/v2.php/apps/notifications/api/v1/notifications/";
     private static final String FORMAT_JSON = "?format=json";
 
     // JSON Node names
@@ -79,12 +76,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
         int status;
         GetMethod get = null;
         List<Notification> notifications = new ArrayList<>();
-        String url;
-        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP + id + FORMAT_JSON;
-        } else {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V9_AND_UP + id + FORMAT_JSON;
-        }
+        String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP + id + FORMAT_JSON;
 
         // get the notifications
         try {

@@ -34,6 +34,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -43,16 +45,15 @@ import com.owncloud.android.lib.resources.activities.model.RichElement;
 import com.owncloud.android.lib.resources.activities.model.RichElementTypeAdapter;
 import com.owncloud.android.lib.resources.activities.models.PreviewObject;
 import com.owncloud.android.lib.resources.activities.models.PreviewObjectAdapter;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -94,10 +95,78 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    protected RemoteOperationResult run(NextcloudClient client) {
         RemoteOperationResult result;
         int status;
         GetMethod get = null;
+        ArrayList<Activity> activities;
+        String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
+
+        // add filter for fileId, if available
+        if (!fileId.isEmpty()) {
+            url = url + "/filter";
+        }
+
+        Log_OC.d(TAG, "URL: " + url);
+
+        try {
+            get = new GetMethod(url, true);
+
+            HashMap<String, String> parameters = new HashMap<>();
+            parameters.put("format", "json");
+            parameters.put("previews", "true");
+
+            if (lastGiven != -1) {
+                parameters.put("since", String.valueOf(lastGiven));
+            }
+
+            if (!fileId.isEmpty()) {
+                parameters.put("sort", "desc");
+                parameters.put("object_type", "files");
+                parameters.put("object_id", fileId);
+            }
+
+            get.setQueryString(parameters);
+
+            status = client.execute(get);
+            String response = get.getResponseBodyAsString();
+
+            String nextPageHeader = get.response.header("X-Activity-Last-Given");
+            if (nextPageHeader != null) {
+                lastGiven = Integer.parseInt(nextPageHeader);
+            } else {
+                lastGiven = -1;
+            }
+
+            if (isSuccess(status)) {
+                Log_OC.d(TAG, "Successful response: " + response);
+                result = new RemoteOperationResult(true, get);
+                // Parse the response
+                activities = parseResult(response);
+
+                ArrayList<Object> data = new ArrayList<>();
+                data.add(activities);
+                data.add(lastGiven);
+                result.setData(data);
+            } else {
+                result = new RemoteOperationResult(false, get);
+                Log_OC.e(TAG, "Failed response while getting user activities");
+                Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
+            }
+        } finally {
+            if (get != null) {
+                get.releaseConnection();
+            }
+        }
+
+        return result;
+    }
+    
+    @Override
+    protected RemoteOperationResult run(OwnCloudClient client) {
+        RemoteOperationResult result;
+        int status;
+        org.apache.commons.httpclient.methods.GetMethod get = null;
         ArrayList<Activity> activities;
         String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
         
@@ -109,15 +178,12 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         Log_OC.d(TAG, "URL: " + url);
 
         try {
-            get = new GetMethod(url);
+            get = new org.apache.commons.httpclient.methods.GetMethod(url);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             ArrayList<NameValuePair> parameters = new ArrayList<>();
             parameters.add(new NameValuePair("format", "json"));
-
-            if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-                parameters.add(new NameValuePair("previews", "true"));
-            }
+            parameters.add(new NameValuePair("previews", "true"));
             
             if (lastGiven != -1) {
                 parameters.add(new NameValuePair("since", String.valueOf(lastGiven)));

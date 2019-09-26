@@ -33,4 +33,6 @@ public interface OwnCloudCredentials {
     String getAuthToken();
 
     boolean authTokenExpires();
+
+    String toOkHttpCredentials();
 }

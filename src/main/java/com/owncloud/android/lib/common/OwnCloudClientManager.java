@@ -32,6 +32,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -54,9 +55,12 @@ public class OwnCloudClientManager {
     private static final String TAG = OwnCloudClientManager.class.getSimpleName();
 
     private ConcurrentMap<String, OwnCloudClient> mClientsWithKnownUsername = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, NextcloudClient> clientsNewWithKnownUsername = new ConcurrentHashMap<>();
 
     private ConcurrentMap<String, OwnCloudClient> mClientsWithUnknownUsername = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, NextcloudClient> clientsNewWithUnknownUsername = new ConcurrentHashMap<>();
 
+    @Deprecated
     public OwnCloudClient getClientFor(OwnCloudAccount account, Context context) throws OperationCanceledException,
             AuthenticatorException, IOException {
 
@@ -102,7 +106,7 @@ public class OwnCloudClientManager {
             // no client to reuse - create a new one
             // TODO remove dependency on OwnCloudClientFactory
             client = OwnCloudClientFactory.createOwnCloudClient(account.getBaseUri(), context.getApplicationContext(),
-                                                                true);
+                    true);
             client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
             // enable cookie tracking
 
@@ -116,7 +120,7 @@ public class OwnCloudClientManager {
 
             if (savedAccount != null) {
                 String userId = accountManager.getUserData(account.getSavedAccount(),
-                                                           AccountUtils.Constants.KEY_USER_ID);
+                        AccountUtils.Constants.KEY_USER_ID);
                 client.setUserId(userId);
             }
 
@@ -138,6 +142,98 @@ public class OwnCloudClientManager {
             }
             keepCredentialsUpdated(account, client);
             keepUriUpdated(account, client);
+        }
+
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log_OC.d(TAG, "getClientFor finishing ");
+        }
+
+        return client;
+    }
+
+    public NextcloudClient getNextcloudClientFor(OwnCloudAccount account, Context context)
+            throws OperationCanceledException, AuthenticatorException, IOException {
+
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log_OC.d(TAG, "getClientFor starting");
+        }
+        if (account == null) {
+            throw new IllegalArgumentException("Cannot get an NextcloudClient for a null account");
+        }
+
+        NextcloudClient client = null;
+        String accountName = account.getName();
+        String sessionName = account.getCredentials() == null ? "" :
+                AccountUtils.buildAccountName(account.getBaseUri(), account.getCredentials().getAuthToken());
+
+        if (accountName != null) {
+            client = clientsNewWithKnownUsername.get(accountName);
+        }
+        boolean reusingKnown = false;    // just for logs
+        if (client == null) {
+            if (accountName != null) {
+                client = clientsNewWithUnknownUsername.remove(sessionName);
+                if (client != null) {
+                    if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                        Log_OC.v(TAG, "reusing client for session " + sessionName);
+                    }
+                    clientsNewWithKnownUsername.put(accountName, client);
+                    if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                        Log_OC.v(TAG, "moved client to account " + accountName);
+                    }
+                }
+            } else {
+                client = clientsNewWithUnknownUsername.get(sessionName);
+            }
+        } else {
+            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                Log_OC.v(TAG, "reusing client for account " + accountName);
+            }
+            reusingKnown = true;
+        }
+
+        if (client == null) {
+            // no client to reuse - create a new one
+            // TODO remove dependency on OwnCloudClientFactory
+            client = OwnCloudClientFactory.createNextcloudClient(account.getBaseUri(), context.getApplicationContext(),
+                    true);
+            // TODO v2
+            //client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+            // enable cookie tracking
+
+            //AccountUtils.restoreCookies(accountName, client, context);
+
+            account.loadCredentials(context);
+            client.credentials = account.getCredentials().toOkHttpCredentials();
+
+            AccountManager accountManager = AccountManager.get(context);
+            Account savedAccount = account.getSavedAccount();
+
+            if (savedAccount != null) {
+                String userId = accountManager.getUserData(account.getSavedAccount(),
+                        AccountUtils.Constants.KEY_USER_ID);
+                client.setUserId(userId);
+            }
+
+            if (accountName != null) {
+                clientsNewWithKnownUsername.put(accountName, client);
+                if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                    Log_OC.v(TAG, "new client for account " + accountName);
+                }
+
+            } else {
+                clientsNewWithUnknownUsername.put(sessionName, client);
+                if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                    Log_OC.v(TAG, "new client for session " + sessionName);
+                }
+            }
+        } else {
+            if (!reusingKnown && Log.isLoggable(TAG, Log.VERBOSE)) {
+                Log_OC.v(TAG, "reusing client for session " + sessionName);
+            }
+            // TODO v2
+            // keepCredentialsUpdated(account, client);
+            // keepUriUpdated(account, client);
         }
 
         if (Log.isLoggable(TAG, Log.DEBUG)) {

@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.nextcloud.common.OkHttpMethodBase;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 
 import org.apache.commons.httpclient.HttpMethodBase;
@@ -45,7 +46,18 @@ import java.io.IOException;
  */
 public abstract class OCSRemoteOperation extends RemoteOperation {
 
+    @Deprecated
     public <T> T getServerResponse(HttpMethodBase method, TypeToken<T> type) throws IOException {
+        String response = method.getResponseBodyAsString();
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(response);
+
+        Gson gson = new Gson();
+
+        return gson.fromJson(element, type.getType());
+    }
+
+    public <T> T getServerResponse(OkHttpMethodBase method, TypeToken<T> type) throws IOException {
         String response = method.getResponseBodyAsString();
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(response);

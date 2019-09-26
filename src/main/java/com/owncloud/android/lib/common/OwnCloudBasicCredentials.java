@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import okhttp3.Credentials;
 
 public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
@@ -64,5 +65,10 @@ public class OwnCloudBasicCredentials implements OwnCloudCredentials {
     @Override
     public boolean authTokenExpires() {
         return false;
+    }
+
+    @Override
+    public String toOkHttpCredentials() {
+        return Credentials.basic(username, authToken);
     }
 }

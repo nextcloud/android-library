@@ -34,6 +34,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.accounts.AccountTypeUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
@@ -42,6 +43,8 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+
+import okhttp3.Credentials;
 
 public class OwnCloudClientFactory {
     
@@ -141,7 +144,7 @@ public class OwnCloudClientFactory {
         }  catch (GeneralSecurityException e) {
             Log_OC.e(TAG, "Advanced SSL Context could not be loaded. Default SSL management in" +
                     " the system will be used for HTTPS connections", e);
-            
+
         } catch (IOException e) {
             Log_OC.e(TAG, "The local server truststore could not be read. Default SSL management" +
                     " in the system will be used for HTTPS connections", e);
@@ -150,7 +153,75 @@ public class OwnCloudClientFactory {
         OwnCloudClient client = new OwnCloudClient(uri, NetworkUtils.getMultiThreadedConnManager());
         client.setDefaultTimeouts(DEFAULT_DATA_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
         client.setFollowRedirects(followRedirects);
-        
+
+        return client;
+    }
+
+    /**
+     * Creates a OwnCloudClient to access a URL and sets the desired parameters for ownCloud
+     * client connections.
+     *
+     * @param uri     URL to the ownCloud server; BASE ENTRY POINT, not WebDavPATH
+     * @param context Android context where the OwnCloudClient is being created.
+     * @return A OwnCloudClient object ready to be used
+     */
+    public static NextcloudClient createNextcloudClient(Uri uri, Context context, boolean followRedirects) {
+        try {
+            NetworkUtils.registerAdvancedSslContext(true, context);
+        } catch (GeneralSecurityException e) {
+            Log_OC.e(TAG, "Advanced SSL Context could not be loaded. Default SSL management in" +
+                    " the system will be used for HTTPS connections", e);
+
+        } catch (IOException e) {
+            Log_OC.e(TAG, "The local server truststore could not be read. Default SSL management" +
+                    " in the system will be used for HTTPS connections", e);
+        }
+
+        NextcloudClient client = new NextcloudClient(uri, context);
+        // TODO v2
+        //client.setDefaultTimeouts(DEFAULT_DATA_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
+        // client.setFollowRedirects(followRedirects);
+
+        return client;
+    }
+
+    /**
+     * Creates a NextcloudClient
+     *
+     * Do not call this method from the main thread.
+     *
+     * @param account                       The nextcloud account
+     * @param appContext                    Android application context
+     * @return                              A Nextcloud object ready to be used
+     * @throws AuthenticatorException       If the authenticator failed to get the authorization
+     *                                      token for the account.
+     * @throws OperationCanceledException   If the authenticator operation was cancelled while
+     *                                      getting the authorization token for the account.
+     * @throws IOException                  If there was some I/O error while getting the
+     *                                      authorization token for the account.
+     * @throws AccountNotFoundException     If 'account' is unknown for the AccountManager
+     */
+    public static NextcloudClient createNextcloudClient(Account account, Context appContext)
+            throws OperationCanceledException, AuthenticatorException, IOException,
+            AccountNotFoundException {
+        //Log_OC.d(TAG, "Creating OwnCloudClient associated to " + account.name);
+        Uri baseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(appContext, account));
+        AccountManager am = AccountManager.get(appContext);
+        // TODO avoid calling to getUserData here
+        String userId = am.getUserData(account, AccountUtils.Constants.KEY_USER_ID);
+
+        NextcloudClient client = createNextcloudClient(baseUri, appContext, true);
+        client.setUserId(userId);
+
+        String username = AccountUtils.getUsernameForAccount(account);
+        String password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type), false);
+
+        client.setCredentials(Credentials.basic(username, password));
+
+        // Restore cookies
+        // TODO v2 cookie handling
+        // AccountUtils.restoreCookies(account, client, appContext);
+
         return client;
     }
 }

@@ -479,8 +479,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
                     Log_OC.d(TAG, "*** Get Capabilities completed ");
                 } else {
-                    result = new RemoteOperationResult(statusProp, statusCode, null, null);
-                    Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
+                    result = new RemoteOperationResult(statusProp, statusCode, null);
+                    Log_OC.e(TAG, "Failed response while getting capabilities from the server");
                     Log_OC.e(TAG, "*** status: " + statusProp + "; message: " + message);
                 }
 

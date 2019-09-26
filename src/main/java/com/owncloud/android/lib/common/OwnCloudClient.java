@@ -31,7 +31,6 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
@@ -71,7 +70,6 @@ public class OwnCloudClient extends HttpClient {
     private int mInstanceNumber;
     
     @Getter private Uri baseUri;
-    @Getter @Setter private OwnCloudVersion ownCloudVersion = null;
     @Setter private String userId;
 
     /**

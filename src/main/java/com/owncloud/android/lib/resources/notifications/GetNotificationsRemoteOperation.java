@@ -39,7 +39,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -58,9 +57,6 @@ public class GetNotificationsRemoteOperation extends RemoteOperation {
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
             "/ocs/v2.php/apps/notifications/api/v2/notifications?format=json";
-    private static final String OCS_ROUTE_LIST_V9_AND_UP =
-        "/ocs/v2.php/apps/notifications/api/v1/notifications?format=json";
-
 
     private static final String TAG = GetNotificationsRemoteOperation.class.getSimpleName();
 
@@ -69,24 +65,13 @@ public class GetNotificationsRemoteOperation extends RemoteOperation {
 
     private static final String NODE_DATA = "data";
 
-    /**
-     * This status code means that there is no app that can generate notifications.
-     * Slow down the polling to once per hour.
-     */
-    public static final String STATUS_NO_CONTENT = "204";
-
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
         int status = -1;
         GetMethod get = null;
         List<Notification> notifications;
-        String url;
-        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
-        } else {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V9_AND_UP;
-        }
+        String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
 
         // get the notifications
         try {

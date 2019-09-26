@@ -1,8 +1,13 @@
-# [Nextcloud](https://nextcloud.com) Android Library [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/android-library/status.svg)](https://drone.nextcloud.com/nextcloud/android-library) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9f94f04e0f447a6b21c0ae08f6f7594)](https://www.codacy.com/app/Nextcloud/android-library?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/android-library&amp;utm_campaign=Badge_Grade)
+# [Nextcloud](https://nextcloud.com) Android Library v2 [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/android-library/status.svg)](https://drone.nextcloud.com/nextcloud/android-library) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9f94f04e0f447a6b21c0ae08f6f7594)](https://www.codacy.com/app/Nextcloud/android-library?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/android-library&amp;utm_campaign=Badge_Grade)
 
 ## Introduction
 Using Nextcloud Android library it will be the easiest way to communicate with Nextcloud servers.
 Add this library in your project and integrate your application with Nextcloud seamlessly.
+
+## Android Library v2
+Starting from 01.10.2019 we will not actively develop our old library (v1), but maintain it until 01.10.2021 with bug fixes.
+v2 is using [OkHTTP](https://square.github.io/okhttp) and [DAV4jvm](https://gitlab.com/bitfireAT/dav4jvm) by [BitfireAT](https://www.bitfire.at/).
+ 
 
 ## Use Library
 In the repository it is not only the library project but also the example project "sample_client"; 
