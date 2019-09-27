@@ -93,6 +93,7 @@ services:
       - /initnc.sh
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
       - su www-data -c "OC_PASS=user2 php /var/www/html/occ user:add --password-from-env --display-name='User Two' user2"
+      - su www-data -c "php /var/www/html/occ user:setting user2 files quota 1G"
       - su www-data -c "php /var/www/html/occ group:add users"
       - su www-data -c "php /var/www/html/occ group:adduser users user1"
       - su www-data -c "php /var/www/html/occ group:adduser users user2"
