@@ -32,6 +32,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -180,17 +181,28 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     }
 
     protected ArrayList<Activity> parseResult(String response) {
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jo = (JsonObject)jsonParser.parse(response);
-        JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
+        if (response == null || response.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(RichElement.class, new RichElementTypeAdapter())
-                .registerTypeAdapter(PreviewObject.class, new PreviewObjectAdapter())
-                .create();
-        Type listType = new TypeToken<List<Activity>>(){}.getType();
+        try {
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jo = (JsonObject) jsonParser.parse(response);
+            JsonArray jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA);
 
-        return gson.fromJson(jsonDataArray, listType);
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(RichElement.class, new RichElementTypeAdapter())
+                    .registerTypeAdapter(PreviewObject.class, new PreviewObjectAdapter())
+                    .create();
+            Type listType = new TypeToken<List<Activity>>() {
+            }.getType();
+
+            return gson.fromJson(jsonDataArray, listType);
+
+        } catch (JsonSyntaxException e) {
+            Log_OC.e(TAG, "Not a valid json: " + response, e);
+            return new ArrayList<>();
+        }
     }
 
     private boolean isSuccess(int status) {

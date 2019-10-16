@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class GetActivitiesRemoteOperationTest {
@@ -54,5 +55,38 @@ public class GetActivitiesRemoteOperationTest {
         ArrayList<Activity> activityList = sut.parseResult(activities);
 
         assertTrue(activityList.size() > 0);
+    }
+
+    @Test
+    public void testEmptyString() {
+        String activities = "";
+
+        GetActivitiesRemoteOperation sut = new GetActivitiesRemoteOperation();
+
+        ArrayList<Activity> activityList = sut.parseResult(activities);
+
+        assertEquals(0, activityList.size());
+    }
+
+    @Test
+    public void testNotValidString() {
+        String activities = "Wrong json syntax";
+
+        GetActivitiesRemoteOperation sut = new GetActivitiesRemoteOperation();
+
+        ArrayList<Activity> activityList = sut.parseResult(activities);
+
+        assertEquals(0, activityList.size());
+    }
+
+    @Test
+    public void testNullString() {
+        String activities = null;
+
+        GetActivitiesRemoteOperation sut = new GetActivitiesRemoteOperation();
+
+        ArrayList<Activity> activityList = sut.parseResult(activities);
+
+        assertEquals(0, activityList.size());
     }
 }
