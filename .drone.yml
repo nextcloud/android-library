@@ -38,7 +38,7 @@ trigger:
 
 ---
 kind: pipeline
-name: test
+name: test-nextcloud-master
 
 steps:
 - name: test
@@ -89,6 +89,77 @@ steps:
 services:
   - name: server
     image: nextcloudci/server:server-13
+    commands:
+      - /initnc.sh
+      - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
+      - su www-data -c "OC_PASS=user2 php /var/www/html/occ user:add --password-from-env --display-name='User Two' user2"
+      - su www-data -c "php /var/www/html/occ user:setting user2 files quota 1G"
+      - su www-data -c "php /var/www/html/occ group:add users"
+      - su www-data -c "php /var/www/html/occ group:adduser users user1"
+      - su www-data -c "php /var/www/html/occ group:adduser users user2"
+      - /run.sh
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+    - pull_request
+---
+kind: pipeline
+name: test-nextcloud-17
+
+steps:
+  - name: test
+    image: nextcloudci/android:android-44
+    privileged: true
+    environment:
+      LOG_USERNAME:
+        from_secret: LOG_USERNAME
+      LOG_PASSWORD:
+        from_secret: LOG_PASSWORD
+      GIT_USERNAME:
+        from_secret: GIT_USERNAME
+      GIT_TOKEN:
+        from_secret: GIT_TOKEN
+    commands:
+      - emulator -avd android-27 -no-window -no-audio &
+      - ./wait_for_emulator.sh
+      - ./gradlew assembleDebug
+      - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - ./gradlew installDebugAndroidTest
+      - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - ./gradlew combinedTestReport
+      - curl -o codecov.sh https://codecov.io/bash
+      - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
+
+  - name: notify
+    image: drillster/drone-email
+    settings:
+      port: 587
+      from: nextcloud-drone@kaminsky.me
+      recipients_only: true
+      username:
+        from_secret: EMAIL_USERNAME
+      password:
+        from_secret: EMAIL_PASSWORD
+      recipients:
+        from_secret: EMAIL_RECIPIENTS
+      host:
+        from_secret: EMAIL_HOST
+    when:
+      event:
+        - push
+      status:
+        - failure
+      branch:
+        - master
+
+services:
+  - name: server-17
+    image: nextcloudci/server:server-13
+    environment:
+      BRANCH: stable-17
     commands:
       - /initnc.sh
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
