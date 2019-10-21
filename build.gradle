@@ -60,7 +60,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
     
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
     
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.1.0'
