@@ -66,6 +66,7 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
     public static final String EXTENDED_PROPERTY_NOTE = "note";
     public static final String EXTENDED_PROPERTY_SHAREES = "sharees";
+    public static final String EXTENDED_PROPERTY_RICH_WORKSPACE = "rich-workspace";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -105,6 +106,7 @@ public class WebdavEntry {
     @Getter @Setter private boolean hasPreview;
     @Getter private String note = "";
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
+    @Getter private String richWorkspace = "";
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -320,10 +322,16 @@ public class WebdavEntry {
                 trashbinDeletionTimestamp = Long.parseLong((String) prop.getValue());
             }
 
-            // NC note property <nc-note>
+            // NC note property <nc:note>
             prop = propSet.get(EXTENDED_PROPERTY_NOTE, ncNamespace);
             if (prop != null && prop.getValue() != null) {
                 note = prop.getValue().toString();
+            }
+
+            // NC rich-workspace property <nc:rich-workspace>
+            prop = propSet.get(EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace);
+            if (prop != null && prop.getValue() != null) {
+                richWorkspace = prop.getValue().toString();
             }
 
             // NC sharees property <nc-sharees>

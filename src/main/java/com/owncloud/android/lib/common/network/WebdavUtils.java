@@ -110,6 +110,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NOTE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_SHAREES, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace);
 
         return propSet;
     }
