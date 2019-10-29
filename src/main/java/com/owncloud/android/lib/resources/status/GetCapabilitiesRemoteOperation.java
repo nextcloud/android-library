@@ -140,6 +140,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_RICHDOCUMENTS_TEMPLATES = "templates";
     private static final String NODE_RICHDOCUMENTS_PRODUCT_NAME = "productName";
 
+    // DirectEditing
+    private static final String NODE_DIRECT_EDITING = "directEditing";
+        
     // activity
     private static final String NODE_ACTIVITY = "activity";
 
@@ -298,6 +301,13 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                             if (respFiles.has(PROPERTY_VERSIONING)) {
                                 capability.setFilesVersioning(CapabilityBooleanType.fromBooleanValue(
                                         respFiles.getBoolean(PROPERTY_VERSIONING)));
+                            }
+
+                            // direct editing
+                            if (respFiles.has(NODE_DIRECT_EDITING)) {
+                                JSONObject respDirectEditing = respFiles.getJSONObject(NODE_DIRECT_EDITING);
+
+                                capability.setDirectEditingEtag(respDirectEditing.getString("etag"));
                             }
 
                             Log_OC.d(TAG, "*** Added " + NODE_FILES);

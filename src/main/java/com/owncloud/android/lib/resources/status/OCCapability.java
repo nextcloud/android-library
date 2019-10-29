@@ -106,6 +106,9 @@ public class OCCapability {
     
     private CapabilityBooleanType extendedSupport;
 
+    // DirectEditing
+    private String directEditingEtag;
+
     public OCCapability() {
         id = 0;
         accountName = "";
@@ -162,6 +165,8 @@ public class OCCapability {
         richDocumentsProductName = "Collabora Online";
         
         extendedSupport = CapabilityBooleanType.UNKNOWN;
+
+        directEditingEtag = "";
     }
 
     public OwnCloudVersion getVersion() {

@@ -24,38 +24,40 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android;
 
+package com.nextcloud.android.lib.resources.directediting;
+
+import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
-import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
+import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
 
-import org.junit.Assert;
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
+import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Class to test GetRemoteCapabilitiesOperation
- */
-public class GetCapabilitiesTest extends AbstractIT {
-    /**
-     * Test get capabilities
-     */
+public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
     @Test
-    public void testGetRemoteCapabilitiesOperation() {
-        // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+    public void createFileFromTemplate() throws IOException {
+        // create file
+        String filePath = createFile("text");
+        String remotePath = "/text.md";
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+                                    .execute(client).isSuccess());
+
+        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+
+        // open file
+        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
+        String url = (String) result.getSingleData();
 
-        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
-
-        Assert.assertFalse(capability.getDirectEditingEtag().isEmpty());
-        
-        // TODO assert basic capabilities
+        assertFalse(url.isEmpty());
     }
 }
