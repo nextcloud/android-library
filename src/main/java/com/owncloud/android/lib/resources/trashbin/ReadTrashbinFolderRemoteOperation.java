@@ -74,7 +74,7 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
         PropFindMethod query = null;
 
         try {
-            String baseUri = client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/trash/";
+            String baseUri = client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/trash";
             DavPropertyNameSet propSet = WebdavUtils.getTrashbinPropSet();
                 
             query = new PropFindMethod(baseUri + WebdavUtils.encodePath(remotePath), propSet, DavConstants.DEPTH_1);
