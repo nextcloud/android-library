@@ -29,34 +29,114 @@ package com.nextcloud.common
 
 import android.content.Context
 import android.net.Uri
+import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.OwnCloudClientFactory
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
+import com.owncloud.android.lib.common.accounts.AccountUtils
+import com.owncloud.android.lib.common.network.RedirectionPath
 import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.apache.commons.httpclient.HttpStatus
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
-    var client: OkHttpClient = Builder().cookieJar(CookieJar.NO_COOKIES).build()
+    companion object {
+        @JvmStatic
+        val TAG = NextcloudClient::class.java.simpleName
+    }
+
+    var client: OkHttpClient = Builder()
+            .cookieJar(CookieJar.NO_COOKIES)
+            .callTimeout(OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+            .build()
 
     lateinit var credentials: String
     lateinit var userId: String
+    lateinit var request: Request
     var requestBuilder: Request.Builder = Request.Builder()
+    var followRedirects = true;
 
 
     fun execute(method: OkHttpMethodBase): Int {
         val temp = requestBuilder
-                .header("Authorization", credentials)
-                .header("User-Agent", "Test UserAgent") // TODO change me
-                .header("http.protocol.single-cookie-header", "true")
                 .url(method.buildQueryParameter())
+
+        method.requestHeaders.put("Authorization", credentials)
+        method.requestHeaders.put("User-Agent", OwnCloudClientManagerFactory.getUserAgent())
+        method.requestHeaders.forEach({ (name, value) -> temp.header(name, value) })
 
         if (method.useOcsApiRequestHeader) {
             temp.header(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
         }
 
-        val request = temp.build()
-
+        request = temp.build()
+        
         method.response = client.newCall(request).execute()
 
-        return method.response.code()
+        if (followRedirects) {
+            return followRedirection(method).getLastStatus()
+        } else {
+            return method.response.code()
+        }
+    }
+
+    fun getRequestHeader(name: String): String? {
+        return request.header(name)
+    }
+
+    @Throws(IOException::class)
+    fun followRedirection(method: OkHttpMethodBase): RedirectionPath {
+        var redirectionsCount = 0
+        var status = method.getStatusCode()
+        val result = RedirectionPath(status, OwnCloudClient.MAX_REDIRECTIONS_COUNT)
+
+        while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
+                (status == HttpStatus.SC_MOVED_PERMANENTLY ||
+                        status == HttpStatus.SC_MOVED_TEMPORARILY ||
+                        status == HttpStatus.SC_TEMPORARY_REDIRECT)) {
+            var location = method.getResponseHeader("Location")
+            if (location == null) {
+                location = method.getResponseHeader("location")
+            }
+            if (location != null) {
+                Log_OC.d(TAG, "Location to redirect: " + location)
+                result.addLocation(location)
+                // Release the connection to avoid reach the max number of connections per host
+                // due to it will be set a different url
+                method.releaseConnection()
+                method.uri = location
+                var destination = getRequestHeader("Destination")
+
+                if (destination == null) {
+                    destination = getRequestHeader("destination")
+                }
+
+                if (destination != null) {
+                    val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0)
+                    val redirectionBase = location.substring(0, suffixIndex)
+                    val destinationStr = destination
+                    val destinationPath = destinationStr.substring(baseUri.toString().length)
+                    val redirectedDestination = redirectionBase + destinationPath
+                    destination = redirectedDestination
+
+                    if (getRequestHeader("Destination").isNullOrEmpty()) {
+                        method.requestHeaders.put("destination", destination)
+                    } else {
+                        method.requestHeaders.put("Destination", destination)
+                    }
+                }
+                status = execute(method)
+                result.addStatus(status)
+                redirectionsCount++
+            } else {
+                Log_OC.d(TAG, "No location to redirect!")
+                status = HttpStatus.SC_NOT_FOUND
+            }
+        }
+        return result
     }
 }

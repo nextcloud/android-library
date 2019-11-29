@@ -43,6 +43,8 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
+
 
 /**
  * Operation which execution involves one or several interactions with an ownCloud server.
@@ -144,13 +146,7 @@ public abstract class RemoteOperation implements Runnable {
      * @param context Android context for the component calling the method.
      * @return Result of the operation.
      */
-    public RemoteOperationResult executeNextcloudClient(Account account, Context context) {
-        if (account == null) {
-            throw new IllegalArgumentException("Trying to execute a remote operation with a NULL Account");
-        }
-        if (context == null) {
-            throw new IllegalArgumentException("Trying to execute a remote operation with a NULL Context");
-        }
+    public RemoteOperationResult executeNextcloudClient(@NonNull Account account, @NonNull Context context) {
         mAccount = account;
         mContext = context.getApplicationContext();
         try {
@@ -191,10 +187,7 @@ public abstract class RemoteOperation implements Runnable {
      *                  the operation.
      * @return			Result of the operation.
      */
-    public RemoteOperationResult execute(NextcloudClient client) {
-        if (client == null) {
-            throw new IllegalArgumentException("Trying to execute a remote operation with a NULL NextcloudClient");
-        }
+    public RemoteOperationResult execute(@NonNull NextcloudClient client) {
         clientNew = client;
 
         return run(client);

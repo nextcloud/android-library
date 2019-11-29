@@ -34,10 +34,15 @@ import okhttp3.Response
 /**
  * Common base class for all new OkHttpMethods
  */
-abstract class OkHttpMethodBase(val uri: String,
+abstract class OkHttpMethodBase(var uri: String,
                                 val useOcsApiRequestHeader: Boolean) {
     lateinit var response: Response
     var queryMap: Map<String, String> = HashMap()
+    var requestHeaders: MutableMap<String, String> = HashMap()
+
+    fun OkHttpMethodBase() {
+        requestHeaders.put("http.protocol.single-cookie-header", "true")
+    }
 
     fun buildQueryParameter(): HttpUrl {
         val httpBuilder = HttpUrl.parse(uri)?.newBuilder() ?: throw IllegalStateException("Error")
@@ -69,5 +74,9 @@ abstract class OkHttpMethodBase(val uri: String,
 
     fun getResponseHeaders(): Headers {
         return response.headers()
+    }
+
+    fun getResponseHeader(name: String): String? {
+        return response.header(name)
     }
 }

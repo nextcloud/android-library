@@ -52,6 +52,7 @@ public class OwnCloudClientFactory {
     
     /** Default timeout for waiting data from the server */
     public static final int DEFAULT_DATA_TIMEOUT = 60000;
+    public static final long DEFAULT_DATA_TIMEOUT_LONG = 60000;
     
     /** Default timeout for establishing a connection */
     public static final int DEFAULT_CONNECTION_TIMEOUT = 60000;
@@ -178,9 +179,7 @@ public class OwnCloudClientFactory {
         }
 
         NextcloudClient client = new NextcloudClient(uri, context);
-        // TODO v2
-        //client.setDefaultTimeouts(DEFAULT_DATA_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
-        // client.setFollowRedirects(followRedirects);
+        client.setFollowRedirects(followRedirects);
 
         return client;
     }
