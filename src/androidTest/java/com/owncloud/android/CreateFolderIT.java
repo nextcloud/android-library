@@ -30,7 +30,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ExistenceCheckRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.After;
 import org.junit.Before;
@@ -87,8 +86,6 @@ public class CreateFolderIT extends AbstractIT {
      */
     @Test
     public void testCreateFolderSpecialCharactersOnNewVersion() {
-        client.setOwnCloudVersion(OwnCloudVersion.nextcloud_12);
-
         String remotePath = mFullPath2FolderBase + "_<";
         RemoteOperationResult result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue("Remote path: " + remotePath, result.isSuccess());

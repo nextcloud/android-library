@@ -34,7 +34,6 @@ import com.owncloud.android.lib.resources.files.CopyFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
@@ -281,7 +280,6 @@ public class CopyFileIT extends AbstractIT {
         assertEquals("folder to copy into does no exist", result.getHttpCode(), HttpStatus.SC_CONFLICT);
 
         // name collision
-        client.setOwnCloudVersion(OwnCloudVersion.nextcloud_12);
         copyOperation = new CopyFileRemoteOperation(SRC_PATH_TO_FILE_1, TARGET_PATH_TO_ALREADY_EXISTENT_FILE_7, false);
         result = copyOperation.execute(client);
         assertSame("Name collision", result.getCode(), ResultCode.INVALID_OVERWRITE);

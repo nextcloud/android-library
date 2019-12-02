@@ -25,7 +25,7 @@ package com.owncloud.android.lib.common;
 
 public class OwnCloudClientManagerFactory {
     private static OwnCloudClientManager sDefaultSingleton;
-    private static String sUserAgent;
+    private static String sUserAgent = "Mozilla/5.0 (Android) Nextcloud-android";
 
     public static OwnCloudClientManager getDefaultSingleton() {
         if (sDefaultSingleton == null) {

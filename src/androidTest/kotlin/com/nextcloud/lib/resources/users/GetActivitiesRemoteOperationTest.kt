@@ -32,7 +32,7 @@ import java.util.*
 class GetActivitiesRemoteOperationTest : AbstractIT() {
     @Test
     fun getActivities() {
-        val result = GetActivitiesRemoteOperation().execute(nextcloudClient)
+        val result = nextcloudClient.execute(GetActivitiesRemoteOperation())
         assertTrue(result.isSuccess)
 
         val activities = result.data[0] as ArrayList<Activity>

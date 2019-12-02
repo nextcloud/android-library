@@ -31,7 +31,6 @@ import android.content.Context
 import android.net.Uri
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.OwnCloudClientFactory
-import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.accounts.AccountUtils
 import com.owncloud.android.lib.common.network.RedirectionPath
 import com.owncloud.android.lib.common.operations.RemoteOperation
@@ -58,7 +57,6 @@ class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
     lateinit var credentials: String
     lateinit var userId: String
     lateinit var request: Request
-    var requestBuilder: Request.Builder = Request.Builder()
     var followRedirects = true;
 
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
@@ -66,26 +64,7 @@ class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
     }
     
     fun execute(method: OkHttpMethodBase): Int {
-        val temp = requestBuilder
-                .url(method.buildQueryParameter())
-
-        method.requestHeaders.put("Authorization", credentials)
-        method.requestHeaders.put("User-Agent", OwnCloudClientManagerFactory.getUserAgent())
-        method.requestHeaders.forEach({ (name, value) -> temp.header(name, value) })
-
-        if (method.useOcsApiRequestHeader) {
-            temp.header(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
-        }
-
-        request = temp.build()
-        
-        method.response = client.newCall(request).execute()
-
-        if (followRedirects) {
-            return followRedirection(method).getLastStatus()
-        } else {
-            return method.response.code()
-        }
+        return method.execute(this)
     }
 
     fun getRequestHeader(name: String): String? {
@@ -133,7 +112,7 @@ class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
                         method.requestHeaders.put("Destination", destination)
                     }
                 }
-                status = execute(method)
+                status = method.execute(this)
                 result.addStatus(status)
                 redirectionsCount++
             } else {

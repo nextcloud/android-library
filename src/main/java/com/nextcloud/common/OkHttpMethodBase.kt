@@ -27,8 +27,11 @@
 
 package com.nextcloud.common
 
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
+import com.owncloud.android.lib.common.operations.RemoteOperation
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.Request
 import okhttp3.Response
 
 /**
@@ -39,6 +42,7 @@ abstract class OkHttpMethodBase(var uri: String,
     lateinit var response: Response
     var queryMap: Map<String, String> = HashMap()
     var requestHeaders: MutableMap<String, String> = HashMap()
+    var requestBuilder: Request.Builder = Request.Builder()
 
     fun OkHttpMethodBase() {
         requestHeaders.put("http.protocol.single-cookie-header", "true")
@@ -78,5 +82,28 @@ abstract class OkHttpMethodBase(var uri: String,
 
     fun getResponseHeader(name: String): String? {
         return response.header(name)
+    }
+
+    fun execute(nextcloudClient: NextcloudClient): Int {
+        val temp = requestBuilder
+                .url(buildQueryParameter())
+
+        requestHeaders.put("Authorization", nextcloudClient.credentials)
+        requestHeaders.put("User-Agent", OwnCloudClientManagerFactory.getUserAgent())
+        requestHeaders.forEach({ (name, value) -> temp.header(name, value) })
+
+        if (useOcsApiRequestHeader) {
+            temp.header(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
+        }
+
+        val request = temp.build()
+
+        response = nextcloudClient.newCall(request).execute()
+
+        if (nextcloudClient.followRedirects) {
+            return nextcloudClient.followRedirection(this).getLastStatus()
+        } else {
+            return response.code()
+        }
     }
 }
