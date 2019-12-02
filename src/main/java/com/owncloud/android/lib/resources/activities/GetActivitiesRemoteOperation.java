@@ -95,7 +95,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult run(NextcloudClient client) {
         RemoteOperationResult result;
         int status;
         GetMethod get = null;

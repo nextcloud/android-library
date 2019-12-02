@@ -35,6 +35,7 @@ import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.accounts.AccountUtils
 import com.owncloud.android.lib.common.network.RedirectionPath
 import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
@@ -60,7 +61,10 @@ class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
     var requestBuilder: Request.Builder = Request.Builder()
     var followRedirects = true;
 
-
+    fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
+        return remoteOperation.run(this)
+    }
+    
     fun execute(method: OkHttpMethodBase): Int {
         val temp = requestBuilder
                 .url(method.buildQueryParameter())
