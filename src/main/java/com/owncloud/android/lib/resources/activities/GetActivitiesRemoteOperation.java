@@ -272,6 +272,6 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     }
 
     private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK || status == HttpStatus.SC_NOT_MODIFIED);
+        return (status == HttpStatus.SC_OK || status == HttpStatus.SC_NOT_MODIFIED || status == HttpStatus.SC_NOT_FOUND);
     }
 }
