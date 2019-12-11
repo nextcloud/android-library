@@ -31,7 +31,6 @@ import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavException;
@@ -88,10 +87,7 @@ public class MoveFileRemoteOperation extends RemoteOperation {
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-
-        OwnCloudVersion version = client.getOwnCloudVersion();
-
-        /// check parameters
+        // check parameters
         if (mTargetRemotePath.equals(mSrcRemotePath)) {
             // nothing to do!
             return new RemoteOperationResult(ResultCode.OK);

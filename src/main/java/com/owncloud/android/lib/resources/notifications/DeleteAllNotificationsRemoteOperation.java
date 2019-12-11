@@ -31,7 +31,6 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
@@ -45,20 +44,13 @@ public class DeleteAllNotificationsRemoteOperation extends RemoteOperation {
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
             "/ocs/v2.php/apps/notifications/api/v2/notifications";
-    private static final String OCS_ROUTE_LIST_V9_AND_UP =
-            "/ocs/v2.php/apps/notifications/api/v1/notifications";
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
         int status;
         DeleteMethod delete = null;
-        String url;
-        if (client.getOwnCloudVersion().compareTo(OwnCloudVersion.nextcloud_12) >= 0) {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
-        } else {
-            url = client.getBaseUri() + OCS_ROUTE_LIST_V9_AND_UP;
-        }
+        String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
 
         try {
             delete = new DeleteMethod(url);

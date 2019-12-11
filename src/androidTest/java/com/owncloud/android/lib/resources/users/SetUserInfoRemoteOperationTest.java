@@ -41,7 +41,7 @@ public class SetUserInfoRemoteOperationTest extends AbstractIT {
     public void testSetEmail() {
         RemoteOperationResult userInfo = new GetUserInfoRemoteOperation().execute(client);
         assertTrue(userInfo.isSuccess());
-        String oldValue = ((UserInfo) userInfo.getData().get(0)).email;
+        String oldValue = ((UserInfo) userInfo.getData().get(0)).getEmail();
 
         // set
         assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.EMAIL, "new@mail.com")

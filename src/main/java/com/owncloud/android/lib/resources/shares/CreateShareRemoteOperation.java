@@ -139,7 +139,6 @@ public class CreateShareRemoteOperation extends RemoteOperation {
                     new ShareXMLParser()
                 );
                 parser.setOneOrMoreSharesRequired(true);
-                parser.setOwnCloudVersion(client.getOwnCloudVersion());
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
 

@@ -1,5 +1,7 @@
 package com.owncloud.android.lib.common;
 
+import okhttp3.Credentials;
+
 public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 
     protected OwnCloudAnonymousCredentials() {
@@ -19,6 +21,11 @@ public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
     @Override
     public boolean authTokenExpires() {
         return false;
+    }
+
+    @Override
+    public String toOkHttpCredentials() {
+        return Credentials.basic(getUsername(), getAuthToken());
     }
 
     @Override

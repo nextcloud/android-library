@@ -30,9 +30,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
@@ -48,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+import okhttp3.Credentials;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -57,8 +60,9 @@ import static junit.framework.TestCase.assertTrue;
 
 public abstract class AbstractIT {
     private static final int BUFFER_SIZE = 1024;
-    
-    protected static OwnCloudClient client;
+
+    public static OwnCloudClient client;
+    protected static NextcloudClient nextcloudClient;
     private static Context context;
 
     protected String baseFolderPath = "/test_for_build/";
@@ -77,6 +81,12 @@ public abstract class AbstractIT {
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         client.setUserId(loginName); // for test same as userId
+
+        OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/1.0.0");
+
+        nextcloudClient = new NextcloudClient(url, context);
+        nextcloudClient.credentials = Credentials.basic(loginName, password);
+        nextcloudClient.userId = loginName; // for test same as userId
     }
 
     public String createFile(String name) throws IOException {
@@ -137,7 +147,7 @@ public abstract class AbstractIT {
 
             if (!remoteFile.getRemotePath().equals("/")) {
                 assertTrue(new RemoveFileRemoteOperation(remoteFile.getRemotePath())
-                                   .execute(client).isSuccess());
+                        .execute(client).isSuccess());
             }
         }
     }

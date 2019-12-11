@@ -255,7 +255,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
                     ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
                             new ShareXMLParser()
                     );
-                    parser.setOwnCloudVersion(client.getOwnCloudVersion());
                     parser.setServerBaseUri(client.getBaseUri());
                     result = parser.parse(response);
 

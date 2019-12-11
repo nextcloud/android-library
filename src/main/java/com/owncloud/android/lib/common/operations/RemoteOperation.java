@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
@@ -41,6 +42,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCo
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
+
+import androidx.annotation.NonNull;
 
 
 /**
@@ -71,6 +74,7 @@ public abstract class RemoteOperation implements Runnable {
     
 	/** Object to interact with the remote server */
 	private OwnCloudClient mClient = null;
+    private NextcloudClient clientNew = null;
 	
 	/** Callback object to notify about the execution of the remote operation */
 	private OnRemoteOperationListener mListener = null;
@@ -85,7 +89,17 @@ public abstract class RemoteOperation implements Runnable {
 	/**
 	 *  Abstract method to implement the operation in derived classes.
 	 */
-	protected abstract RemoteOperationResult run(OwnCloudClient client);
+	@Deprecated
+    protected RemoteOperationResult run(OwnCloudClient client) {
+        Log_OC.d(this, "Not used anymore");
+        throw new UnsupportedOperationException("Not used anymore");
+    }
+
+    public RemoteOperationResult run(NextcloudClient client) {
+        // Once all RemoteOperation implement it, this should be abstract 
+        Log_OC.d(this, "Not yet implemented");
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 	
 
     /**
@@ -101,6 +115,7 @@ public abstract class RemoteOperation implements Runnable {
      * @param context   Android context for the component calling the method.
      * @return          Result of the operation.
      */
+    @Deprecated
     public RemoteOperationResult execute(Account account, Context context) {
         if (account == null) {
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL Account");
@@ -120,6 +135,32 @@ public abstract class RemoteOperation implements Runnable {
         return run(mClient);
     }
 
+    /**
+     * Synchronously executes the remote operation on the received ownCloud account.
+     * <p>
+     * Do not call this method from the main thread.
+     * <p>
+     * This method should be used whenever an ownCloud account is available, instead of
+     * {@link #execute(NextcloudClient)}.
+     *
+     * @param account ownCloud account in remote ownCloud server to reach during the
+     *                execution of the operation.
+     * @param context Android context for the component calling the method.
+     * @return Result of the operation.
+     */
+    public RemoteOperationResult executeNextcloudClient(@NonNull Account account, @NonNull Context context) {
+        mAccount = account;
+        mContext = context.getApplicationContext();
+        try {
+            OwnCloudAccount ocAccount = new OwnCloudAccount(mAccount, mContext);
+            clientNew = OwnCloudClientManagerFactory.getDefaultSingleton().getNextcloudClientFor(ocAccount, mContext);
+        } catch (Exception e) {
+            Log_OC.e(TAG, "Error while trying to access to " + mAccount.name, e);
+            return new RemoteOperationResult(e);
+        }
+        return run(clientNew);
+    }
+
 	/**
 	 * Synchronously executes the remote operation
 	 * 
@@ -129,11 +170,27 @@ public abstract class RemoteOperation implements Runnable {
      *                  the operation.
 	 * @return			Result of the operation.
 	 */
+	@Deprecated
     public RemoteOperationResult execute(OwnCloudClient client) {
         if (client == null) {
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL OwnCloudClient");
         }
 		mClient = client;
+
+        return run(client);
+    }
+
+    /**
+     * Synchronously executes the remote operation
+     *
+     * Do not call this method from the main thread.
+     *
+     * @param client	Client object to reach an ownCloud server during the execution of
+     *                  the operation.
+     * @return			Result of the operation.
+     */
+    public RemoteOperationResult execute(@NonNull NextcloudClient client) {
+        clientNew = client;
 
         return run(client);
     }

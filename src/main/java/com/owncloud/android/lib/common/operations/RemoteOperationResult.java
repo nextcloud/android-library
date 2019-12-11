@@ -30,6 +30,7 @@ import android.os.Build;
 import android.system.ErrnoException;
 import android.system.OsConstants;
 
+import com.nextcloud.common.OkHttpMethodBase;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -62,6 +63,7 @@ import java.util.Locale;
 import javax.net.ssl.SSLException;
 
 import lombok.ToString;
+import okhttp3.Headers;
 
 
 /**
@@ -305,6 +307,10 @@ public class RemoteOperationResult implements Serializable {
         }
     }
 
+    public RemoteOperationResult(boolean success, OkHttpMethodBase httpMethod) {
+        this(success, httpMethod.getStatusCode(), httpMethod.getStatusText(), httpMethod.getResponseHeaders());
+    }
+
     /**
      * Public constructor from separate elements of an HTTP or DAV response.
      *
@@ -376,6 +382,43 @@ public class RemoteOperationResult implements Serializable {
                 }
             }
         }
+        if (isIdPRedirection()) {
+            mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
+        }
+    }
+
+    /**
+     * Public constructor from separate elements of an HTTP or DAV response.
+     *
+     * To be used when the result needs to be interpreted from HTTP response elements that could come from
+     * different requests (WARNING: black magic, try to avoid).
+     *
+     * If all the fields come from the same HTTP/DAV response, {@link #RemoteOperationResult(boolean, HttpMethod)}
+     * should be used instead.
+     *
+     * Determines a {@link ResultCode} depending on the HTTP code and HTTP response headers received.
+     *
+     * @param success     The operation was considered successful or not.
+     * @param httpCode    HTTP status code returned by an HTTP/DAV method.
+     * @param httpPhrase  HTTP status line phrase returned by an HTTP/DAV method
+     * @param httpHeaders HTTP response header returned by an HTTP/DAV method
+     */
+    public RemoteOperationResult(boolean success,
+                                 int httpCode,
+                                 String httpPhrase,
+                                 Headers httpHeaders) {
+        this(success, httpCode, httpPhrase);
+
+        String location = httpHeaders.get("location");
+        if (location != null) {
+            mRedirectedLocation = location;
+        }
+
+        String auth = httpHeaders.get("www-authenticat");
+        if (auth != null) {
+            mAuthenticateHeaders.add(auth);
+        }
+
         if (isIdPRedirection()) {
             mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
         }
@@ -621,7 +664,7 @@ public class RemoteOperationResult implements Serializable {
         return mRedirectedLocation;
     }
 
-    public boolean isIdPRedirection() {
+    public final boolean isIdPRedirection() {
         return (mRedirectedLocation != null &&
                 (mRedirectedLocation.toUpperCase(Locale.US).contains("SAML") ||
                         mRedirectedLocation.toLowerCase(Locale.US).contains("wayf")));
