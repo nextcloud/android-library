@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
@@ -55,7 +56,7 @@ abstract class OkHttpMethodBase(var uri: String,
     }
 
     fun buildQueryParameter(): HttpUrl {
-        val httpBuilder = HttpUrl.parse(uri)?.newBuilder() ?: throw IllegalStateException("Error")
+        val httpBuilder = uri.toHttpUrlOrNull()?.newBuilder() ?: throw IllegalStateException("Error")
 
         queryMap.forEach { (k, v) -> httpBuilder.addQueryParameter(k, v) }
 

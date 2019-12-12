@@ -179,7 +179,7 @@ public class OwnCloudClientFactory {
         }
 
         NextcloudClient client = new NextcloudClient(uri, context);
-        client.setFollowRedirects(followRedirects);
+        client.setShouldFollowRedirects(followRedirects);
 
         return client;
     }
