@@ -53,7 +53,7 @@ configurations.all {
 
 dependencies {
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.1'
-    api 'com.squareup.okhttp3:okhttp:3.14.2'
+    api 'com.squareup.okhttp3:okhttp:3.12.6' // >= 3.13 requires Android 5 (API 21)
     implementation 'com.gitlab.bitfireAT:dav4jvm:1.0' // in transition phase, we use old and new libs
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
