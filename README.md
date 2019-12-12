@@ -7,7 +7,18 @@ Add this library in your project and integrate your application with Nextcloud s
 ## Android Library v2
 Starting from 01.10.2019 we will not actively develop our old library (v1), but maintain it until 01.10.2021 with bug fixes.
 v2 is using [OkHTTP](https://square.github.io/okhttp) and [DAV4jvm](https://gitlab.com/bitfireAT/dav4jvm) by [BitfireAT](https://www.bitfire.at/).
- 
+Needed changes for projects using this library are:
+- change build.gradle
+  - add to android {…}: compileOptions {
+  ```
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+  ```
+    }
+  -  add to dependencies {…}:
+  ```
+     implementation "commons-httpclient:commons-httpclient:3.1@jar" // remove after entire switch to lib v2
+  ``` 
 
 ## Use Library
 In the repository it is not only the library project but also the example project "sample_client"; 
