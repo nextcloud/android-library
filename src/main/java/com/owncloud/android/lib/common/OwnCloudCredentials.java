@@ -24,7 +24,9 @@
 
 package com.owncloud.android.lib.common;
 
-public interface OwnCloudCredentials {
+import android.os.Parcelable;
+
+public interface OwnCloudCredentials extends Parcelable {
 
     void applyTo(OwnCloudClient ownCloudClient);
 
