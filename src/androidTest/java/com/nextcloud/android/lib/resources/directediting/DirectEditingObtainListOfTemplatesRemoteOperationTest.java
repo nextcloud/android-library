@@ -24,38 +24,30 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android;
 
+package com.nextcloud.android.lib.resources.directediting;
+
+import com.owncloud.android.AbstractIT;
+import com.owncloud.android.lib.common.TemplateList;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
-import com.owncloud.android.lib.resources.status.OCCapability;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Class to test GetRemoteCapabilitiesOperation
- */
-public class GetCapabilitiesTest extends AbstractIT {
-    /**
-     * Test get capabilities
-     */
+public class DirectEditingObtainListOfTemplatesRemoteOperationTest extends AbstractIT {
+
     @Test
-    public void testGetRemoteCapabilitiesOperation() {
-        // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+    public void testGetAll() {
+        RemoteOperationResult result = new DirectEditingObtainListOfTemplatesRemoteOperation("text",
+                "textdocument")
+                .execute(client);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
+        TemplateList templateList = (TemplateList) result.getSingleData();
 
-        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
-
-        Assert.assertFalse(capability.getDirectEditingEtag().isEmpty());
-        
-        // TODO assert basic capabilities
+        assertEquals("Empty file", templateList.templates.get("empty").title);
+        assertEquals("md", templateList.templates.get("empty").extension);
     }
 }

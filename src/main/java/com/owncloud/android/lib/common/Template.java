@@ -24,38 +24,27 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android;
 
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
-import com.owncloud.android.lib.resources.status.OCCapability;
+package com.owncloud.android.lib.common;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.parceler.Parcel;
 
-import static org.junit.Assert.assertTrue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Class to test GetRemoteCapabilitiesOperation
+ * Template for direct editing data model
  */
-public class GetCapabilitiesTest extends AbstractIT {
-    /**
-     * Test get capabilities
-     */
-    @Test
-    public void testGetRemoteCapabilitiesOperation() {
-        // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
-        assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
-
-        OCCapability capability = (OCCapability) result.getData().get(0);
-
-        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
-
-        Assert.assertFalse(capability.getDirectEditingEtag().isEmpty());
-        
-        // TODO assert basic capabilities
-    }
+@Parcel
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Template {
+    public String id;
+    public String extension;
+    public String title;
+    public String preview;
 }
