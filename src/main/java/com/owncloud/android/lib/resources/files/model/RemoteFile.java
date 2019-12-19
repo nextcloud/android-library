@@ -67,6 +67,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private boolean hasPreview;
     private String note;
     private ShareeUser[] sharees;
+    private String richWorkspace;
 
     public RemoteFile() {
         resetData();
@@ -106,6 +107,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setUnreadCommentsCount(we.getUnreadCommentsCount());
         setHasPreview(we.isHasPreview());
         setSharees(we.getSharees());
+        setRichWorkspace(we.getRichWorkspace());
     }
 
     /**

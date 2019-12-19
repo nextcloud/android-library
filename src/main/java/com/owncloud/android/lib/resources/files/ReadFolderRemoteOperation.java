@@ -180,6 +180,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
         file.setHasPreview(we.isHasPreview());
         file.setNote(we.getNote());
         file.setSharees(we.getSharees());
+        file.setRichWorkspace(we.getRichWorkspace());
         
         return file;
     }

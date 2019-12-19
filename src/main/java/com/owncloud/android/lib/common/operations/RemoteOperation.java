@@ -65,6 +65,7 @@ public abstract class RemoteOperation implements Runnable {
 
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
+    public static final String JSON_ENCODED = "application/json";
 
     /** ownCloud account in the remote ownCloud server to operate */
     private Account mAccount = null;
