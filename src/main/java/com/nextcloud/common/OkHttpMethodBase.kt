@@ -65,7 +65,7 @@ abstract class OkHttpMethodBase(var uri: String,
     }
 
     fun releaseConnection() {
-        response.close()
+        response.body()?.close()
     }
 
     fun getStatusCode(): Int {
