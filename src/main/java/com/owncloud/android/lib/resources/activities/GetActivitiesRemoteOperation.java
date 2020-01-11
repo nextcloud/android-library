@@ -130,8 +130,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
             status = client.execute(get);
             String response = get.getResponseBodyAsString();
-
-            String nextPageHeader = get.response.header("X-Activity-Last-Given");
+            String nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
             if (nextPageHeader != null) {
                 lastGiven = Integer.parseInt(nextPageHeader);
             } else {
