@@ -39,10 +39,14 @@ import okhttp3.Response
  */
 abstract class OkHttpMethodBase(var uri: String,
                                 val useOcsApiRequestHeader: Boolean) {
-    lateinit var response: Response
-    var queryMap: Map<String, String> = HashMap()
-    var requestHeaders: MutableMap<String, String> = HashMap()
-    var requestBuilder: Request.Builder = Request.Builder()
+    companion object {
+        const val UNKOWN_STATUS_CODE: Int = -1;
+    }
+    
+    private var response: Response? = null
+    private var queryMap: Map<String, String> = HashMap()
+    private val requestHeaders: MutableMap<String, String> = HashMap()
+    private val requestBuilder: Request.Builder = Request.Builder()
 
     fun OkHttpMethodBase() {
         requestHeaders.put("http.protocol.single-cookie-header", "true")
@@ -56,32 +60,53 @@ abstract class OkHttpMethodBase(var uri: String,
         return httpBuilder.build()
     }
 
+    /**
+     * Set request headers completely replacing existing headers.
+     * To clear request headers, call this method with empty list.
+     *
+     * @param headers List of header-value pairs
+     */
+    fun setRequestHeaders(vararg headers: Pair<String, String>) {
+        requestHeaders.clear()
+        requestHeaders.putAll(headers)
+    }
+
+    /**
+     * Adds request header, overwriting any existing value.
+     *
+     * @param header HTTP request header name
+     * @param value HTTP request header value
+     */
+    fun addRequestHeader(header: String, value: String) {
+        requestHeaders.put(header, value)
+    }
+
     fun setQueryString(params: Map<String, String>) {
         queryMap = params
     }
 
     fun getResponseBodyAsString(): String {
-        return response.body()?.string() ?: ""
+        return response?.body()?.string() ?: ""
     }
 
     fun releaseConnection() {
-        response.body()?.close()
+        response?.body()?.close()
     }
 
     fun getStatusCode(): Int {
-        return response.code()
+        return response?.code() ?: UNKOWN_STATUS_CODE
     }
 
     fun getStatusText(): String {
-        return response.message()
+        return response?.message() ?: ""
     }
 
     fun getResponseHeaders(): Headers {
-        return response.headers()
+        return response?.headers() ?: Headers.Builder().build()
     }
 
     fun getResponseHeader(name: String): String? {
-        return response.header(name)
+        return response?.header(name)
     }
 
     fun execute(nextcloudClient: NextcloudClient): Int {
@@ -103,7 +128,7 @@ abstract class OkHttpMethodBase(var uri: String,
         if (nextcloudClient.followRedirects) {
             return nextcloudClient.followRedirection(this).getLastStatus()
         } else {
-            return response.code()
+            return response?.code() ?: UNKOWN_STATUS_CODE
         }
     }
 }

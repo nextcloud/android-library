@@ -107,9 +107,9 @@ class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
                     destination = redirectedDestination
 
                     if (getRequestHeader("Destination").isNullOrEmpty()) {
-                        method.requestHeaders.put("destination", destination)
+                        method.addRequestHeader("destination", destination)
                     } else {
-                        method.requestHeaders.put("Destination", destination)
+                        method.addRequestHeader("Destination", destination)
                     }
                 }
                 status = method.execute(this)
