@@ -55,7 +55,8 @@ public class SearchRemoteOperation extends RemoteOperation {
         GALLERY_SEARCH, // combined photo and video
         FILE_ID_SEARCH, // search one file specified by file id
         CONTENT_TYPE_SEARCH,
-        RECENTLY_ADDED_SEARCH 
+        RECENTLY_ADDED_SEARCH,
+        SHARED_FILTER
     }
 
     private String searchQuery;
