@@ -43,7 +43,7 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
         assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/shareToGroup/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/shareViaLink/", true).execute(client).isSuccess());
-        assertTrue(new CreateFolderRemoteOperation("/shareViaMail/", true).execute(client).isSuccess());
+//        assertTrue(new CreateFolderRemoteOperation("/shareViaMail/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/noShare/", true).execute(client).isSuccess());
 
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
@@ -82,13 +82,13 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
                 .execute(client).isSuccess());
 
         // share folder to mail
-        Assert.assertTrue(new CreateShareRemoteOperation("/shareViaMail/",
-                ShareType.EMAIL,
-                "testUser@testcloudserver.com",
-                false,
-                "",
-                OCShare.DEFAULT_PERMISSION)
-                .execute(client).isSuccess());
+//        Assert.assertTrue(new CreateShareRemoteOperation("/shareViaMail/",
+//                ShareType.EMAIL,
+//                "testUser@testcloudserver.com",
+//                false,
+//                "",
+//                OCShare.DEFAULT_PERMISSION)
+//                .execute(client).isSuccess());
 
         sut = new GetSharesRemoteOperation();
 
@@ -114,9 +114,9 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
                     assertEquals("/shareToGroup/", ocShare.getPath());
                     break;
 
-                case EMAIL:
-                    assertEquals("/shareViaMail/", ocShare.getPath());
-                    break;
+//                case EMAIL:
+//                    assertEquals("/shareViaMail/", ocShare.getPath());
+//                    break;
 
                 default:
                     throw new AssertionError("Unknown share type");
