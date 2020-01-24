@@ -60,6 +60,7 @@ public class DirectEditingOpenFileRemoteOperation extends RemoteOperation {
 
         try {
             postMethod = new PostMethod(client.getBaseUri() + DIRECT_ENDPOINT + JSON_FORMAT);
+            postMethod.getParams().setContentCharset("utf-8");
             postMethod.addParameter("path", filePath);
             postMethod.addParameter("editorId", editor);
 
