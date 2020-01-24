@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
     @Test
-    public void createFileFromTemplate() throws IOException {
+    public void openFile() throws IOException {
         // create file
         String filePath = createFile("text");
         String remotePath = "/text.md";
@@ -59,5 +59,35 @@ public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
         String url = (String) result.getSingleData();
 
         assertFalse(url.isEmpty());
+    }
+
+    @Test
+    public void openFileWithSpecialChars() throws IOException {
+        // create file
+        String filePath = createFile("text");
+        String remotePath = "/äää.md";
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+                .execute(client).isSuccess());
+
+        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+
+        // open file
+        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
+        assertTrue(result.isSuccess());
+
+        String url = (String) result.getSingleData();
+
+        assertFalse(url.isEmpty());
+    }
+
+    @Test
+    public void openNonExistingFile() {
+        String remotePath = "/nonExisting.md";
+
+        TestCase.assertFalse(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+
+        // open file
+        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
+        assertFalse(result.isSuccess());
     }
 }
