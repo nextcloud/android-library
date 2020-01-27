@@ -88,7 +88,7 @@ steps:
 
 services:
   - name: server
-    image: nextcloudci/server:server-13
+    image: nextcloudci/server:server-17
     commands:
       - /initnc.sh
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
