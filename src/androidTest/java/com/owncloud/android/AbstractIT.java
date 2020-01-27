@@ -35,10 +35,14 @@ import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
+import com.owncloud.android.lib.common.network.CertificateCombinedException;
+import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
+import com.owncloud.android.lib.resources.status.GetStatusRemoteOperation;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -48,6 +52,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import okhttp3.Credentials;
@@ -63,14 +71,19 @@ public abstract class AbstractIT {
 
     public static OwnCloudClient client;
     protected static NextcloudClient nextcloudClient;
-    private static Context context;
+    protected static Context context;
 
     protected String baseFolderPath = "/test_for_build/";
 
     public static final String ASSETS__TEXT_FILE_NAME = "textFile.txt";
+    private static String LOCAL_TRUSTSTORE_FILENAME = "knownServers.bks";
 
     @BeforeClass
-    public static void beforeAll() {
+    public static void beforeAll() throws InterruptedException,
+            CertificateException,
+            NoSuchAlgorithmException,
+            KeyStoreException,
+            IOException {
         Bundle arguments = InstrumentationRegistry.getArguments();
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
@@ -87,6 +100,43 @@ public abstract class AbstractIT {
         nextcloudClient = new NextcloudClient(url, context);
         nextcloudClient.credentials = Credentials.basic(loginName, password);
         nextcloudClient.userId = loginName; // for test same as userId
+
+        testConnection();
+    }
+
+    private static void testConnection() throws KeyStoreException,
+            CertificateException,
+            NoSuchAlgorithmException,
+            IOException,
+            InterruptedException {
+        GetStatusRemoteOperation getStatus = new GetStatusRemoteOperation(context);
+
+        RemoteOperationResult result = getStatus.execute(client);
+
+        if (result.isSuccess()) {
+            Log_OC.d("AbstractIT", "Connection to server successful");
+        } else {
+            if (RemoteOperationResult.ResultCode.SSL_RECOVERABLE_PEER_UNVERIFIED.equals(result.getCode())) {
+                Log_OC.d("AbstractIT", "Accepting certificate");
+
+                CertificateCombinedException exception = (CertificateCombinedException) result.getException();
+                X509Certificate certificate = exception.getServerCertificate();
+
+                NetworkUtils.addCertToKnownServersStore(certificate, context);
+                Thread.sleep(1000);
+
+                // retry
+                getStatus = new GetStatusRemoteOperation(context);
+                result = getStatus.execute(client);
+                
+                if (!result.isSuccess()) {
+                    throw new RuntimeException("No connection to server possible, even with accepted cert");
+                }
+
+            } else {
+                throw new RuntimeException("No connection to server possible");
+            }
+        }
     }
 
     public String createFile(String name) throws IOException {
@@ -150,6 +200,9 @@ public abstract class AbstractIT {
                         .execute(client).isSuccess());
             }
         }
+
+        // delete keystore
+        new File(context.getFilesDir(), LOCAL_TRUSTSTORE_FILENAME).delete();
     }
 
     public static File getFile(String filename) throws IOException {

@@ -123,7 +123,7 @@ abstract class OkHttpMethodBase(var uri: String,
 
         val request = temp.build()
 
-        response = nextcloudClient.newCall(request).execute()
+        response = nextcloudClient.client.newCall(request).execute()
 
         if (nextcloudClient.followRedirects) {
             return nextcloudClient.followRedirection(this).getLastStatus()
