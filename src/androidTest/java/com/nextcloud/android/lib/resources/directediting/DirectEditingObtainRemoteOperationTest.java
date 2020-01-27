@@ -45,7 +45,7 @@ public class DirectEditingObtainRemoteOperationTest extends AbstractIT {
         assertEquals("Nextcloud Text", directEditing.editors.get("text").name);
         assertEquals("text/plain", directEditing.editors.get("text").optionalMimetypes.get(0));
 
-        assertEquals("New text document", directEditing.creators.get("textdocument").name);
+        assertEquals("text document", directEditing.creators.get("textdocument").name);
         assertFalse(directEditing.creators.get("textdocument").templates);
     }
 }
