@@ -134,7 +134,7 @@ public abstract class AbstractIT {
                 }
 
             } else {
-                throw new RuntimeException("No connection to server possible");
+                throw new RuntimeException("No connection to server possible: " + result.getCode());
             }
         }
     }
