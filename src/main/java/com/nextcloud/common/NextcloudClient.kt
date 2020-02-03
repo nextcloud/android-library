@@ -39,7 +39,9 @@ import com.owncloud.android.lib.common.network.RedirectionPath
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import okhttp3.*
+import okhttp3.CookieJar
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -48,12 +50,11 @@ import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 
 
-class NextcloudClient(var baseUri: Uri, val context: Context, client: OkHttpClient) {
-    lateinit var credentials: String
-    lateinit var userId: String
-    lateinit var request: Request
-    var followRedirects = true;
-    val client = client
+class NextcloudClient(var baseUri: Uri,
+                      var userId: String,
+                      val credentials: String,
+                      val client: OkHttpClient) {
+    var followRedirects = true
 
     companion object {
         @JvmStatic
@@ -74,7 +75,10 @@ class NextcloudClient(var baseUri: Uri, val context: Context, client: OkHttpClie
         }
     }
 
-    constructor(baseUri: Uri, context: Context) : this(baseUri, context, createDefaultClient(context))
+    constructor(baseUri: Uri,
+                userId: String,
+                credentials: String,
+                context: Context) : this(baseUri, userId, credentials, createDefaultClient(context))
    
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
         return try {
@@ -95,10 +99,6 @@ class NextcloudClient(var baseUri: Uri, val context: Context, client: OkHttpClie
         } catch (ex: IOException) {
             ResponseOrError(ex)
         }
-    }
-
-    fun getRequestHeader(name: String): String? {
-        return request.header(name)
     }
 
     @Throws(IOException::class)
@@ -122,10 +122,10 @@ class NextcloudClient(var baseUri: Uri, val context: Context, client: OkHttpClie
                 // due to it will be set a different url
                 method.releaseConnection()
                 method.uri = location
-                var destination = getRequestHeader("Destination")
+                var destination = method.getRequestHeader("Destination")
 
                 if (destination == null) {
-                    destination = getRequestHeader("destination")
+                    destination = method.getRequestHeader("destination")
                 }
 
                 if (destination != null) {
@@ -136,7 +136,7 @@ class NextcloudClient(var baseUri: Uri, val context: Context, client: OkHttpClie
                     val redirectedDestination = redirectionBase + destinationPath
                     destination = redirectedDestination
 
-                    if (getRequestHeader("Destination").isNullOrEmpty()) {
+                    if (method.getRequestHeader("Destination").isNullOrEmpty()) {
                         method.addRequestHeader("destination", destination)
                     } else {
                         method.addRequestHeader("Destination", destination)

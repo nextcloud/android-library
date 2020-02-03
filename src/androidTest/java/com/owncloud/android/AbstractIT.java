@@ -97,9 +97,9 @@ public abstract class AbstractIT {
 
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/1.0.0");
 
-        nextcloudClient = new NextcloudClient(url, context);
-        nextcloudClient.credentials = Credentials.basic(loginName, password);
-        nextcloudClient.userId = loginName; // for test same as userId
+        String userId = loginName; // for test same as userId
+        String credentials = Credentials.basic(loginName, password);
+        nextcloudClient = new NextcloudClient(url, userId, credentials, context);
 
         testConnection();
     }
