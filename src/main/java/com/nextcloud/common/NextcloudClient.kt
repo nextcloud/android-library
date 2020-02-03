@@ -30,8 +30,10 @@ package com.nextcloud.common
 import android.content.Context
 import android.net.Uri
 import com.owncloud.android.lib.common.OwnCloudClient
-import com.owncloud.android.lib.common.OwnCloudClientFactory
+import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
 import com.owncloud.android.lib.common.accounts.AccountUtils
+import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
+import com.owncloud.android.lib.common.network.NetworkUtils
 import com.owncloud.android.lib.common.network.RedirectionPath
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
@@ -39,32 +41,51 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSession
+import javax.net.ssl.TrustManager
 
-class NextcloudClient(var baseUri: Uri, val context: Context) : OkHttpClient() {
+
+class NextcloudClient(var baseUri: Uri, val context: Context) {
+    lateinit var credentials: String
+    lateinit var userId: String
+    lateinit var request: Request
+    var followRedirects = true;
+    val client: OkHttpClient
+    
     companion object {
         @JvmStatic
         val TAG = NextcloudClient::class.java.simpleName
     }
 
-    var client: OkHttpClient = Builder()
-            .cookieJar(CookieJar.NO_COOKIES)
-            .callTimeout(OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
-            .build()
+    init {
+        val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
+        val sslContext = SSLContext.getInstance("TLSv1")
+        sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
+        val sslSocketFactory = sslContext.socketFactory
 
-    lateinit var credentials: String
-    lateinit var userId: String
-    lateinit var request: Request
-    var followRedirects = true;
-
+        client = OkHttpClient.Builder()
+                .cookieJar(CookieJar.NO_COOKIES)
+                .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                .sslSocketFactory(sslSocketFactory, trustManager)
+                .hostnameVerifier { asdf: String?, usdf: SSLSession? -> true }
+                .build()
+    }
+   
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
         return remoteOperation.run(this)
     }
     
     fun execute(method: OkHttpMethodBase): Int {
         return method.execute(this)
+    }
+
+    fun execute(request: Request): Response {
+        return client.newCall(request).execute()
     }
 
     fun getRequestHeader(name: String): String? {
