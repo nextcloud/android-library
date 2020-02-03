@@ -2,6 +2,7 @@
  *
  *   @author Tobias Kaminsky
  *   Copyright (C) 2019 Tobias Kaminsky
+ *   Copyright (C) 2020 Chris Narkiewicz <hello@ezaquarii.com>
  *   Copyright (C) 2019 Nextcloud GmbH
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,10 +39,7 @@ import com.owncloud.android.lib.common.network.RedirectionPath
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import okhttp3.CookieJar
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -50,42 +48,53 @@ import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 
 
-class NextcloudClient(var baseUri: Uri, val context: Context) {
+class NextcloudClient(var baseUri: Uri, val context: Context, client: OkHttpClient) {
     lateinit var credentials: String
     lateinit var userId: String
     lateinit var request: Request
     var followRedirects = true;
-    val client: OkHttpClient
-    
+    val client = client
+
     companion object {
         @JvmStatic
         val TAG = NextcloudClient::class.java.simpleName
+
+        private fun createDefaultClient(context: Context) : OkHttpClient {
+            val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
+            val sslContext = SSLContext.getInstance("TLSv1")
+            sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
+            val sslSocketFactory = sslContext.socketFactory
+
+            return OkHttpClient.Builder()
+                    .cookieJar(CookieJar.NO_COOKIES)
+                    .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                    .sslSocketFactory(sslSocketFactory, trustManager)
+                    .hostnameVerifier { _: String?, _: SSLSession? -> true }
+                    .build()
+        }
     }
 
-    init {
-        val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
-        val sslContext = SSLContext.getInstance("TLSv1")
-        sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
-        val sslSocketFactory = sslContext.socketFactory
-
-        client = OkHttpClient.Builder()
-                .cookieJar(CookieJar.NO_COOKIES)
-                .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
-                .sslSocketFactory(sslSocketFactory, trustManager)
-                .hostnameVerifier { asdf: String?, usdf: SSLSession? -> true }
-                .build()
-    }
+    constructor(baseUri: Uri, context: Context) : this(baseUri, context, createDefaultClient(context))
    
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
-        return remoteOperation.run(this)
+        return try {
+            remoteOperation.run(this)
+        } catch (ex: Exception) {
+            RemoteOperationResult(ex)
+        }
     }
     
     fun execute(method: OkHttpMethodBase): Int {
         return method.execute(this)
     }
 
-    fun execute(request: Request): Response {
-        return client.newCall(request).execute()
+    internal fun execute(request: Request): ResponseOrError {
+        return try {
+            val response = client.newCall(request).execute()
+            ResponseOrError(response)
+        } catch (ex: IOException) {
+            ResponseOrError(ex)
+        }
     }
 
     fun getRequestHeader(name: String): String? {
