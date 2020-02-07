@@ -33,6 +33,8 @@ import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
+import java.io.IOException
+import java.lang.Exception
 
 /**
  * Common base class for all new OkHttpMethods
@@ -40,7 +42,7 @@ import okhttp3.Response
 abstract class OkHttpMethodBase(var uri: String,
                                 val useOcsApiRequestHeader: Boolean) {
     companion object {
-        const val UNKOWN_STATUS_CODE: Int = -1;
+        const val UNKNOWN_STATUS_CODE: Int = -1
     }
     
     private var response: Response? = null
@@ -94,7 +96,7 @@ abstract class OkHttpMethodBase(var uri: String,
     }
 
     fun getStatusCode(): Int {
-        return response?.code() ?: UNKOWN_STATUS_CODE
+        return response?.code() ?: UNKNOWN_STATUS_CODE
     }
 
     fun getStatusText(): String {
@@ -109,6 +111,11 @@ abstract class OkHttpMethodBase(var uri: String,
         return response?.header(name)
     }
 
+    /**
+     * Execute operation using nextcloud client.
+     *
+     * @return HTTP return code or [UNKNOWN_STATUS_CODE] in case of network error.
+     */
     fun execute(nextcloudClient: NextcloudClient): Int {
         val temp = requestBuilder
                 .url(buildQueryParameter())
@@ -123,12 +130,16 @@ abstract class OkHttpMethodBase(var uri: String,
 
         val request = temp.build()
 
-        response = nextcloudClient.client.newCall(request).execute()
+        try {
+            response = nextcloudClient.client.newCall(request).execute()
+        } catch (ex: IOException) {
+            return UNKNOWN_STATUS_CODE
+        }
 
-        if (nextcloudClient.followRedirects) {
-            return nextcloudClient.followRedirection(this).getLastStatus()
+        return if (nextcloudClient.followRedirects) {
+            nextcloudClient.followRedirection(this).getLastStatus()
         } else {
-            return response?.code() ?: UNKOWN_STATUS_CODE
+            response?.code() ?: UNKNOWN_STATUS_CODE
         }
     }
 }
