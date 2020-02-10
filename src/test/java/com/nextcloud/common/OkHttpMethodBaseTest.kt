@@ -60,7 +60,7 @@ class OkHttpMethodBaseTest {
         MockitoAnnotations.initMocks(this)
         val userId = "test"
         val credentials = Credentials.basic("username", "password")
-        nextcloudClient = NextcloudClient(uri, userId, credentials, context, okHttpClient)
+        nextcloudClient = NextcloudClient(uri, userId, credentials, okHttpClient)
     }
 
     @Test

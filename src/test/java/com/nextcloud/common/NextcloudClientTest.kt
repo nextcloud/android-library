@@ -33,11 +33,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
-import okhttp3.Call
-import okhttp3.Credentials
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Before
@@ -64,7 +60,7 @@ class NextcloudClientTest {
         MockitoAnnotations.initMocks(this)
         val userId = "test"
         val credentials = Credentials.basic("login", "test")
-        nextcloudClient = NextcloudClient(uri, userId, credentials, context, okHttpClient)
+        nextcloudClient = NextcloudClient(uri, userId, credentials, okHttpClient)
     }
 
     @Test
