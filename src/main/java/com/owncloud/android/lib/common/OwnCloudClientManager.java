@@ -193,10 +193,8 @@ public class OwnCloudClientManager {
         }
 
         if (client == null) {
-            // no client to reuse - create a new one
-            // TODO remove dependency on OwnCloudClientFactory
-            client = OwnCloudClientFactory.createNextcloudClient(account.getBaseUri(), context.getApplicationContext(),
-                    true);
+
+
             // TODO v2
             //client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
             // enable cookie tracking
@@ -204,16 +202,26 @@ public class OwnCloudClientManager {
             //AccountUtils.restoreCookies(accountName, client, context);
 
             account.loadCredentials(context);
-            client.credentials = account.getCredentials().toOkHttpCredentials();
+            String credentials = account.getCredentials().toOkHttpCredentials();
 
             AccountManager accountManager = AccountManager.get(context);
             Account savedAccount = account.getSavedAccount();
 
+            String userId;
             if (savedAccount != null) {
-                String userId = accountManager.getUserData(account.getSavedAccount(),
+                userId = accountManager.getUserData(account.getSavedAccount(),
                         AccountUtils.Constants.KEY_USER_ID);
-                client.setUserId(userId);
+            } else {
+                userId = "";
             }
+
+            // no client to reuse - create a new one
+            // TODO remove dependency on OwnCloudClientFactory
+            client = OwnCloudClientFactory.createNextcloudClient(account.getBaseUri(),
+                    userId,
+                    credentials,
+                    context.getApplicationContext(),
+                    true);
 
             if (accountName != null) {
                 clientsNewWithKnownUsername.put(accountName, client);

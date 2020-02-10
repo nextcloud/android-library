@@ -34,7 +34,6 @@ import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
-import java.lang.Exception
 
 /**
  * Common base class for all new OkHttpMethods
@@ -49,6 +48,7 @@ abstract class OkHttpMethodBase(var uri: String,
     private var queryMap: Map<String, String> = HashMap()
     private val requestHeaders: MutableMap<String, String> = HashMap()
     private val requestBuilder: Request.Builder = Request.Builder()
+    private var request: Request? = null
 
     fun OkHttpMethodBase() {
         requestHeaders.put("http.protocol.single-cookie-header", "true")
@@ -109,6 +109,10 @@ abstract class OkHttpMethodBase(var uri: String,
 
     fun getResponseHeader(name: String): String? {
         return response?.header(name)
+    }
+
+    fun getRequestHeader(name: String): String? {
+        return request?.header(name) ?: ""
     }
 
     /**

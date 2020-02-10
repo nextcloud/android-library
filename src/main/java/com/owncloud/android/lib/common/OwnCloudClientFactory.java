@@ -166,7 +166,11 @@ public class OwnCloudClientFactory {
      * @param context Android context where the OwnCloudClient is being created.
      * @return A OwnCloudClient object ready to be used
      */
-    public static NextcloudClient createNextcloudClient(Uri uri, Context context, boolean followRedirects) {
+    public static NextcloudClient createNextcloudClient(Uri uri,
+                                                        String userId,
+                                                        String credentials,
+                                                        Context context,
+                                                        boolean followRedirects) {
         try {
             NetworkUtils.registerAdvancedSslContext(true, context);
         } catch (GeneralSecurityException e) {
@@ -178,7 +182,7 @@ public class OwnCloudClientFactory {
                     " in the system will be used for HTTPS connections", e);
         }
 
-        NextcloudClient client = new NextcloudClient(uri, context);
+        NextcloudClient client = new NextcloudClient(uri, userId, credentials, context);
         client.setFollowRedirects(followRedirects);
 
         return client;
@@ -209,18 +213,18 @@ public class OwnCloudClientFactory {
         // TODO avoid calling to getUserData here
         String userId = am.getUserData(account, AccountUtils.Constants.KEY_USER_ID);
 
-        NextcloudClient client = createNextcloudClient(baseUri, appContext, true);
-        client.setUserId(userId);
 
         String username = AccountUtils.getUsernameForAccount(account);
         String password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type), false);
-
-        client.setCredentials(Credentials.basic(username, password));
 
         // Restore cookies
         // TODO v2 cookie handling
         // AccountUtils.restoreCookies(account, client, appContext);
 
-        return client;
+        return createNextcloudClient(baseUri,
+                userId,
+                Credentials.basic(username, password),
+                appContext,
+                true);
     }
 }

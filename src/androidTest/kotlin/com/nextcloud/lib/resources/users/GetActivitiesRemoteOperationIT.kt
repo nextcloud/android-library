@@ -30,7 +30,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
 
-class GetActivitiesRemoteOperationTest : AbstractIT() {
+class GetActivitiesRemoteOperationIT : AbstractIT() {
     @Test
     fun getActivities() {
         // set-up, create a folder so there is an activity

@@ -28,8 +28,13 @@ package com.nextcloud.common
 
 import android.content.Context
 import android.net.Uri
-import com.nhaarman.mockitokotlin2.*
-import okhttp3.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
+import okhttp3.Call
+import okhttp3.Credentials
+import okhttp3.OkHttpClient
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -53,8 +58,9 @@ class OkHttpMethodBaseTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        nextcloudClient = NextcloudClient(uri, context, okHttpClient)
-        nextcloudClient.credentials = Credentials.basic("username", "password")
+        val userId = "test"
+        val credentials = Credentials.basic("username", "password")
+        nextcloudClient = NextcloudClient(uri, userId, credentials, okHttpClient)
     }
 
     @Test
