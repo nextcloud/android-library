@@ -33,7 +33,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 
 /**
@@ -60,11 +60,11 @@ public class RemoteWipeSuccessRemoteOperation extends RemoteOperation {
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        PostMethod postMethod = null;
+        Utf8PostMethod postMethod = null;
         RemoteOperationResult result;
 
         try {
-            postMethod = new PostMethod(client.getBaseUri() + REMOTE_WIPE_URL);
+            postMethod = new Utf8PostMethod(client.getBaseUri() + REMOTE_WIPE_URL);
             postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
             postMethod.setParameter(TOKEN, appToken);
 

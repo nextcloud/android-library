@@ -26,12 +26,12 @@
  */
 package com.owncloud.android.lib.common.utils;
 
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 
-public class HttpDeleteWithBody extends PostMethod {
+public class HttpDeleteWithBody extends Utf8PostMethod {
 
-    public HttpDeleteWithBody(String url){
+    public HttpDeleteWithBody(String url) {
         super(url);
     }
 

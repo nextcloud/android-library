@@ -35,8 +35,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -82,7 +82,7 @@ public class CommentFileRemoteOperation extends RemoteOperation {
         RemoteOperationResult result;
         try {
             String url = client.getNewWebdavUri() + "/comments/files/" + fileId;
-            PostMethod postMethod = new PostMethod(url);
+            Utf8PostMethod postMethod = new Utf8PostMethod(url);
             postMethod.addRequestHeader("Content-type", "application/json");
 
             Map<String, String> values = new HashMap<>();

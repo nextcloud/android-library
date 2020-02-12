@@ -32,7 +32,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 /**
  * Creates a new share.  This allows sharing with a user or group or as a link.
@@ -107,13 +107,13 @@ public class CreateShareRemoteOperation extends RemoteOperation {
         RemoteOperationResult result = null;
         int status = -1;
 
-        PostMethod post = null;
+        Utf8PostMethod post = null;
 
         try {
             // Post Method
-            post = new PostMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            post = new Utf8PostMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
 
-            post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED + "; charset=utf-8"); // necessary for special characters
+            post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
             post.addParameter(PARAM_PATH, mRemoteFilePath);
             post.addParameter(PARAM_SHARE_TYPE, Integer.toString(mShareType.getValue()));

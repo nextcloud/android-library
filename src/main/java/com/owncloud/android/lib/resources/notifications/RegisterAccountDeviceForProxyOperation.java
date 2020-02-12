@@ -31,7 +31,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 import java.net.URLEncoder;
 
@@ -67,7 +67,7 @@ public class RegisterAccountDeviceForProxyOperation {
     public RemoteOperationResult run() {
         RemoteOperationResult result;
         int status;
-        PostMethod post = null;
+        Utf8PostMethod post = null;
 
         try {
             // Post Method
@@ -77,7 +77,7 @@ public class RegisterAccountDeviceForProxyOperation {
             uriToPost += DEVICE_IDENTIFIER_SIGNATURE + "=" + URLEncoder.encode(deviceIdentifierSignature) + "&";
             uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
 
-            post = new PostMethod(uriToPost);
+            post = new Utf8PostMethod(uriToPost);
             post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
             
             status = new HttpClient().executeMethod(post);
