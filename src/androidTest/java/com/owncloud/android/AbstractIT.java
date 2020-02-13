@@ -44,8 +44,11 @@ import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.status.GetStatusRemoteOperation;
 
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 import java.io.File;
@@ -101,7 +104,32 @@ public abstract class AbstractIT {
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
 
+        waitForServer(client, url);
         testConnection();
+    }
+
+    private static void waitForServer(OwnCloudClient client, Uri baseUrl) {
+        // use http 
+        Uri httpUrl = Uri.parse(baseUrl.toString().replaceFirst("https", "http"));
+        GetMethod get = new GetMethod(httpUrl + "/status.php");
+
+        try {
+            int i = 0;
+            while (client.executeMethod(get) != HttpStatus.SC_OK && i < 3) {
+                System.out.println("wait…");
+                Thread.sleep(60 * 1000);
+                i++;
+            }
+
+            if (i == 3) {
+                Assert.fail("Server not ready!");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void testConnection() throws KeyStoreException,
@@ -128,7 +156,7 @@ public abstract class AbstractIT {
                 // retry
                 getStatus = new GetStatusRemoteOperation(context);
                 result = getStatus.execute(client);
-                
+
                 if (!result.isSuccess()) {
                     throw new RuntimeException("No connection to server possible, even with accepted cert");
                 }
