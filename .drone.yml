@@ -55,7 +55,7 @@ steps:
       from_secret: GIT_TOKEN
   commands:
     - emulator -avd android-27 -no-window -no-audio &
-    - ./wait_for_emulator.sh
+    - ./scripts/wait_for_emulator.sh
     - ./gradlew assembleDebug
     - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
     - ./gradlew installDebugAndroidTest
