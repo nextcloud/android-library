@@ -53,8 +53,22 @@ public class DirectEditingCreateFileRemoteOperationTest extends AbstractIT {
     public void createFileFromTemplate() {
         RemoteOperationResult result = new DirectEditingCreateFileRemoteOperation("/test.md",
                 "text",
-                                                                                  "textdocument",
-                                                                                  "1")
+                "textdocument",
+                "1")
+                .execute(client);
+        assertTrue(result.isSuccess());
+
+        String url = (String) result.getSingleData();
+
+        assertFalse(url.isEmpty());
+    }
+
+    @Test
+    public void createFileWithSpecialCharacterFromTemplate() {
+        RemoteOperationResult result = new DirectEditingCreateFileRemoteOperation("/あ.md",
+                "text",
+                "textdocument",
+                "1")
                 .execute(client);
         assertTrue(result.isSuccess());
 

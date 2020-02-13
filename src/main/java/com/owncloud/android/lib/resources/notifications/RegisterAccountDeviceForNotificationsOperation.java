@@ -40,7 +40,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 import org.json.JSONException;
 
 import java.lang.reflect.Type;
@@ -78,7 +78,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
         RemoteOperationResult result;
         int status;
         PushResponse pushResponse;
-        PostMethod post = null;
+        Utf8PostMethod post = null;
 
         try {
             // Post Method
@@ -89,7 +89,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                     .appendQueryParameter(PROXY_SERVER, proxyServer)
                     .build().toString();
 
-            post = new PostMethod(uri);
+            post = new Utf8PostMethod(uri);
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             status = client.executeMethod(post);
