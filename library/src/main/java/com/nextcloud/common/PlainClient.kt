@@ -29,13 +29,18 @@
 package com.nextcloud.common
 
 import android.content.Context
+import android.text.TextUtils
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
+import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
@@ -56,12 +61,23 @@ class PlainClient(context: Context) {
             sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
+            var proxy: Proxy? = null
+
+            val proxyHost = OwnCloudClientManagerFactory.getProxyHost()
+            val proxyPort = OwnCloudClientManagerFactory.getProxyPort()
+
+            if (!TextUtils.isEmpty(proxyHost) && proxyPort > 0) {
+                proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(proxyHost, proxyPort))
+                Log_OC.d(this, "Proxy settings: $proxyHost:$proxyPort")
+            }
+
             return OkHttpClient.Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
                 .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .fastFallback(true)
+                .proxy(proxy)
                 .build()
         }
     }
