@@ -25,6 +25,7 @@
 
 package com.owncloud.android.lib.common;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.nextcloud.common.DNSCache;
@@ -53,6 +54,10 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Locale;
 
+import de.ritscher.ssl.InteractiveKeyManager;
+import lombok.Getter;
+import lombok.Setter;
+
 public class OwnCloudClient extends HttpClient {
 
     private static final String TAG = OwnCloudClient.class.getSimpleName();
@@ -69,10 +74,14 @@ public class OwnCloudClient extends HttpClient {
     private OwnCloudCredentials credentials = null;
     private int mInstanceNumber;
 
+    @Getter private Uri baseUri;
+    @Setter private String userId;
+    private Context context;
+
     /**
      * Constructor
      */
-    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr) {
+    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr, Context context) {
         super(connectionMgr);
 
         if (baseUri == null) {
@@ -80,6 +89,9 @@ public class OwnCloudClient extends HttpClient {
         }
         nextcloudUriDelegate = new NextcloudUriDelegate(baseUri);
 
+        this.baseUri = baseUri;
+        this.context = context;
+        
         mInstanceNumber = sInstanceCounter++;
         Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
 
@@ -206,6 +218,10 @@ public class OwnCloudClient extends HttpClient {
 //	        logCookiesAtState("after");
 //	        logSetCookiesAtResponse(method.getResponseHeaders());
 
+            if (status >= 400 && status < 500) {
+                Log_OC.w(TAG, "executeMethod failed with error code " + status + "; remove key chain aliases disabled");
+                //new InteractiveKeyManager(context).removeKeys(baseUri.getHost(), baseUri.getPort());
+            }
             return status;
 
         } catch (SocketTimeoutException | ConnectException e) {
