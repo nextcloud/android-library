@@ -87,7 +87,8 @@ class NextcloudClient(var baseUri: Uri,
             RemoteOperationResult(ex)
         }
     }
-    
+
+    @Throws(Exception::class)
     fun execute(method: OkHttpMethodBase): Int {
         return method.execute(this)
     }

@@ -130,14 +130,15 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
             status = client.execute(get);
             String response = get.getResponseBodyAsString();
-            String nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
-            if (nextPageHeader != null) {
-                lastGiven = Integer.parseInt(nextPageHeader);
-            } else {
-                lastGiven = -1;
-            }
 
             if (isSuccess(status)) {
+                String nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
+                if (nextPageHeader != null) {
+                    lastGiven = Integer.parseInt(nextPageHeader);
+                } else {
+                    lastGiven = -1;
+                }
+
                 Log_OC.d(TAG, "Successful response: " + response);
                 result = new RemoteOperationResult(true, get);
                 // Parse the response
@@ -152,6 +153,8 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                 Log_OC.e(TAG, "Failed response while getting user activities");
                 Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
             }
+        } catch (Exception e) {
+            return new RemoteOperationResult(e);
         } finally {
             if (get != null) {
                 get.releaseConnection();
