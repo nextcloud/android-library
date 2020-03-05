@@ -121,8 +121,7 @@ abstract class OkHttpMethodBase(var uri: String,
      * @return HTTP return code or [UNKNOWN_STATUS_CODE] in case of network error.
      */
     fun execute(nextcloudClient: NextcloudClient): Int {
-        val temp = requestBuilder
-                .url(buildQueryParameter())
+        val temp = requestBuilder.url(buildQueryParameter())
 
         requestHeaders.put("Authorization", nextcloudClient.credentials)
         requestHeaders.put("User-Agent", OwnCloudClientManagerFactory.getUserAgent())
