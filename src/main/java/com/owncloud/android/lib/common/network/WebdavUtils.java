@@ -120,6 +120,9 @@ public class WebdavUtils {
      * @return
      */
     public static DavPropertyNameSet getFilePropSet() {
+        Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
+        Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
+        
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
@@ -128,11 +131,12 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.GETLASTMODIFIED);
         propSet.add(DavPropertyName.CREATIONDATE);
         propSet.add(DavPropertyName.GETETAG);
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, Namespace.getNamespace(WebdavEntry.NAMESPACE_NC));
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_SHAREES, ncNamespace);
 
         return propSet;
     }

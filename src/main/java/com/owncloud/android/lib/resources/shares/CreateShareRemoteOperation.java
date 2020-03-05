@@ -84,7 +84,6 @@ public class CreateShareRemoteOperation extends RemoteOperation {
         String password,
         int permissions
     ) {
-
         mRemoteFilePath = remoteFilePath;
         mShareType = shareType;
         mShareWith = shareWith;
@@ -104,8 +103,8 @@ public class CreateShareRemoteOperation extends RemoteOperation {
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+        RemoteOperationResult result;
+        int status;
 
         Utf8PostMethod post = null;
 
@@ -145,9 +144,7 @@ public class CreateShareRemoteOperation extends RemoteOperation {
                 if (result.isSuccess() && mGetShareDetails) {
                     // retrieve more info - POST only returns the index of the new share
                     OCShare emptyShare = (OCShare) result.getData().get(0);
-                    GetShareRemoteOperation getInfo = new GetShareRemoteOperation(
-                        emptyShare.getRemoteId()
-                    );
+                    GetShareRemoteOperation getInfo = new GetShareRemoteOperation(emptyShare.getRemoteId());
                     result = getInfo.execute(client);
                 }
 
