@@ -90,6 +90,7 @@ public class GetShareesRemoteOperation extends RemoteOperation {
     private static final String NODE_REMOTES = "remotes";
     private static final String NODE_EMAILS = "emails";
     private static final String NODE_ROOMS = "rooms";
+    private static final String NODE_CIRCLES = "circles";
     public static final String NODE_VALUE = "value";
     public static final String PROPERTY_LABEL = "label";
     public static final String PROPERTY_SHARE_TYPE = "shareType";
@@ -143,9 +144,16 @@ public class GetShareesRemoteOperation extends RemoteOperation {
                 JSONObject respOCS = respJSON.getJSONObject(NODE_OCS);
                 JSONObject respData = respOCS.getJSONObject(NODE_DATA);
                 JSONObject respExact = respData.getJSONObject(NODE_EXACT);
+
                 JSONArray respExactUsers = respExact.getJSONArray(NODE_USERS);
                 JSONArray respExactGroups = respExact.getJSONArray(NODE_GROUPS);
                 JSONArray respExactRemotes = respExact.getJSONArray(NODE_REMOTES);
+                JSONArray respExactCircles;
+                if (respExact.has(NODE_CIRCLES)) {
+                    respExactCircles = respExact.getJSONArray(NODE_CIRCLES);
+                } else {
+                    respExactCircles = new JSONArray();
+                }
 
                 JSONArray respExactRooms;
                 if (respExact.has(NODE_ROOMS)) {
@@ -153,10 +161,18 @@ public class GetShareesRemoteOperation extends RemoteOperation {
                 } else {
                     respExactRooms = new JSONArray();
                 }
+
                 JSONArray respExactEmails = respExact.getJSONArray(NODE_EMAILS);
                 JSONArray respPartialUsers = respData.getJSONArray(NODE_USERS);
                 JSONArray respPartialGroups = respData.getJSONArray(NODE_GROUPS);
                 JSONArray respPartialRemotes = respData.getJSONArray(NODE_REMOTES);
+                JSONArray respPartialCircles;
+
+                if (respData.has(NODE_CIRCLES)) {
+                    respPartialCircles = respData.getJSONArray(NODE_CIRCLES);
+                } else {
+                    respPartialCircles = new JSONArray();
+                }
 
                 JSONArray respPartialRooms;
                 
@@ -172,10 +188,12 @@ public class GetShareesRemoteOperation extends RemoteOperation {
                         respExactRemotes,
                         respExactRooms,
                         respExactEmails,
+                        respExactCircles,
                         respPartialUsers,
                         respPartialGroups,
                         respPartialRemotes,
-                        respPartialRooms
+                        respPartialRooms,
+                        respPartialCircles
                 };
 
                 ArrayList<Object> data = new ArrayList<>();

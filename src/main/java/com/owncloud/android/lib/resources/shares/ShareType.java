@@ -33,6 +33,7 @@ package com.owncloud.android.lib.resources.shares;
  *  4 - Shared by e-mail
  *  5 - Shared by contact
  *  6 - Shared by federation
+ *  7 - Shared by circle
  *  
  * @author masensio
  *
@@ -46,6 +47,7 @@ public enum ShareType {
     EMAIL (4),
     CONTACT (5),
     FEDERATED(6),
+    CIRCLE(7),
     ROOM(10);
     
     private int value;
@@ -75,6 +77,8 @@ public enum ShareType {
                 return CONTACT;
             case 6:
                 return FEDERATED;
+            case 7:
+                return CIRCLE;
             case 10:
                 return ROOM;
             default:
