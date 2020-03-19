@@ -29,7 +29,6 @@ import android.net.Uri;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -43,26 +42,21 @@ public class ShareToRemoteOperationResultParser {
 
     private static final String TAG = ShareToRemoteOperationResultParser.class.getSimpleName();
 
-    private ShareXMLParser mShareXmlParser = null;
-    private boolean mOneOrMoreSharesRequired = false;
-    private OwnCloudVersion mOwnCloudVersion = null;
-    private Uri mServerBaseUri = null;
+    private ShareXMLParser shareXmlParser;
+    private boolean oneOrMoreSharesRequired = false;
+    private Uri serverBaseUri = null;
 
 
     public ShareToRemoteOperationResultParser(ShareXMLParser shareXmlParser) {
-        mShareXmlParser = shareXmlParser;
+        this.shareXmlParser = shareXmlParser;
     }
 
     public void setOneOrMoreSharesRequired(boolean oneOrMoreSharesRequired) {
-        mOneOrMoreSharesRequired = oneOrMoreSharesRequired;
-    }
-
-    public void setOwnCloudVersion(OwnCloudVersion ownCloudVersion) {
-        mOwnCloudVersion = ownCloudVersion;
+        this.oneOrMoreSharesRequired = oneOrMoreSharesRequired;
     }
 
     public void setServerBaseUri(Uri serverBaseURi) {
-        mServerBaseUri = serverBaseURi;
+        serverBaseUri = serverBaseURi;
     }
 
     public RemoteOperationResult parse(String serverResponse) {
@@ -76,14 +70,14 @@ public class ShareToRemoteOperationResultParser {
         try {
             // Parse xml response and obtain the list of shares
             InputStream is = new ByteArrayInputStream(serverResponse.getBytes());
-            if (mShareXmlParser == null) {
+            if (shareXmlParser == null) {
                 Log_OC.w(TAG, "No ShareXmlParser provided, creating new instance ");
-                mShareXmlParser = new ShareXMLParser();
+                shareXmlParser = new ShareXMLParser();
             }
-            List<OCShare> shares = mShareXmlParser.parseXMLResponse(is);
+            List<OCShare> shares = shareXmlParser.parseXMLResponse(is);
 
-            if (mShareXmlParser.isSuccess()) {
-                if ((shares != null && shares.size() > 0) || !mOneOrMoreSharesRequired) {
+            if (shareXmlParser.isSuccess()) {
+                if ((shares != null && shares.size() > 0) || !oneOrMoreSharesRequired) {
                     result = new RemoteOperationResult(RemoteOperationResult.ResultCode.OK);
                     if (shares != null) {
                         for (OCShare share : shares) {
@@ -94,8 +88,8 @@ public class ShareToRemoteOperationResultParser {
                                             share.getShareLink().length() <= 0) &&
                                     share.getToken().length() > 0
                                     ) {
-                                if (mServerBaseUri != null) {
-                                    share.setShareLink(mServerBaseUri +
+                                if (serverBaseUri != null) {
+                                    share.setShareLink(serverBaseUri +
                                             ShareUtils.SHARING_LINK_PATH_AFTER_VERSION_8 +
                                             share.getToken());
                                 } else {
@@ -111,19 +105,19 @@ public class ShareToRemoteOperationResultParser {
                     Log_OC.e(TAG, "Successful status with no share in the response");
                 }
 
-            } else if (mShareXmlParser.isWrongParameter()){
+            } else if (shareXmlParser.isWrongParameter()) {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.SHARE_WRONG_PARAMETER);
-                resultData.add(mShareXmlParser.getMessage());
+                resultData.add(shareXmlParser.getMessage());
                 result.setData(resultData);
 
-            } else if (mShareXmlParser.isNotFound()){
+            } else if (shareXmlParser.isNotFound()) {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.SHARE_NOT_FOUND);
-                resultData.add(mShareXmlParser.getMessage());
+                resultData.add(shareXmlParser.getMessage());
                 result.setData(resultData);
 
-            } else if (mShareXmlParser.isForbidden()) {
+            } else if (shareXmlParser.isForbidden()) {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.SHARE_FORBIDDEN);
-                resultData.add(mShareXmlParser.getMessage());
+                resultData.add(shareXmlParser.getMessage());
                 result.setData(resultData);
 
             } else {

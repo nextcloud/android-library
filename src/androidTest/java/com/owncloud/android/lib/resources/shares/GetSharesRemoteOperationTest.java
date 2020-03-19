@@ -31,6 +31,7 @@ import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,21 +39,24 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class GetSharesRemoteOperationTest extends AbstractIT {
+    private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private static final String ENTITY_CHARSET = "UTF-8";
+
     @Test
-    public void searchSharedFiles() {
+    public void searchSharedFiles() throws Exception {
         assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/shareToGroup/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/shareViaLink/", true).execute(client).isSuccess());
 //        assertTrue(new CreateFolderRemoteOperation("/shareViaMail/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/noShare/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToCircle/", true).execute(client).isSuccess());
 
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
 
         RemoteOperationResult result = sut.execute(client);
         assertTrue(result.isSuccess());
-        
-        // TODO reactivate for CI, gives false return value on current master
-        //assertEquals(0, result.getData().size());
+
+        assertEquals(0, result.getData().size());
 
         // share folder to user "admin"
         assertTrue(new CreateShareRemoteOperation("/shareToAdmin/",
@@ -62,9 +66,9 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER)
                 .execute(client).isSuccess());
-        
+
         // share folder via public link
-        assertTrue(new CreateShareRemoteOperation("/shareViaLink/", 
+        assertTrue(new CreateShareRemoteOperation("/shareViaLink/",
                 ShareType.PUBLIC_LINK,
                 "",
                 true,
@@ -81,6 +85,23 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
                 OCShare.DEFAULT_PERMISSION)
                 .execute(client).isSuccess());
 
+        // share folder to circle
+        // get share 
+        RemoteOperationResult searchResult = new GetShareesRemoteOperation("publicCircle", 1, 50).execute(client);
+        assertTrue(searchResult.getLogMessage(), searchResult.isSuccess());
+
+        JSONObject resultJson = (JSONObject) searchResult.getData().get(0);
+        String circleId = resultJson.getJSONObject("value").getString("shareWith");
+
+        RemoteOperationResult circleResult = new CreateShareRemoteOperation("/shareToCircle/",
+                ShareType.CIRCLE,
+                circleId,
+                false,
+                "",
+                OCShare.DEFAULT_PERMISSION)
+                .execute(client);
+        Assert.assertTrue(circleResult.getLogMessage(), circleResult.isSuccess());
+
         // share folder to mail
 //        Assert.assertTrue(new CreateShareRemoteOperation("/shareViaMail/",
 //                ShareType.EMAIL,
@@ -95,8 +116,7 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
         result = sut.execute(client);
         assertTrue(result.isSuccess());
 
-        // TODO reactivate for CI, gives false return value on current master
-        // assertEquals(3, result.getData().size());
+        assertEquals(4, result.getData().size());
 
         for (Object object : result.getData()) {
             OCShare ocShare = (OCShare) object;
@@ -112,6 +132,10 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
 
                 case GROUP:
                     assertEquals("/shareToGroup/", ocShare.getPath());
+                    break;
+
+                case CIRCLE:
+                    assertEquals("/shareToCircle/", ocShare.getPath());
                     break;
 
 //                case EMAIL:
