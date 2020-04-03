@@ -173,6 +173,17 @@ public class WebdavUtils {
     }
 
     /**
+     * Builds a DavPropertyNameSet with properties for chunks
+     */
+    public static DavPropertyNameSet getChunksPropSet() {
+        DavPropertyNameSet propSet = new DavPropertyNameSet();
+        propSet.add(DavPropertyName.GETCONTENTTYPE);
+        propSet.add(DavPropertyName.RESOURCETYPE);
+
+        return propSet;
+    }
+
+    /**
      *
      * @param rawEtag
      * @return
