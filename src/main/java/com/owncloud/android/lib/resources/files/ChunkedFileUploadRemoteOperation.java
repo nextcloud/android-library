@@ -87,7 +87,8 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             client.executeMethod(createFolder, 30000, 5000);
             
             // list chunks
-            PropFindMethod listChunks = new PropFindMethod(uploadFolderUri, WebdavUtils.getFilePropSet(),
+            PropFindMethod listChunks = new PropFindMethod(uploadFolderUri,
+                    WebdavUtils.getChunksPropSet(),
                                                            DavConstants.DEPTH_1);
 
             client.executeMethod(listChunks);
