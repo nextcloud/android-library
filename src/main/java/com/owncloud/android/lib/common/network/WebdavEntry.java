@@ -106,7 +106,7 @@ public class WebdavEntry {
     @Getter @Setter private boolean hasPreview;
     @Getter private String note = "";
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
-    @Getter private String richWorkspace = "";
+    @Getter private String richWorkspace = null;
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -329,9 +329,16 @@ public class WebdavEntry {
             }
 
             // NC rich-workspace property <nc:rich-workspace>
+            // can be null if rich-workspace is disabled for this user
             prop = propSet.get(EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace);
-            if (prop != null && prop.getValue() != null) {
-                richWorkspace = prop.getValue().toString();
+            if (prop != null) {
+                if (prop.getValue() != null) {
+                    richWorkspace = prop.getValue().toString();
+                } else {
+                    richWorkspace = "";
+                }
+            } else {
+                richWorkspace = null;
             }
 
             // NC sharees property <nc-sharees>
