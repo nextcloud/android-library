@@ -47,8 +47,6 @@ public class RemoteWipeSuccessRemoteOperation extends RemoteOperation {
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String REMOTE_WIPE_URL = "/index.php/core/wipe/success";
 
-    private static final String TOKEN = "token";
-
     private String appToken;
 
     public RemoteWipeSuccessRemoteOperation(String appToken) {
@@ -66,7 +64,7 @@ public class RemoteWipeSuccessRemoteOperation extends RemoteOperation {
         try {
             postMethod = new Utf8PostMethod(client.getBaseUri() + REMOTE_WIPE_URL);
             postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
-            postMethod.setParameter(TOKEN, appToken);
+            postMethod.setParameter(REMOTE_WIPE_TOKEN, appToken);
 
             int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
             client.exhaustResponse(postMethod.getResponseBodyAsStream());

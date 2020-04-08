@@ -44,7 +44,6 @@ public class UnlockFileRemoteOperation extends RemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
-    private static final String TOKEN = "token";
 
     private String localId;
     private String token;
@@ -70,7 +69,7 @@ public class UnlockFileRemoteOperation extends RemoteOperation {
             deleteMethod = new DeleteMethod(client.getBaseUri() + LOCK_FILE_URL + localId);
             deleteMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
-            deleteMethod.addRequestHeader(TOKEN, token);
+            deleteMethod.addRequestHeader(E2E_TOKEN, token);
 
             int status = client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 

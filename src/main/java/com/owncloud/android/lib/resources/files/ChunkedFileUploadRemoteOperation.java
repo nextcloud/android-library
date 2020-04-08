@@ -60,10 +60,23 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
     private final boolean onWifiConnection;
 
-    public ChunkedFileUploadRemoteOperation(String storagePath, String remotePath, String mimeType, String requiredEtag,
+    public ChunkedFileUploadRemoteOperation(String storagePath,
+                                            String remotePath,
+                                            String mimeType,
+                                            String requiredEtag,
                                             String lastModificationTimestamp,
                                             boolean onWifiConnection) {
-        super(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp);
+        this(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, onWifiConnection, null);
+    }
+
+    public ChunkedFileUploadRemoteOperation(String storagePath,
+                                            String remotePath,
+                                            String mimeType,
+                                            String requiredEtag,
+                                            String lastModificationTimestamp,
+                                            boolean onWifiConnection,
+                                            String token) {
+        super(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, token);
         this.onWifiConnection = onWifiConnection;
     }
 
@@ -141,6 +154,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             String originUri = uploadFolderUri + "/.file";
             MoveMethod moveMethod = new MoveMethod(originUri, destinationUri, true);
             moveMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, String.valueOf(file.lastModified() / 1000));
+
+            if (token != null) {
+                moveMethod.addRequestHeader(E2E_TOKEN, token);
+            }
             int moveResult = client.executeMethod(moveMethod);
 
             result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
@@ -229,6 +246,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             }
 
             putMethod = createPutMethod(chunkUri);
+
+            if (token != null) {
+                putMethod.addRequestHeader(E2E_TOKEN, token);
+            }
 
             status = client.executeMethod(putMethod);
 

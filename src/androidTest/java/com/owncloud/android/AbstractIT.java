@@ -39,6 +39,7 @@ import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
@@ -224,6 +225,15 @@ public abstract class AbstractIT {
             RemoteFile remoteFile = (RemoteFile) object;
 
             if (!"/".equals(remoteFile.getRemotePath())) {
+                if (remoteFile.isEncrypted()) {
+                    Assert.assertTrue(new ToggleEncryptionRemoteOperation(
+                            remoteFile.getLocalId(),
+                            remoteFile.getRemotePath(),
+                            false)
+                                              .execute(client)
+                                              .isSuccess());
+                }
+                
                 assertTrue(new RemoveFileRemoteOperation(remoteFile.getRemotePath())
                         .execute(client).isSuccess());
             }
