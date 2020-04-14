@@ -188,8 +188,8 @@ public class NetworkUtils {
     static public MultiThreadedHttpConnectionManager getMultiThreadedConnManager() {
         if (mConnManager == null) {
             mConnManager = new MultiThreadedHttpConnectionManager();
-            mConnManager.getParams().setDefaultMaxConnectionsPerHost(5);
-            mConnManager.getParams().setMaxTotalConnections(5);
+            mConnManager.getParams().setDefaultMaxConnectionsPerHost(64);
+            mConnManager.getParams().setMaxTotalConnections(64);
         }
         return mConnManager;
     }
