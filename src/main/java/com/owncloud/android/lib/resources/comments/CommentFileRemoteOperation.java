@@ -79,10 +79,11 @@ public class CommentFileRemoteOperation extends RemoteOperation {
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
 
+        Utf8PostMethod postMethod = null;
         RemoteOperationResult result;
         try {
             String url = client.getNewWebdavUri() + "/comments/files/" + fileId;
-            Utf8PostMethod postMethod = new Utf8PostMethod(url);
+            postMethod = new Utf8PostMethod(url);
             postMethod.addRequestHeader("Content-type", "application/json");
 
             Map<String, String> values = new HashMap<>();
@@ -103,6 +104,10 @@ public class CommentFileRemoteOperation extends RemoteOperation {
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
             Log.e(TAG, "Post comment to file with id " + fileId + " failed: " + result.getLogMessage(), e);
+        } finally {
+            if (postMethod != null) {
+                postMethod.releaseConnection();
+            }
         }
 
         return result;
