@@ -61,12 +61,15 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
+        PropFindMethod propfind = null;
+        
         try {
             DavPropertyNameSet propSet = new DavPropertyNameSet();
             propSet.add(DavPropertyName.GETETAG);
 
-            PropFindMethod propfind = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(path),
-                    propSet, 0);
+            propfind = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(path),
+                    propSet,
+                    0);
             int status = client.executeMethod(propfind, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
             if (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK) {
@@ -94,6 +97,10 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             }
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while retrieving eTag");
+        } finally {
+            if (propfind != null) {
+                propfind.releaseConnection();
+            }
         }
 
         return new RemoteOperationResult(RemoteOperationResult.ResultCode.ETAG_CHANGED);

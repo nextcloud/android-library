@@ -56,10 +56,10 @@ public class EmptyTrashbinRemoteOperation extends RemoteOperation {
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
 
+        DeleteMethod delete = null;
         RemoteOperationResult result;
         try {
-            DeleteMethod delete = new DeleteMethod(client.getNewWebdavUri() + "/trashbin/" + client.getUserId() +
-                                                           "/trash");
+            delete = new DeleteMethod(client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/trash");
             int status = client.executeMethod(delete, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
 
             result = new RemoteOperationResult(isSuccess(status), delete);
@@ -68,6 +68,10 @@ public class EmptyTrashbinRemoteOperation extends RemoteOperation {
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
             Log.e(TAG, "Empty trashbin failed: " + result.getLogMessage(), e);
+        } finally {
+            if (delete != null) {
+                delete.releaseConnection();
+            }
         }
 
         return result;

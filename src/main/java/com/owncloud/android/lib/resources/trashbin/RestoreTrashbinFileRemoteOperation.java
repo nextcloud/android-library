@@ -73,13 +73,14 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
 
+        MoveMethod move = null;
         RemoteOperationResult result;
         try {
             String source = client.getNewWebdavUri() + WebdavUtils.encodePath(sourcePath);
             String target = client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/restore/" +
                     Uri.encode(fileName);
 
-            MoveMethod move = new MoveMethod(source, target, true);
+            move = new MoveMethod(source, target, true);
             int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
 
             result = new RemoteOperationResult(isSuccess(status), move);
@@ -88,6 +89,10 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
             Log.e(TAG, "Restore trashbin file " + sourcePath + " failed: " + result.getLogMessage(), e);
+        } finally {
+            if (move != null) {
+                move.releaseConnection();
+            }
         }
 
         return result;

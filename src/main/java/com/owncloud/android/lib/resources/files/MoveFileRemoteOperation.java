@@ -100,7 +100,7 @@ public class MoveFileRemoteOperation extends RemoteOperation {
 
         /// perform remote operation
         MoveMethod move = null;
-        RemoteOperationResult result = null;
+        RemoteOperationResult result;
         try {
             move = new MoveMethod(
                 client.getWebdavUri() + WebdavUtils.encodePath(mSrcRemotePath),

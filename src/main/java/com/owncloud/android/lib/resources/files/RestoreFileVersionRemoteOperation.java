@@ -72,13 +72,14 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
 
+        MoveMethod move = null;
         RemoteOperationResult result;
         try {
             String source = client.getNewWebdavUri() + "/versions/" + client.getUserId() + "/versions/" + fileId + "/"
                     + Uri.encode(fileName);
             String target = client.getNewWebdavUri() + "/versions/" + client.getUserId() + "/restore/" + fileId;
 
-            MoveMethod move = new MoveMethod(source, target, true);
+            move = new MoveMethod(source, target, true);
             int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
 
             result = new RemoteOperationResult(isSuccess(status), move);
@@ -87,6 +88,10 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
             Log.e(TAG, "Restore file version with id " + fileId + " failed: " + result.getLogMessage(), e);
+        } finally {
+            if (move != null) {
+                move.releaseConnection();
+            }
         }
 
         return result;
