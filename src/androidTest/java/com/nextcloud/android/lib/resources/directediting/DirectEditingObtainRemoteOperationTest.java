@@ -24,13 +24,16 @@
 package com.nextcloud.android.lib.resources.directediting;
 
 import com.owncloud.android.AbstractIT;
+import com.owncloud.android.lib.common.Creator;
 import com.owncloud.android.lib.common.DirectEditing;
+import com.owncloud.android.lib.common.Editor;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DirectEditingObtainRemoteOperationTest extends AbstractIT {
@@ -42,10 +45,19 @@ public class DirectEditingObtainRemoteOperationTest extends AbstractIT {
 
         DirectEditing directEditing = (DirectEditing) result.getSingleData();
 
-        assertEquals("Nextcloud Text", directEditing.editors.get("text").name);
-        assertEquals("text/plain", directEditing.editors.get("text").optionalMimetypes.get(0));
+        assertTrue(directEditing.editors.containsKey("text"));
 
-        assertEquals("text document", directEditing.creators.get("textdocument").name);
-        assertFalse(directEditing.creators.get("textdocument").templates);
+        Editor textEditor = directEditing.editors.get("text");
+        assertNotNull(textEditor);
+
+        assertEquals("Nextcloud Text", textEditor.name);
+
+        assertTrue(textEditor.mimetypes.contains("text/markdown"));
+        assertTrue(textEditor.mimetypes.contains("text/plain"));
+        assertEquals(0, textEditor.optionalMimetypes.size());
+
+        Creator creator = directEditing.creators.get("textdocument");
+        assertNotNull(creator);
+        assertFalse(creator.templates);
     }
 }
