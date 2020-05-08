@@ -33,6 +33,7 @@ import com.owncloud.android.lib.resources.shares.ShareeUser;
 
 import java.io.Serializable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -202,6 +203,7 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeParcelableArray(sharees, 0);
     }
 
+    @SuppressFBWarnings(value = "STT_STRING_PARSING_A_FIELD", justification = "remoteId contains cloud id and local id")
     public String getLocalId() {
         return remoteId.substring(0, 8).replaceAll("^0*", "");
     }
