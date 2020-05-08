@@ -77,7 +77,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     }
 
     public boolean isFolder() {
-        return mimeType != null && mimeType.equals(DIRECTORY);
+        return DIRECTORY.equals(mimeType);
     }
 
     public boolean isHidden() {

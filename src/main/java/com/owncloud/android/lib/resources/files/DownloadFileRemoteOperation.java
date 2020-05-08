@@ -142,7 +142,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 boolean transferEncoding = false;
 
                 if (transferEncodingHeader != null) {
-                    transferEncoding = transferEncodingHeader.getValue().equals("chunked");
+                    transferEncoding = "chunked".equals(transferEncodingHeader.getValue());
                 }
                 
                 if (transferred == totalToTransfer || transferEncoding) {  

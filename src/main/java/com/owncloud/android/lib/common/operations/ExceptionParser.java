@@ -84,12 +84,12 @@ public class ExceptionParser {
     }
 
     public boolean isInvalidCharacterException() {
-        return exception.equalsIgnoreCase(INVALID_PATH_EXCEPTION_STRING) ||
-                exception.equalsIgnoreCase(INVALID_PATH_EXCEPTION_UPLOAD_STRING);
+        return INVALID_PATH_EXCEPTION_STRING.equalsIgnoreCase(exception) ||
+                INVALID_PATH_EXCEPTION_UPLOAD_STRING.equalsIgnoreCase(exception);
     }
 
     public boolean isVirusException() {
-        return exception.equalsIgnoreCase(VIRUS_EXCEPTION_STRING) && message.startsWith("Virus");
+        return VIRUS_EXCEPTION_STRING.equalsIgnoreCase(exception) && message.startsWith("Virus");
     }
 
     /**
@@ -108,9 +108,9 @@ public class ExceptionParser {
             }
             String name = parser.getName();
 
-            if (name.equalsIgnoreCase(NODE_EXCEPTION)) {
+            if (NODE_EXCEPTION.equalsIgnoreCase(name)) {
                 exception = readText(parser);
-            } else if (name.equalsIgnoreCase(NODE_MESSAGE)) {
+            } else if (NODE_MESSAGE.equalsIgnoreCase(name)) {
                 message = readText(parser);
             } else {
                 skip(parser);
