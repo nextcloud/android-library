@@ -32,6 +32,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONArray;
@@ -146,6 +147,15 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     // activity
     private static final String NODE_ACTIVITY = "activity";
 
+    private OCCapability currentCapability = null;
+
+    public GetCapabilitiesRemoteOperation() {
+    }
+
+    public GetCapabilitiesRemoteOperation(OCCapability currentCapability) {
+        this.currentCapability = currentCapability;
+    }
+
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
@@ -162,9 +172,22 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
             get = new GetMethod(uriBuilder.build().toString());
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
+            if (null != currentCapability && !"".equals(currentCapability.getEtag())) {
+                get.addRequestHeader(OCS_ETAG_HEADER, currentCapability.getEtag());
+            }
+
             status = client.executeMethod(get);
 
-            if(isSuccess(status)) {
+            if(isNotModified(status)) {
+                Log_OC.d(TAG, "Capabilities not modified");
+
+                ArrayList<Object> data = new ArrayList<>();
+                data.add(currentCapability);
+                result = new RemoteOperationResult(true, get);
+                result.setData(data);
+
+                Log_OC.d(TAG, "*** Get Capabilities completed ");
+            } else if(isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
                 Log_OC.d(TAG, "Successful response: " + response);
 
@@ -481,6 +504,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                             capability.setRichDocuments(CapabilityBooleanType.FALSE);
                         }
                     }
+
+                    Header etag = get.getResponseHeader("ETag");
+                    if (etag != null) {
+                        capability.setEtag(etag.getValue());
+                    }
                     
                     // Result
                     data.add(capability);
@@ -519,5 +547,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK);
+    }
+
+    private boolean isNotModified(int status) {
+        return (status == HttpStatus.SC_NOT_MODIFIED);
     }
 }

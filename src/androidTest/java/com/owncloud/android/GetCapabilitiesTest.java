@@ -34,6 +34,7 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -57,5 +58,22 @@ public class GetCapabilitiesTest extends AbstractIT {
         Assert.assertFalse(capability.getDirectEditingEtag().isEmpty());
         
         // TODO assert basic capabilities
+    }
+
+    @Test
+    public void testGetRemoteCapabilitiesOperationEtag() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+
+        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(client);
+        assertTrue(resultEtag.isSuccess());
+        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
+
+        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+        assertEquals(capability, sameCapability);
     }
 }
