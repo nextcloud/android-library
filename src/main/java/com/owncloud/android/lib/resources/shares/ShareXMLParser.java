@@ -182,9 +182,9 @@ public class ShareXMLParser {
 			}
 			String name = parser.getName();
 			// read NODE_META and NODE_DATA
-			if (name.equalsIgnoreCase(NODE_META)) {
+			if (NODE_META.equalsIgnoreCase(name)) {
 				readMeta(parser);
-			} else if (name.equalsIgnoreCase(NODE_DATA)) {
+			} else if (NODE_DATA.equalsIgnoreCase(name)) {
 				shares = readData(parser);
 			} else {
 				skip(parser);
@@ -211,13 +211,13 @@ public class ShareXMLParser {
 			}
 			String name = parser.getName();
 
-			if  (name.equalsIgnoreCase(NODE_STATUS)) {
+            if (NODE_STATUS.equalsIgnoreCase(name)) {
 				setStatus(readNode(parser, NODE_STATUS));
 
-			} else if (name.equalsIgnoreCase(NODE_STATUS_CODE)) {
+            } else if (NODE_STATUS_CODE.equalsIgnoreCase(name)) {
 				setStatusCode(Integer.parseInt(readNode(parser, NODE_STATUS_CODE)));
 
-			} else if (name.equalsIgnoreCase(NODE_MESSAGE)) {
+            } else if (NODE_MESSAGE.equalsIgnoreCase(name)) {
 				setMessage(readNode(parser, NODE_MESSAGE));
 
 			} else {
@@ -246,20 +246,20 @@ public class ShareXMLParser {
 				continue;
 			}
 			String name = parser.getName();
-			if (name.equalsIgnoreCase(NODE_ELEMENT)) {
+			if (NODE_ELEMENT.equalsIgnoreCase(name)) {
 				readElement(parser, shares);
-				
-			}  else if (name.equalsIgnoreCase(NODE_ID)) {// Parse Create XML Response
+
+			} else if (NODE_ID.equalsIgnoreCase(name)) {// Parse Create XML Response
 				share = new OCShare();
 				String value = readNode(parser, NODE_ID);
 				share.setRemoteId(Integer.parseInt(value));
 
-			} else if (name.equalsIgnoreCase(NODE_URL)) {
+			} else if (NODE_URL.equalsIgnoreCase(name)) {
 				share.setShareType(ShareType.PUBLIC_LINK);
 				String value = readNode(parser, NODE_URL);
 				share.setShareLink(value);
 
-			}  else if (name.equalsIgnoreCase(NODE_TOKEN)) {
+			} else if (NODE_TOKEN.equalsIgnoreCase(name)) {
 				share.setToken(readNode(parser, NODE_TOKEN));
 
 			} else {

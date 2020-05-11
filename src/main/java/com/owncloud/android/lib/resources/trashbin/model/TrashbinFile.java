@@ -70,7 +70,7 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
 
     @Override
     public boolean isFolder() {
-        return mimeType != null && mimeType.equals(DIRECTORY);
+        return DIRECTORY.equals(mimeType);
     }
 
     public boolean isHidden() {

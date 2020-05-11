@@ -223,7 +223,7 @@ public abstract class AbstractIT {
         for (Object object : result.getData()) {
             RemoteFile remoteFile = (RemoteFile) object;
 
-            if (!remoteFile.getRemotePath().equals("/")) {
+            if (!"/".equals(remoteFile.getRemotePath())) {
                 assertTrue(new RemoveFileRemoteOperation(remoteFile.getRemotePath())
                         .execute(client).isSuccess());
             }
