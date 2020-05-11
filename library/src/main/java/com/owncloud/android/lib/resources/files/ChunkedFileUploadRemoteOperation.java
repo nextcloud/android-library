@@ -69,7 +69,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             String remotePath,
                                             String mimeType,
                                             String requiredEtag,
-                                            String lastModificationTimestamp,
+                                            long lastModificationTimestamp,
                                             boolean onWifiConnection) {
         this(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, onWifiConnection, null);
     }
@@ -78,7 +78,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             String remotePath,
                                             String mimeType,
                                             String requiredEtag,
-                                            String lastModificationTimestamp,
+                                            long lastModificationTimestamp,
                                             Long creationTimestamp,
                                             boolean onWifiConnection,
                                             boolean disableRetries) {
@@ -97,7 +97,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             String remotePath,
                                             String mimeType,
                                             String requiredEtag,
-                                            String lastModificationTimestamp,
+                                            long lastModificationTimestamp,
                                             boolean onWifiConnection,
                                             String token) {
         this(storagePath,
@@ -115,7 +115,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             String remotePath,
                                             String mimeType,
                                             String requiredEtag,
-                                            String lastModificationTimestamp,
+                                            long lastModificationTimestamp,
                                             boolean onWifiConnection,
                                             String token,
                                             Long creationTimestamp,
@@ -207,7 +207,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             String originUri = uploadFolderUri + "/.file";
 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
-            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp);
+            moveMethod.addRequestHeader(
+                    OC_X_OC_MTIME_HEADER,
+                    String.valueOf(lastModificationTimestamp)
+            );
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));

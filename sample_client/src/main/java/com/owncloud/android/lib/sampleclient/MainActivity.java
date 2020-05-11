@@ -154,20 +154,24 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
     }
 
     private void startUpload() {
-    	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
-    	File fileToUpload = upFolder.listFiles()[0];
-    	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
-    	String mimeType = getString(R.string.sample_file_mimetype);
+		File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
+		File fileToUpload = upFolder.listFiles()[0];
+		String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
+		String mimeType = getString(R.string.sample_file_mimetype);
 
 		// Get the last modification date of the file from the file system
-		Long timeStampLong = fileToUpload.lastModified() / 1000;
-		String timeStamp = timeStampLong.toString();
+		long timeStamp = fileToUpload.lastModified() / 1000;
 
-        UploadFileRemoteOperation uploadOperation =
-                new UploadFileRemoteOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType, timeStamp);
-    	uploadOperation.addDataTransferProgressListener(this);
-    	uploadOperation.execute(mClient, this, mHandler);
-    }
+		UploadFileRemoteOperation uploadOperation =
+				new UploadFileRemoteOperation(
+						fileToUpload.getAbsolutePath(),
+						remotePath,
+						mimeType,
+						timeStamp
+				);
+		uploadOperation.addDataTransferProgressListener(this);
+		uploadOperation.execute(mClient, this, mHandler);
+	}
 
     private void startRemoteDeletion() {
     	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
