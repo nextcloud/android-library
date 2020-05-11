@@ -64,11 +64,15 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
     private GetMethod mGet;
 
     private String mRemotePath;
-    private String mLocalFolderPath;
+    private String temporalFolderPath;
 
-    public DownloadFileRemoteOperation(String remotePath, String localFolderPath) {
+    /**
+     * @param remotePath         which file to download
+     * @param temporalFolderPath temporal folder where file is stored, to avoid conflicts it use full remote path
+     */
+    public DownloadFileRemoteOperation(String remotePath, String temporalFolderPath) {
         mRemotePath = remotePath;
-        mLocalFolderPath = localFolderPath;
+        this.temporalFolderPath = temporalFolderPath;
     }
 
 	@Override
@@ -189,7 +193,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
     }
 
     private String getTmpPath() {
-        return mLocalFolderPath + mRemotePath;
+        return temporalFolderPath + mRemotePath;
     }
 
     public void addDatatransferProgressListener(OnDatatransferProgressListener listener) {
