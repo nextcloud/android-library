@@ -24,6 +24,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import android.text.TextUtils;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -48,8 +50,9 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
     private static final int CONNECTION_TIMEOUT = 5000;
 
 
-    private String mRemotePath;
-    private boolean mCreateFullPath;
+    private boolean createFullPath;
+    private String remotePath;
+    private String token;
 
     /**
      * Constructor
@@ -59,8 +62,13 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
      *                       if don't exist yet.
      */
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath) {
-        mRemotePath = remotePath;
-        mCreateFullPath = createFullPath;
+        this.remotePath = remotePath;
+        this.createFullPath = createFullPath;
+    }
+
+    public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, String token) {
+        this(remotePath, createFullPath);
+        this.token = token;
     }
 
     /**
@@ -73,10 +81,10 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
         RemoteOperationResult result;
 
         result = createFolder(client);
-        if (!result.isSuccess() && mCreateFullPath &&
+        if (!result.isSuccess() && createFullPath &&
                 RemoteOperationResult.ResultCode.CONFLICT == result.getCode() &&
-                !"/".equals(mRemotePath)) { // this must already exists
-            result = createParentFolder(FileUtils.getParentPath(mRemotePath), client);
+                !"/".equals(remotePath)) { // this must already exists
+            result = createParentFolder(FileUtils.getParentPath(remotePath), client);
             if (result.isSuccess()) {
                 result = createFolder(client);    // second (and last) try
             }
@@ -90,7 +98,12 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
         RemoteOperationResult result;
         MkColMethod mkCol = null;
         try {
-            mkCol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
+            mkCol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
+
+            if (!TextUtils.isEmpty(token)) {
+                mkCol.addRequestHeader(E2E_TOKEN, token);
+            }
+            
             client.executeMethod(mkCol, READ_TIMEOUT, CONNECTION_TIMEOUT);
 
             if (HttpStatus.SC_METHOD_NOT_ALLOWED == mkCol.getStatusCode()) {
@@ -98,12 +111,12 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
             } else {
                 result = new RemoteOperationResult(mkCol.succeeded(), mkCol);
             }
-            
-            Log_OC.d(TAG, "Create directory " + mRemotePath + ": " + result.getLogMessage());
+
+            Log_OC.d(TAG, "Create directory " + remotePath + ": " + result.getLogMessage());
             client.exhaustResponse(mkCol.getResponseBodyAsStream());
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Create directory " + mRemotePath + ": " + result.getLogMessage(), e);
+            Log_OC.e(TAG, "Create directory " + remotePath + ": " + result.getLogMessage(), e);
 
         } finally {
             if (mkCol != null)
@@ -113,7 +126,7 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
     }
 
     private RemoteOperationResult createParentFolder(String parentPath, OwnCloudClient client) {
-        RemoteOperation operation = new CreateFolderRemoteOperation(parentPath, mCreateFullPath);
+        RemoteOperation operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
         return operation.execute(client);
     }
 

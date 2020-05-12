@@ -5,7 +5,7 @@ public interface ServerFileInterface {
     String getFileName();
     
     String getMimeType();
-    
+
     String getRemotePath();
     
     String getLocalId();

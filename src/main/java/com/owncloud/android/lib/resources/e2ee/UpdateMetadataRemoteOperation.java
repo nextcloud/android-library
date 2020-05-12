@@ -52,7 +52,6 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String METADATA_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/meta-data/";
-    private static final String TOKEN = "token";
     private static final String FORMAT = "format";
 
     // JSON node names
@@ -88,7 +87,7 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
             putMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
             NameValuePair[] putParams = new NameValuePair[2];
-            putParams[0] = new NameValuePair(TOKEN, token);
+            putParams[0] = new NameValuePair(E2E_TOKEN, token);
             putParams[1] = new NameValuePair(FORMAT, "json");
             putMethod.setQueryString(putParams);
 

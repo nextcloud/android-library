@@ -48,8 +48,6 @@ public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String REMOTE_WIPE_URL = "/index.php/core/wipe/check";
 
-    private static final String TOKEN = "token";
-
     // JSON node names
     private static final String JSON_FORMAT = "?format=json";
     private static final String WIPE = "wipe";
@@ -65,7 +63,7 @@ public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
         try {
             postMethod = new Utf8PostMethod(client.getBaseUri() + REMOTE_WIPE_URL + JSON_FORMAT);
             postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
-            postMethod.setParameter(TOKEN, client.getCredentials().getAuthToken());
+            postMethod.setParameter(REMOTE_WIPE_TOKEN, client.getCredentials().getAuthToken());
 
             int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 

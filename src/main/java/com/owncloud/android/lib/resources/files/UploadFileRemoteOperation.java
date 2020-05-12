@@ -63,13 +63,24 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 	private String lastModificationTimestamp;
 	PutMethod putMethod = null;
 	private String requiredEtag = null;
+    String token = null;
 
 	final AtomicBoolean cancellationRequested = new AtomicBoolean(false);
 	final Set<OnDatatransferProgressListener> dataTransferListeners = new HashSet<>();
 
 	protected RequestEntity entity = null;
 
-	public UploadFileRemoteOperation(String localPath, String remotePath, String mimeType,
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
+                                     String requiredEtag,
+                                     String lastModificationTimestamp) {
+        this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null);
+    }
+
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
 									 String lastModificationTimestamp) {
 		this.localPath = localPath;
 		this.remotePath = remotePath;
@@ -80,14 +91,19 @@ public class UploadFileRemoteOperation extends RemoteOperation {
         }
 
         // TODO check for max value of lastModificationTimestamp
-		
+
 		this.lastModificationTimestamp = lastModificationTimestamp;
 	}
 
-	public UploadFileRemoteOperation(String localPath, String remotePath, String mimeType, String requiredEtag,
-									 String lastModificationTimestamp) {
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
+                                     String requiredEtag,
+                                     String lastModificationTimestamp,
+                                     String token) {
 		this(localPath, remotePath, mimeType, lastModificationTimestamp);
 		this.requiredEtag = requiredEtag;
+        this.token = token;
 	}
 
 	@Override
@@ -104,6 +120,10 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 			);
 
 			putMethod = new PutMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
+
+            if (token != null) {
+                putMethod.addRequestHeader(E2E_TOKEN, token);
+            }
 
 			if (cancellationRequested.get()) {
 				// the operation was cancelled before getting it's turn to be executed in the queue of uploads

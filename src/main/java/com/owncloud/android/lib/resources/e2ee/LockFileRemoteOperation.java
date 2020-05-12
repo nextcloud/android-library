@@ -48,7 +48,6 @@ public class LockFileRemoteOperation extends RemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
-    private static final String TOKEN = "token";
 
     private String localId;
     private String token;
@@ -56,7 +55,6 @@ public class LockFileRemoteOperation extends RemoteOperation {
     // JSON node names
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
-    private static final String NODE_TOKEN = "token";
 
     private static final String JSON_FORMAT = "?format=json";
 
@@ -85,7 +83,7 @@ public class LockFileRemoteOperation extends RemoteOperation {
             postMethod = new Utf8PostMethod(client.getBaseUri() + LOCK_FILE_URL + localId + JSON_FORMAT);
 
             if (!token.isEmpty()) {
-                postMethod.setParameter(TOKEN, token);
+                postMethod.setParameter(E2E_TOKEN, token);
             }
 
             // remote request
@@ -99,8 +97,10 @@ public class LockFileRemoteOperation extends RemoteOperation {
 
                 // Parse the response
                 JSONObject respJSON = new JSONObject(response);
-                String token = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA)
-                        .get(NODE_TOKEN);
+                String token = (String) respJSON
+                        .getJSONObject(NODE_OCS)
+                        .getJSONObject(NODE_DATA)
+                        .get(E2E_TOKEN);
 
                 result = new RemoteOperationResult(true, postMethod);
                 ArrayList<Object> tokenArray = new ArrayList<>();

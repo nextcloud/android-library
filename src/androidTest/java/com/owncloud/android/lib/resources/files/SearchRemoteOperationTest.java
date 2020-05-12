@@ -56,10 +56,8 @@ public class SearchRemoteOperationTest extends AbstractIT {
         RemoteOperationResult readFile = new ReadFileRemoteOperation("/test/").execute(client);
         assertTrue(readFile.isSuccess());
 
-        String remoteId = ((RemoteFile) readFile.getData().get(0)).getRemoteId();
-        String localId = remoteId.substring(0, 8).replaceAll("^0*", "");
-
-        SearchRemoteOperation sut = new SearchRemoteOperation(localId,
+        RemoteFile remoteFile = ((RemoteFile) readFile.getSingleData());
+        SearchRemoteOperation sut = new SearchRemoteOperation(remoteFile.getLocalId(),
                                                               SearchRemoteOperation.SearchType.FILE_ID_SEARCH,
                                                               false);
 
