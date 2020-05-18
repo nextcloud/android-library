@@ -109,6 +109,9 @@ public class OCCapability {
     // DirectEditing
     private String directEditingEtag;
 
+    // Etag for capabilities
+    private String etag;
+
     public OCCapability() {
         id = 0;
         accountName = "";
@@ -167,6 +170,7 @@ public class OCCapability {
         extendedSupport = CapabilityBooleanType.UNKNOWN;
 
         directEditingEtag = "";
+        etag = "";
     }
 
     public OwnCloudVersion getVersion() {

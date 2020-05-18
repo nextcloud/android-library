@@ -59,6 +59,7 @@ public abstract class RemoteOperation implements Runnable {
 
     /** OCS API header name */
     public static final String OCS_API_HEADER = "OCS-APIREQUEST";
+    public static final String OCS_ETAG_HEADER = "If-None-Match";
 
     /** OCS API header value */
     public static final String OCS_API_HEADER_VALUE = "true";
