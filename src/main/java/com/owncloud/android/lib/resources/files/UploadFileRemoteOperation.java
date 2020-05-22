@@ -66,6 +66,7 @@ public class UploadFileRemoteOperation extends RemoteOperation {
     String token = null;
 
 	final AtomicBoolean cancellationRequested = new AtomicBoolean(false);
+    RemoteOperationResult.ResultCode cancellationReason = null;
 	final Set<OnDatatransferProgressListener> dataTransferListeners = new HashSet<>();
 
 	protected RequestEntity entity = null;
@@ -136,8 +137,11 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 
 		} catch (Exception e) {
 			if (putMethod != null && putMethod.isAborted()) {
-				result = new RemoteOperationResult(new OperationCancelledException());
-
+                if (cancellationRequested.get() && cancellationReason != null) {
+                    result = new RemoteOperationResult(cancellationReason);
+                } else {
+                    result = new RemoteOperationResult(new OperationCancelledException());
+                }
 			} else {
 				result = new RemoteOperationResult(e);
 			}
@@ -206,12 +210,18 @@ public class UploadFileRemoteOperation extends RemoteOperation {
             ((ProgressiveDataTransfer) entity).removeDataTransferProgressListener(listener);
         }
     }
-    
-    public void cancel() {
+
+    public void cancel(RemoteOperationResult.ResultCode cancellationReason) {
         synchronized (cancellationRequested) {
             cancellationRequested.set(true);
-            if (putMethod != null)
+
+            if (cancellationReason != null) {
+                this.cancellationReason = cancellationReason;
+            }
+
+            if (putMethod != null) {
                 putMethod.abort();
+            }
         }
     }
 
