@@ -163,8 +163,11 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
         } catch (Exception e) {
             if (putMethod != null && putMethod.isAborted()) {
-                result = new RemoteOperationResult(new OperationCancelledException());
-
+                if (cancellationRequested.get() && cancellationReason != null) {
+                    result = new RemoteOperationResult(cancellationReason);
+                } else {
+                    result = new RemoteOperationResult(new OperationCancelledException());
+                }
             } else {
                 result = new RemoteOperationResult(e);
             }
