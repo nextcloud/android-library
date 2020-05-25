@@ -40,6 +40,7 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
     public static final OwnCloudVersion nextcloud_16 = new OwnCloudVersion(0x10000000); // 16.0
     public static final OwnCloudVersion nextcloud_17 = new OwnCloudVersion(0x11000000); // 17.0
     public static final OwnCloudVersion nextcloud_18 = new OwnCloudVersion(0x12000000); // 18.0
+    public static final OwnCloudVersion nextcloud_19 = new OwnCloudVersion(0x13000000); // 19.0
 
     public static final int MINIMUM_VERSION_FOR_MEDIA_STREAMING = nextcloud_14.version; // 14.0
     public static final int MINIMUM_VERSION_FOR_NOTE_ON_SHARE = nextcloud_14.version; // 14.0
