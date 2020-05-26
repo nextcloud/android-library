@@ -30,6 +30,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -74,6 +75,11 @@ public class GetCapabilitiesTest extends AbstractIT {
         assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
 
         OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
-        assertEquals(capability, sameCapability);
+
+        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
+            assertEquals(capability, sameCapability);
+        } else {
+            assertEquals(capability.getEtag(), sameCapability.getEtag());
+        }
     }
 }
