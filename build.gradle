@@ -86,7 +86,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    androidTestImplementation 'commons-io:commons-io:2.6'
+    androidTestImplementation 'commons-io:commons-io:2.7'
     androidTestImplementation 'net.bytebuddy:byte-buddy:1.10.10'
 }
 
