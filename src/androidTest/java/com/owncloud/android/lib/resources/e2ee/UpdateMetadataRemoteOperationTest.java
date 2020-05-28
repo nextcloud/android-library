@@ -28,19 +28,31 @@ import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
 import net.bytebuddy.utility.RandomString;
 
 import org.junit.Test;
 
+import static com.owncloud.android.lib.resources.status.OwnCloudVersion.nextcloud_19;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assume.assumeTrue;
 
 public class UpdateMetadataRemoteOperationTest extends AbstractIT {
     @Test
     public void uploadAndModify() {
+        // tests only for NC19+
+        OCCapability capability = (OCCapability) new GetCapabilitiesRemoteOperation(null)
+                .execute(client)
+                .getSingleData();
+
+        assumeTrue(capability.getVersion().isNewerOrEqual(nextcloud_19));
+
+
         // create folder
         String folder = "/" + RandomString.make(20) + "/";
         assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
@@ -50,10 +62,10 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
 
         // mark as encrypted
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
-                                                       remoteFolder.getRemotePath(),
-                                                       true)
-                           .execute(client)
-                           .isSuccess());
+                remoteFolder.getRemotePath(),
+                true)
+                .execute(client)
+                .isSuccess());
 
         // Lock 
         String token = new LockFileRemoteOperation(remoteFolder.getLocalId())
@@ -65,8 +77,8 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
         // add metadata
         String expectedMetadata = "metadata";
         assertTrue(new StoreMetadataRemoteOperation(remoteFolder.getLocalId(), expectedMetadata)
-                           .execute(client)
-                           .isSuccess());
+                .execute(client)
+                .isSuccess());
 
         // verify metadata
         String retrievedMetadata = (String) new GetMetadataRemoteOperation(remoteFolder.getLocalId())
@@ -78,8 +90,8 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
         // update metadata
         String updatedMetadata = "metadata2";
         assertTrue(new UpdateMetadataRemoteOperation(remoteFolder.getLocalId(), updatedMetadata, token)
-                           .execute(client)
-                           .isSuccess());
+                .execute(client)
+                .isSuccess());
 
         // verify metadata
         String retrievedMetadata2 = (String) new GetMetadataRemoteOperation(remoteFolder.getLocalId())
