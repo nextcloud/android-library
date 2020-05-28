@@ -51,6 +51,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,6 +72,9 @@ import static junit.framework.TestCase.assertTrue;
  */
 
 public abstract class AbstractIT {
+    @Rule
+    public RetryTestRule retryTestRule = new RetryTestRule();
+    
     private static final int BUFFER_SIZE = 1024;
 
     public static OwnCloudClient client;
