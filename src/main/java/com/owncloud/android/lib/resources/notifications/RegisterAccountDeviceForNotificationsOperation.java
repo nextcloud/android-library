@@ -27,8 +27,6 @@
 package com.owncloud.android.lib.resources.notifications;
 
 
-import android.net.Uri;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -66,7 +64,8 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     private String devicePublicKey;
     private String proxyServer;
 
-    public RegisterAccountDeviceForNotificationsOperation(String pushTokenHash, String devicePublicKey,
+    public RegisterAccountDeviceForNotificationsOperation(String pushTokenHash,
+                                                          String devicePublicKey,
                                                           String proxyServer) {
         this.pushTokenHash = pushTokenHash;
         this.devicePublicKey = devicePublicKey;
@@ -82,14 +81,11 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
 
         try {
             // Post Method
-            String uri = Uri.parse(client.getBaseUri() + OCS_ROUTE)
-                    .buildUpon()
-                    .appendQueryParameter(PUSH_TOKEN_HASH, pushTokenHash)
-                    .appendQueryParameter(DEVICE_PUBLIC_KEY, devicePublicKey)
-                    .appendQueryParameter(PROXY_SERVER, proxyServer)
-                    .build().toString();
-
-            post = new Utf8PostMethod(uri);
+            post = new Utf8PostMethod(client.getBaseUri() + OCS_ROUTE);
+            post.setParameter(PUSH_TOKEN_HASH, pushTokenHash);
+            post.setParameter(DEVICE_PUBLIC_KEY, devicePublicKey);
+            post.setParameter(PROXY_SERVER, proxyServer);
+                                
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             status = client.executeMethod(post);
