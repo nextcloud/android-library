@@ -33,11 +33,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 
-import java.net.URLEncoder;
-
-import static com.owncloud.android.lib.common.operations.RemoteOperation.CONTENT_TYPE;
-import static com.owncloud.android.lib.common.operations.RemoteOperation.FORM_URLENCODED;
-
 public class UnregisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
 
@@ -52,7 +47,8 @@ public class UnregisterAccountDeviceForProxyOperation {
     private static final String DEVICE_IDENTIFIER_SIGNATURE = "deviceIdentifierSignature";
     private static final String USER_PUBLIC_KEY = "userPublicKey";
 
-    public UnregisterAccountDeviceForProxyOperation(String proxyUrl, String deviceIdentifier,
+    public UnregisterAccountDeviceForProxyOperation(String proxyUrl,
+                                                    String deviceIdentifier,
                                                     String deviceIdentifierSignature,
                                                     String userPublicKey) {
         this.proxyUrl = proxyUrl;
@@ -68,13 +64,10 @@ public class UnregisterAccountDeviceForProxyOperation {
 
         try {
             // Post Method
-            String uriToPost = proxyUrl + PROXY_ROUTE;
-            uriToPost += "?" + DEVICE_IDENTIFIER + "=" + URLEncoder.encode(deviceIdentifier) + "&";
-            uriToPost += DEVICE_IDENTIFIER_SIGNATURE + "=" + URLEncoder.encode(deviceIdentifierSignature) + "&";
-            uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
-
-            delete = new HttpDeleteWithBody(uriToPost);
-            delete.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+            delete = new HttpDeleteWithBody(proxyUrl + PROXY_ROUTE);
+            delete.setParameter(DEVICE_IDENTIFIER, deviceIdentifier);
+            delete.setParameter(DEVICE_IDENTIFIER_SIGNATURE, deviceIdentifierSignature);
+            delete.setParameter(USER_PUBLIC_KEY, userPublicKey);
 
             status = new HttpClient().executeMethod(delete);
             String response = delete.getResponseBodyAsString();

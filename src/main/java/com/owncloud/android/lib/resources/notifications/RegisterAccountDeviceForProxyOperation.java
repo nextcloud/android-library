@@ -33,11 +33,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
-import java.net.URLEncoder;
-
-import static com.owncloud.android.lib.common.operations.RemoteOperation.CONTENT_TYPE;
-import static com.owncloud.android.lib.common.operations.RemoteOperation.FORM_URLENCODED;
-
 public class RegisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
 
@@ -54,8 +49,10 @@ public class RegisterAccountDeviceForProxyOperation {
     private static final String DEVICE_IDENTIFIER_SIGNATURE = "deviceIdentifierSignature";
     private static final String USER_PUBLIC_KEY = "userPublicKey";
 
-    public RegisterAccountDeviceForProxyOperation(String proxyUrl, String pushToken,
-                                                  String deviceIdentifier, String deviceIdentifierSignature,
+    public RegisterAccountDeviceForProxyOperation(String proxyUrl,
+                                                  String pushToken,
+                                                  String deviceIdentifier,
+                                                  String deviceIdentifierSignature,
                                                   String userPublicKey) {
         this.proxyUrl = proxyUrl;
         this.pushToken = pushToken;
@@ -71,14 +68,11 @@ public class RegisterAccountDeviceForProxyOperation {
 
         try {
             // Post Method
-            String uriToPost = proxyUrl + PROXY_ROUTE;
-            uriToPost += "?" + PUSH_TOKEN + "=" + URLEncoder.encode(pushToken) + "&";
-            uriToPost += DEVICE_IDENTIFIER + "=" + URLEncoder.encode(deviceIdentifier) + "&";
-            uriToPost += DEVICE_IDENTIFIER_SIGNATURE + "=" + URLEncoder.encode(deviceIdentifierSignature) + "&";
-            uriToPost += USER_PUBLIC_KEY + "=" + URLEncoder.encode(userPublicKey);
-
-            post = new Utf8PostMethod(uriToPost);
-            post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+            post = new Utf8PostMethod(proxyUrl + PROXY_ROUTE);
+            post.setParameter(PUSH_TOKEN, pushToken);
+            post.setParameter(DEVICE_IDENTIFIER, deviceIdentifier);
+            post.setParameter(DEVICE_IDENTIFIER_SIGNATURE, deviceIdentifierSignature);
+            post.setParameter(USER_PUBLIC_KEY, userPublicKey);
             
             status = new HttpClient().executeMethod(post);
             String response = post.getResponseBodyAsString();
