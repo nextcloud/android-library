@@ -196,26 +196,17 @@ public class OwnCloudClientFactory {
      * @param account                       The nextcloud account
      * @param appContext                    Android application context
      * @return                              A Nextcloud object ready to be used
-     * @throws AuthenticatorException       If the authenticator failed to get the authorization
-     *                                      token for the account.
-     * @throws OperationCanceledException   If the authenticator operation was cancelled while
-     *                                      getting the authorization token for the account.
-     * @throws IOException                  If there was some I/O error while getting the
-     *                                      authorization token for the account.
      * @throws AccountNotFoundException     If 'account' is unknown for the AccountManager
      */
     public static NextcloudClient createNextcloudClient(Account account, Context appContext)
-            throws OperationCanceledException, AuthenticatorException, IOException,
-            AccountNotFoundException {
+            throws AccountNotFoundException {
         //Log_OC.d(TAG, "Creating OwnCloudClient associated to " + account.name);
         Uri baseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(appContext, account));
         AccountManager am = AccountManager.get(appContext);
         // TODO avoid calling to getUserData here
         String userId = am.getUserData(account, AccountUtils.Constants.KEY_USER_ID);
-
-
         String username = AccountUtils.getUsernameForAccount(account);
-        String password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type), false);
+        String password = am.peekAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type));
 
         // Restore cookies
         // TODO v2 cookie handling
