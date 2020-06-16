@@ -40,6 +40,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.CookieJar
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.apache.commons.httpclient.HttpStatus
@@ -52,34 +53,43 @@ import javax.net.ssl.TrustManager
 
 class NextcloudClient(var baseUri: Uri,
                       var userId: String,
-                      val credentials: String,
-                      val client: OkHttpClient) {
+                      var credentials: String,
+                      var client: OkHttpClient) {
     var followRedirects = true
 
     companion object {
         @JvmStatic
         val TAG = NextcloudClient::class.java.simpleName
 
-        private fun createDefaultClient(context: Context) : OkHttpClient {
+        private fun createDefaultClient(context: Context, interceptor: Interceptor?): OkHttpClient {
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
             val sslContext = SSLContext.getInstance("TLSv1")
             sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
-            return OkHttpClient.Builder()
+            val builder = OkHttpClient.Builder()
                     .cookieJar(CookieJar.NO_COOKIES)
                     .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                     .sslSocketFactory(sslSocketFactory, trustManager)
                     .hostnameVerifier { _: String?, _: SSLSession? -> true }
-                    .build()
+
+            interceptor?.let { builder.addInterceptor(it) }
+
+            return builder.build()
         }
     }
 
     constructor(baseUri: Uri,
                 userId: String,
                 credentials: String,
-                context: Context) : this(baseUri, userId, credentials, createDefaultClient(context))
-   
+                context: Context) : this(baseUri, userId, credentials, createDefaultClient(context, null))
+
+    constructor(baseUri: Uri,
+                userId: String,
+                credentials: String,
+                interceptor: Interceptor,
+                context: Context) : this(baseUri, userId, credentials, createDefaultClient(context, interceptor))
+
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
         return try {
             remoteOperation.run(this)

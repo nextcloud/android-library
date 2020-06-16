@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import okhttp3.Credentials;
+import okhttp3.Interceptor;
 
 public class OwnCloudClientFactory {
     
@@ -158,6 +159,14 @@ public class OwnCloudClientFactory {
         return client;
     }
 
+    public static NextcloudClient createNextcloudClient(Uri uri,
+                                                        String userId,
+                                                        String credentials,
+                                                        Context context,
+                                                        boolean followRedirects) {
+        return createNextcloudClient(uri, userId, credentials, context, followRedirects, null);
+    }
+
     /**
      * Creates a OwnCloudClient to access a URL and sets the desired parameters for ownCloud
      * client connections.
@@ -170,7 +179,8 @@ public class OwnCloudClientFactory {
                                                         String userId,
                                                         String credentials,
                                                         Context context,
-                                                        boolean followRedirects) {
+                                                        boolean followRedirects,
+                                                        Interceptor interceptor) {
         try {
             NetworkUtils.registerAdvancedSslContext(true, context);
         } catch (GeneralSecurityException e) {
@@ -182,7 +192,13 @@ public class OwnCloudClientFactory {
                     " in the system will be used for HTTPS connections", e);
         }
 
-        NextcloudClient client = new NextcloudClient(uri, userId, credentials, context);
+        NextcloudClient client;
+
+        if (interceptor == null) {
+            client = new NextcloudClient(uri, userId, credentials, context);
+        } else {
+            client = new NextcloudClient(uri, userId, credentials, interceptor, context);
+        }
         client.setFollowRedirects(followRedirects);
 
         return client;
@@ -195,6 +211,7 @@ public class OwnCloudClientFactory {
      *
      * @param account                       The nextcloud account
      * @param appContext                    Android application context
+     * @param interceptor
      * @return                              A Nextcloud object ready to be used
      * @throws AuthenticatorException       If the authenticator failed to get the authorization
      *                                      token for the account.
@@ -204,7 +221,7 @@ public class OwnCloudClientFactory {
      *                                      authorization token for the account.
      * @throws AccountNotFoundException     If 'account' is unknown for the AccountManager
      */
-    public static NextcloudClient createNextcloudClient(Account account, Context appContext)
+    public static NextcloudClient createNextcloudClient(Account account, Context appContext, Interceptor interceptor)
             throws OperationCanceledException, AuthenticatorException, IOException,
             AccountNotFoundException {
         //Log_OC.d(TAG, "Creating OwnCloudClient associated to " + account.name);
@@ -222,9 +239,9 @@ public class OwnCloudClientFactory {
         // AccountUtils.restoreCookies(account, client, appContext);
 
         return createNextcloudClient(baseUri,
-                userId,
-                Credentials.basic(username, password),
+                userId, Credentials.basic(username, password),
                 appContext,
-                true);
+                true,
+                interceptor);
     }
 }
