@@ -29,9 +29,9 @@ package com.nextcloud.lib.resources.users
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.common.OwnCloudBasicCredentials
 import com.owncloud.android.lib.common.UserInfo
 import com.owncloud.android.lib.resources.users.GetUserInfoRemoteOperation
+import okhttp3.Credentials
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -40,27 +40,26 @@ import org.junit.Test
 class GetUserInfoRemoteOperationTest : AbstractIT() {
     @Test
     fun testGetUserNoQuota() {
-        client.credentials = OwnCloudBasicCredentials("user1", "user1")
-        val userInfoResult = GetUserInfoRemoteOperation().execute(client)
+        nextcloudClient.credentials = Credentials.basic("user1", "user1")
+        val userInfoResult = GetUserInfoRemoteOperation().execute(nextcloudClient)
         assertTrue(userInfoResult.isSuccess)
-        val userInfo = userInfoResult.data[0] as UserInfo
 
-        assertEquals("User One", userInfo.getDisplayName())
-        assertEquals("user1", userInfo.getId())
-        assertEquals(GetUserInfoRemoteOperation.SPACE_UNLIMITED,
-                userInfo.getQuota().getQuota())
+        val userInfo = userInfoResult.data[0] as UserInfo
+        assertEquals("User One", userInfo.displayName)
+        assertEquals("user1", userInfo.id)
+        assertEquals(GetUserInfoRemoteOperation.SPACE_UNLIMITED, userInfo.quota?.quota)
     }
 
     @Test
     fun testGetUser1GbQuota() {
-        client.credentials = OwnCloudBasicCredentials("user2", "user2")
-        val userInfoResult = GetUserInfoRemoteOperation().execute(client)
+        nextcloudClient.credentials = Credentials.basic("user2", "user2")
+        val userInfoResult = GetUserInfoRemoteOperation().execute(nextcloudClient)
         assertTrue(userInfoResult.isSuccess)
-        val userInfo = userInfoResult.data[0] as UserInfo
 
-        assertEquals("User Two", userInfo.getDisplayName())
-        assertEquals("user2", userInfo.getId())
-        assertEquals(1073741824, userInfo.getQuota().getQuota())
+        val userInfo = userInfoResult.data[0] as UserInfo
+        assertEquals("User Two", userInfo.displayName)
+        assertEquals("user2", userInfo.id)
+        assertEquals(1073741824L, userInfo.quota?.quota)
     }
 
     @After
@@ -70,6 +69,6 @@ class GetUserInfoRemoteOperationTest : AbstractIT() {
         val loginName = arguments.getString("TEST_SERVER_USERNAME")
         val password = arguments.getString("TEST_SERVER_PASSWORD")
 
-        client.credentials = OwnCloudBasicCredentials(loginName, password)
+        nextcloudClient.credentials = Credentials.basic(loginName.orEmpty(), password.orEmpty())
     }
 }

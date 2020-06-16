@@ -52,7 +52,7 @@ import javax.net.ssl.TrustManager
 
 class NextcloudClient(var baseUri: Uri,
                       var userId: String,
-                      val credentials: String,
+                      var credentials: String,
                       val client: OkHttpClient) {
     var followRedirects = true
 

@@ -28,7 +28,8 @@
 package com.owncloud.android.lib.resources.users;
 
 import com.google.gson.reflect.TypeToken;
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -37,10 +38,9 @@ import com.owncloud.android.lib.ocs.ServerResponse;
 import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Gets information (id, display name, and e-mail address and many other things) about the user logged in.
@@ -54,7 +54,7 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
     private static final String TAG = GetUserInfoRemoteOperation.class.getSimpleName();
 
     // OCS Route
-    private static final String OCS_ROUTE_SELF = "/ocs/v1.php/cloud/user";
+    private static final String OCS_ROUTE_SELF = "/ocs/v2.php/cloud/user";
 
     /**
      * Quota return value for a not computed space value.
@@ -77,7 +77,7 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    public RemoteOperationResult run(NextcloudClient client) {
         RemoteOperationResult result;
         int status;
         GetMethod get = null;
@@ -87,14 +87,17 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
         // get the user
         try {
 
-            get = new GetMethod(url);
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            get.setQueryString(new NameValuePair[]{new NameValuePair("format", "json")});
-            status = client.executeMethod(get);
+            get = new GetMethod(url, true);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("format", "json");
+
+            get.setQueryString(map);
+            status = client.execute(get);
 
             if (isSuccess(status)) {
-                ServerResponse<UserInfo> ocsResponse = getServerResponse(get, new TypeToken<ServerResponse<UserInfo>>() {
-                });
+                ServerResponse<UserInfo> ocsResponse = getServerResponse(get,
+                        new TypeToken<ServerResponse<UserInfo>>() {
+                        });
 
                 UserInfo userInfo = ocsResponse.getOcs().getData();
 
@@ -115,11 +118,11 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
             } else {
                 result = new RemoteOperationResult(false, get);
                 String response = get.getResponseBodyAsString();
-                Log_OC.e(TAG, "Failed response while getting user information ");
-                if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
-                } else {
+                Log_OC.e(TAG, "Failed response while getting user information");
+                if (response.isEmpty()) {
                     Log_OC.e(TAG, "*** status code: " + status);
+                } else {
+                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
                 }
             }
         } catch (Exception e) {
