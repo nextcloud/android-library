@@ -14,8 +14,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 /**
- * Delete all notification, specified at 
- * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
+ * Delete all notification, specified at {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
 public class DeleteAllNotificationsRemoteOperation extends RemoteOperation<Void> {
 

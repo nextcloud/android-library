@@ -23,9 +23,9 @@ import java.lang.reflect.Type;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Provides the remote notifications from the server handling the following data structure
- * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
- * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
+ * Provides the remote notifications from the server handling the following data structure accessible via the
+ * notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at {@link
+ * "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
 public class GetNotificationRemoteOperation extends RemoteOperation<Notification> {
 
@@ -63,8 +63,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
                 Log_OC.d(this, "Successful response: " + response);
 
                 // Parse the response
-                Notification notification = parseResult(response);
-                result.setResultData(notification);
+                result.setResultData(parseResult(response));
             } else {
                 result = new RemoteOperationResult<>(false, get);
                 Log_OC.e(this, "Failed response while getting user notifications ");

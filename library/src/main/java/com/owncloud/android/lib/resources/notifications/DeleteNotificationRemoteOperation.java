@@ -14,8 +14,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 /**
- * Delete a notification, specified at
- * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
+ * Delete a notification, specified at {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
 public class DeleteNotificationRemoteOperation extends RemoteOperation<Void> {
 
@@ -47,7 +46,7 @@ public class DeleteNotificationRemoteOperation extends RemoteOperation<Void> {
                 Log_OC.d(this, "Successful response: " + response);
             } else {
                 result = new RemoteOperationResult<>(false, delete);
-                Log_OC.e(this, "Failed response while getting user notifications");
+                Log_OC.e(this, "Failed response while deleting user notification: " + id);
                 Log_OC.e(this, "*** status code: " + status + " ;response message: " + response);
             }
         } catch (Exception e) {

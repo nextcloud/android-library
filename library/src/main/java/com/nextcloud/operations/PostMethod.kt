@@ -5,6 +5,7 @@
  * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
+
 package com.nextcloud.operations
 
 import com.nextcloud.common.OkHttpMethodBase
@@ -18,9 +19,9 @@ import okhttp3.RequestBody
 class PostMethod(
     uri: String,
     useOcsApiRequestHeader: Boolean,
-    val body: RequestBody
+    val body: RequestBody?
 ) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
     override fun applyType(temp: Request.Builder) {
-        temp.post(body)
+        body?.let { temp.post(it) }
     }
 }
