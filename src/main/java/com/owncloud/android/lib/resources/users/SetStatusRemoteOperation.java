@@ -41,7 +41,7 @@ import okhttp3.RequestBody;
 /**
  * Remote operation performing setting of status
  */
-public class SetStatusRemoteOperation extends OCSRemoteOperation<com.owncloud.android.lib.resources.users.Status> {
+public class SetStatusRemoteOperation extends OCSRemoteOperation<Boolean> {
 
     private static final String TAG = SetStatusRemoteOperation.class.getSimpleName();
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/status";
@@ -56,9 +56,9 @@ public class SetStatusRemoteOperation extends OCSRemoteOperation<com.owncloud.an
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult<com.owncloud.android.lib.resources.users.Status> run(NextcloudClient client) {
+    public RemoteOperationResult<Boolean> run(NextcloudClient client) {
         PutMethod putMethod = null;
-        RemoteOperationResult<com.owncloud.android.lib.resources.users.Status> result;
+        RemoteOperationResult<Boolean> result;
 
         try {
             // request body

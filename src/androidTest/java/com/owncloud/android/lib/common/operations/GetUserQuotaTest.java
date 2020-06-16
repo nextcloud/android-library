@@ -45,7 +45,7 @@ public class GetUserQuotaTest extends AbstractIT {
 
     @Test
     public void testGetUserQuota() {
-        RemoteOperationResult<UserInfo> result = new GetUserInfoRemoteOperation().execute(client);
+        RemoteOperationResult<UserInfo> result = new GetUserInfoRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         UserInfo userInfo = result.getResultData();

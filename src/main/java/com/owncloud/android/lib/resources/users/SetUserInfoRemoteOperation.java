@@ -23,17 +23,19 @@
 
 package com.owncloud.android.lib.resources.users;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PutMethod;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 
-public class SetUserInfoRemoteOperation extends RemoteOperation {
+public class SetUserInfoRemoteOperation extends RemoteOperation<Boolean> {
 
     private static final String TAG = SetUserInfoRemoteOperation.class.getSimpleName();
 
@@ -58,8 +60,8 @@ public class SetUserInfoRemoteOperation extends RemoteOperation {
         }
     }
 
-    private Field field;
-    private String value;
+    private final Field field;
+    private final String value;
 
     public SetUserInfoRemoteOperation(Field field, String value) {
         this.field = field;
@@ -67,32 +69,34 @@ public class SetUserInfoRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    public RemoteOperationResult<Boolean> run(NextcloudClient client) {
+        RemoteOperationResult<Boolean> result;
         PutMethod method = null;
 
         try {
-            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserId());
-            method.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            // request body
+            MediaType json = MediaType.parse("application/json; charset=utf-8");
+            RequestBody requestBody = RequestBody.create(json, "{\"key\": \"" + field.getFieldName() + "\"" +
+                    ", \"value\": \"" + value + "\"}");
 
-            NameValuePair[] putParams = new NameValuePair[2];
-            putParams[0] = new NameValuePair("key", field.getFieldName());
-            putParams[1] = new NameValuePair("value", value);
-            method.setQueryString(putParams);
+            // remote request
+            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserId(),
+                    true,
+                    requestBody);
 
-            int status = client.executeMethod(method);
+            int status = client.execute(method);
 
             if (status == HttpStatus.SC_OK) {
-                result = new RemoteOperationResult(true, method);
+                result = new RemoteOperationResult<>(true, method);
 
             } else {
-                result = new RemoteOperationResult(false, method);
+                result = new RemoteOperationResult<>(false, method);
                 String response = method.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while setting user information");
                 Log_OC.e(TAG, "*** status code: " + status + "; response: " + response);
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while setting OC user information", e);
         } finally {
             if (method != null)
