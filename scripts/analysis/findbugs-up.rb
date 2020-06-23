@@ -47,7 +47,7 @@ require 'xmlsimple'
 
 # run FindBugs
 puts "running FindBugs..."
-system './gradlew compileDebugSources spotbugs'
+system './gradlew compileDebugSources spotbugsReport'
 
 # find FindBugs report file
 findbugs_reports = Dir.glob(FINDBUGS_REPORT_FILE)
