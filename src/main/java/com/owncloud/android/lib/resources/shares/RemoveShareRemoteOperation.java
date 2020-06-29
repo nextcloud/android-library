@@ -42,7 +42,7 @@ public class RemoveShareRemoteOperation extends RemoteOperation {
 
     private static final String TAG = RemoveShareRemoteOperation.class.getSimpleName();
 
-    private int mRemoteShareId;
+    private long remoteShareId;
 
     /**
      * Constructor
@@ -50,25 +50,22 @@ public class RemoveShareRemoteOperation extends RemoteOperation {
      * @param remoteShareId Share ID
      */
 
-    public RemoveShareRemoteOperation(int remoteShareId) {
-        mRemoteShareId = remoteShareId;
+    public RemoveShareRemoteOperation(long remoteShareId) {
+        this.remoteShareId = remoteShareId;
 
     }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
-
+        RemoteOperationResult result;
         DeleteMethod delete = null;
 
         try {
-            String id = "/" + String.valueOf(mRemoteShareId);
-            delete = new DeleteMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + id);
+            delete = new DeleteMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + remoteShareId);
 
             delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            status = client.executeMethod(delete);
+            int status = client.executeMethod(delete);
 
             if (isSuccess(status)) {
                 String response = delete.getResponseBodyAsString();
@@ -79,7 +76,7 @@ public class RemoveShareRemoteOperation extends RemoteOperation {
                 );
                 result = parser.parse(response);
 
-                Log_OC.d(TAG, "Unshare " + id + ": " + result.getLogMessage());
+                Log_OC.d(TAG, "Unshare " + remoteShareId + ": " + result.getLogMessage());
 
             } else {
                 result = new RemoteOperationResult(false, delete);
