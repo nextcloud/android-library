@@ -102,6 +102,7 @@ public class OCShare implements Parcelable, Serializable {
     @Setter private boolean isPasswordProtected;
     @Getter private String note;
     @Getter @Setter private boolean hideFileDownload;
+    @Getter @Setter private String label;
     
     public OCShare() {
     	super();
@@ -139,6 +140,7 @@ public class OCShare implements Parcelable, Serializable {
         isPasswordProtected = false;
         note = "";
         hideFileDownload = false;
+        label = "";
     }	
     
     // custom Getters and Setters
@@ -221,6 +223,7 @@ public class OCShare implements Parcelable, Serializable {
         shareLink = source.readString();
         isPasswordProtected = source.readInt() == 1;
         hideFileDownload = source.readInt() == 1;
+        label = source.readString();
     }
 
 
@@ -249,5 +252,6 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeString(shareLink);
         dest.writeInt(isPasswordProtected ? 1 : 0);
         dest.writeInt(hideFileDownload ? 1 : 0);
+        dest.writeString(label);
     }
 }
