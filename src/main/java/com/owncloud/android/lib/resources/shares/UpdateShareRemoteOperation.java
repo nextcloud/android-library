@@ -60,6 +60,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String PARAM_PUBLIC_UPLOAD = "publicUpload";
     private static final String PARAM_NOTE = "note";
     private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
+    private static final String PARAM_LABEL = "label";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
     private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String ENTITY_CHARSET = "UTF-8";
@@ -101,6 +102,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private Boolean hideFileDownload;
 
     private String note;
+    private String label;
 
 
     /**
@@ -115,6 +117,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         publicUploadOnFolder = null;
         publicUploadOnFile = null;
         note = null;
+        label = null;
     }
 
 
@@ -171,6 +174,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         this.hideFileDownload = hideFileDownload;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public void setNote(String note) {
         this.note = note;
     }
@@ -213,7 +220,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             } else {
                 parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, "1"));
             }
-        } 
+        }
 
         if (hideFileDownload != null) {
             parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
@@ -221,6 +228,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
         if (note != null) {
             parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
+        }
+
+        if (label != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_LABEL, label));
         }
 
         /// perform required PUT requests

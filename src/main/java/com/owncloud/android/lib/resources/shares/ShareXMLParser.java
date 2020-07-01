@@ -78,6 +78,7 @@ public class ShareXMLParser {
 	private static final String NODE_NOTE = "note";
     private static final String NODE_HIDE_DOWNLOAD = "hide_download";
     private static final String NODE_UID_OWNER = "uid_owner";
+	private static final String NODE_LABEL = "label";
 	
 	private static final String NODE_URL = "url";
 
@@ -398,9 +399,13 @@ public class ShareXMLParser {
 					share.setUserId(readNode(parser, NODE_UID_OWNER));
 					break;
 
+				case NODE_LABEL:
+					share.setLabel(readNode(parser, NODE_LABEL));
+					break;
+
 				default:
 					skip(parser);
-                    break;
+					break;
 			}
 		}		
 
