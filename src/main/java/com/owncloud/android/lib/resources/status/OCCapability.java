@@ -81,7 +81,6 @@ public class OCCapability {
     private CapabilityBooleanType filesBigFileChunking;
     private CapabilityBooleanType filesUndelete;
     private CapabilityBooleanType filesVersioning;
-    private CapabilityBooleanType filesFileDrop;
 
     private CapabilityBooleanType supportsNotificationsV1;
     private CapabilityBooleanType supportsNotificationsV2;
@@ -149,7 +148,6 @@ public class OCCapability {
         filesBigFileChunking = CapabilityBooleanType.UNKNOWN;
         filesUndelete = CapabilityBooleanType.UNKNOWN;
         filesVersioning = CapabilityBooleanType.UNKNOWN;
-        filesFileDrop = CapabilityBooleanType.UNKNOWN;
 
         supportsNotificationsV1 = CapabilityBooleanType.UNKNOWN;
         supportsNotificationsV2 = CapabilityBooleanType.UNKNOWN;
