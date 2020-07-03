@@ -111,6 +111,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String PROPERTY_SERVERCOLOR = "color";
     private static final String PROPERTY_SERVERTEXTCOLOR = "color-text";
     private static final String PROPERTY_SERVERELEMENTCOLOR = "color-element";
+    private static final String PROPERTY_SERVERELEMENTCOLOR_BRIGHT = "color-element-bright";
+    private static final String PROPERTY_SERVERELEMENTCOLOR_DARK = "color-element-dark";
     private static final String PROPERTY_SERVERLOGO = "logo";
     private static final String PROPERTY_SERVERBACKGROUND = "background";
     private static final String PROPERTY_SERVERBACKGROUND_DEFAULT = "background-default";
@@ -346,6 +348,18 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                             if (respTheming.has(PROPERTY_SERVERTEXTCOLOR) && 
                                     respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
                                 capability.setServerTextColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
+                            }
+                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR) &&
+                                    respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
+                                capability.setServerElementColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
+                            }
+                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR_BRIGHT) &&
+                                    respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_BRIGHT) != null) {
+                                capability.setServerElementColorBright(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_BRIGHT));
+                            }
+                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR_DARK) &&
+                                    respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_DARK) != null) {
+                                capability.setServerElementColorDark(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_DARK));
                             }
                             if (respTheming.has(PROPERTY_SERVERBACKGROUND_DEFAULT)) {
                                 if (respTheming.getBoolean(PROPERTY_SERVERBACKGROUND_DEFAULT)) {

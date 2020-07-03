@@ -54,6 +54,8 @@ public class OCCapability {
     private String serverColor;
     private String serverTextColor;
     private String serverElementColor;
+    private String serverElementColorBright;
+    private String serverElementColorDark;
     private String serverLogo;
     private String serverBackground;
     private CapabilityBooleanType serverBackgroundDefault;
@@ -123,6 +125,8 @@ public class OCCapability {
         serverSlogan = "";
         serverColor = "";
         serverElementColor = "";
+        serverElementColorBright = "";
+        serverElementColorDark = "";
         serverTextColor = "";
         serverLogo = "";
         serverBackground = "";
