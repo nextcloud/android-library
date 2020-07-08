@@ -26,7 +26,10 @@
 package com.owncloud.android.lib.resources.status;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -34,8 +37,8 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -158,7 +161,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    public RemoteOperationResult run(NextcloudClient client) {
         RemoteOperationResult result;
         int status;
         GetMethod get = null;
@@ -170,365 +173,35 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
             uriBuilder.appendQueryParameter(PARAM_FORMAT, VALUE_FORMAT);
 
             // Get Method
-            get = new GetMethod(uriBuilder.build().toString());
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            get = new GetMethod(uriBuilder.build().toString(), true);
 
             if (null != currentCapability && !"".equals(currentCapability.getEtag())) {
                 get.addRequestHeader(OCS_ETAG_HEADER, currentCapability.getEtag());
             }
 
-            status = client.executeMethod(get);
+            status = client.execute(get);
 
-            if(isNotModified(status)) {
+            if (isNotModified(status)) {
                 Log_OC.d(TAG, "Capabilities not modified");
 
-                ArrayList<Object> data = new ArrayList<>();
-                data.add(currentCapability);
                 result = new RemoteOperationResult(true, get);
-                result.setData(data);
+                result.setSingleData(currentCapability);
 
                 Log_OC.d(TAG, "*** Get Capabilities completed ");
-            } else if(isSuccess(status)) {
+            } else if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
                 Log_OC.d(TAG, "Successful response: " + response);
 
-                // Parse the response
-                JSONObject respJSON = new JSONObject(response);
-                JSONObject respOCS = respJSON.getJSONObject(NODE_OCS);
-                JSONObject respMeta = respOCS.getJSONObject(NODE_META);
-                JSONObject respData = respOCS.getJSONObject(NODE_DATA);
+                OCCapability capability = parseResponse(response);
 
-                // Read meta
-                boolean statusProp = "ok".equalsIgnoreCase(respMeta.getString(PROPERTY_STATUS));
-                int statusCode = respMeta.getInt(PROPERTY_STATUSCODE);
-                String message = respMeta.getString(PROPERTY_MESSAGE);
-
-                if (statusProp) {
-                    ArrayList<Object> data = new ArrayList<>(); // For result data
-                    OCCapability capability = new OCCapability();
-                    // Add Version
-                    if (respData.has(NODE_VERSION)) {
-                        JSONObject respVersion = respData.getJSONObject(NODE_VERSION);
-                        capability.setVersionMayor(respVersion.getInt(PROPERTY_MAJOR));
-                        capability.setVersionMinor(respVersion.getInt(PROPERTY_MINOR));
-                        capability.setVersionMicro(respVersion.getInt(PROPERTY_MICRO));
-                        capability.setVersionString(respVersion.getString(PROPERTY_STRING));
-                        capability.setVersionEdition(respVersion.getString(PROPERTY_EDITION));
-                        
-                        if (respVersion.has(NODE_HAS_EXTENDED_SUPPORT)) {
-                            if (respVersion.getBoolean(NODE_HAS_EXTENDED_SUPPORT)) {
-                                capability.setExtendedSupport(CapabilityBooleanType.TRUE);
-                            } else {
-                                capability.setExtendedSupport(CapabilityBooleanType.FALSE);
-                            }
-                        }
-                        
-                        Log_OC.d(TAG, "*** Added " + NODE_VERSION);
-                    }
-
-                    // Capabilities Object
-                    if (respData.has(NODE_CAPABILITIES)) {
-                        JSONObject respCapabilities = respData.getJSONObject(NODE_CAPABILITIES);
-
-                        // Add Core: pollInterval
-                        if (respCapabilities.has(NODE_CORE)) {
-                            JSONObject respCore = respCapabilities.getJSONObject(NODE_CORE);
-                            capability.setCorePollInterval(respCore.getInt(PROPERTY_POLLINTERVAL));
-                            Log_OC.d(TAG, "*** Added " + NODE_CORE);
-                        }
-
-                        // Add files_sharing: public, user, resharing
-                        if (respCapabilities.has(NODE_FILES_SHARING)) {
-                            JSONObject respFilesSharing = respCapabilities.getJSONObject(NODE_FILES_SHARING);
-                            if (respFilesSharing.has(PROPERTY_API_ENABLED)) {
-                                capability.setFilesSharingApiEnabled(CapabilityBooleanType.fromBooleanValue(
-                                        respFilesSharing.getBoolean(PROPERTY_API_ENABLED)));
-                            }
-
-                            if (respFilesSharing.has(NODE_PUBLIC)) {
-                                JSONObject respPublic = respFilesSharing.getJSONObject(NODE_PUBLIC);
-                                capability.setFilesSharingPublicEnabled(CapabilityBooleanType.fromBooleanValue(
-                                        respPublic.getBoolean(PROPERTY_ENABLED)));
-                                if(respPublic.has(NODE_PASSWORD)) {
-                                    JSONObject passwordJson = respPublic.getJSONObject(NODE_PASSWORD);
-                                    
-                                    capability.setFilesSharingPublicPasswordEnforced(
-                                            CapabilityBooleanType.fromBooleanValue(
-                                                    passwordJson.getBoolean(PROPERTY_ENFORCED)));
-
-                                    if (passwordJson.has(NODE_ASK_FOR_OPTIONAL_PASSWORD)) {
-                                        capability.setFilesSharingPublicAskForOptionalPassword(
-                                                CapabilityBooleanType.fromBooleanValue(
-                                                        passwordJson.getBoolean(NODE_ASK_FOR_OPTIONAL_PASSWORD))
-                                        );
-                                    } else {
-                                        capability.setFilesSharingPublicAskForOptionalPassword(
-                                                CapabilityBooleanType.FALSE);
-                                    }
-                                }
-                                if(respPublic.has(NODE_EXPIRE_DATE)){
-                                    JSONObject respExpireDate = respPublic.getJSONObject(NODE_EXPIRE_DATE);
-                                    capability.setFilesSharingPublicExpireDateEnabled(
-                                            CapabilityBooleanType.fromBooleanValue(
-                                                    respExpireDate.getBoolean(PROPERTY_ENABLED)));
-                                    if (respExpireDate.has(PROPERTY_DAYS)) {
-                                        capability.setFilesSharingPublicExpireDateDays(
-                                                respExpireDate.getInt(PROPERTY_DAYS));
-                                    }
-                                    if (respExpireDate.has(PROPERTY_ENFORCED)) {
-                                        capability.setFilesSharingPublicExpireDateEnforced(
-                                                CapabilityBooleanType.fromBooleanValue(
-                                                        respExpireDate.getBoolean(PROPERTY_ENFORCED)));
-                                    }
-                                }
-                                if (respPublic.has(PROPERTY_UPLOAD)){
-                                    capability.setFilesSharingPublicUpload(CapabilityBooleanType.fromBooleanValue(
-                                            respPublic.getBoolean(PROPERTY_UPLOAD)));
-                                }
-                            }
-
-                            if (respFilesSharing.has(NODE_USER)) {
-                                JSONObject respUser = respFilesSharing.getJSONObject(NODE_USER);
-                                capability.setFilesSharingUserSendMail(CapabilityBooleanType.fromBooleanValue(
-                                        respUser.getBoolean(PROPERTY_SEND_MAIL)));
-                            }
-
-                            capability.setFilesSharingResharing(CapabilityBooleanType.fromBooleanValue(
-                                    respFilesSharing.getBoolean(PROPERTY_RESHARING)));
-                            if (respFilesSharing.has(NODE_FEDERATION)) {
-                                JSONObject respFederation = respFilesSharing.getJSONObject(NODE_FEDERATION);
-                                capability.setFilesSharingFederationOutgoing(
-                                        CapabilityBooleanType.fromBooleanValue(respFederation.getBoolean(PROPERTY_OUTGOING)));
-                                capability.setFilesSharingFederationIncoming(CapabilityBooleanType.fromBooleanValue(
-                                        respFederation.getBoolean(PROPERTY_INCOMING)));
-                            }
-                            Log_OC.d(TAG, "*** Added " + NODE_FILES_SHARING);
-                        }
-
-
-                        if (respCapabilities.has(NODE_FILES)) {
-                            JSONObject respFiles = respCapabilities.getJSONObject(NODE_FILES);
-                            // Add files
-                            capability.setFilesBigFileChunking(CapabilityBooleanType.fromBooleanValue(
-                                    respFiles.getBoolean(PROPERTY_BIGFILECHUNKING)));
-                            if (respFiles.has(PROPERTY_UNDELETE)) {
-                                capability.setFilesUndelete(CapabilityBooleanType.fromBooleanValue(
-                                        respFiles.getBoolean(PROPERTY_UNDELETE)));
-                            }
-
-                            if (respFiles.has(PROPERTY_VERSIONING)) {
-                                capability.setFilesVersioning(CapabilityBooleanType.fromBooleanValue(
-                                        respFiles.getBoolean(PROPERTY_VERSIONING)));
-                            }
-
-                            // direct editing
-                            if (respFiles.has(NODE_DIRECT_EDITING)) {
-                                JSONObject respDirectEditing = respFiles.getJSONObject(NODE_DIRECT_EDITING);
-
-                                capability.setDirectEditingEtag(respDirectEditing.getString("etag"));
-                            }
-
-                            Log_OC.d(TAG, "*** Added " + NODE_FILES);
-                        }
-
-                        if (respCapabilities.has(NODE_THEMING)) {
-                            JSONObject respTheming = respCapabilities.getJSONObject(NODE_THEMING);
-                            // Add theming
-                            capability.setServerName(respTheming.getString(PROPERTY_SERVERNAME));
-                            capability.setServerSlogan(respTheming.getString(PROPERTY_SERVERSLOGAN));
-                            capability.setServerColor(respTheming.getString(PROPERTY_SERVERCOLOR));
-                            if (respTheming.has(PROPERTY_SERVERLOGO) &&
-                                    respTheming.getString(PROPERTY_SERVERLOGO) != null) {
-                                capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
-                            }
-                            if (respTheming.has(PROPERTY_SERVERBACKGROUND) &&
-                                    respTheming.getString(PROPERTY_SERVERBACKGROUND) != null) {
-                                capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
-                            }
-                            if (respTheming.has(PROPERTY_SERVERTEXTCOLOR) && 
-                                    respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
-                                capability.setServerTextColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
-                            }
-                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR) &&
-                                    respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
-                                capability.setServerElementColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
-                            }
-                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR_BRIGHT) &&
-                                    respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_BRIGHT) != null) {
-                                capability.setServerElementColorBright(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_BRIGHT));
-                            }
-                            if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR_DARK) &&
-                                    respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_DARK) != null) {
-                                capability.setServerElementColorDark(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_DARK));
-                            }
-                            if (respTheming.has(PROPERTY_SERVERBACKGROUND_DEFAULT)) {
-                                if (respTheming.getBoolean(PROPERTY_SERVERBACKGROUND_DEFAULT)) {
-                                    capability.setServerBackgroundDefault(CapabilityBooleanType.TRUE);
-                                } else {
-                                    capability.setServerBackgroundDefault(CapabilityBooleanType.FALSE);
-                                }
-                            }
-                            if (respTheming.has(PROPERTY_SERVERBACKGROUND_PLAIN)) {
-                                if (respTheming.getBoolean(PROPERTY_SERVERBACKGROUND_PLAIN)) {
-                                    capability.setServerBackgroundPlain(CapabilityBooleanType.TRUE);
-                                } else {
-                                    capability.setServerBackgroundPlain(CapabilityBooleanType.FALSE);
-                                }
-                            }
-                            Log_OC.d(TAG, "*** Added " + NODE_THEMING);
-                        }
-
-                        if (respCapabilities.has(NODE_NOTIFICATIONS)) {
-                            JSONObject respNotifications = respCapabilities.getJSONObject(NODE_NOTIFICATIONS);
-                            JSONArray respNotificationSupportArray = respNotifications.getJSONArray(
-                                    PROPERTY_OCSENDPOINT);
-                            for (int i = 0; i < respNotificationSupportArray.length(); i++) {
-                                String propertyString = respNotificationSupportArray.getString(i);
-                                if (PROPERTY_RICH_STRINGS.equals(propertyString)
-                                        || PROPERTY_ICONS.equals((propertyString))) {
-                                    capability.setSupportsNotificationsV2(CapabilityBooleanType.TRUE);
-                                    break;
-                                }
-                            }
-                            if (capability.getSupportsNotificationsV2() != CapabilityBooleanType.TRUE) {
-                                capability.setSupportsNotificationsV1(CapabilityBooleanType.TRUE);
-                            }
-                            Log_OC.d(TAG, "*** Added " + NODE_NOTIFICATIONS);
-                        }
-
-                        if (respCapabilities.has(NODE_EXTERNAL_LINKS)) {
-                            JSONObject respExternalLinks = respCapabilities.getJSONObject(NODE_EXTERNAL_LINKS);
-
-                            if (respExternalLinks.has(NODE_EXTERNAL_LINKS_V1)) {
-                                JSONArray respExternalLinksV1 = respExternalLinks.getJSONArray(NODE_EXTERNAL_LINKS_V1);
-
-                                String element = (String) respExternalLinksV1.get(0);
-
-                                if (NODE_EXTERNAL_LINKS_SITES.equalsIgnoreCase(element)) {
-                                    capability.setExternalLinks(CapabilityBooleanType.TRUE);
-                                } else {
-                                    capability.setExternalLinks(CapabilityBooleanType.FALSE);
-                                }
-                            }
-                            Log_OC.d(TAG, "*** Added " + NODE_EXTERNAL_LINKS);
-                        }
-                        
-                        if (respCapabilities.has("fullnextsearch")) {
-                            JSONObject respFullNextSearch = respCapabilities.getJSONObject("fullnextsearch");
-
-                            if (respFullNextSearch.getBoolean("remote")) {
-                                capability.setFullNextSearchEnabled(CapabilityBooleanType.TRUE);
-                            } else {
-                                capability.setFullNextSearchEnabled(CapabilityBooleanType.FALSE);
-                            }
-
-                            JSONArray providers = respFullNextSearch.getJSONArray("providers");
-                            
-                            for (int i = 0; i < providers.length(); i++) {
-                                JSONObject provider = (JSONObject) providers.get(i);
-                                
-                                String id = provider.getString("id");
-
-                                // do nothing
-                                if ("files".equals(id)) {
-                                    capability.setFullNextSearchFiles(CapabilityBooleanType.TRUE);
-                                    Log_OC.d(TAG, "full next search: file provider enabled");
-                                }
-                            }
-                        }
-                        
-                        if (respCapabilities.has(NODE_END_TO_END_ENCRYPTION)) {
-                            JSONObject respEndToEndEncryption = respCapabilities
-                                    .getJSONObject(NODE_END_TO_END_ENCRYPTION);
-
-                            if (respEndToEndEncryption.getBoolean(PROPERTY_ENABLED)) {
-                                capability.setEndToEndEncryption(CapabilityBooleanType.TRUE);
-                            } else {
-                                capability.setEndToEndEncryption(CapabilityBooleanType.FALSE);
-                            }
-                            Log_OC.d(TAG, "*** Added " + NODE_END_TO_END_ENCRYPTION);
-                        }
-
-                        // activity
-                        if (respCapabilities.has(NODE_ACTIVITY)) {
-                            capability.setActivity(CapabilityBooleanType.TRUE);
-                        } else {
-                            capability.setActivity(CapabilityBooleanType.FALSE);
-                        }
-                        
-                        if (respCapabilities.has(NODE_RICHDOCUMENTS)) {
-                            JSONObject richDocumentsCapability = respCapabilities.getJSONObject(NODE_RICHDOCUMENTS);
-                            capability.setRichDocuments(CapabilityBooleanType.TRUE);
-
-                            JSONArray mimeTypesArray = richDocumentsCapability.getJSONArray(NODE_MIMETYPES);
-                            
-                            ArrayList<String> mimeTypes = new ArrayList<>();
-
-                            for (int i=0; i < mimeTypesArray.length(); i++) {
-                                mimeTypes.add(mimeTypesArray.getString(i));
-                            }
-                            
-                            capability.setRichDocumentsMimeTypeList(mimeTypes);
-
-                            if (richDocumentsCapability.has(NODE_OPTIONAL_MIMETYPES)) {
-                                JSONArray optionalMimeTypesArray = richDocumentsCapability
-                                        .getJSONArray(NODE_OPTIONAL_MIMETYPES);
-
-                                ArrayList<String> optionalMimeTypes = new ArrayList<>();
-
-                                for (int i = 0; i < optionalMimeTypesArray.length(); i++) {
-                                    optionalMimeTypes.add(optionalMimeTypesArray.getString(i));
-                                }
-
-                                capability.setRichDocumentsOptionalMimeTypeList(optionalMimeTypes);
-                            }
-
-                            if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
-                                if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
-                                    capability.setRichDocumentsDirectEditing(CapabilityBooleanType.TRUE);
-                                } else {
-                                    capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
-                                }
-                            } else {
-                                capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
-                            }
-
-                            if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_TEMPLATES)) {
-                                if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_TEMPLATES)) {
-                                    capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.TRUE);
-                                } else {
-                                    capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
-                                }
-                            } else {
-                                capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
-                            }
-
-                            if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_PRODUCT_NAME)) {
-                                capability.setRichDocumentsProductName(
-                                        richDocumentsCapability.getString(NODE_RICHDOCUMENTS_PRODUCT_NAME));
-                            }
-                        } else {
-                            capability.setRichDocuments(CapabilityBooleanType.FALSE);
-                        }
-                    }
-
-                    Header etag = get.getResponseHeader("ETag");
-                    if (etag != null) {
-                        capability.setEtag(etag.getValue());
-                    }
-                    
-                    // Result
-                    data.add(capability);
-                    result = new RemoteOperationResult(true, get);
-                    result.setData(data);
-
-                    Log_OC.d(TAG, "*** Get Capabilities completed ");
-                } else {
-                    result = new RemoteOperationResult(statusProp, statusCode, null);
-                    Log_OC.e(TAG, "Failed response while getting capabilities from the server");
-                    Log_OC.e(TAG, "*** status: " + statusProp + "; message: " + message);
+                String etag = get.getResponseHeader("ETag");
+                if (!TextUtils.isEmpty(etag)) {
+                    capability.setEtag(etag);
                 }
 
+                // Result
+                result = new RemoteOperationResult(true, get);
+                result.setSingleData(capability);
             } else {
                 result = new RemoteOperationResult(false, get);
                 String response = get.getResponseBodyAsString();
@@ -539,7 +212,6 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     Log_OC.e(TAG, "*** status code: " + status);
                 }
             }
-
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while getting capabilities", e);
@@ -550,6 +222,401 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
             }
         }
         return result;
+    }
+
+    @Override
+    protected RemoteOperationResult run(OwnCloudClient client) {
+        RemoteOperationResult result;
+        int status;
+        org.apache.commons.httpclient.methods.GetMethod get = null;
+
+        try {
+            Uri requestUri = client.getBaseUri();
+            Uri.Builder uriBuilder = requestUri.buildUpon();
+            uriBuilder.appendEncodedPath(OCS_ROUTE);    // avoid starting "/" in this method
+            uriBuilder.appendQueryParameter(PARAM_FORMAT, VALUE_FORMAT);
+
+            // Get Method
+            get = new org.apache.commons.httpclient.methods.GetMethod(uriBuilder.build().toString());
+            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            if (null != currentCapability && !"".equals(currentCapability.getEtag())) {
+                get.addRequestHeader(OCS_ETAG_HEADER, currentCapability.getEtag());
+            }
+
+            status = client.executeMethod(get);
+
+            if (isNotModified(status)) {
+                Log_OC.d(TAG, "Capabilities not modified");
+
+                result = new RemoteOperationResult(true, get);
+                result.setSingleData(currentCapability);
+
+                Log_OC.d(TAG, "*** Get Capabilities completed ");
+            } else if (isSuccess(status)) {
+                String response = get.getResponseBodyAsString();
+                Log_OC.d(TAG, "Successful response: " + response);
+
+                OCCapability capability = parseResponse(response);
+
+                Header etag = get.getResponseHeader("ETag");
+                if (etag != null) {
+                    capability.setEtag(etag.getValue());
+                }
+
+                // Result
+                result = new RemoteOperationResult(true, get);
+                result.setSingleData(capability);
+            } else {
+                result = new RemoteOperationResult(false, get);
+                String response = get.getResponseBodyAsString();
+                Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
+                if (response != null) {
+                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
+                } else {
+                    Log_OC.e(TAG, "*** status code: " + status);
+                }
+            }
+        } catch (Exception e) {
+            result = new RemoteOperationResult(e);
+            Log_OC.e(TAG, "Exception while getting capabilities", e);
+
+        } finally {
+            if (get != null) {
+                get.releaseConnection();
+            }
+        }
+        return result;
+    }
+
+    private OCCapability parseResponse(String response) throws JSONException {
+        OCCapability capability = new OCCapability();
+
+        // Parse the response
+        JSONObject respJSON = new JSONObject(response);
+        JSONObject respOCS = respJSON.getJSONObject(NODE_OCS);
+        JSONObject respMeta = respOCS.getJSONObject(NODE_META);
+        JSONObject respData = respOCS.getJSONObject(NODE_DATA);
+
+        // Read meta
+        boolean statusProp = "ok".equalsIgnoreCase(respMeta.getString(PROPERTY_STATUS));
+        int statusCode = respMeta.getInt(PROPERTY_STATUSCODE);
+        String message = respMeta.getString(PROPERTY_MESSAGE);
+
+        if (statusProp) {
+            // Add Version
+            if (respData.has(NODE_VERSION)) {
+                JSONObject respVersion = respData.getJSONObject(NODE_VERSION);
+                capability.setVersionMayor(respVersion.getInt(PROPERTY_MAJOR));
+                capability.setVersionMinor(respVersion.getInt(PROPERTY_MINOR));
+                capability.setVersionMicro(respVersion.getInt(PROPERTY_MICRO));
+                capability.setVersionString(respVersion.getString(PROPERTY_STRING));
+                capability.setVersionEdition(respVersion.getString(PROPERTY_EDITION));
+
+                if (respVersion.has(NODE_HAS_EXTENDED_SUPPORT)) {
+                    if (respVersion.getBoolean(NODE_HAS_EXTENDED_SUPPORT)) {
+                        capability.setExtendedSupport(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setExtendedSupport(CapabilityBooleanType.FALSE);
+                    }
+                }
+
+                Log_OC.d(TAG, "*** Added " + NODE_VERSION);
+            }
+
+            // Capabilities Object
+            if (respData.has(NODE_CAPABILITIES)) {
+                JSONObject respCapabilities = respData.getJSONObject(NODE_CAPABILITIES);
+
+                // Add Core: pollInterval
+                if (respCapabilities.has(NODE_CORE)) {
+                    JSONObject respCore = respCapabilities.getJSONObject(NODE_CORE);
+                    capability.setCorePollInterval(respCore.getInt(PROPERTY_POLLINTERVAL));
+                    Log_OC.d(TAG, "*** Added " + NODE_CORE);
+                }
+
+                // Add files_sharing: public, user, resharing
+                if (respCapabilities.has(NODE_FILES_SHARING)) {
+                    JSONObject respFilesSharing = respCapabilities.getJSONObject(NODE_FILES_SHARING);
+                    if (respFilesSharing.has(PROPERTY_API_ENABLED)) {
+                        capability.setFilesSharingApiEnabled(CapabilityBooleanType.fromBooleanValue(
+                                respFilesSharing.getBoolean(PROPERTY_API_ENABLED)));
+                    }
+
+                    if (respFilesSharing.has(NODE_PUBLIC)) {
+                        JSONObject respPublic = respFilesSharing.getJSONObject(NODE_PUBLIC);
+                        capability.setFilesSharingPublicEnabled(CapabilityBooleanType.fromBooleanValue(
+                                respPublic.getBoolean(PROPERTY_ENABLED)));
+                        if (respPublic.has(NODE_PASSWORD)) {
+                            JSONObject passwordJson = respPublic.getJSONObject(NODE_PASSWORD);
+
+                            capability.setFilesSharingPublicPasswordEnforced(
+                                    CapabilityBooleanType.fromBooleanValue(
+                                            passwordJson.getBoolean(PROPERTY_ENFORCED)));
+
+                            if (passwordJson.has(NODE_ASK_FOR_OPTIONAL_PASSWORD)) {
+                                capability.setFilesSharingPublicAskForOptionalPassword(
+                                        CapabilityBooleanType.fromBooleanValue(
+                                                passwordJson.getBoolean(NODE_ASK_FOR_OPTIONAL_PASSWORD))
+                                                                                      );
+                            } else {
+                                capability.setFilesSharingPublicAskForOptionalPassword(
+                                        CapabilityBooleanType.FALSE);
+                            }
+                        }
+                        if (respPublic.has(NODE_EXPIRE_DATE)) {
+                            JSONObject respExpireDate = respPublic.getJSONObject(NODE_EXPIRE_DATE);
+                            capability.setFilesSharingPublicExpireDateEnabled(
+                                    CapabilityBooleanType.fromBooleanValue(
+                                            respExpireDate.getBoolean(PROPERTY_ENABLED)));
+                            if (respExpireDate.has(PROPERTY_DAYS)) {
+                                capability.setFilesSharingPublicExpireDateDays(
+                                        respExpireDate.getInt(PROPERTY_DAYS));
+                            }
+                            if (respExpireDate.has(PROPERTY_ENFORCED)) {
+                                capability.setFilesSharingPublicExpireDateEnforced(
+                                        CapabilityBooleanType.fromBooleanValue(
+                                                respExpireDate.getBoolean(PROPERTY_ENFORCED)));
+                            }
+                        }
+                        if (respPublic.has(PROPERTY_UPLOAD)) {
+                            capability.setFilesSharingPublicUpload(CapabilityBooleanType.fromBooleanValue(
+                                    respPublic.getBoolean(PROPERTY_UPLOAD)));
+                        }
+                    }
+
+                    if (respFilesSharing.has(NODE_USER)) {
+                        JSONObject respUser = respFilesSharing.getJSONObject(NODE_USER);
+                        capability.setFilesSharingUserSendMail(CapabilityBooleanType.fromBooleanValue(
+                                respUser.getBoolean(PROPERTY_SEND_MAIL)));
+                    }
+
+                    capability.setFilesSharingResharing(CapabilityBooleanType.fromBooleanValue(
+                            respFilesSharing.getBoolean(PROPERTY_RESHARING)));
+                    if (respFilesSharing.has(NODE_FEDERATION)) {
+                        JSONObject respFederation = respFilesSharing.getJSONObject(NODE_FEDERATION);
+                        capability.setFilesSharingFederationOutgoing(
+                                CapabilityBooleanType.fromBooleanValue(respFederation.getBoolean(PROPERTY_OUTGOING)));
+                        capability.setFilesSharingFederationIncoming(CapabilityBooleanType.fromBooleanValue(
+                                respFederation.getBoolean(PROPERTY_INCOMING)));
+                    }
+                    Log_OC.d(TAG, "*** Added " + NODE_FILES_SHARING);
+                }
+
+
+                if (respCapabilities.has(NODE_FILES)) {
+                    JSONObject respFiles = respCapabilities.getJSONObject(NODE_FILES);
+                    // Add files
+                    capability.setFilesBigFileChunking(CapabilityBooleanType.fromBooleanValue(
+                            respFiles.getBoolean(PROPERTY_BIGFILECHUNKING)));
+                    if (respFiles.has(PROPERTY_UNDELETE)) {
+                        capability.setFilesUndelete(CapabilityBooleanType.fromBooleanValue(
+                                respFiles.getBoolean(PROPERTY_UNDELETE)));
+                    }
+
+                    if (respFiles.has(PROPERTY_VERSIONING)) {
+                        capability.setFilesVersioning(CapabilityBooleanType.fromBooleanValue(
+                                respFiles.getBoolean(PROPERTY_VERSIONING)));
+                    }
+
+                    // direct editing
+                    if (respFiles.has(NODE_DIRECT_EDITING)) {
+                        JSONObject respDirectEditing = respFiles.getJSONObject(NODE_DIRECT_EDITING);
+
+                        capability.setDirectEditingEtag(respDirectEditing.getString("etag"));
+                    }
+
+                    Log_OC.d(TAG, "*** Added " + NODE_FILES);
+                }
+
+                if (respCapabilities.has(NODE_THEMING)) {
+                    JSONObject respTheming = respCapabilities.getJSONObject(NODE_THEMING);
+                    // Add theming
+                    capability.setServerName(respTheming.getString(PROPERTY_SERVERNAME));
+                    capability.setServerSlogan(respTheming.getString(PROPERTY_SERVERSLOGAN));
+                    capability.setServerColor(respTheming.getString(PROPERTY_SERVERCOLOR));
+                    if (respTheming.has(PROPERTY_SERVERLOGO) &&
+                            respTheming.getString(PROPERTY_SERVERLOGO) != null) {
+                        capability.setServerLogo(respTheming.getString(PROPERTY_SERVERLOGO));
+                    }
+                    if (respTheming.has(PROPERTY_SERVERBACKGROUND) &&
+                            respTheming.getString(PROPERTY_SERVERBACKGROUND) != null) {
+                        capability.setServerBackground(respTheming.getString(PROPERTY_SERVERBACKGROUND));
+                    }
+                    if (respTheming.has(PROPERTY_SERVERTEXTCOLOR) &&
+                            respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
+                        capability.setServerTextColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
+                    }
+                    if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR) &&
+                            respTheming.getString(PROPERTY_SERVERTEXTCOLOR) != null) {
+                        capability.setServerElementColor(respTheming.getString(PROPERTY_SERVERTEXTCOLOR));
+                    }
+                    if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR_BRIGHT) &&
+                            respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_BRIGHT) != null) {
+                        capability.setServerElementColorBright(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_BRIGHT));
+                    }
+                    if (respTheming.has(PROPERTY_SERVERELEMENTCOLOR_DARK) &&
+                            respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_DARK) != null) {
+                        capability.setServerElementColorDark(respTheming.getString(PROPERTY_SERVERELEMENTCOLOR_DARK));
+                    }
+                    if (respTheming.has(PROPERTY_SERVERBACKGROUND_DEFAULT)) {
+                        if (respTheming.getBoolean(PROPERTY_SERVERBACKGROUND_DEFAULT)) {
+                            capability.setServerBackgroundDefault(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setServerBackgroundDefault(CapabilityBooleanType.FALSE);
+                        }
+                    }
+                    if (respTheming.has(PROPERTY_SERVERBACKGROUND_PLAIN)) {
+                        if (respTheming.getBoolean(PROPERTY_SERVERBACKGROUND_PLAIN)) {
+                            capability.setServerBackgroundPlain(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setServerBackgroundPlain(CapabilityBooleanType.FALSE);
+                        }
+                    }
+                    Log_OC.d(TAG, "*** Added " + NODE_THEMING);
+                }
+
+                if (respCapabilities.has(NODE_NOTIFICATIONS)) {
+                    JSONObject respNotifications = respCapabilities.getJSONObject(NODE_NOTIFICATIONS);
+                    JSONArray respNotificationSupportArray = respNotifications.getJSONArray(
+                            PROPERTY_OCSENDPOINT);
+                    for (int i = 0; i < respNotificationSupportArray.length(); i++) {
+                        String propertyString = respNotificationSupportArray.getString(i);
+                        if (PROPERTY_RICH_STRINGS.equals(propertyString)
+                                || PROPERTY_ICONS.equals((propertyString))) {
+                            capability.setSupportsNotificationsV2(CapabilityBooleanType.TRUE);
+                            break;
+                        }
+                    }
+                    if (capability.getSupportsNotificationsV2() != CapabilityBooleanType.TRUE) {
+                        capability.setSupportsNotificationsV1(CapabilityBooleanType.TRUE);
+                    }
+                    Log_OC.d(TAG, "*** Added " + NODE_NOTIFICATIONS);
+                }
+
+                if (respCapabilities.has(NODE_EXTERNAL_LINKS)) {
+                    JSONObject respExternalLinks = respCapabilities.getJSONObject(NODE_EXTERNAL_LINKS);
+
+                    if (respExternalLinks.has(NODE_EXTERNAL_LINKS_V1)) {
+                        JSONArray respExternalLinksV1 = respExternalLinks.getJSONArray(NODE_EXTERNAL_LINKS_V1);
+
+                        String element = (String) respExternalLinksV1.get(0);
+
+                        if (NODE_EXTERNAL_LINKS_SITES.equalsIgnoreCase(element)) {
+                            capability.setExternalLinks(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setExternalLinks(CapabilityBooleanType.FALSE);
+                        }
+                    }
+                    Log_OC.d(TAG, "*** Added " + NODE_EXTERNAL_LINKS);
+                }
+
+                if (respCapabilities.has("fullnextsearch")) {
+                    JSONObject respFullNextSearch = respCapabilities.getJSONObject("fullnextsearch");
+
+                    if (respFullNextSearch.getBoolean("remote")) {
+                        capability.setFullNextSearchEnabled(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setFullNextSearchEnabled(CapabilityBooleanType.FALSE);
+                    }
+
+                    JSONArray providers = respFullNextSearch.getJSONArray("providers");
+
+                    for (int i = 0; i < providers.length(); i++) {
+                        JSONObject provider = (JSONObject) providers.get(i);
+
+                        String id = provider.getString("id");
+
+                        // do nothing
+                        if ("files".equals(id)) {
+                            capability.setFullNextSearchFiles(CapabilityBooleanType.TRUE);
+                            Log_OC.d(TAG, "full next search: file provider enabled");
+                        }
+                    }
+                }
+
+                if (respCapabilities.has(NODE_END_TO_END_ENCRYPTION)) {
+                    JSONObject respEndToEndEncryption = respCapabilities
+                            .getJSONObject(NODE_END_TO_END_ENCRYPTION);
+
+                    if (respEndToEndEncryption.getBoolean(PROPERTY_ENABLED)) {
+                        capability.setEndToEndEncryption(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setEndToEndEncryption(CapabilityBooleanType.FALSE);
+                    }
+                    Log_OC.d(TAG, "*** Added " + NODE_END_TO_END_ENCRYPTION);
+                }
+
+                // activity
+                if (respCapabilities.has(NODE_ACTIVITY)) {
+                    capability.setActivity(CapabilityBooleanType.TRUE);
+                } else {
+                    capability.setActivity(CapabilityBooleanType.FALSE);
+                }
+
+                if (respCapabilities.has(NODE_RICHDOCUMENTS)) {
+                    JSONObject richDocumentsCapability = respCapabilities.getJSONObject(NODE_RICHDOCUMENTS);
+                    capability.setRichDocuments(CapabilityBooleanType.TRUE);
+
+                    JSONArray mimeTypesArray = richDocumentsCapability.getJSONArray(NODE_MIMETYPES);
+
+                    ArrayList<String> mimeTypes = new ArrayList<>();
+
+                    for (int i = 0; i < mimeTypesArray.length(); i++) {
+                        mimeTypes.add(mimeTypesArray.getString(i));
+                    }
+
+                    capability.setRichDocumentsMimeTypeList(mimeTypes);
+
+                    if (richDocumentsCapability.has(NODE_OPTIONAL_MIMETYPES)) {
+                        JSONArray optionalMimeTypesArray = richDocumentsCapability
+                                .getJSONArray(NODE_OPTIONAL_MIMETYPES);
+
+                        ArrayList<String> optionalMimeTypes = new ArrayList<>();
+
+                        for (int i = 0; i < optionalMimeTypesArray.length(); i++) {
+                            optionalMimeTypes.add(optionalMimeTypesArray.getString(i));
+                        }
+
+                        capability.setRichDocumentsOptionalMimeTypeList(optionalMimeTypes);
+                    }
+
+                    if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
+                        if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_DIRECT_EDITING)) {
+                            capability.setRichDocumentsDirectEditing(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
+                        }
+                    } else {
+                        capability.setRichDocumentsDirectEditing(CapabilityBooleanType.FALSE);
+                    }
+
+                    if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_TEMPLATES)) {
+                        if (richDocumentsCapability.getBoolean(NODE_RICHDOCUMENTS_TEMPLATES)) {
+                            capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
+                        }
+                    } else {
+                        capability.setRichDocumentsTemplatesAvailable(CapabilityBooleanType.FALSE);
+                    }
+
+                    if (richDocumentsCapability.has(NODE_RICHDOCUMENTS_PRODUCT_NAME)) {
+                        capability.setRichDocumentsProductName(
+                                richDocumentsCapability.getString(NODE_RICHDOCUMENTS_PRODUCT_NAME));
+                    }
+                } else {
+                    capability.setRichDocuments(CapabilityBooleanType.FALSE);
+                }
+            }
+
+            Log_OC.d(TAG, "*** Get Capabilities completed ");
+        } else {
+            Log_OC.e(TAG, "Failed response while getting capabilities from the server");
+            Log_OC.e(TAG, "*** status: " + statusProp + "; message: " + message);
+        }
+
+        return capability;
     }
 
     private boolean isSuccess(int status) {
