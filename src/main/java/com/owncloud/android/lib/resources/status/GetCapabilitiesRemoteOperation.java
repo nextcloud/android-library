@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -277,7 +278,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     Log_OC.e(TAG, "*** status code: " + status);
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException | IOException e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while getting capabilities", e);
 
@@ -300,7 +301,6 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
         // Read meta
         boolean statusProp = "ok".equalsIgnoreCase(respMeta.getString(PROPERTY_STATUS));
-        int statusCode = respMeta.getInt(PROPERTY_STATUSCODE);
         String message = respMeta.getString(PROPERTY_MESSAGE);
 
         if (statusProp) {
