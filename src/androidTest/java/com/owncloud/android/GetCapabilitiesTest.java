@@ -35,7 +35,6 @@ import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -71,6 +70,47 @@ public class GetCapabilitiesTest extends AbstractIT {
         OCCapability capability = (OCCapability) result.getData().get(0);
 
         RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(client);
+        assertTrue(resultEtag.isSuccess());
+        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
+
+        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+
+        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
+            assertEquals(capability, sameCapability);
+        } else {
+            assertEquals(capability.getEtag(), sameCapability.getEtag());
+        }
+    }
+
+    /**
+     * Test get capabilities
+     */
+    @Test
+    public void testGetRemoteCapabilitiesOperationWithNextcloudClient() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+
+        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
+
+        Assert.assertFalse(capability.getDirectEditingEtag().isEmpty());
+
+        // TODO assert basic capabilities
+    }
+
+    @Test
+    public void testGetRemoteCapabilitiesOperationEtagWithNextcloudClient() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+
+        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
         assertTrue(resultEtag.isSuccess());
         assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
 
