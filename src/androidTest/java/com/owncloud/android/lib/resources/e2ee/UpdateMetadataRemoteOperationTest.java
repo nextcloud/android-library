@@ -80,6 +80,9 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
                 .execute(client)
                 .isSuccess());
 
+        // unlock
+        assertTrue(new UnlockFileRemoteOperation(remoteFolder.getLocalId(), token).execute(client).isSuccess());
+
         // verify metadata
         String retrievedMetadata = (String) new GetMetadataRemoteOperation(remoteFolder.getLocalId())
                 .execute(client)
@@ -87,11 +90,21 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
 
         assertEquals(expectedMetadata, retrievedMetadata);
 
+        // Lock 
+        token = new LockFileRemoteOperation(remoteFolder.getLocalId())
+                .execute(client)
+                .getSingleData()
+                .toString();
+        assertFalse(TextUtils.isEmpty(token));
+
         // update metadata
         String updatedMetadata = "metadata2";
         assertTrue(new UpdateMetadataRemoteOperation(remoteFolder.getLocalId(), updatedMetadata, token)
                 .execute(client)
                 .isSuccess());
+
+        // unlock
+        assertTrue(new UnlockFileRemoteOperation(remoteFolder.getLocalId(), token).execute(client).isSuccess());
 
         // verify metadata
         String retrievedMetadata2 = (String) new GetMetadataRemoteOperation(remoteFolder.getLocalId())
@@ -99,8 +112,5 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
                 .getSingleData();
 
         assertEquals(updatedMetadata, retrievedMetadata2);
-
-        // unlock metadata
-        assertTrue(new UnlockFileRemoteOperation(remoteFolder.getLocalId(), token).execute(client).isSuccess());
     }
 }
