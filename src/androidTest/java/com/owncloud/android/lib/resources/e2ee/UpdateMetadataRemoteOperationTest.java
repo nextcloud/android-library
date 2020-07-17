@@ -25,17 +25,18 @@ package com.owncloud.android.lib.resources.e2ee;
 import android.text.TextUtils;
 
 import com.owncloud.android.AbstractIT;
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import net.bytebuddy.utility.RandomString;
 
 import org.junit.Test;
 
-import static com.owncloud.android.lib.resources.status.OwnCloudVersion.nextcloud_19;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -50,8 +51,11 @@ public class UpdateMetadataRemoteOperationTest extends AbstractIT {
                 .execute(client)
                 .getSingleData();
 
-        assumeTrue(capability.getVersion().isNewerOrEqual(nextcloud_19));
+        assumeTrue(capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_20));
 
+        // E2E server app checks for official NC client with >=3.13.0, 
+        // and blocks all other clients, e.g. 3rd party apps using this lib
+        OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0");
 
         // create folder
         String folder = "/" + RandomString.make(20) + "/";

@@ -32,10 +32,12 @@ import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -53,12 +55,7 @@ public class GetCapabilitiesTest extends AbstractIT {
         assertTrue(result.getData() != null && result.getData().size() == 1);
 
         OCCapability capability = (OCCapability) result.getData().get(0);
-
-        Assert.assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
-
-        Assert.assertFalse(capability.getDirectEditingEtag().isEmpty());
-        
-        // TODO assert basic capabilities
+        checkCapability(capability);
     }
 
     @Test
@@ -81,5 +78,56 @@ public class GetCapabilitiesTest extends AbstractIT {
         } else {
             assertEquals(capability.getEtag(), sameCapability.getEtag());
         }
+
+        checkCapability(capability);
+    }
+
+    /**
+     * Test get capabilities
+     */
+    @Test
+    public void testGetRemoteCapabilitiesOperationWithNextcloudClient() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+        checkCapability(capability);
+    }
+
+    @Test
+    public void testGetRemoteCapabilitiesOperationEtagWithNextcloudClient() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+
+        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
+        assertTrue(resultEtag.isSuccess());
+        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
+
+        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+
+        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
+            assertEquals(capability, sameCapability);
+        } else {
+            assertEquals(capability.getEtag(), sameCapability.getEtag());
+        }
+
+        checkCapability(capability);
+    }
+
+    private void checkCapability(OCCapability capability) {
+        assertTrue(capability.getActivity().isTrue());
+        assertTrue(capability.getFilesSharingApiEnabled().isTrue());
+        assertTrue(capability.getFilesVersioning().isTrue());
+        assertTrue(capability.getFilesUndelete().isTrue());
+        assertNotNull(capability.getVersion());
+        assertFalse(capability.getEtag().isEmpty());
+        assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
+        assertFalse(capability.getDirectEditingEtag().isEmpty());
     }
 }
