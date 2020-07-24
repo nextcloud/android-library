@@ -383,7 +383,12 @@ public class WebdavEntry {
         String userId = extractUserId(element);
         ShareType shareType = extractShareType(element);
 
-        if ((ShareType.GROUP == shareType || !displayName.isEmpty()) && !userId.isEmpty()) {
+        if ((ShareType.EMAIL == shareType ||
+                ShareType.FEDERATED == shareType ||
+                ShareType.GROUP == shareType ||
+                ShareType.ROOM == shareType ||
+                !displayName.isEmpty())
+                && !userId.isEmpty()) {
             return new ShareeUser(userId, displayName, shareType);
         } else {
             return null;
