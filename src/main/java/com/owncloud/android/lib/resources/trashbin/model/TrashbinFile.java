@@ -33,6 +33,7 @@ import com.owncloud.android.lib.resources.files.model.ServerFileInterface;
 
 import java.io.Serializable;
 
+import androidx.annotation.VisibleForTesting;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -99,11 +100,26 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         } else {
             setFileLength(we.getContentLength());
         }
-        
+
         setFileName(we.getTrashbinFilename());
         setOriginalLocation(we.getTrashbinOriginalLocation());
         setDeletionTimestamp(we.getTrashbinDeletionTimestamp());
         setRemoteId(we.getRemoteId());
+    }
+
+    @VisibleForTesting
+    public TrashbinFile(String fileName,
+                        String mimeType,
+                        String remotePath,
+                        String originalLocation,
+                        long deletionTimestamp,
+                        long fileLength) {
+        this.fileName = fileName;
+        this.mimeType = mimeType;
+        this.remotePath = remotePath;
+        this.originalLocation = originalLocation;
+        this.deletionTimestamp = deletionTimestamp;
+        this.fileLength = fileLength;
     }
 
     /**
