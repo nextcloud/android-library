@@ -25,7 +25,9 @@
  */
 package com.owncloud.android.lib.resources.activities.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -33,6 +35,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PreviewObject {
     private int fileId;
     private String source;

@@ -27,7 +27,9 @@ package com.owncloud.android.lib.resources.activities.model;
 
 import java.util.ArrayList;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -35,6 +37,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RichElement {
     private String richSubject;
     private ArrayList<RichObject> richObjectList = new ArrayList<>();
