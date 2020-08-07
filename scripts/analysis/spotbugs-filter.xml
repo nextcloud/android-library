@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <FindBugsFilter>
+    <!-- Ignore test-only constructors -->
     <Match>
+        <Class name="~com\.owncloud\.android\.lib\.resources\.activities\.model\.Activity" />
+        <Bug pattern="EI_EXPOSE_REP2" />
+    </Match>
+
+	<Match>
         <Class name="~.*\.Manifest\$.*" />
     </Match>
     <Match>

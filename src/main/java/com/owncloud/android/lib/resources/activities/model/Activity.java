@@ -31,12 +31,14 @@ import com.owncloud.android.lib.resources.activities.models.PreviewObject;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Activity Data Model
  */
 @Getter
+@AllArgsConstructor
 public class Activity {
 
     @SerializedName("activity_id")
