@@ -100,8 +100,8 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
     }
 
 
-    private int downloadFile(OwnCloudClient client, File targetFile) throws IOException {
-        int status = -1;
+    private int downloadFile(OwnCloudClient client, File targetFile) throws IOException, OperationCancelledException {
+        int status;
         boolean savedFile = false;
         getMethod = new GetMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
         Iterator<OnDatatransferProgressListener> it;
@@ -175,8 +175,6 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
             }
 
-        } catch (Exception e) {
-          Log_OC.e(TAG, e.getMessage());  
         } finally {
             if (fos != null) fos.close();
             if (!savedFile && targetFile.exists()) {
