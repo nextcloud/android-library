@@ -33,12 +33,14 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Activity Data Model
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Activity {
 
     @SerializedName("activity_id")
