@@ -87,7 +87,7 @@ public class OCShare implements Parcelable, Serializable {
     @Getter @Setter private long id;
     @Getter @Setter private long fileSource;
     @Getter @Setter private long itemSource;
-    @Getter @Setter private ShareType shareType;
+    @Getter private ShareType shareType;
     @Getter private String shareWith;
     @Getter private String path;
     @Getter @Setter private int permissions;
@@ -253,5 +253,11 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeInt(isPasswordProtected ? 1 : 0);
         dest.writeInt(hideFileDownload ? 1 : 0);
         dest.writeString(label);
+    }
+
+    public OCShare setShareType(ShareType type) {
+        shareType = type;
+
+        return this;
     }
 }
