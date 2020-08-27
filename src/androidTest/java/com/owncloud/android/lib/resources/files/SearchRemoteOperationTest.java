@@ -332,12 +332,112 @@ public class SearchRemoteOperationTest extends AbstractIT {
     }
 
     @Test
+    public void testGallerySearchLimit() throws IOException {
+        for (int i = 0; i < 10; i++) {
+            String filePath = createFile("image" + i);
+            String remotePath = "/image" + i + ".jpg";
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+                    .execute(client).isSuccess());
+        }
+        String videoPath = createFile("video");
+        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", "123")
+                .execute(client).isSuccess());
+
+        String filePath = createFile("pdf");
+        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123")
+                .execute(client).isSuccess());
+
+        // get all
+        SearchRemoteOperation sut = new SearchRemoteOperation("image/%", SearchRemoteOperation.SearchType.GALLERY_SEARCH,
+                false);
+
+        RemoteOperationResult result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(11, result.getData().size());
+
+        // limit to 5
+        sut.setLimit(5);
+
+        result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(5, result.getData().size());
+    }
+
+    @Test
+    public void testGallerySearchTimestamp() throws IOException {
+        for (int i = 0; i < 10; i++) {
+            String filePath = createFile("image" + i);
+            String remotePath = "/image" + i + ".jpg";
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", String.valueOf(i))
+                    .execute(client).isSuccess());
+        }
+        String videoPath = createFile("video");
+        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", "50")
+                .execute(client).isSuccess());
+
+        String filePath = createFile("pdf");
+        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "51")
+                .execute(client).isSuccess());
+
+        // get all
+        SearchRemoteOperation sut = new SearchRemoteOperation("image/%", SearchRemoteOperation.SearchType.GALLERY_SEARCH,
+                false);
+
+        RemoteOperationResult result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(11, result.getData().size());
+
+        // limit to timestamp 5
+        sut.setTimestamp(5);
+
+        result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(5, result.getData().size());
+    }
+
+    @Test
+    public void testGallerySearchLimitAndTimestamp() throws IOException {
+        for (int i = 0; i < 10; i++) {
+            String filePath = createFile("image" + i);
+            String remotePath = "/image" + i + ".jpg";
+            assertTrue(new UploadFileRemoteOperation(filePath,
+                    remotePath,
+                    "image/jpg",
+                    String.valueOf(100000 + i * 10000))
+                    .execute(client).isSuccess());
+        }
+        String videoPath = createFile("video");
+        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", "50")
+                .execute(client).isSuccess());
+
+        String filePath = createFile("pdf");
+        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "51")
+                .execute(client).isSuccess());
+
+        // get all
+        SearchRemoteOperation sut = new SearchRemoteOperation("image/%", SearchRemoteOperation.SearchType.GALLERY_SEARCH,
+                false);
+
+        RemoteOperationResult result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(11, result.getData().size());
+
+        // limit to 5
+        sut.setLimit(5);
+        sut.setTimestamp(120000);
+
+        result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(2, result.getData().size());
+    }
+
+    @Test
     public void showOnlyFolders() throws IOException {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
             assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
-                               .execute(client).isSuccess());
+                    .execute(client).isSuccess());
         }
 
         SearchRemoteOperation sut = new SearchRemoteOperation("", SearchRemoteOperation.SearchType.FILE_SEARCH,
