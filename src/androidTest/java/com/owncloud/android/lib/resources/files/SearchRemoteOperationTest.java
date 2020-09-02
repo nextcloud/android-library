@@ -26,13 +26,21 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import android.net.Uri;
+import android.os.Bundle;
+
 import com.owncloud.android.AbstractIT;
+import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
 import org.junit.Test;
 
 import java.io.IOException;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -342,5 +350,23 @@ public class SearchRemoteOperationTest extends AbstractIT {
         assertTrue(result.isSuccess());
         assertEquals(1, result.getData().size());
         assertEquals("/folder/", ((RemoteFile) result.getData().get(0)).getRemotePath());
+    }
+
+    @Test
+    public void testSearchWithAtInUsername() {
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        Uri url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
+
+        OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
+        client.setCredentials(new OwnCloudBasicCredentials("test@test", "test"));
+        client.setUserId("test@test"); // for test same as userId
+
+        SearchRemoteOperation sut = new SearchRemoteOperation("",
+                                                              SearchRemoteOperation.SearchType.FILE_SEARCH,
+                                                              true);
+
+        RemoteOperationResult result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getData().size());
     }
 }
