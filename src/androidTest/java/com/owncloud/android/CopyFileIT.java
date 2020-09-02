@@ -188,7 +188,7 @@ public class CopyFileIT extends AbstractIT {
         File txtFile = getFile(ASSETS__TEXT_FILE_NAME);
 
         for (String filePath : FILES_IN_FIXTURE) {
-            result = new UploadFileRemoteOperation(txtFile.getAbsolutePath(), filePath, "txt/plain", String.valueOf(System.currentTimeMillis() / 1000)).execute(client);
+            result = new UploadFileRemoteOperation(txtFile.getAbsolutePath(), filePath, "txt/plain", String.valueOf(System.currentTimeMillis() / 1000), true).execute(client);
 
             assertTrue("Error uploading file " + filePath + ": " + result, result.isSuccess());
         }

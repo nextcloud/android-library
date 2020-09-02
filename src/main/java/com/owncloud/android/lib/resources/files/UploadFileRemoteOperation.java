@@ -61,6 +61,7 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 	protected String remotePath;
 	protected String mimeType;
 	private String lastModificationTimestamp;
+	protected final boolean disableRetries;
 	PutMethod putMethod = null;
 	private String requiredEtag = null;
     String token = null;
@@ -72,17 +73,19 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 	protected RequestEntity entity = null;
 
     public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-                                     String requiredEtag,
-                                     String lastModificationTimestamp) {
-        this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null);
+									 String remotePath,
+									 String mimeType,
+									 String requiredEtag,
+									 String lastModificationTimestamp,
+									 boolean disableRetries) {
+        this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null, disableRetries);
     }
 
     public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-									 String lastModificationTimestamp) {
+									 String remotePath,
+									 String mimeType,
+									 String lastModificationTimestamp,
+									 boolean disableRetries) {
 		this.localPath = localPath;
 		this.remotePath = remotePath;
 		this.mimeType = mimeType;
@@ -94,15 +97,17 @@ public class UploadFileRemoteOperation extends RemoteOperation {
         // TODO check for max value of lastModificationTimestamp
 
 		this.lastModificationTimestamp = lastModificationTimestamp;
+        this.disableRetries = disableRetries;
 	}
 
     public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-                                     String requiredEtag,
-                                     String lastModificationTimestamp,
-                                     String token) {
-		this(localPath, remotePath, mimeType, lastModificationTimestamp);
+									 String remotePath,
+									 String mimeType,
+									 String requiredEtag,
+									 String lastModificationTimestamp,
+									 String token,
+									 boolean disableRetries) {
+		this(localPath, remotePath, mimeType, lastModificationTimestamp, disableRetries);
 		this.requiredEtag = requiredEtag;
         this.token = token;
 	}
@@ -114,11 +119,11 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 			(DefaultHttpMethodRetryHandler) client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
 
 		try {
-			// prevent that uploads are retried automatically by network library
-			client.getParams().setParameter(
-				HttpMethodParams.RETRY_HANDLER,
-				new DefaultHttpMethodRetryHandler(0, false)
-			);
+			if (disableRetries) {
+				// prevent that uploads are retried automatically by network library
+				DefaultHttpMethodRetryHandler noRetryHandler = new DefaultHttpMethodRetryHandler(0, false);
+				client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, noRetryHandler);
+			}
 
 			putMethod = new PutMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
 
@@ -146,11 +151,10 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 				result = new RemoteOperationResult(e);
 			}
 		} finally {
-			// reset previous retry handler
-			client.getParams().setParameter(
-				HttpMethodParams.RETRY_HANDLER,
-				oldRetryHandler
-			);
+			if (disableRetries) {
+				// reset previous retry handler
+				client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, oldRetryHandler);
+			}
 		}
 		return result;
 	}

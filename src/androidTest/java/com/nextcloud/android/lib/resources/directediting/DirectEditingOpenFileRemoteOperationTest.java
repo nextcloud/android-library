@@ -47,7 +47,7 @@ public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/text.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123", true)
                                     .execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
@@ -66,7 +66,7 @@ public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/äää.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123", true)
                 .execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
@@ -85,7 +85,7 @@ public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/あ.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123", true)
                 .execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());

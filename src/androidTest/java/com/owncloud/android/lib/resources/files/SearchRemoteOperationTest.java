@@ -72,7 +72,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123", true)
                                .execute(client).isSuccess());
         }
 
@@ -90,7 +90,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123", true)
                                .execute(client).isSuccess());
         }
 
@@ -106,7 +106,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123", true)
                                .execute(client).isSuccess());
         }
 
@@ -157,19 +157,19 @@ public class SearchRemoteOperationTest extends AbstractIT {
     public void testRecentlyModifiedSearch() throws IOException {
         long now = System.currentTimeMillis() / 1000;
         String filePath = createFile("image");
-        assertTrue(new UploadFileRemoteOperation(filePath, "/image.jpg", "image/jpg", String.valueOf(now - 50))
+        assertTrue(new UploadFileRemoteOperation(filePath, "/image.jpg", "image/jpg", String.valueOf(now - 50), true)
                            .execute(client).isSuccess());
 
         String videoPath = createFile("video");
-        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", String.valueOf(now - 10))
+        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", String.valueOf(now - 10), true)
                            .execute(client).isSuccess());
 
         String pdfPath = createFile("pdf");
-        assertTrue(new UploadFileRemoteOperation(pdfPath, "/pdf.pdf", "application/pdf", String.valueOf(now - 30))
+        assertTrue(new UploadFileRemoteOperation(pdfPath, "/pdf.pdf", "application/pdf", String.valueOf(now - 30), true)
                            .execute(client).isSuccess());
 
         String oldPath = createFile("pdf");
-        assertTrue(new UploadFileRemoteOperation(oldPath, "/old.pdf", "application/pdf", "1")
+        assertTrue(new UploadFileRemoteOperation(oldPath, "/old.pdf", "application/pdf", "1", true)
                            .execute(client).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("",
@@ -198,11 +198,11 @@ public class SearchRemoteOperationTest extends AbstractIT {
     @Test
     public void testPhotoSearch() throws IOException {
         String imagePath = createFile("image");
-        assertTrue(new UploadFileRemoteOperation(imagePath, "/image.jpg", "image/jpg", "123")
+        assertTrue(new UploadFileRemoteOperation(imagePath, "/image.jpg", "image/jpg", "123", true)
                            .execute(client).isSuccess());
 
         String filePath = createFile("pdf");
-        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123")
+        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123", true)
                            .execute(client).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("image/%", SearchRemoteOperation.SearchType.PHOTO_SEARCH,
@@ -221,7 +221,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
             assertTrue(new UploadFileRemoteOperation(filePath,
                                                      remotePath,
                                                      "image/jpg",
-                                                     String.valueOf(100000 + i * 10000))
+                                                     String.valueOf(100000 + i * 10000), true)
                                .execute(client).isSuccess());
         }
 
@@ -247,7 +247,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", String.valueOf(i))
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", String.valueOf(i), true)
                                .execute(client).isSuccess());
         }
 
@@ -274,7 +274,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
             assertTrue(new UploadFileRemoteOperation(filePath,
                                                      remotePath,
                                                      "image/jpg",
-                                                     String.valueOf(100000 + i * 10000))
+                                                     String.valueOf(100000 + i * 10000), true)
                                .execute(client).isSuccess());
         }
 
@@ -301,15 +301,15 @@ public class SearchRemoteOperationTest extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123", true)
                                .execute(client).isSuccess());
         }
         String videoPath = createFile("video");
-        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", "123")
+        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", "123", true)
                            .execute(client).isSuccess());
 
         String filePath = createFile("pdf");
-        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123")
+        assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123", true)
                            .execute(client).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("image/%", SearchRemoteOperation.SearchType.GALLERY_SEARCH,
@@ -325,7 +325,7 @@ public class SearchRemoteOperationTest extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123", true)
                                .execute(client).isSuccess());
         }
 

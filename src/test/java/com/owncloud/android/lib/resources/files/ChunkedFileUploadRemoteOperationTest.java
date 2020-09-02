@@ -146,7 +146,8 @@ public class ChunkedFileUploadRemoteOperationTest {
                                                                                     null,
                                                                                     null,
                                                                                     modificationTimestamp,
-                                                                                    false);
+                                                                                    false,
+                                                                                    true);
 
         List<Chunk> missingChunks = sut.checkMissingChunks(existingChunks, length, chunkSize);
 

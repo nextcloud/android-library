@@ -60,7 +60,8 @@ public class CreateShareTest extends AbstractIT {
         RemoteOperationResult result = new UploadFileRemoteOperation(textFile.getAbsolutePath(),
                                                                      mFullPath2FileToShare,
                                                                      "txt/plain",
-                                                                     String.valueOf(System.currentTimeMillis() / 1000))
+                                                                     String.valueOf(System.currentTimeMillis() / 1000),
+                                                                     true)
                 .execute(client);
 
         assertTrue("Error uploading file " + textFile + ": " + result, result.isSuccess());

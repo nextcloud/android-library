@@ -54,7 +54,8 @@ public class RemoveShareTest extends AbstractIT {
         assertTrue(new UploadFileRemoteOperation(textFile.getAbsolutePath(),
                                                  FILE_TO_UNSHARE,
                                                  "txt/plain",
-                                                 String.valueOf(System.currentTimeMillis() / 1000))
+                                                 String.valueOf(System.currentTimeMillis() / 1000),
+                                                 true)
                            .execute(client).isSuccess());
 
         RemoteOperationResult result = new CreateShareRemoteOperation(FILE_TO_UNSHARE,
