@@ -98,7 +98,7 @@ public class SearchRemoteOperation extends RemoteOperation {
                                                                  Namespace.XMLNS_NAMESPACE,
                                                                  searchQuery),
                                                   searchType,
-                                                  getClient().getUserId(),
+                                                  getClient().getUserIdPlain(),
                                                   timestamp,
                                                   limit,
                                                   filterOutFiles);
@@ -112,8 +112,11 @@ public class SearchRemoteOperation extends RemoteOperation {
                     // get data from remote folder
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
                     WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
-                    ArrayList<Object> mFolderAndFiles = webDavFileUtils.readData(dataInServer, client, false, true,
-                                                                                 client.getUserId());
+                    ArrayList<Object> mFolderAndFiles = webDavFileUtils.readData(dataInServer,
+                                                                                 client,
+                                                                                 false,
+                                                                                 true,
+                                                                                 client.getUserIdPlain());
 
                     // Result of the operation
                     result = new RemoteOperationResult(true, status, searchMethod.getResponseHeaders());
