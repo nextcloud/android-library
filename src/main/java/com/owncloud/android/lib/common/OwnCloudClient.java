@@ -432,4 +432,8 @@ public class OwnCloudClient extends HttpClient {
     public String getUserId() {
         return Uri.encode(userId);
     }
+
+    public String getUserIdPlain() {
+        return userId;
+    }
 }
