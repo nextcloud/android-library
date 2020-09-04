@@ -49,7 +49,8 @@ class GetUserInfoRemoteOperationTest : AbstractIT() {
         assertEquals("user1", userInfo.getId())
         assertEquals(
                 GetUserInfoRemoteOperation.SPACE_UNLIMITED,
-                userInfo.getQuota().getQuota())
+                userInfo.getQuota().getQuota()
+        )
     }
 
     @Test

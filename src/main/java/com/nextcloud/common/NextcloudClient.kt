@@ -49,18 +49,14 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 
-
-class NextcloudClient(var baseUri: Uri,
-                      var userId: String,
-                      val credentials: String,
-                      val client: OkHttpClient) {
+class NextcloudClient(var baseUri: Uri, var userId: String, val credentials: String, val client: OkHttpClient) {
     var followRedirects = true
 
     companion object {
         @JvmStatic
         val TAG = NextcloudClient::class.java.simpleName
 
-        private fun createDefaultClient(context: Context) : OkHttpClient {
+        private fun createDefaultClient(context: Context): OkHttpClient {
             
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
             val sslContext = SSLContext.getInstance("TLSv1")
@@ -77,11 +73,9 @@ class NextcloudClient(var baseUri: Uri,
         }
     }
 
-    constructor(baseUri: Uri,
-                userId: String,
-                credentials: String,
-                context: Context) : this(baseUri, userId, credentials, createDefaultClient(context))
-   
+    constructor(baseUri: Uri, userId: String, credentials: String, context: Context) :
+            this(baseUri, userId, credentials, createDefaultClient(context))
+
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
         return try {
             remoteOperation.run(this)
@@ -110,10 +104,13 @@ class NextcloudClient(var baseUri: Uri,
         var status = method.getStatusCode()
         val result = RedirectionPath(status, OwnCloudClient.MAX_REDIRECTIONS_COUNT)
 
-        while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
-                (status == HttpStatus.SC_MOVED_PERMANENTLY ||
-                        status == HttpStatus.SC_MOVED_TEMPORARILY ||
-                        status == HttpStatus.SC_TEMPORARY_REDIRECT)) {
+        while (
+                redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
+                (
+                        status == HttpStatus.SC_MOVED_PERMANENTLY || status == HttpStatus.SC_MOVED_TEMPORARILY ||
+                                status == HttpStatus.SC_TEMPORARY_REDIRECT
+                        )
+        ) {
             var location = method.getResponseHeader("Location")
             if (location == null) {
                 location = method.getResponseHeader("location")

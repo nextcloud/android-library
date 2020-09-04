@@ -38,12 +38,14 @@ import java.io.IOException
 /**
  * Common base class for all new OkHttpMethods
  */
-abstract class OkHttpMethodBase(var uri: String,
-                                val useOcsApiRequestHeader: Boolean) {
+abstract class OkHttpMethodBase(
+    var uri: String,
+    val useOcsApiRequestHeader: Boolean
+) {
     companion object {
         const val UNKNOWN_STATUS_CODE: Int = -1
     }
-    
+
     private var response: Response? = null
     private var queryMap: Map<String, String> = HashMap()
     private val requestHeaders: MutableMap<String, String> = HashMap()
