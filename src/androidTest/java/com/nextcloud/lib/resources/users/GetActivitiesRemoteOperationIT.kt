@@ -28,7 +28,6 @@ import com.owncloud.android.lib.resources.activities.model.Activity
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.*
 
 class GetActivitiesRemoteOperationIT : AbstractIT() {
     @Test
@@ -40,7 +39,7 @@ class GetActivitiesRemoteOperationIT : AbstractIT() {
         assertTrue(result.isSuccess)
 
         val activities = result.data[0] as ArrayList<Activity>
-        val lastGiven = result.data[1] as Integer;
+        val lastGiven = result.data[1] as Integer
 
         assertTrue(activities.isNotEmpty())
         assertTrue(lastGiven > 0)

@@ -21,6 +21,7 @@ buildscript {
         classpath 'gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.12.0"
     }
 }
 
@@ -30,6 +31,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.github.spotbugs"
+apply plugin: 'io.gitlab.arturbosch.detekt'
 
 repositories {
     google()
@@ -169,4 +171,14 @@ tasks.register("combinedTestReport", JacocoReport) {
     executionData.setFrom project.fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/debugAndroidTest/connected/*coverage.ec'
     ])
+}
+
+detekt {
+    reports {
+        xml {
+            enabled = false
+        }
+    }
+    config = files("detekt.yml")
+    input = files("src/")
 }
