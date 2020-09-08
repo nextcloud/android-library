@@ -101,7 +101,7 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
         return this.getMajorVersionNumber() == another.getMajorVersionNumber();
     }
 
-    protected int getMajorVersionNumber() {
+    public int getMajorVersionNumber() {
         return version >> (8 * MAX_DOTS) % 256;
     }
 
