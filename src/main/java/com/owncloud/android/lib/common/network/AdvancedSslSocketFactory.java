@@ -189,18 +189,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
     }
 
     private InetAddress getInetAddressForHost(String host) throws UnknownHostException {
-        InetAddress address = InetAddress.getByName(host);
-        if (address instanceof Inet6Address) {
-            InetAddress[] inetAddressArray = InetAddress.getAllByName(host);
-            for (InetAddress inetAddress : inetAddressArray) {
-                if (inetAddress instanceof Inet4Address) {
-                    address = inetAddress;
-                    break;
-                }
-            }
-        }
-
-        return address;
+        return InetAddress.getByName(host);
     }
 
     /**
