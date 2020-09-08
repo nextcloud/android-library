@@ -75,8 +75,29 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             String requiredEtag,
                                             String lastModificationTimestamp,
                                             boolean onWifiConnection,
+                                            boolean disableRetries) {
+        this(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, onWifiConnection, null, disableRetries);
+    }
+
+    public ChunkedFileUploadRemoteOperation(String storagePath,
+                                            String remotePath,
+                                            String mimeType,
+                                            String requiredEtag,
+                                            String lastModificationTimestamp,
+                                            boolean onWifiConnection,
                                             String token) {
-        super(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, token);
+        this(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, onWifiConnection, token, true);
+    }
+
+    public ChunkedFileUploadRemoteOperation(String storagePath,
+                                            String remotePath,
+                                            String mimeType,
+                                            String requiredEtag,
+                                            String lastModificationTimestamp,
+                                            boolean onWifiConnection,
+                                            String token,
+                                            boolean disableRetries) {
+        super(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, token, disableRetries);
         this.onWifiConnection = onWifiConnection;
     }
 
@@ -88,9 +109,11 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         File file = new File(localPath);
 
         try {
-            // prevent that uploads are retried automatically by network library
-            client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                                            new DefaultHttpMethodRetryHandler(0, false));
+            if (disableRetries) {
+                // prevent that uploads are retried automatically by network library
+                client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                                                new DefaultHttpMethodRetryHandler(0, false));
+            }
 
             String uploadFolderUri = client.getUploadUri() + "/" + client.getUserId() + "/" + FileUtils.md5Sum(file);
 
@@ -172,8 +195,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 result = new RemoteOperationResult(e);
             }
         } finally {
-            // reset previous retry handler
-            client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, oldRetryHandler);
+            if (disableRetries) {
+                // reset previous retry handler
+                client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, oldRetryHandler);
+            }
         }
         return result;
     }
