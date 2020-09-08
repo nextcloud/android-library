@@ -57,7 +57,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String PARAM_PASSWORD = "password";
     private static final String PARAM_EXPIRATION_DATE = "expireDate";
     private static final String PARAM_PERMISSIONS = "permissions";
-    private static final String PARAM_PUBLIC_UPLOAD = "publicUpload";
     private static final String PARAM_NOTE = "note";
     private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
     private static final String PARAM_LABEL = "label";
@@ -87,16 +86,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private int permissions;
 
     /**
-     * Upload permissions for the public link on folder
-     */
-    private Boolean publicUploadOnFolder;
-
-    /**
-     * Upload permissions for the public link on file
-     */
-    private Boolean publicUploadOnFile;
-
-    /**
      * Permission if file can be downloaded via share link (only for single file)
      */
     private Boolean hideFileDownload;
@@ -114,8 +103,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         this.remoteId = remoteId;
         password = null;               // no update
         expirationDateInMillis = 0;    // no update
-        publicUploadOnFolder = null;
-        publicUploadOnFile = null;
         note = null;
         label = null;
     }
@@ -156,20 +143,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         this.permissions = permissions;
     }
 
-    /**
-     * Enable upload permissions to update in Share resource.
-     *
-     * @param publicUploadOnFolder  Upload permission to set to the target share.
-     *                      Null results in no update applied to the upload permission.
-     */
-    public void setPublicUploadOnFolder(Boolean publicUploadOnFolder) {
-        this.publicUploadOnFolder = publicUploadOnFolder;
-    }
-
-    public void setPublicUploadOnFile(Boolean value) {
-        this.publicUploadOnFile = value;
-    }
-
     public void setHideFileDownload(Boolean hideFileDownload) {
         this.hideFileDownload = hideFileDownload;
     }
@@ -208,18 +181,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         if (permissions > 0) {
             // set permissions
             parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
-        }
-
-        if (publicUploadOnFolder != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_PUBLIC_UPLOAD, Boolean.toString(publicUploadOnFolder)));
-        }
-
-        if (publicUploadOnFile != null) {
-            if (publicUploadOnFile) {
-                parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, "3"));
-            } else {
-                parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, "1"));
-            }
         }
 
         if (hideFileDownload != null) {

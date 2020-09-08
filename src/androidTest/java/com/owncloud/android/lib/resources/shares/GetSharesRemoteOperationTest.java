@@ -35,7 +35,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 
 public class GetSharesRemoteOperationTest extends AbstractIT {
     private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -77,11 +76,11 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
 
         // share folder to group
         Assert.assertTrue(new CreateShareRemoteOperation("/shareToGroup/",
-                ShareType.GROUP,
-                "users",
-                false,
-                "",
-                OCShare.DEFAULT_PERMISSION)
+                                                         ShareType.GROUP,
+                                                         "users",
+                                                         false,
+                                                         "",
+                                                         OCShare.NO_PERMISSION)
                 .execute(client).isSuccess());
 
         // share folder to circle
