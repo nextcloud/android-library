@@ -61,6 +61,7 @@ class NextcloudClient(var baseUri: Uri,
         val TAG = NextcloudClient::class.java.simpleName
 
         private fun createDefaultClient(context: Context) : OkHttpClient {
+            
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
             val sslContext = SSLContext.getInstance("TLSv1")
             sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
@@ -71,6 +72,7 @@ class NextcloudClient(var baseUri: Uri,
                     .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                     .sslSocketFactory(sslSocketFactory, trustManager)
                     .hostnameVerifier { _: String?, _: SSLSession? -> true }
+                    .dns(IPV6PreferringDNS())
                     .build()
         }
     }
