@@ -56,7 +56,7 @@ public abstract class OCSRemoteOperation<T> extends RemoteOperation<T> {
         return gson.fromJson(element, type.getType());
     }
 
-    public <T> T getServerResponse(OkHttpMethodBase method, TypeToken<T> type) throws IOException {
+    public <T> T getServerResponse(OkHttpMethodBase method, TypeToken<T> type) {
         String response = method.getResponseBodyAsString();
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(response);
