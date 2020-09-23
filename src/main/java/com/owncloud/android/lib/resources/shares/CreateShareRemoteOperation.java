@@ -123,7 +123,7 @@ public class CreateShareRemoteOperation extends RemoteOperation {
             if (mPassword != null && mPassword.length() > 0) {
                 post.addParameter(PARAM_PASSWORD, mPassword);
             }
-            if (OCShare.DEFAULT_PERMISSION != mPermissions) {
+            if (OCShare.NO_PERMISSION != mPermissions) {
                 post.addParameter(PARAM_PERMISSIONS, Integer.toString(mPermissions));
             }
 

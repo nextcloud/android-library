@@ -31,11 +31,10 @@ import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 public class GetSharesRemoteOperationTest extends AbstractIT {
     private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -76,13 +75,13 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
                 .execute(client).isSuccess());
 
         // share folder to group
-        Assert.assertTrue(new CreateShareRemoteOperation("/shareToGroup/",
-                ShareType.GROUP,
-                "users",
-                false,
-                "",
-                OCShare.DEFAULT_PERMISSION)
-                .execute(client).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToGroup/",
+                                                  ShareType.GROUP,
+                                                  "users",
+                                                  false,
+                                                  "",
+                                                  OCShare.NO_PERMISSION)
+                           .execute(client).isSuccess());
 
         // share folder to circle
         // get share 

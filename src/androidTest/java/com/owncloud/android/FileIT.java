@@ -141,7 +141,7 @@ public class FileIT extends AbstractIT {
                                                   "",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         // verify
@@ -175,7 +175,7 @@ public class FileIT extends AbstractIT {
                                                   "users",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         // verify
@@ -210,7 +210,7 @@ public class FileIT extends AbstractIT {
                                                   "user1",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         // verify
@@ -247,7 +247,7 @@ public class FileIT extends AbstractIT {
                                                   "user1",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         assertTrue(new CreateShareRemoteOperation(path,
@@ -255,7 +255,7 @@ public class FileIT extends AbstractIT {
                                                   "user2",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         // verify
@@ -295,7 +295,7 @@ public class FileIT extends AbstractIT {
                                                   "user1",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         assertTrue(new CreateShareRemoteOperation(path,
@@ -303,7 +303,7 @@ public class FileIT extends AbstractIT {
                                                   "user2",
                                                   false,
                                                   "",
-                                                  OCShare.DEFAULT_PERMISSION)
+                                                  OCShare.NO_PERMISSION)
                            .execute(client).isSuccess());
 
         // verify

@@ -34,18 +34,20 @@ package com.owncloud.android.lib.resources.shares;
  *  5 - Shared by contact
  *  6 - Shared by federation
  *  7 - Shared by circle
- *  
+ *
  * @author masensio
  *
  */
 
 public enum ShareType {
-    NO_SHARED (-1),
-    USER (0),
-    GROUP (1),
-    PUBLIC_LINK (3),
-    EMAIL (4),
-    CONTACT (5),
+    INTERNAL(-3), // internal share link
+    NEW_PUBLIC_LINK(-2), // only available in Android
+    NO_SHARED(-1),
+    USER(0),
+    GROUP(1),
+    PUBLIC_LINK(3),
+    EMAIL(4),
+    CONTACT(5),
     FEDERATED(6),
     CIRCLE(7),
     ROOM(10);
@@ -63,8 +65,10 @@ public enum ShareType {
 
     public static ShareType fromValue(int value) {
         switch (value) {
-            case -1:
-                return NO_SHARED;
+            case -3:
+                return INTERNAL;
+            case -2:
+                return NEW_PUBLIC_LINK;
             case 0:
                 return USER;
             case 1:
@@ -81,6 +85,7 @@ public enum ShareType {
                 return CIRCLE;
             case 10:
                 return ROOM;
+            case -1:
             default:
                 return NO_SHARED;
         }
