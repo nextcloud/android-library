@@ -242,7 +242,8 @@ public class OwnCloudClient extends HttpClient {
         while (redirectionsCount < MAX_REDIRECTIONS_COUNT &&
                 (   status == HttpStatus.SC_MOVED_PERMANENTLY || 
                     status == HttpStatus.SC_MOVED_TEMPORARILY ||
-                    status == HttpStatus.SC_TEMPORARY_REDIRECT)
+                    status == HttpStatus.SC_TEMPORARY_REDIRECT ||
+                    status == /* Permanent Redirect */ 308)
                 ) {
             
             Header location = method.getResponseHeader("Location");

@@ -113,7 +113,8 @@ class NextcloudClient(var baseUri: Uri,
         while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
                 (status == HttpStatus.SC_MOVED_PERMANENTLY ||
                         status == HttpStatus.SC_MOVED_TEMPORARILY ||
-                        status == HttpStatus.SC_TEMPORARY_REDIRECT)) {
+                        status == HttpStatus.SC_TEMPORARY_REDIRECT ||
+                        status == /* Permanent Redirect */ 308)) {
             var location = method.getResponseHeader("Location")
             if (location == null) {
                 location = method.getResponseHeader("location")
