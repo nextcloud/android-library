@@ -309,6 +309,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     private PutMethod createPutMethod(String uriPrefix) {
         putMethod = new PutMethod(uriPrefix);
         putMethod.setRequestEntity(entity);
+        putMethod.setUseExpectHeader(true);
         if (cancellationRequested.get()) {
             putMethod.abort(); // next method will throw an exception
         }
