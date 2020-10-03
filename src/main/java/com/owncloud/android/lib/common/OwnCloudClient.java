@@ -269,6 +269,12 @@ public class OwnCloudClient extends HttpClient {
                 }
                 if (destination != null) {
                     int suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0);
+                    if (suffixIndex == -1) {
+                        suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0);
+                    }
+                    if (suffixIndex == -1) {
+                        throw new IllegalStateException("Failed to find webdav substring in " + locationStr);
+                    }
                     String redirectionBase = locationStr.substring(0, suffixIndex);
 
                     String destinationStr = destination.getValue();

@@ -133,7 +133,11 @@ class NextcloudClient(var baseUri: Uri,
                 }
 
                 if (destination != null) {
-                    val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0)
+                    var suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0)
+                    if (suffixIndex == -1) {
+                        suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
+                    }
+                    check (suffixIndex != -1) { "Failed to find webdav substring in $location" }
                     val redirectionBase = location.substring(0, suffixIndex)
                     val destinationStr = destination
                     val destinationPath = destinationStr.substring(baseUri.toString().length)
