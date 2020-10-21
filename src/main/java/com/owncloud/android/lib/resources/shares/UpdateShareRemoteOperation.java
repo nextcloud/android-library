@@ -37,6 +37,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -188,11 +189,11 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         }
 
         if (note != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
+            parametersToUpdate.add(new Pair<>(PARAM_NOTE, URLEncoder.encode(note)));
         }
 
         if (label != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_LABEL, label));
+            parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label)));
         }
 
         /// perform required PUT requests

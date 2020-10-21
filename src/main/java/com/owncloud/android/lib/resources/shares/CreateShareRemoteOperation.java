@@ -67,6 +67,7 @@ public class CreateShareRemoteOperation extends RemoteOperation {
      *                       If true public can upload to a shared folder. Only available for public link shares
      * @param password       Password to protect a public link share. Only available for public link shares
      * @param permissions    1 - Read only Default for public shares
+     * @param getShareDetails if true return share info
      *                       2 - Update
      *                       4 - Create
      *                       8 - Delete
@@ -77,20 +78,31 @@ public class CreateShareRemoteOperation extends RemoteOperation {
      *                       For instance, for Re-Share, delete, read, update, add 16+8+2+1 = 27.
      */
     public CreateShareRemoteOperation(
-        String remoteFilePath,
-        ShareType shareType,
-        String shareWith,
-        boolean publicUpload,
-        String password,
-        int permissions
-    ) {
+            String remoteFilePath,
+            ShareType shareType,
+            String shareWith,
+            boolean publicUpload,
+            String password,
+            int permissions,
+            boolean getShareDetails
+                                     ) {
         mRemoteFilePath = remoteFilePath;
         mShareType = shareType;
         mShareWith = shareWith;
         mPublicUpload = publicUpload;
         mPassword = password;
         mPermissions = permissions;
-        mGetShareDetails = false;        // defaults to false for backwards compatibility
+        mGetShareDetails = getShareDetails;        // defaults to false for backwards compatibility
+    }
+
+    public CreateShareRemoteOperation(
+            String remoteFilePath,
+            ShareType shareType,
+            String shareWith,
+            boolean publicUpload,
+            String password,
+            int permissions) {
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false);
     }
 
     public boolean isGettingShareDetails() {
