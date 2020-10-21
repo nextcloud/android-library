@@ -242,7 +242,8 @@ public class OwnCloudClient extends HttpClient {
         while (redirectionsCount < MAX_REDIRECTIONS_COUNT &&
                 (   status == HttpStatus.SC_MOVED_PERMANENTLY || 
                     status == HttpStatus.SC_MOVED_TEMPORARILY ||
-                    status == HttpStatus.SC_TEMPORARY_REDIRECT)
+                    status == HttpStatus.SC_TEMPORARY_REDIRECT ||
+                    status == /* Permanent Redirect */ 308)
                 ) {
             
             Header location = method.getResponseHeader("Location");
@@ -268,6 +269,12 @@ public class OwnCloudClient extends HttpClient {
                 }
                 if (destination != null) {
                     int suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0);
+                    if (suffixIndex == -1) {
+                        suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0);
+                    }
+                    if (suffixIndex == -1) {
+                        throw new IllegalStateException("Failed to find webdav substring in " + locationStr);
+                    }
                     String redirectionBase = locationStr.substring(0, suffixIndex);
 
                     String destinationStr = destination.getValue();
