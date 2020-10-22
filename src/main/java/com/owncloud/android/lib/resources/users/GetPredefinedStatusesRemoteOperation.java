@@ -42,7 +42,7 @@ import java.util.ArrayList;
 /**
  * Remote operation to get all predefined statuses
  */
-public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation {
+public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation<ArrayList<PredefinedStatus>> {
     private static final String TAG = GetPredefinedStatusesRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/predefined_statuses";
 
@@ -52,9 +52,9 @@ public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation {
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<ArrayList<PredefinedStatus>> run(NextcloudClient client) {
         GetMethod getMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<ArrayList<PredefinedStatus>> result;
 
         try {
             // remote request
@@ -69,14 +69,14 @@ public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation {
                                 new TypeToken<ServerResponse<ArrayList<PredefinedStatus>>>() {
                                 });
 
-                result = new RemoteOperationResult(true, getMethod);
-                result.setSingleData(serverResponse.getOcs().getData());
+                result = new RemoteOperationResult<>(true, getMethod);
+                result.setResultData(serverResponse.getOcs().getData());
             } else {
-                result = new RemoteOperationResult(false, getMethod);
+                result = new RemoteOperationResult<>(false, getMethod);
                 getMethod.releaseConnection();
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Fetching of predefined statuses failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (getMethod != null) {

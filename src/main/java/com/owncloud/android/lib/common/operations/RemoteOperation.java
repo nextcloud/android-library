@@ -48,13 +48,13 @@ import androidx.annotation.NonNull;
 
 /**
  * Operation which execution involves one or several interactions with an ownCloud server.
- * 
+ * <p>
  * Provides methods to execute the operation both synchronously or asynchronously.
- * 
- * @author David A. Velasco 
+ *
+ * @author David A. Velasco
  */
-public abstract class RemoteOperation implements Runnable {
-	
+public abstract class RemoteOperation<T extends Object> implements Runnable {
+
     private static final String TAG = RemoteOperation.class.getSimpleName();
 
     /** OCS API header name */
@@ -89,17 +89,17 @@ public abstract class RemoteOperation implements Runnable {
 	/** Activity */
     private Activity mCallerActivity;
 
-	
-	/**
-	 *  Abstract method to implement the operation in derived classes.
-	 */
-	@Deprecated
-    protected RemoteOperationResult run(OwnCloudClient client) {
+
+    /**
+     * Abstract method to implement the operation in derived classes.
+     */
+    @Deprecated
+    protected RemoteOperationResult<T> run(OwnCloudClient client) {
         Log_OC.d(this, "Not used anymore");
         throw new UnsupportedOperationException("Not used anymore");
     }
 
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<T> run(NextcloudClient client) {
         // Once all RemoteOperation implement it, this should be abstract 
         Log_OC.d(this, "Not yet implemented");
         throw new UnsupportedOperationException("Not yet implemented");
@@ -110,17 +110,17 @@ public abstract class RemoteOperation implements Runnable {
      * Synchronously executes the remote operation on the received ownCloud account.
      * 
      * Do not call this method from the main thread.
-     * 
+     *
      * This method should be used whenever an ownCloud account is available, instead of
      * {@link #execute(OwnCloudClient)}.
-     * 
+     *
      * @param account   ownCloud account in remote ownCloud server to reach during the
      *                  execution of the operation.
      * @param context   Android context for the component calling the method.
-     * @return          Result of the operation.
+     * @return Result of the operation.
      */
     @Deprecated
-    public RemoteOperationResult execute(Account account, Context context) {
+    public RemoteOperationResult<T> execute(Account account, Context context) {
         if (account == null) {
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL Account");
         }
@@ -130,11 +130,11 @@ public abstract class RemoteOperation implements Runnable {
         mAccount = account;
         mContext = context.getApplicationContext();
         try {
-        	OwnCloudAccount ocAccount = new OwnCloudAccount(mAccount, mContext);
+            OwnCloudAccount ocAccount = new OwnCloudAccount(mAccount, mContext);
             mClient = OwnCloudClientManagerFactory.getDefaultSingleton().getClientFor(ocAccount, mContext);
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while trying to access to " + mAccount.name, e);
-            return new RemoteOperationResult(e);
+            return new RemoteOperationResult<T>(e);
         }
         return run(mClient);
     }
@@ -152,7 +152,7 @@ public abstract class RemoteOperation implements Runnable {
      * @param context Android context for the component calling the method.
      * @return Result of the operation.
      */
-    public RemoteOperationResult executeNextcloudClient(@NonNull Account account, @NonNull Context context) {
+    public RemoteOperationResult<T> executeNextcloudClient(@NonNull Account account, @NonNull Context context) {
         mAccount = account;
         mContext = context.getApplicationContext();
         try {
@@ -160,26 +160,25 @@ public abstract class RemoteOperation implements Runnable {
             clientNew = OwnCloudClientManagerFactory.getDefaultSingleton().getNextcloudClientFor(ocAccount, mContext);
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while trying to access to " + mAccount.name, e);
-            return new RemoteOperationResult(e);
+            return new RemoteOperationResult<T>(e);
         }
         return run(clientNew);
     }
 
-	/**
-	 * Synchronously executes the remote operation
-	 * 
+    /**
+     * Synchronously executes the remote operation
+     * <p>
      * Do not call this method from the main thread.
-     * 
-	 * @param client	Client object to reach an ownCloud server during the execution of
-     *                  the operation.
-	 * @return			Result of the operation.
-	 */
-	@Deprecated
-    public RemoteOperationResult execute(OwnCloudClient client) {
+     *
+     * @param client Client object to reach an ownCloud server during the execution of the operation.
+     * @return Result of the operation.
+     */
+    @Deprecated
+    public RemoteOperationResult<T> execute(OwnCloudClient client) {
         if (client == null) {
             throw new IllegalArgumentException("Trying to execute a remote operation with a NULL OwnCloudClient");
         }
-		mClient = client;
+        mClient = client;
 
         return run(client);
     }
@@ -189,11 +188,11 @@ public abstract class RemoteOperation implements Runnable {
      *
      * Do not call this method from the main thread.
      *
-     * @param client	Client object to reach an ownCloud server during the execution of
+     * @param client    Client object to reach an ownCloud server during the execution of
      *                  the operation.
-     * @return			Result of the operation.
+     * @return Result of the operation.
      */
-    public RemoteOperationResult execute(@NonNull NextcloudClient client) {
+    public RemoteOperationResult<T> execute(@NonNull NextcloudClient client) {
         clientNew = client;
 
         return run(client);
@@ -322,7 +321,7 @@ public abstract class RemoteOperation implements Runnable {
 	 */
     @Override
     public final void run() {
-        RemoteOperationResult result = null;
+        RemoteOperationResult<T> result = null;
         boolean repeat;
         do {
             try{
@@ -347,13 +346,13 @@ public abstract class RemoteOperation implements Runnable {
             
             } catch (IOException e) {
                 Log_OC.e(TAG, "Error while trying to access to " + mAccount.name,
-                        new AccountsException("I/O exception while trying to authorize the account",
-                                e));
-                result = new RemoteOperationResult(e);
-            
+                         new AccountsException("I/O exception while trying to authorize the account",
+                                               e));
+                result = new RemoteOperationResult<T>(e);
+
             } catch (AccountsException e) {
                 Log_OC.e(TAG, "Error while trying to access to " + mAccount.name, e);
-                result = new RemoteOperationResult(e);
+                result = new RemoteOperationResult<T>(e);
             }
     	
             if (result == null)
@@ -395,7 +394,7 @@ public abstract class RemoteOperation implements Runnable {
             AccountUtils.saveClient(mClient, mAccount, mContext);
         }
         
-        final RemoteOperationResult resultToSend = result;
+        final RemoteOperationResult<T> resultToSend = result;
         if (mListenerHandler != null && mListener != null) {
         	mListenerHandler.post(new Runnable() {
                 @Override

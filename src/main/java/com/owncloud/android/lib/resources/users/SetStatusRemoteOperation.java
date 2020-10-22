@@ -41,7 +41,7 @@ import okhttp3.RequestBody;
 /**
  * Remote operation performing setting of status
  */
-public class SetStatusRemoteOperation extends OCSRemoteOperation {
+public class SetStatusRemoteOperation extends OCSRemoteOperation<com.owncloud.android.lib.resources.users.Status> {
 
     private static final String TAG = SetStatusRemoteOperation.class.getSimpleName();
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/status";
@@ -56,9 +56,9 @@ public class SetStatusRemoteOperation extends OCSRemoteOperation {
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<com.owncloud.android.lib.resources.users.Status> run(NextcloudClient client) {
         PutMethod putMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<com.owncloud.android.lib.resources.users.Status> result;
 
         try {
             // request body
@@ -71,13 +71,13 @@ public class SetStatusRemoteOperation extends OCSRemoteOperation {
             int status = client.execute(putMethod);
 
             if (status == HttpStatus.SC_OK) {
-                result = new RemoteOperationResult(true, putMethod);
+                result = new RemoteOperationResult<>(true, putMethod);
             } else {
-                result = new RemoteOperationResult(false, putMethod);
+                result = new RemoteOperationResult<>(false, putMethod);
                 putMethod.releaseConnection();
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Setting of own status failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (putMethod != null) {

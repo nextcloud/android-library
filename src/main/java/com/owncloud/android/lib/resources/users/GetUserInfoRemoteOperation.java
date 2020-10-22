@@ -40,8 +40,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 
-import java.util.ArrayList;
-
 /**
  * Gets information (id, display name, and e-mail address and many other things) about the user logged in.
  *
@@ -49,7 +47,7 @@ import java.util.ArrayList;
  * @author David A. Velasco
  * @author Mario Danic
  */
-public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
+public class GetUserInfoRemoteOperation extends OCSRemoteOperation<UserInfo> {
 
     private static final String TAG = GetUserInfoRemoteOperation.class.getSimpleName();
 
@@ -77,8 +75,8 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
     public static final long QUOTA_LIMIT_INFO_NOT_AVAILABLE = Long.MIN_VALUE;
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<UserInfo> run(OwnCloudClient client) {
+        RemoteOperationResult<UserInfo> result;
         int status;
         GetMethod get = null;
 
@@ -107,13 +105,10 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
                     userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
                 }
 
-                result = new RemoteOperationResult(true, get);
-                // Username in result.data
-                ArrayList<Object> data = new ArrayList<>();
-                data.add(userInfo);
-                result.setData(data);
+                result = new RemoteOperationResult<>(true, get);
+                result.setResultData(userInfo);
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting user information ");
                 if (response != null) {
@@ -123,7 +118,7 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation {
                 }
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting OC user information", e);
         } finally {
             if (get != null) {

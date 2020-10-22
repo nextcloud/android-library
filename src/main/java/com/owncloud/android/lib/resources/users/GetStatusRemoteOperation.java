@@ -40,7 +40,7 @@ import org.apache.commons.httpclient.HttpStatus;
 /**
  * Remote operation to get status
  */
-public class GetStatusRemoteOperation extends OCSRemoteOperation {
+public class GetStatusRemoteOperation extends OCSRemoteOperation<Status> {
 
     private static final String TAG = GetStatusRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status";
@@ -50,9 +50,9 @@ public class GetStatusRemoteOperation extends OCSRemoteOperation {
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<Status> run(NextcloudClient client) {
         GetMethod getMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<Status> result;
 
         try {
             // remote request
@@ -66,20 +66,20 @@ public class GetStatusRemoteOperation extends OCSRemoteOperation {
                         new TypeToken<ServerResponse<Status>>() {
                         });
 
-                result = new RemoteOperationResult(true, getMethod);
-                result.setSingleData(serverResponse.getOcs().getData());
+                result = new RemoteOperationResult<>(true, getMethod);
+                result.setResultData(serverResponse.getOcs().getData());
             } else {
                 // 404 if no status was set before
                 if (HttpStatus.SC_NOT_FOUND == getMethod.getStatusCode()) {
-                    result = new RemoteOperationResult(true, getMethod);
-                    result.setSingleData(new Status(StatusType.INVISIBLE, "", "", -1));
+                    result = new RemoteOperationResult<>(true, getMethod);
+                    result.setResultData(new Status(StatusType.INVISIBLE, "", "", -1));
                 } else {
-                    result = new RemoteOperationResult(false, getMethod);
+                    result = new RemoteOperationResult<>(false, getMethod);
                     getMethod.releaseConnection();
                 }
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Fetching of own status failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (getMethod != null) {

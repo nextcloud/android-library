@@ -38,41 +38,41 @@ import static org.junit.Assert.assertTrue;
 public class DirectEditingCreateFileRemoteOperationTest extends AbstractIT {
     @Test
     public void createEmptyFile() {
-        RemoteOperationResult result = new DirectEditingCreateFileRemoteOperation("/test.md",
-                                                                                  "text",
-                "textdocument")
+        RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/test.md",
+                                                                                          "text",
+                                                                                          "textdocument")
                 .execute(client);
         assertTrue(result.isSuccess());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertFalse(url.isEmpty());
     }
 
     @Test
     public void createFileFromTemplate() {
-        RemoteOperationResult result = new DirectEditingCreateFileRemoteOperation("/test.md",
-                "text",
-                "textdocument",
-                "1")
+        RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/test.md",
+                                                                                          "text",
+                                                                                          "textdocument",
+                                                                                          "1")
                 .execute(client);
         assertTrue(result.isSuccess());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertFalse(url.isEmpty());
     }
 
     @Test
     public void createFileWithSpecialCharacterFromTemplate() {
-        RemoteOperationResult result = new DirectEditingCreateFileRemoteOperation("/あ.md",
-                "text",
-                "textdocument",
-                "1")
+        RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/あ.md",
+                                                                                          "text",
+                                                                                          "textdocument",
+                                                                                          "1")
                 .execute(client);
         assertTrue(result.isSuccess());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertFalse(url.isEmpty());
     }
