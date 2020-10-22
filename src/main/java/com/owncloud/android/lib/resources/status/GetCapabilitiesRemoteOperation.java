@@ -148,9 +148,15 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
     // DirectEditing
     private static final String NODE_DIRECT_EDITING = "directEditing";
-        
+
     // activity
     private static final String NODE_ACTIVITY = "activity";
+
+    // user status
+    private static final String NODE_USER_STATUS = "user_status";
+    private static final String NODE_USER_STATUS_ENABLED = "enabled";
+    private static final String NODE_USER_STATUS_SUPPORTS_EMOJI = "supports_emoji";
+
 
     private OCCapability currentCapability = null;
 
@@ -607,6 +613,26 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 } else {
                     capability.setRichDocuments(CapabilityBooleanType.FALSE);
+                }
+
+                // user status
+                if (respCapabilities.has(NODE_USER_STATUS)) {
+                    JSONObject userStatusCapability = respCapabilities.getJSONObject(NODE_USER_STATUS);
+
+                    if (userStatusCapability.getBoolean(NODE_USER_STATUS_ENABLED)) {
+                        capability.setUserStatus(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setUserStatus(CapabilityBooleanType.FALSE);
+                    }
+
+                    if (userStatusCapability.getBoolean(NODE_USER_STATUS_SUPPORTS_EMOJI)) {
+                        capability.setUserStatusSupportsEmoji(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setUserStatusSupportsEmoji(CapabilityBooleanType.TRUE);
+                    }
+                } else {
+                    capability.setUserStatus(CapabilityBooleanType.FALSE);
+                    capability.setUserStatusSupportsEmoji(CapabilityBooleanType.FALSE);
                 }
             }
 
