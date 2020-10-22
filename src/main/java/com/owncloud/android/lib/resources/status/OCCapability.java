@@ -104,11 +104,15 @@ public class OCCapability {
     private String richDocumentsProductName;
 
     private CapabilityBooleanType activity;
-    
+
     private CapabilityBooleanType extendedSupport;
 
     // DirectEditing
     private String directEditingEtag;
+
+    // user status
+    private CapabilityBooleanType userStatus;
+    private CapabilityBooleanType userStatusSupportsEmoji;
 
     // Etag for capabilities
     private String etag;
@@ -168,8 +172,11 @@ public class OCCapability {
         richDocumentsDirectEditing = CapabilityBooleanType.FALSE;
         richDocumentsTemplatesAvailable = CapabilityBooleanType.FALSE;
         richDocumentsProductName = "Collabora Online";
-        
+
         extendedSupport = CapabilityBooleanType.UNKNOWN;
+
+        userStatus = CapabilityBooleanType.UNKNOWN;
+        userStatusSupportsEmoji = CapabilityBooleanType.UNKNOWN;
 
         directEditingEtag = "";
         etag = "";

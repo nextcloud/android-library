@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Class to test GetRemoteCapabilitiesOperation
  */
-public class GetCapabilitiesTest extends AbstractIT {
+public class GetCapabilitiesIT extends AbstractIT {
     /**
      * Test get capabilities
      */
@@ -127,7 +127,16 @@ public class GetCapabilitiesTest extends AbstractIT {
         assertTrue(capability.getFilesUndelete().isTrue());
         assertNotNull(capability.getVersion());
         assertFalse(capability.getEtag().isEmpty());
-        assertSame(capability.getRichDocuments(), CapabilityBooleanType.FALSE);
+        assertSame(CapabilityBooleanType.FALSE, capability.getRichDocuments());
         assertFalse(capability.getDirectEditingEtag().isEmpty());
+
+        // user status
+        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_20)) {
+            assertTrue(capability.getUserStatus().isTrue());
+            assertTrue(capability.getUserStatusSupportsEmoji().isTrue());
+        } else {
+            assertFalse(capability.getUserStatus().isTrue());
+            assertFalse(capability.getUserStatusSupportsEmoji().isTrue());
+        }
     }
 }
