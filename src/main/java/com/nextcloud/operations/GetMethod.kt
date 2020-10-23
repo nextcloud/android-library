@@ -40,5 +40,4 @@ class GetMethod(
     override fun applyType(temp: Request.Builder) {
         temp.get()
     }
-} 
-
+}

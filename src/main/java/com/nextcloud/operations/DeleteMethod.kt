@@ -40,5 +40,4 @@ class DeleteMethod(
     override fun applyType(temp: Request.Builder) {
         temp.delete()
     }
-} 
-
+}

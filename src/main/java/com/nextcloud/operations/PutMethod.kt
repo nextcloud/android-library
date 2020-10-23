@@ -42,5 +42,4 @@ class PutMethod(
     override fun applyType(temp: Request.Builder) {
         temp.put(body)
     }
-} 
-
+}
