@@ -37,16 +37,13 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
-
 /**
  * Remote operation to get status
  */
-
 public class GetStatusRemoteOperation extends OCSRemoteOperation {
 
     private static final String TAG = GetStatusRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status";
-
     private static final String JSON_FORMAT = "?format=json";
 
     /**
@@ -66,8 +63,8 @@ public class GetStatusRemoteOperation extends OCSRemoteOperation {
             if (status == HttpStatus.SC_OK) {
                 // Parse the response
                 ServerResponse<Status> serverResponse = getServerResponse(getMethod,
-                                                                          new TypeToken<ServerResponse<Status>>() {
-                                                                          });
+                        new TypeToken<ServerResponse<Status>>() {
+                        });
 
                 result = new RemoteOperationResult(true, getMethod);
                 result.setSingleData(serverResponse.getOcs().getData());
