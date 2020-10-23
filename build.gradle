@@ -70,6 +70,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1u2'
 
+    //noinspection AnnotationProcessorOnCompilePath
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
