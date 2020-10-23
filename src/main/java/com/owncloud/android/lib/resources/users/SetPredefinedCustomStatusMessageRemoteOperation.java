@@ -38,11 +38,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-
 /**
  * Remote operation performing setting of predefined custome status message
  */
-
 public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation {
 
     private static final String TAG = SetPredefinedCustomStatusMessageRemoteOperation.class.getSimpleName();
@@ -68,8 +66,8 @@ public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOp
             // request body
             MediaType json = MediaType.parse("application/json; charset=utf-8");
             RequestBody requestBody = RequestBody.create(json,
-                                                         "{\"messageId\": \"" + messageId + "\", " +
-                                                                 "\"clearAt\": " + clearAt + "}");
+                    "{\"messageId\": \"" + messageId + "\", " +
+                            "\"clearAt\": " + clearAt + "}");
 
             // remote request
             putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, requestBody);
@@ -85,7 +83,7 @@ public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOp
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Setting of predefined custom status failed: " + result.getLogMessage(),
-                     result.getException());
+                    result.getException());
         } finally {
             if (putMethod != null) {
                 putMethod.releaseConnection();

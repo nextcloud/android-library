@@ -42,7 +42,6 @@ import java.util.ArrayList;
 /**
  * Remote operation to get all predefined statuses
  */
-
 public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation {
     private static final String TAG = GetPredefinedStatusesRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/predefined_statuses";
@@ -67,8 +66,8 @@ public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation {
                 // Parse the response
                 ServerResponse<ArrayList<PredefinedStatus>> serverResponse =
                         getServerResponse(getMethod,
-                                          new TypeToken<ServerResponse<ArrayList<PredefinedStatus>>>() {
-                                          });
+                                new TypeToken<ServerResponse<ArrayList<PredefinedStatus>>>() {
+                                });
 
                 result = new RemoteOperationResult(true, getMethod);
                 result.setSingleData(serverResponse.getOcs().getData());

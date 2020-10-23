@@ -38,11 +38,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-
 /**
  * Remote operation performing setting of status
  */
-
 public class SetStatusRemoteOperation extends OCSRemoteOperation {
 
     private static final String TAG = SetStatusRemoteOperation.class.getSimpleName();
