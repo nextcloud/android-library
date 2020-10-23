@@ -39,7 +39,7 @@ class StatusIT : AbstractIT() {
     @Test
     fun setStatus() {
         clearStatusMessage()
-        assertTrue(SetStatusRemoteOperation(StatusType.online).execute(nextcloudClient).isSuccess)
+        assertTrue(SetStatusRemoteOperation(StatusType.Online).execute(nextcloudClient).isSuccess)
 
         for (statusType in StatusType.values()) {
             var result = GetStatusRemoteOperation().run(nextcloudClient)
@@ -54,7 +54,7 @@ class StatusIT : AbstractIT() {
             assertEquals(statusType, status.status)
         }
 
-        assertTrue(SetStatusRemoteOperation(StatusType.away).execute(nextcloudClient).isSuccess)
+        assertTrue(SetStatusRemoteOperation(StatusType.Away).execute(nextcloudClient).isSuccess)
         clearStatusMessage()
     }
 

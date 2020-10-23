@@ -23,8 +23,8 @@
 package com.owncloud.android.lib.resources.users
 
 enum class StatusType {
-    online,
-    offline,
-    dnd,
-    away
+    Online,
+    Offline,
+    Dnd,
+    Away
 }
