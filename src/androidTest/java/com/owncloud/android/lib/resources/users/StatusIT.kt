@@ -63,7 +63,8 @@ class StatusIT : AbstractIT() {
         val result = GetPredefinedStatusesRemoteOperation().run(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val statusesList: ArrayList<PredefinedStatus> = result.singleData as ArrayList<PredefinedStatus>
+        val statusesList: ArrayList<PredefinedStatus> =
+            result.singleData as ArrayList<PredefinedStatus>
         assertTrue(statusesList.isNotEmpty())
     }
 
@@ -82,13 +83,16 @@ class StatusIT : AbstractIT() {
         var result = GetPredefinedStatusesRemoteOperation().run(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val statusesList: ArrayList<PredefinedStatus> = result.singleData as ArrayList<PredefinedStatus>
+        val statusesList: ArrayList<PredefinedStatus> =
+            result.singleData as ArrayList<PredefinedStatus>
         val newCustomStatusMessage = statusesList[2]
         val clearAt = System.currentTimeMillis() / 1000 + 3600 // in one hour
 
-        assertTrue(SetPredefinedCustomStatusMessageRemoteOperation(newCustomStatusMessage.id, clearAt)
+        assertTrue(
+            SetPredefinedCustomStatusMessageRemoteOperation(newCustomStatusMessage.id, clearAt)
                 .execute(nextcloudClient)
-                .isSuccess)
+                .isSuccess
+        )
 
         // verify
         result = GetStatusRemoteOperation().run(nextcloudClient)
@@ -106,9 +110,11 @@ class StatusIT : AbstractIT() {
         val statusIcon = "☁"
         val clearAt = System.currentTimeMillis() / 1000 + 3600 // in one hour
 
-        assertTrue(SetUserDefinedCustomStatusMessageRemoteOperation(message, statusIcon, clearAt)
+        assertTrue(
+            SetUserDefinedCustomStatusMessageRemoteOperation(message, statusIcon, clearAt)
                 .execute(nextcloudClient)
-                .isSuccess)
+                .isSuccess
+        )
 
         // verify
         val result = GetStatusRemoteOperation().run(nextcloudClient)

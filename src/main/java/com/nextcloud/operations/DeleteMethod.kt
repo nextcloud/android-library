@@ -33,8 +33,10 @@ import okhttp3.Request
 /**
  * HTTP DELETE method that uses OkHttp with new NextcloudClient
  */
-class DeleteMethod(uri: String,
-                   useOcsApiRequestHeader: Boolean) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
+class DeleteMethod(
+    uri: String,
+    useOcsApiRequestHeader: Boolean
+) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
     override fun applyType(temp: Request.Builder) {
         temp.delete()
     }
