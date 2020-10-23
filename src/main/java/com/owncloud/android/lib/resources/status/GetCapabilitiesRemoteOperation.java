@@ -628,7 +628,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     if (userStatusCapability.getBoolean(NODE_USER_STATUS_SUPPORTS_EMOJI)) {
                         capability.setUserStatusSupportsEmoji(CapabilityBooleanType.TRUE);
                     } else {
-                        capability.setUserStatusSupportsEmoji(CapabilityBooleanType.TRUE);
+                        capability.setUserStatusSupportsEmoji(CapabilityBooleanType.FALSE);
                     }
                 } else {
                     capability.setUserStatus(CapabilityBooleanType.FALSE);
