@@ -20,16 +20,20 @@ buildscript {
         classpath('com.hiya:jacoco-android:0.2')
         classpath 'gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.14.1"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.hiya.jacoco-android'
-apply plugin: "com.github.spotbugs"
+apply plugin: 'com.github.spotbugs'
+apply plugin: 'io.gitlab.arturbosch.detekt'
 
 repositories {
     google()
@@ -42,12 +46,16 @@ repositories {
     }
 }
 
-configurations.all {
-    exclude group: 'com.google.firebase', module: 'firebase-core'
-    exclude group: 'org.ogce', module: 'xpp3' // xpp3 is for plain java, Android uses kxml2
-    
-    // check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+configurations {
+    ktlint
+
+    all {
+        exclude group: 'com.google.firebase', module: 'firebase-core'
+        exclude group: 'org.ogce', module: 'xpp3' // xpp3 is for plain java, Android uses kxml2
+
+        // check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
 }
 
 ext {
@@ -72,6 +80,8 @@ dependencies {
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
+	
+	ktlint "com.pinterest:ktlint:0.39.0"
 
     // dependencies for tests
     testImplementation "junit:junit:$junit_version"
@@ -144,6 +154,8 @@ android {
             }
         }
     }
+	
+	check.dependsOn 'spotbugsReport', 'ktlint', 'detekt'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -169,4 +181,28 @@ tasks.register("combinedTestReport", JacocoReport) {
     executionData.setFrom project.fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/debugAndroidTest/connected/*coverage.ec'
     ])
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "--reporter=plain", "--reporter=plain,output=${buildDir}/ktlint.txt,src/**/*.kt"
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
+}
+
+detekt {
+    reports {
+        xml {
+            enabled = false
+        }
+    }
+    config = files("detekt.yml")
+    input = files("src/")
 }
