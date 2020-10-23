@@ -57,24 +57,23 @@ class NextcloudClient(var baseUri: Uri, var userId: String, val credentials: Str
         val TAG = NextcloudClient::class.java.simpleName
 
         private fun createDefaultClient(context: Context): OkHttpClient {
-            
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
             val sslContext = SSLContext.getInstance("TLSv1")
             sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
             return OkHttpClient.Builder()
-                    .cookieJar(CookieJar.NO_COOKIES)
-                    .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
-                    .sslSocketFactory(sslSocketFactory, trustManager)
-                    .hostnameVerifier { _: String?, _: SSLSession? -> true }
-                    .dns(IPV6PreferringDNS())
-                    .build()
+                .cookieJar(CookieJar.NO_COOKIES)
+                .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                .sslSocketFactory(sslSocketFactory, trustManager)
+                .hostnameVerifier { _: String?, _: SSLSession? -> true }
+                .dns(IPV6PreferringDNS())
+                .build()
         }
     }
 
     constructor(baseUri: Uri, userId: String, credentials: String, context: Context) :
-            this(baseUri, userId, credentials, createDefaultClient(context))
+        this(baseUri, userId, credentials, createDefaultClient(context))
 
     fun execute(remoteOperation: RemoteOperation): RemoteOperationResult {
         return try {
@@ -105,11 +104,12 @@ class NextcloudClient(var baseUri: Uri, var userId: String, val credentials: Str
         val result = RedirectionPath(status, OwnCloudClient.MAX_REDIRECTIONS_COUNT)
 
         while (
-                redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
-                (
-                        status == HttpStatus.SC_MOVED_PERMANENTLY || status == HttpStatus.SC_MOVED_TEMPORARILY ||
-                                status == HttpStatus.SC_TEMPORARY_REDIRECT
-                        )
+            redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
+            (
+                status == HttpStatus.SC_MOVED_PERMANENTLY ||
+                    status == HttpStatus.SC_MOVED_TEMPORARILY ||
+                    status == HttpStatus.SC_TEMPORARY_REDIRECT
+                )
         ) {
             var location = method.getResponseHeader("Location")
             if (location == null) {
