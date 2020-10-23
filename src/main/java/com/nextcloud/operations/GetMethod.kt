@@ -32,6 +32,4 @@ import com.nextcloud.common.OkHttpMethodBase
 /**
  * HTTP GET method that uses OkHttp with new NextcloudClient
  */
-class GetMethod(uri: String,
-                useOcsApiRequestHeader: Boolean) : OkHttpMethodBase(uri, useOcsApiRequestHeader) 
-
+class GetMethod(uri: String, useOcsApiRequestHeader: Boolean) : OkHttpMethodBase(uri, useOcsApiRequestHeader)
