@@ -42,10 +42,12 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
     @Test
     fun longNote() {
-        testUpdateNote("123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123" +
+        testUpdateNote(
+            "123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123" +
                 "123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123" +
                 "123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123" +
-                "123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123")
+                "123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123"
+        )
     }
 
     @Test
@@ -57,13 +59,15 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         Assert.assertTrue(CreateFolderRemoteOperation("/note/", true).execute(client).isSuccess)
 
         // share folder to user "admin"
-        val createOperationResult = CreateShareRemoteOperation("/note/",
-                ShareType.USER,
-                "admin",
-                false,
-                "",
-                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
-                true).execute(client)
+        val createOperationResult = CreateShareRemoteOperation(
+            "/note/",
+            ShareType.USER,
+            "admin",
+            false,
+            "",
+            OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+            true
+        ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -91,12 +95,14 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         Assert.assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
 
         // share folder via public link
-        val createOperationResult = CreateShareRemoteOperation("/label/",
-                ShareType.PUBLIC_LINK,
-                "",
-                true,
-                "",
-                OCShare.READ_PERMISSION_FLAG).execute(client)
+        val createOperationResult = CreateShareRemoteOperation(
+            "/label/",
+            ShareType.PUBLIC_LINK,
+            "",
+            true,
+            "",
+            OCShare.READ_PERMISSION_FLAG
+        ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
