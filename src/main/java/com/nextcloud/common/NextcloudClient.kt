@@ -49,7 +49,12 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 
-class NextcloudClient(var baseUri: Uri, var userId: String, val credentials: String, val client: OkHttpClient) {
+class NextcloudClient(
+    var baseUri: Uri,
+    var userId: String,
+    val credentials: String,
+    val client: OkHttpClient
+) {
     var followRedirects = true
 
     companion object {
