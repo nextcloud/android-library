@@ -4,11 +4,12 @@ URL=https://nextcloud.kaminsky.me/remote.php/webdav/library-integrationTests
 ID=$3
 USER=$1
 PASS=$2
-TYPE=$4
-REMOTE_FOLDER=$ID-$TYPE
+BRANCH=$4
+TYPE=$5
+REMOTE_FOLDER=$ID-$TYPE-$BRANCH
 
 if [ $TYPE = "IT" ]; then
-    cd build/reports/androidTests/connected/
+    cd build/reports/androidTests/connected/flavors/debugAndroidTest
 else 
     cd build/reports/tests/testDebugUnitTest
 fi
