@@ -35,5 +35,8 @@ enum class StatusType(val string: String) {
     DND("dnd"),
 
     @SerializedName("away")
-    AWAY("away");
+    AWAY("away"),
+
+    @SerializedName("invisible")
+    INVISIBLE("invisible");
 }
