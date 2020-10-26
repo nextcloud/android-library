@@ -22,4 +22,4 @@
 
 package com.owncloud.android.lib.resources.users
 
-class PredefinedStatus(val id: String, val icon: String, val message: String, val clearAt: ClearAt)
+class PredefinedStatus(val id: String, val icon: String, val message: String, val clearAt: ClearAt?)
