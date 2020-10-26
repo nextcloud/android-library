@@ -49,7 +49,7 @@ public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOp
     private final String messageId;
     private final long clearAt;
 
-    SetPredefinedCustomStatusMessageRemoteOperation(String messageId, long clearAt) {
+    public SetPredefinedCustomStatusMessageRemoteOperation(String messageId, long clearAt) {
         this.messageId = messageId;
         this.clearAt = clearAt;
     }

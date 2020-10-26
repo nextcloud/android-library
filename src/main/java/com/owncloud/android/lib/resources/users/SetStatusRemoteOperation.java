@@ -48,7 +48,7 @@ public class SetStatusRemoteOperation extends OCSRemoteOperation {
 
     private final StatusType type;
 
-    SetStatusRemoteOperation(StatusType type) {
+    public SetStatusRemoteOperation(StatusType type) {
         this.type = type;
     }
 
