@@ -22,9 +22,18 @@
 
 package com.owncloud.android.lib.resources.users
 
-enum class StatusType {
-    Online,
-    Offline,
-    Dnd,
-    Away
+import com.google.gson.annotations.SerializedName
+
+enum class StatusType(val string: String) {
+    @SerializedName("online")
+    ONLINE("online"),
+
+    @SerializedName("offline")
+    OFFLINE("offline"),
+
+    @SerializedName("dnd")
+    DND("dnd"),
+
+    @SerializedName("away")
+    AWAY("away");
 }

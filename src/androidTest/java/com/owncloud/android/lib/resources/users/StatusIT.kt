@@ -39,7 +39,7 @@ class StatusIT : AbstractIT() {
     @Test
     fun setStatus() {
         clearStatusMessage()
-        val result0 = SetStatusRemoteOperation(StatusType.Online).execute(nextcloudClient)
+        val result0 = SetStatusRemoteOperation(StatusType.ONLINE).execute(nextcloudClient)
         assertTrue("SetStatusRemoteOperation failed: " + result0.logMessage, result0.isSuccess)
 
         for (statusType in StatusType.values()) {
@@ -56,7 +56,7 @@ class StatusIT : AbstractIT() {
             assertEquals(statusType, status.status)
         }
 
-        val result2 = SetStatusRemoteOperation(StatusType.Away).run(nextcloudClient)
+        val result2 = SetStatusRemoteOperation(StatusType.AWAY).run(nextcloudClient)
         assertTrue("SetStatusRemoteOperation failed: " + result2.logMessage, result2.isSuccess)
 
         clearStatusMessage()

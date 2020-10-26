@@ -63,7 +63,7 @@ public class SetStatusRemoteOperation extends OCSRemoteOperation {
         try {
             // request body
             MediaType json = MediaType.parse("application/json; charset=utf-8");
-            RequestBody requestBody = RequestBody.create(json, "{\"statusType\": \"" + type + "\"}");
+            RequestBody requestBody = RequestBody.create(json, "{\"statusType\": \"" + type.getString() + "\"}");
 
             // remote request
             putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, requestBody);
