@@ -47,9 +47,9 @@ public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOp
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message/predefined";
 
     private final String messageId;
-    private final long clearAt;
+    private final Long clearAt;
 
-    public SetPredefinedCustomStatusMessageRemoteOperation(String messageId, long clearAt) {
+    public SetPredefinedCustomStatusMessageRemoteOperation(String messageId, Long clearAt) {
         this.messageId = messageId;
         this.clearAt = clearAt;
     }

@@ -47,9 +47,9 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
 
     private final String message;
     private final String statusIcon;
-    private final long clearAt;
+    private final Long clearAt;
 
-    public SetUserDefinedCustomStatusMessageRemoteOperation(String message, String statusIcon, long clearAt) {
+    public SetUserDefinedCustomStatusMessageRemoteOperation(String message, String statusIcon, Long clearAt) {
         this.message = message;
         this.statusIcon = statusIcon;
         this.clearAt = clearAt;
