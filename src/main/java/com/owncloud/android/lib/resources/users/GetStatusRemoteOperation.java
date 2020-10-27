@@ -69,8 +69,14 @@ public class GetStatusRemoteOperation extends OCSRemoteOperation {
                 result = new RemoteOperationResult(true, getMethod);
                 result.setSingleData(serverResponse.getOcs().getData());
             } else {
-                result = new RemoteOperationResult(false, getMethod);
-                getMethod.releaseConnection();
+                // 404 if no status was set before
+                if (HttpStatus.SC_NOT_FOUND == getMethod.getStatusCode()) {
+                    result = new RemoteOperationResult(true, getMethod);
+                    result.setSingleData(new Status(StatusType.INVISIBLE, "", "", -1));
+                } else {
+                    result = new RemoteOperationResult(false, getMethod);
+                    getMethod.releaseConnection();
+                }
             }
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
