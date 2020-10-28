@@ -133,6 +133,8 @@ abstract class OkHttpMethodBase(
             temp.header(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
         }
 
+        applyType(temp)
+
         val request = temp.build()
 
         try {
@@ -147,4 +149,6 @@ abstract class OkHttpMethodBase(
             response?.code() ?: UNKNOWN_STATUS_CODE
         }
     }
+
+    abstract fun applyType(temp: Request.Builder)
 }

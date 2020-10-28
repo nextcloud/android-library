@@ -35,6 +35,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -67,7 +68,11 @@ class OkHttpMethodBaseTest {
     fun `exceptions throws by OkHttpMethodBase are handled`() {
         // GIVEN
         //      failing method
-        val method = object : OkHttpMethodBase("http://example.com", true) {}
+        val method = object : OkHttpMethodBase("http://example.com", true) {
+            override fun applyType(temp: Request.Builder) {
+                temp.get()
+            }
+        }
         val call = mock<Call>()
         whenever(okHttpClient.newCall(any())).thenReturn(call)
         whenever(call.execute()).thenThrow(IOException::class.java)
