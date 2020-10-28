@@ -95,22 +95,26 @@ public class GetShareesRemoteOperation extends RemoteOperation {
     public static final String PROPERTY_LABEL = "label";
     public static final String PROPERTY_SHARE_TYPE = "shareType";
     public static final String PROPERTY_SHARE_WITH = "shareWith";
+    public static final String PROPERTY_STATUS = "status";
+    public static final String PROPERTY_MESSAGE = "message";
+    public static final String PROPERTY_ICON = "icon";
+    public static final String PROPERTY_CLEAR_AT = "clearAt";
 
-    private String mSearchString;
-    private int mPage;
-    private int mPerPage;
+    private final String searchString;
+    private final int page;
+    private final int perPage;
 
     /**
      * Constructor
      *
-     * @param searchString  	string for searching users, optional
-     * @param page			    page index in the list of results; beginning in 1
-     * @param perPage           maximum number of results in a single page
+     * @param searchString string for searching users, optional
+     * @param page         page index in the list of results; beginning in 1
+     * @param perPage      maximum number of results in a single page
      */
     public GetShareesRemoteOperation(String searchString, int page, int perPage) {
-        mSearchString = searchString;
-        mPage = page;
-        mPerPage = perPage;
+        this.searchString = searchString;
+        this.page = page;
+        this.perPage = perPage;
     }
 
     @Override
@@ -125,9 +129,9 @@ public class GetShareesRemoteOperation extends RemoteOperation {
             uriBuilder.appendEncodedPath(OCS_ROUTE);
             uriBuilder.appendQueryParameter(PARAM_FORMAT, VALUE_FORMAT);
             uriBuilder.appendQueryParameter(PARAM_ITEM_TYPE, VALUE_ITEM_TYPE);
-            uriBuilder.appendQueryParameter(PARAM_SEARCH, mSearchString);
-            uriBuilder.appendQueryParameter(PARAM_PAGE, String.valueOf(mPage));
-            uriBuilder.appendQueryParameter(PARAM_PER_PAGE, String.valueOf(mPerPage));
+            uriBuilder.appendQueryParameter(PARAM_SEARCH, searchString);
+            uriBuilder.appendQueryParameter(PARAM_PAGE, String.valueOf(page));
+            uriBuilder.appendQueryParameter(PARAM_PER_PAGE, String.valueOf(perPage));
 
             // Get Method
             get = new GetMethod(uriBuilder.build().toString());
