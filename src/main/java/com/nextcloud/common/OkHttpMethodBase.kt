@@ -44,6 +44,8 @@ abstract class OkHttpMethodBase(
 ) {
     companion object {
         const val UNKNOWN_STATUS_CODE: Int = -1
+        const val USER_AGENT = "User-Agent"
+        const val AUTHORIZATION = "Authorization"
     }
 
     private var response: Response? = null
@@ -53,7 +55,7 @@ abstract class OkHttpMethodBase(
     private var request: Request? = null
 
     fun OkHttpMethodBase() {
-        requestHeaders.put("http.protocol.single-cookie-header", "true")
+        requestHeaders["http.protocol.single-cookie-header"] = "true"
     }
 
     fun buildQueryParameter(): HttpUrl {
@@ -82,7 +84,7 @@ abstract class OkHttpMethodBase(
      * @param value HTTP request header value
      */
     fun addRequestHeader(header: String, value: String) {
-        requestHeaders.put(header, value)
+        requestHeaders[header] = value
     }
 
     fun setQueryString(params: Map<String, String>) {
@@ -125,9 +127,9 @@ abstract class OkHttpMethodBase(
     fun execute(nextcloudClient: NextcloudClient): Int {
         val temp = requestBuilder.url(buildQueryParameter())
 
-        requestHeaders.put("Authorization", nextcloudClient.credentials)
-        requestHeaders.put("User-Agent", OwnCloudClientManagerFactory.getUserAgent())
-        requestHeaders.forEach({ (name, value) -> temp.header(name, value) })
+        requestHeaders[AUTHORIZATION] = nextcloudClient.credentials
+        requestHeaders[USER_AGENT] = OwnCloudClientManagerFactory.getUserAgent()
+        requestHeaders.forEach { (name, value) -> temp.header(name, value) }
 
         if (useOcsApiRequestHeader) {
             temp.header(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
@@ -144,10 +146,30 @@ abstract class OkHttpMethodBase(
         }
 
         return if (nextcloudClient.followRedirects) {
-            nextcloudClient.followRedirection(this).getLastStatus()
+            nextcloudClient.followRedirection(this).lastStatus
         } else {
             response?.code() ?: UNKNOWN_STATUS_CODE
         }
+    }
+
+    fun execute(client: PlainClient): Int {
+        val temp = requestBuilder.url(buildQueryParameter())
+
+        requestHeaders[USER_AGENT] = OwnCloudClientManagerFactory.getUserAgent()
+        requestHeaders.forEach { (name, value) -> temp.header(name, value) }
+
+        applyType(temp)
+
+        val request = temp.build()
+
+        try {
+            response = client.client.newCall(request).execute()
+        } catch (ex: IOException) {
+            System.out.println(ex.message)
+            throw RuntimeException(ex)
+        }
+
+        return response?.code() ?: UNKNOWN_STATUS_CODE
     }
 
     abstract fun applyType(temp: Request.Builder)
