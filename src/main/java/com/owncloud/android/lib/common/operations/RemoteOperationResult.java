@@ -482,10 +482,16 @@ public class RemoteOperationResult implements Serializable {
     }
 
     public ArrayList<Object> getData() {
+        if (!mSuccess) {
+            throw new RuntimeException("Accessing result data after operation failed!");
+        }
         return mData;
     }
 
     public Object getSingleData() {
+        if (!mSuccess) {
+            throw new RuntimeException("Accessing result data after operation failed!");
+        }
         return mData.get(0);
     }
 
@@ -494,6 +500,9 @@ public class RemoteOperationResult implements Serializable {
     }
 
     public PushResponse getPushResponseData() {
+        if (!mSuccess) {
+            throw new RuntimeException("Accessing result data after operation failed!");
+        }
         return mPushResponse;
     }
     public void setPushResponseData(PushResponse pushResponseData) {
@@ -501,6 +510,9 @@ public class RemoteOperationResult implements Serializable {
     }
 
     public List<Notification> getNotificationData() {
+        if (!mSuccess) {
+            throw new RuntimeException("Accessing result data after operation failed!");
+        }
         return mNotificationData;
     }
 
