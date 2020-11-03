@@ -32,6 +32,11 @@ import org.junit.Before
 import org.junit.Test
 
 class StatusIT : AbstractIT() {
+    companion object {
+        val SECOND_IN_MILLIS = 1000
+        val HOUR_IN_MINUTES = 3600
+    }
+
     @Before
     fun before() {
         val result = GetCapabilitiesRemoteOperation().execute(client)
@@ -114,7 +119,7 @@ class StatusIT : AbstractIT() {
         val statusesList: ArrayList<PredefinedStatus> =
             result.singleData as ArrayList<PredefinedStatus>
         val newCustomStatusMessage = statusesList[2]
-        val clearAt = System.currentTimeMillis() / 1000 + 3600 // in one hour
+        val clearAt = System.currentTimeMillis() / SECOND_IN_MILLIS + HOUR_IN_MINUTES
 
         result = SetPredefinedCustomStatusMessageRemoteOperation(newCustomStatusMessage.id, clearAt)
             .execute(nextcloudClient)
@@ -137,7 +142,7 @@ class StatusIT : AbstractIT() {
 
         val message = "This is a test"
         val statusIcon = "☁"
-        val clearAt = System.currentTimeMillis() / 1000 + 3600 // in one hour
+        val clearAt = System.currentTimeMillis() / SECOND_IN_MILLIS + HOUR_IN_MINUTES
 
         var result = SetUserDefinedCustomStatusMessageRemoteOperation(message, statusIcon, clearAt)
             .execute(nextcloudClient)

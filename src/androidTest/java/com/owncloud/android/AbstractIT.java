@@ -30,6 +30,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -62,7 +64,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import androidx.test.platform.app.InstrumentationRegistry;
 import okhttp3.Credentials;
 
 import static junit.framework.TestCase.assertTrue;
@@ -80,6 +81,7 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     protected static NextcloudClient nextcloudClient;
     protected static Context context;
+    protected static Uri url;
 
     protected String baseFolderPath = "/test_for_build/";
 
@@ -95,7 +97,7 @@ public abstract class AbstractIT {
         Bundle arguments = InstrumentationRegistry.getArguments();
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        Uri url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
+        url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
         String loginName = arguments.getString("TEST_SERVER_USERNAME");
         String password = arguments.getString("TEST_SERVER_PASSWORD");
 
