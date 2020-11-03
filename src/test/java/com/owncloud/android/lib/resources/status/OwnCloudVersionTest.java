@@ -36,13 +36,13 @@ import static org.junit.Assert.assertTrue;
 public class OwnCloudVersionTest {
     @Test
     public void testOwnCloudVersion() {
-        OwnCloudVersion version = new OwnCloudVersion("13.0.0");
+        OwnCloudVersion version = new OwnCloudVersion("17.0.0");
 
-        assertEquals(0, version.compareTo(OwnCloudVersion.nextcloud_13));
+        assertEquals(0, version.compareTo(OwnCloudVersion.nextcloud_17));
 
-        version = new OwnCloudVersion("13.99.99");
+        version = new OwnCloudVersion("17.99.99");
 
-        assertEquals(0, version.compareTo(new OwnCloudVersion(0x0D636300))); // 13.99.99 in hex
+        assertEquals(0, version.compareTo(new OwnCloudVersion(0x11636300))); // 13.99.99 in hex
     }
     
     @Test
@@ -70,48 +70,28 @@ public class OwnCloudVersionTest {
     }
 
     @Test
-    public void testSupportNC13() {
-        assertFalse(OwnCloudVersion.nextcloud_13.isMediaStreamingSupported());
-        assertFalse(OwnCloudVersion.nextcloud_13.isNoteOnShareSupported());
-    }
-
-    @Test
-    public void testSupportNC14() {
-        assertTrue(OwnCloudVersion.nextcloud_14.isMediaStreamingSupported());
-        assertTrue(OwnCloudVersion.nextcloud_14.isNoteOnShareSupported());
-        assertFalse(OwnCloudVersion.nextcloud_14.isHideFileDownloadSupported());
-        assertFalse(OwnCloudVersion.nextcloud_14.isShareesOnDavSupported());
-    }
-
-    @Test
-    public void testSupportNC15() {
-        assertTrue(OwnCloudVersion.nextcloud_15.isMediaStreamingSupported());
-        assertTrue(OwnCloudVersion.nextcloud_15.isNoteOnShareSupported());
-        assertTrue(OwnCloudVersion.nextcloud_15.isHideFileDownloadSupported());
-        assertFalse(OwnCloudVersion.nextcloud_15.isShareesOnDavSupported());
-    }
-
-    @Test
     public void testSupportNC16() {
-        assertTrue(OwnCloudVersion.nextcloud_16.isMediaStreamingSupported());
-        assertTrue(OwnCloudVersion.nextcloud_16.isNoteOnShareSupported());
-        assertTrue(OwnCloudVersion.nextcloud_16.isHideFileDownloadSupported());
         assertFalse(OwnCloudVersion.nextcloud_16.isShareesOnDavSupported());
     }
 
     @Test
     public void testSupportNC17() {
-        assertTrue(OwnCloudVersion.nextcloud_17.isMediaStreamingSupported());
-        assertTrue(OwnCloudVersion.nextcloud_17.isNoteOnShareSupported());
-        assertTrue(OwnCloudVersion.nextcloud_17.isHideFileDownloadSupported());
         assertTrue(OwnCloudVersion.nextcloud_17.isShareesOnDavSupported());
     }
 
     @Test
     public void testSupportNC18() {
-        assertTrue(OwnCloudVersion.nextcloud_18.isMediaStreamingSupported());
-        assertTrue(OwnCloudVersion.nextcloud_18.isNoteOnShareSupported());
-        assertTrue(OwnCloudVersion.nextcloud_18.isHideFileDownloadSupported());
         assertTrue(OwnCloudVersion.nextcloud_18.isShareesOnDavSupported());
+    }
+
+    @Test
+    public void testSupportNC21() {
+        OwnCloudVersion version = new OwnCloudVersion("21.0.0");
+
+        assertEquals(0, version.compareTo(NextcloudVersion.nextcloud_21));
+
+        version = new NextcloudVersion("21.99.99");
+
+        assertEquals(0, version.compareTo(new OwnCloudVersion(0x15636300))); // 21.99.99 in hex
     }
 }
