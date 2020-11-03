@@ -211,12 +211,6 @@ public class CreateShareTest extends AbstractIT {
         assertFalse("sharee doesn't exist in an existing remote server", result.isSuccess());
         assertEquals("sharee doesn't exist in an existing remote server, forbidden",
                      RemoteOperationResult.ResultCode.SHARE_FORBIDDEN, result.getCode());
-
-        // error message from server as part of the result
-        // TODO verify error message
-        assertTrue("sharee doesn't exist in an existing remote server, no error message",
-                   result.getData().size() == 1 && result.getData().get(0) instanceof String);
-
     }
 
     /**
@@ -233,11 +227,6 @@ public class CreateShareTest extends AbstractIT {
         assertFalse(result.isSuccess());
         // TODO expected:<SHARE_WRONG_PARAMETER> but was:<SHARE_FORBIDDEN>
         assertEquals("remote server doesn't exist", ResultCode.SHARE_FORBIDDEN, result.getCode());
-
-        // error message from server as part of the result
-        // TODO verify error message
-        assertTrue("remote server doesn't exist, no error message",
-                   result.getData().size() == 1 && result.getData().get(0) instanceof String);
     }
 
     /**
