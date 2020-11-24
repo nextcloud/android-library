@@ -29,6 +29,8 @@ package com.owncloud.android.lib.resources.files;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -39,8 +41,6 @@ import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import org.junit.Test;
 
 import java.io.IOException;
-
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -310,18 +310,19 @@ public class SearchRemoteOperationTest extends AbstractIT {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
             assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
-                               .execute(client).isSuccess());
+                    .execute(client).isSuccess());
         }
         String videoPath = createFile("video");
         assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", "123")
-                           .execute(client).isSuccess());
+                .execute(client).isSuccess());
 
         String filePath = createFile("pdf");
         assertTrue(new UploadFileRemoteOperation(filePath, "/pdf.pdf", "application/pdf", "123")
-                           .execute(client).isSuccess());
+                .execute(client).isSuccess());
 
-        SearchRemoteOperation sut = new SearchRemoteOperation("image/%", SearchRemoteOperation.SearchType.GALLERY_SEARCH,
-                                                              false);
+        SearchRemoteOperation sut = new SearchRemoteOperation("image/%",
+                SearchRemoteOperation.SearchType.GALLERY_SEARCH,
+                false);
 
         RemoteOperationResult result = sut.execute(client);
         assertTrue(result.isSuccess());
