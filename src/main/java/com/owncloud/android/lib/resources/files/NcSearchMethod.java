@@ -26,8 +26,6 @@
  */
 package com.owncloud.android.lib.resources.files;
 
-import com.owncloud.android.lib.common.network.WebdavEntry;
-
 import org.apache.jackrabbit.webdav.search.SearchInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,9 +42,12 @@ import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
+
 public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
     private static final String DAV_NAMESPACE = "DAV:";
+    private static final String OC_NAMESPACE = "oc:";
 
     private SearchRemoteOperation.SearchType searchType;
     private long timestamp;
@@ -98,10 +99,10 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         Element etagElement = query.createElementNS(DAV_NAMESPACE, "d:getetag");
         Element quotaUsedElement = query.createElementNS(DAV_NAMESPACE, "d:quota-used-bytes");
         Element quotaAvailableElement = query.createElementNS(DAV_NAMESPACE, "d:quota-available-bytes");
-        Element permissionsElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:permissions");
-        Element remoteIdElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:id");
-        Element sizeElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:size");
-        Element favoriteElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
+        Element permissionsElement = query.createElementNS(NAMESPACE_OC, "oc:permissions");
+        Element remoteIdElement = query.createElementNS(NAMESPACE_OC, "oc:id");
+        Element sizeElement = query.createElementNS(NAMESPACE_OC, "oc:size");
+        Element favoriteElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
 
         selectPropsElement.appendChild(displayNameElement);
         selectPropsElement.appendChild(contentTypeElement);
@@ -166,7 +167,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
                     break;
 
                 case FAVORITE_SEARCH:
-                    queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:favorite");
+                    queryElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
                     break;
 
                 case RECENTLY_MODIFIED_SEARCH:
@@ -174,7 +175,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
                     break;
 
                 case FILE_ID_SEARCH:
-                    queryElement = query.createElementNS(WebdavEntry.NAMESPACE_OC, "oc:fileid");
+                    queryElement = query.createElementNS(NAMESPACE_OC, "oc:fileid");
                     break;
 
                 default:
@@ -276,7 +277,24 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             and.appendChild(equalsElement);
             whereElement.appendChild(and);
         } else {
-            whereElement.appendChild(equalsElement);
+            if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
+                Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
+                Element lessThan = query.createElementNS(DAV_NAMESPACE, "d:eq");
+                Element lastModified = query.createElementNS(NAMESPACE_OC, "oc:owner-id");
+                Element literal = query.createElementNS(DAV_NAMESPACE, "d:literal");
+                Element prop = query.createElementNS(DAV_NAMESPACE, "d:prop");
+                prop.appendChild(lastModified);
+                literal.setTextContent(String.valueOf(userId));
+
+                lessThan.appendChild(prop);
+                lessThan.appendChild(literal);
+
+                and.appendChild(lessThan);
+                and.appendChild(equalsElement);
+                whereElement.appendChild(and);
+            } else {
+                whereElement.appendChild(equalsElement);
+            }
         }
 
         if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
