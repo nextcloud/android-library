@@ -95,6 +95,10 @@ abstract class OkHttpMethodBase(
         return response?.body()?.string() ?: ""
     }
 
+    fun getResponseContentLength(): Long {
+        return response?.body()?.contentLength() ?: -1
+    }
+
     fun releaseConnection() {
         response?.body()?.close()
     }
@@ -115,7 +119,7 @@ abstract class OkHttpMethodBase(
         return response?.header(name)
     }
 
-    fun getRequestHeader(name: String): String? {
+    fun getRequestHeader(name: String): String {
         return request?.header(name) ?: ""
     }
 
