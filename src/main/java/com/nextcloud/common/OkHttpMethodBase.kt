@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
@@ -59,7 +60,7 @@ abstract class OkHttpMethodBase(
     }
 
     fun buildQueryParameter(): HttpUrl {
-        val httpBuilder = HttpUrl.parse(uri)?.newBuilder() ?: throw IllegalStateException("Error")
+        val httpBuilder = uri.toHttpUrlOrNull()?.newBuilder() ?: throw IllegalStateException("Error")
 
         queryMap.forEach { (k, v) -> httpBuilder.addQueryParameter(k, v) }
 
@@ -92,27 +93,27 @@ abstract class OkHttpMethodBase(
     }
 
     fun getResponseBodyAsString(): String {
-        return response?.body()?.string() ?: ""
+        return response?.body?.string() ?: ""
     }
 
     fun getResponseContentLength(): Long {
-        return response?.body()?.contentLength() ?: -1
+        return response?.body?.contentLength() ?: -1
     }
 
     fun releaseConnection() {
-        response?.body()?.close()
+        response?.body?.close()
     }
 
     fun getStatusCode(): Int {
-        return response?.code() ?: UNKNOWN_STATUS_CODE
+        return response?.code ?: UNKNOWN_STATUS_CODE
     }
 
     fun getStatusText(): String {
-        return response?.message() ?: ""
+        return response?.message ?: ""
     }
 
     fun getResponseHeaders(): Headers {
-        return response?.headers() ?: Headers.Builder().build()
+        return response?.headers ?: Headers.Builder().build()
     }
 
     fun getResponseHeader(name: String): String? {
@@ -152,7 +153,7 @@ abstract class OkHttpMethodBase(
         return if (nextcloudClient.followRedirects) {
             nextcloudClient.followRedirection(this).lastStatus
         } else {
-            response?.code() ?: UNKNOWN_STATUS_CODE
+            response?.code ?: UNKNOWN_STATUS_CODE
         }
     }
 
@@ -173,7 +174,7 @@ abstract class OkHttpMethodBase(
             throw RuntimeException(ex)
         }
 
-        return response?.code() ?: UNKNOWN_STATUS_CODE
+        return response?.code ?: UNKNOWN_STATUS_CODE
     }
 
     abstract fun applyType(temp: Request.Builder)
