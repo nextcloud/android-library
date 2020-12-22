@@ -32,17 +32,19 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 public class RegisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
 
     private static final String TAG = RegisterAccountDeviceForProxyOperation.class.getSimpleName();
 
-    private String proxyUrl;
-    private String pushToken;
-    private String deviceIdentifier;
-    private String deviceIdentifierSignature;
-    private String userPublicKey;
+    private final String proxyUrl;
+    private final String pushToken;
+    private final String deviceIdentifier;
+    private final String deviceIdentifierSignature;
+    private final String userPublicKey;
+    private final String userAgent;
 
     private static final String PUSH_TOKEN = "pushToken";
     private static final String DEVICE_IDENTIFIER = "deviceIdentifier";
@@ -53,12 +55,14 @@ public class RegisterAccountDeviceForProxyOperation {
                                                   String pushToken,
                                                   String deviceIdentifier,
                                                   String deviceIdentifierSignature,
-                                                  String userPublicKey) {
+                                                  String userPublicKey,
+                                                  String userAgent) {
         this.proxyUrl = proxyUrl;
         this.pushToken = pushToken;
         this.deviceIdentifier = deviceIdentifier;
         this.deviceIdentifierSignature = deviceIdentifierSignature;
         this.userPublicKey = userPublicKey;
+        this.userAgent = userAgent;
     }
 
     public RemoteOperationResult run() {
@@ -73,6 +77,7 @@ public class RegisterAccountDeviceForProxyOperation {
             post.setParameter(DEVICE_IDENTIFIER, deviceIdentifier);
             post.setParameter(DEVICE_IDENTIFIER_SIGNATURE, deviceIdentifierSignature);
             post.setParameter(USER_PUBLIC_KEY, userPublicKey);
+            post.setParameter(HttpMethodParams.USER_AGENT, userAgent);
             
             status = new HttpClient().executeMethod(post);
             String response = post.getResponseBodyAsString();
