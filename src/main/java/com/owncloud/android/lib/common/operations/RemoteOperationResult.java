@@ -149,6 +149,7 @@ public class RemoteOperationResult implements Serializable {
     private String mHttpPhrase = null;
     private Exception mException = null;
     private ResultCode mCode = ResultCode.UNKNOWN_ERROR;
+    private String message;
     @ToString.Exclude private String mRedirectedLocation;
     @ToString.Exclude private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
     @ToString.Exclude private String mLastPermanentLocation = null;
@@ -340,8 +341,9 @@ public class RemoteOperationResult implements Serializable {
                     }
                     if (xmlParser.isVirusException()) {
                         mCode = ResultCode.VIRUS_DETECTED;
-                        mHttpPhrase = xmlParser.getMessage();
                     }
+
+                    mHttpPhrase = xmlParser.getMessage();
                 }
             } catch (Exception e) {
                 Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
@@ -701,5 +703,17 @@ public class RemoteOperationResult implements Serializable {
 
     public void setLastPermanentLocation(String lastPermanentLocation) {
         mLastPermanentLocation = lastPermanentLocation;
+    }
+    
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * Message that is returned by server, e.g. password policy violation on ocs share api
+     * @return message that can be shown to user
+     */
+    public String getMessage() {
+        return message;
     }
 }
