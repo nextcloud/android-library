@@ -37,7 +37,7 @@ public class SetUserInfoRemoteOperation extends RemoteOperation {
 
     private static final String TAG = SetUserInfoRemoteOperation.class.getSimpleName();
 
-    private static final String OCS_ROUTE_PATH = "/ocs/v1.php/cloud/users/";
+    private static final String OCS_ROUTE_PATH = "/ocs/v2.php/cloud/users/";
 
     public enum Field {
         EMAIL("email"),
