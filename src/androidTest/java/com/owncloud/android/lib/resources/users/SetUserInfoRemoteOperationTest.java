@@ -84,12 +84,12 @@ public class SetUserInfoRemoteOperationTest extends AbstractIT {
         String oldValue = ((UserInfo) userInfo.getData().get(0)).phone;
 
         // set
-        assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.PHONE, "555-12345")
+        assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.PHONE, "+49555-12345")
                            .execute(client).isSuccess());
 
         userInfo = new GetUserInfoRemoteOperation().execute(client);
         assertTrue(userInfo.isSuccess());
-        assertEquals("555-12345", ((UserInfo) userInfo.getData().get(0)).phone);
+        assertEquals("+4955512345", ((UserInfo) userInfo.getData().get(0)).phone);
 
         // reset
         assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.PHONE, oldValue)
