@@ -61,6 +61,7 @@ steps:
     - sed -i s"#1#5#" ./src/androidTest/java/com/owncloud/android/RetryTestRule.kt
     - ./gradlew assembleDebug
     - ./scripts/wait_for_emulator.sh
+    - ./scripts/wait_for_server.sh server-master
     - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
     - ./gradlew installDebugAndroidTest
     - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
@@ -142,6 +143,7 @@ steps:
       - sed -i s"#1#5#" ./src/androidTest/java/com/owncloud/android/RetryTestRule.kt
       - ./gradlew assembleDebug
       - ./scripts/wait_for_emulator.sh
+      - ./scripts/wait_for_server.sh server-stable
       - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew installDebugAndroidTest
       - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
