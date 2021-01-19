@@ -30,6 +30,9 @@ package com.owncloud.android.lib.resources.users;
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.junit.Test;
 
@@ -79,6 +82,10 @@ public class SetUserInfoRemoteOperationTest extends AbstractIT {
 
     @Test
     public void testSetPhone() {
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+        assertTrue(result.isSuccess());
+        OCCapability ocCapability = (OCCapability) result.getSingleData();
+
         RemoteOperationResult userInfo = new GetUserInfoRemoteOperation().execute(client);
         assertTrue(userInfo.isSuccess());
         String oldValue = ((UserInfo) userInfo.getData().get(0)).phone;
@@ -89,7 +96,12 @@ public class SetUserInfoRemoteOperationTest extends AbstractIT {
 
         userInfo = new GetUserInfoRemoteOperation().execute(client);
         assertTrue(userInfo.isSuccess());
-        assertEquals("+4955512345", ((UserInfo) userInfo.getData().get(0)).phone);
+        
+        if (ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_21)) {
+            assertEquals("+4955512345", ((UserInfo) userInfo.getData().get(0)).phone);
+        } else {
+            assertEquals("+49555-12345", ((UserInfo) userInfo.getData().get(0)).phone);
+        }
 
         // reset
         assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.PHONE, oldValue)

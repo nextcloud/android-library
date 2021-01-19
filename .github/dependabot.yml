@@ -11,10 +11,6 @@ updates:
   - 2. to review
   - dependencies
   ignore:
-  - dependency-name: com.gitlab.bitfireAT:dav4jvm
-    versions:
-    - "> 2.1.2"
-    - "< 3"
   - dependency-name: org.apache.jackrabbit:jackrabbit-webdav
     versions:
     - "> 2.13.1"
