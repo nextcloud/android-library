@@ -57,7 +57,7 @@ ext {
 
 dependencies {
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.1'
-    api 'com.squareup.okhttp3:okhttp:4.9.0'
+    api 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'com.gitlab.bitfireAT:dav4jvm:2.1.2' // in transition phase, we use old and new libs
     implementation 'org.parceler:parceler-api:1.1.13'
     annotationProcessor 'org.parceler:parceler:1.1.13'
