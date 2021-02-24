@@ -94,7 +94,7 @@ public class ShareXMLParser {
 
 	private String mStatus;
 	private int mStatusCode;
-	private String mMessage;
+	private String mMessage = "";
 
 	// Getters and Setters
 	public String getStatus() {
