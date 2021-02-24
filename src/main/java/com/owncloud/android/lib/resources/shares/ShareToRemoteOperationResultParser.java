@@ -107,22 +107,16 @@ public class ShareToRemoteOperationResultParser {
 
             } else if (shareXmlParser.isWrongParameter()) {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.SHARE_WRONG_PARAMETER);
-                resultData.add(shareXmlParser.getMessage());
-                result.setData(resultData);
-
+                result.setMessage(shareXmlParser.getMessage());
             } else if (shareXmlParser.isNotFound()) {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.SHARE_NOT_FOUND);
-                resultData.add(shareXmlParser.getMessage());
-                result.setData(resultData);
-
+                result.setMessage(shareXmlParser.getMessage());
             } else if (shareXmlParser.isForbidden()) {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.SHARE_FORBIDDEN);
-                resultData.add(shareXmlParser.getMessage());
-                result.setData(resultData);
-
+                result.setMessage(shareXmlParser.getMessage());
             } else {
                 result = new RemoteOperationResult(RemoteOperationResult.ResultCode.WRONG_SERVER_RESPONSE);
-
+                result.setMessage(shareXmlParser.getMessage());
             }
 
         } catch (XmlPullParserException e) {

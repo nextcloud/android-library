@@ -25,6 +25,7 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import org.junit.Assert
 import org.junit.Test
@@ -122,5 +123,60 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertEquals(label, updatedShare.label)
 
         assertTrue(RemoveFileRemoteOperation("/label/").execute(client).isSuccess)
+    }
+
+    @Test
+    fun invalidPassword() {
+        val folder = "/invalidPassword/"
+        Assert.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+
+        // share folder via public link
+        val createOperationResult = CreateShareRemoteOperation(
+            folder,
+            ShareType.PUBLIC_LINK,
+            "",
+            true,
+            "",
+            OCShare.READ_PERMISSION_FLAG
+        ).execute(client)
+
+        assertTrue(createOperationResult.isSuccess)
+
+        val share = createOperationResult.data[0] as OCShare
+
+        val sut = UpdateShareRemoteOperation(share.remoteId)
+        sut.setPassword("1")
+
+        val result = sut.execute(client)
+        assertFalse(result.isSuccess)
+        assertEquals("Password needs to be at least 8 characters long", result.message)
+
+        assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
+    }
+
+    @Test
+    fun validPassword() {
+        val folder = "/validPassword/"
+        Assert.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+
+        // share folder via public link
+        val createOperationResult = CreateShareRemoteOperation(
+            folder,
+            ShareType.PUBLIC_LINK,
+            "",
+            true,
+            "",
+            OCShare.READ_PERMISSION_FLAG
+        ).execute(client)
+
+        assertTrue(createOperationResult.isSuccess)
+
+        val share = createOperationResult.data[0] as OCShare
+
+        val sut = UpdateShareRemoteOperation(share.remoteId)
+        sut.setPassword("arnservcvcbtp234")
+
+        assertTrue(sut.execute(client).isSuccess)
+        assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
     }
 }
