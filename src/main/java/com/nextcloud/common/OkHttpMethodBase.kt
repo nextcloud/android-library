@@ -171,7 +171,6 @@ abstract class OkHttpMethodBase(
             response = client.client.newCall(request).execute()
         } catch (ex: IOException) {
             System.out.println(ex.message)
-            throw RuntimeException(ex)
         }
 
         return response?.code ?: UNKNOWN_STATUS_CODE
