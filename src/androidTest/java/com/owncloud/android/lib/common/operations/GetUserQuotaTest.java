@@ -45,11 +45,10 @@ public class GetUserQuotaTest extends AbstractIT {
 
     @Test
     public void testGetUserQuota() {
-        RemoteOperationResult result = new GetUserInfoRemoteOperation().execute(client);
+        RemoteOperationResult<UserInfo> result = new GetUserInfoRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
 
-        UserInfo userInfo = (UserInfo) result.getData().get(0);
+        UserInfo userInfo = result.getResultData();
         Quota quota = userInfo.getQuota();
         assertTrue(quota.getFree() >= 0);
         assertTrue(quota.getUsed() >= 0);

@@ -30,7 +30,6 @@ package com.nextcloud.lib.resources.users
 import androidx.test.platform.app.InstrumentationRegistry
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials
-import com.owncloud.android.lib.common.UserInfo
 import com.owncloud.android.lib.resources.users.GetUserInfoRemoteOperation
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -43,7 +42,7 @@ class GetUserInfoRemoteOperationTest : AbstractIT() {
         client.credentials = OwnCloudBasicCredentials("user1", "user1")
         val userInfoResult = GetUserInfoRemoteOperation().execute(client)
         assertTrue(userInfoResult.isSuccess)
-        val userInfo = userInfoResult.data[0] as UserInfo
+        val userInfo = userInfoResult.resultData
 
         assertEquals("User One", userInfo.getDisplayName())
         assertEquals("user1", userInfo.getId())
@@ -58,7 +57,7 @@ class GetUserInfoRemoteOperationTest : AbstractIT() {
         client.credentials = OwnCloudBasicCredentials("user2", "user2")
         val userInfoResult = GetUserInfoRemoteOperation().execute(client)
         assertTrue(userInfoResult.isSuccess)
-        val userInfo = userInfoResult.data[0] as UserInfo
+        val userInfo = userInfoResult.resultData
 
         assertEquals("User Two", userInfo.getDisplayName())
         assertEquals("user2", userInfo.getId())

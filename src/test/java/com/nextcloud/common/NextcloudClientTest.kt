@@ -73,8 +73,8 @@ class NextcloudClientTest {
         //      failing operations
         //      operations throws any kind of exception
         val exception = RuntimeException("test exception")
-        val operation = object : RemoteOperation() {
-            override fun run(client: NextcloudClient?): RemoteOperationResult {
+        val operation = object : RemoteOperation<String>() {
+            override fun run(client: NextcloudClient?): RemoteOperationResult<String> {
                 throw exception
             }
         }

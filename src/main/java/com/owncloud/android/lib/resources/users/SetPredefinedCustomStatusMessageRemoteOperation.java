@@ -35,13 +35,15 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
+import java.util.ArrayList;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 /**
  * Remote operation performing setting of predefined custome status message
  */
-public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation {
+public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation<ArrayList<PredefinedStatus>> {
 
     private static final String TAG = SetPredefinedCustomStatusMessageRemoteOperation.class.getSimpleName();
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message/predefined";
@@ -58,9 +60,9 @@ public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOp
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<ArrayList<PredefinedStatus>> run(NextcloudClient client) {
         PutMethod putMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<ArrayList<PredefinedStatus>> result;
 
         try {
             // request body
@@ -75,13 +77,13 @@ public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOp
             int status = client.execute(putMethod);
 
             if (status == HttpStatus.SC_OK) {
-                result = new RemoteOperationResult(true, putMethod);
+                result = new RemoteOperationResult<>(true, putMethod);
             } else {
-                result = new RemoteOperationResult(false, putMethod);
+                result = new RemoteOperationResult<>(false, putMethod);
                 putMethod.releaseConnection();
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Setting of predefined custom status failed: " + result.getLogMessage(),
                     result.getException());
         } finally {

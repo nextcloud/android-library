@@ -39,12 +39,11 @@ import org.apache.commons.httpclient.HttpMethodBase;
 import java.io.IOException;
 
 /**
- *
  * Base class for OCS remote operations with convenient methods
  *
  * @author Bartosz Przybylski
  */
-public abstract class OCSRemoteOperation extends RemoteOperation {
+public abstract class OCSRemoteOperation<T> extends RemoteOperation<T> {
 
     @Deprecated
     public <T> T getServerResponse(HttpMethodBase method, TypeToken<T> type) throws IOException {

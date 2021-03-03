@@ -68,14 +68,13 @@ import okhttp3.Headers;
 
 /**
  * The result of a remote operation required to an ownCloud server.
- *
- * Provides a common classification of remote operation results for all the
- * application.
+ * <p>
+ * Provides a common classification of remote operation results for all the application.
  *
  * @author David A. Velasco
  */
 @ToString
-public class RemoteOperationResult implements Serializable {
+public class RemoteOperationResult<T extends Object> implements Serializable {
 
     // Generated - should be refreshed every time the class changes!!
     private static final long serialVersionUID = -1909603208238358633L;
@@ -154,8 +153,12 @@ public class RemoteOperationResult implements Serializable {
     @ToString.Exclude private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
     @ToString.Exclude private String mLastPermanentLocation = null;
 
-    @ToString.Exclude private ArrayList<Object> mData;
-    @ToString.Exclude private List<Notification> mNotificationData;
+    @ToString.Exclude
+    private ArrayList<Object> mData;
+    @ToString.Exclude
+    private T resultData;
+    @ToString.Exclude
+    private List<Notification> mNotificationData;
     @ToString.Exclude private PushResponse mPushResponse;
 
     /**
@@ -475,14 +478,37 @@ public class RemoteOperationResult implements Serializable {
         }
     }
 
+    /**
+     * @deprecated use setResultData() instead
+     */
+    @Deprecated
     public void setData(ArrayList<Object> files) {
         mData = files;
     }
 
+    /**
+     * @deprecated use setResultData() instead
+     */
+    @Deprecated
     public void setSingleData(Object object) {
         mData = new ArrayList<>(Collections.singletonList(object));
     }
 
+    public void setResultData(T object) {
+        resultData = object;
+    }
+
+    public T getResultData() {
+        if (!mSuccess) {
+            throw new RuntimeException("Accessing result data after operation failed!");
+        }
+        return resultData;
+    }
+
+    /**
+     * @deprecated use getResultData() instead
+     */
+    @Deprecated
     public ArrayList<Object> getData() {
         if (!mSuccess) {
             throw new RuntimeException("Accessing result data after operation failed!");
@@ -490,6 +516,10 @@ public class RemoteOperationResult implements Serializable {
         return mData;
     }
 
+    /**
+     * @deprecated use getResultData() instead
+     */
+    @Deprecated
     public Object getSingleData() {
         if (!mSuccess) {
             throw new RuntimeException("Accessing result data after operation failed!");
@@ -497,20 +527,33 @@ public class RemoteOperationResult implements Serializable {
         return mData.get(0);
     }
 
+    /**
+     * @deprecated use getResultData() instead
+     */
     public void setNotificationData(List<Notification> notifications) {
         mNotificationData = notifications;
     }
 
+    /**
+     * @deprecated use getResultData() instead
+     */
     public PushResponse getPushResponseData() {
         if (!mSuccess) {
             throw new RuntimeException("Accessing result data after operation failed!");
         }
         return mPushResponse;
     }
+
+    /**
+     * @deprecated use getResultData() instead
+     */
     public void setPushResponseData(PushResponse pushResponseData) {
         mPushResponse = pushResponseData;
     }
 
+    /**
+     * @deprecated use getResultData() instead
+     */
     public List<Notification> getNotificationData() {
         if (!mSuccess) {
             throw new RuntimeException("Accessing result data after operation failed!");

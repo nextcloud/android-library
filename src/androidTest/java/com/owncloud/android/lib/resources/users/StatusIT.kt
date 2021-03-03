@@ -51,7 +51,7 @@ class StatusIT : AbstractIT() {
         val result = GetStatusRemoteOperation().run(nextcloudClient)
         assertTrue("GetStatusRemoteOperation failed: " + result.logMessage, result.isSuccess)
 
-        val status = result.singleData as Status
+        val status = result.resultData
         assertTrue(status.message.isNullOrBlank())
     }
 
@@ -71,7 +71,7 @@ class StatusIT : AbstractIT() {
             result1 = GetStatusRemoteOperation().run(nextcloudClient)
             assertTrue("GetStatusRemoteOperation failed: " + result1.logMessage, result1.isSuccess)
 
-            val status = result1.singleData as Status
+            val status = result1.resultData
             assertEquals(statusType, status.status)
         }
 
@@ -89,8 +89,7 @@ class StatusIT : AbstractIT() {
             result.isSuccess
         )
 
-        val statusesList: ArrayList<PredefinedStatus> =
-            result.singleData as ArrayList<PredefinedStatus>
+        val statusesList = result.resultData
         assertTrue(statusesList.isNotEmpty())
     }
 
@@ -116,8 +115,7 @@ class StatusIT : AbstractIT() {
             result.isSuccess
         )
 
-        val statusesList: ArrayList<PredefinedStatus> =
-            result.singleData as ArrayList<PredefinedStatus>
+        val statusesList: ArrayList<PredefinedStatus> = result.resultData
         val newCustomStatusMessage = statusesList[2]
         val clearAt = System.currentTimeMillis() / SECOND_IN_MILLIS + HOUR_IN_MINUTES
 
@@ -129,10 +127,10 @@ class StatusIT : AbstractIT() {
         )
 
         // verify
-        result = GetStatusRemoteOperation().run(nextcloudClient)
-        assertTrue("GetStatusRemoteOperation failed: " + result.logMessage, result.isSuccess)
+        val newResult = GetStatusRemoteOperation().run(nextcloudClient)
+        assertTrue("GetStatusRemoteOperation failed: " + newResult.logMessage, newResult.isSuccess)
 
-        val status = result.singleData as Status
+        val status = newResult.resultData
         assertEquals(newCustomStatusMessage.message, status.message)
     }
 
@@ -156,7 +154,7 @@ class StatusIT : AbstractIT() {
         result = GetStatusRemoteOperation().run(nextcloudClient)
         assertTrue("GetStatusRemoteOperation failed: " + result.logMessage, result.isSuccess)
 
-        val status = result.singleData as Status
+        val status = result.resultData
         assertEquals(message, status.message)
         assertEquals(statusIcon, status.icon)
         assertEquals(clearAt, status.clearAt)
