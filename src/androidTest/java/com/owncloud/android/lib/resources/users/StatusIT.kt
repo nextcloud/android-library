@@ -33,13 +33,13 @@ import org.junit.Test
 
 class StatusIT : AbstractIT() {
     companion object {
-        val SECOND_IN_MILLIS = 1000
-        val HOUR_IN_MINUTES = 3600
+        const val SECOND_IN_MILLIS = 1000
+        const val HOUR_IN_MINUTES = 3600
     }
 
     @Before
     fun before() {
-        val result = GetCapabilitiesRemoteOperation().execute(client)
+        val result = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)
         val ocCapability = result.singleData as OCCapability
 
@@ -62,16 +62,16 @@ class StatusIT : AbstractIT() {
         assertTrue("SetStatusRemoteOperation failed: " + result0.logMessage, result0.isSuccess)
 
         for (statusType in StatusType.values()) {
-            var result1 = GetStatusRemoteOperation().run(nextcloudClient)
+            val result1 = GetStatusRemoteOperation().run(nextcloudClient)
             assertTrue("GetStatusRemoteOperation failed: " + result1.logMessage, result1.isSuccess)
 
-            result1 = SetStatusRemoteOperation(statusType).execute(nextcloudClient)
-            assertTrue("SetStatusRemoteOperation failed: " + result1.logMessage, result1.isSuccess)
+            val result2 = SetStatusRemoteOperation(statusType).execute(nextcloudClient)
+            assertTrue("SetStatusRemoteOperation failed: " + result2.logMessage, result2.isSuccess)
 
-            result1 = GetStatusRemoteOperation().run(nextcloudClient)
-            assertTrue("GetStatusRemoteOperation failed: " + result1.logMessage, result1.isSuccess)
+            val result3 = GetStatusRemoteOperation().run(nextcloudClient)
+            assertTrue("GetStatusRemoteOperation failed: " + result3.logMessage, result3.isSuccess)
 
-            val status = result1.resultData
+            val status = result3.resultData
             assertEquals(statusType, status.status)
         }
 
