@@ -65,7 +65,7 @@ public class DirectEditingObtainRemoteOperation extends OCSRemoteOperation<Direc
                         .getOcs().getData();
 
                 result = new RemoteOperationResult<>(true, getMethod);
-                result.setSingleData(directEditing);
+                result.setResultData(directEditing);
             } else {
                 result = new RemoteOperationResult<>(false, getMethod);
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
