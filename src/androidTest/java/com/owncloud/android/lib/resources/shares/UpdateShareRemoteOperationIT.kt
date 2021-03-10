@@ -149,7 +149,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         val result = sut.execute(client)
         assertFalse(result.isSuccess)
-        assertEquals("Password needs to be at least 8 characters long", result.message)
+        assertEquals("Password needs to be at least 8 characters long.", result.message)
 
         assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
     }
