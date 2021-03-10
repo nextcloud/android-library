@@ -45,7 +45,7 @@ public class DirectEditingObtainListOfTemplatesRemoteOperationTest extends Abstr
                 .execute(client);
         assertTrue(result.isSuccess());
 
-        TemplateList templateList = (TemplateList) result.getSingleData();
+        TemplateList templateList = (TemplateList) result.getResultData();
 
         assertEquals("Empty file", templateList.templates.get("empty").title);
         assertEquals("md", templateList.templates.get("empty").extension);
