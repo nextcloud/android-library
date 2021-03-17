@@ -24,6 +24,9 @@ package com.owncloud.android.lib.resources.shares
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
+import com.owncloud.android.lib.resources.status.OCCapability
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
@@ -149,7 +152,15 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         val result = sut.execute(client)
         assertFalse(result.isSuccess)
-        assertEquals("Password needs to be at least 8 characters long.", result.message)
+
+        val capabilityResult = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
+        Assert.assertTrue(capabilityResult.isSuccess)
+        val capability = capabilityResult.singleData as OCCapability
+        if (capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21)) {
+            assertEquals("Password needs to be at least 8 characters long.", result.message)
+        } else {
+            assertEquals("Password needs to be at least 8 characters long", result.message)
+        }
 
         assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
     }
