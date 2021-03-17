@@ -1,10 +1,10 @@
 name: Detekt
 
 on:
-    push:
-        branches: [ master ]
-    pull_request:
-        branches: [ master ]
+  pull_request:
+    branches: [ master, stable-* ]
+  push:
+    branches: [ master, stable-* ]
 
 jobs:
     detekt:
