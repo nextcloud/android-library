@@ -75,7 +75,7 @@ public class DirectEditingObtainListOfTemplatesRemoteOperation extends OCSRemote
                         .getOcs().getData();
 
                 result = new RemoteOperationResult<>(true, getMethod);
-                result.setSingleData(templateList);
+                result.setResultData(templateList);
             } else {
                 result = new RemoteOperationResult<>(false, getMethod);
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
