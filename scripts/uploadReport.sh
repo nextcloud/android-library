@@ -12,7 +12,7 @@ GIT_TOKEN=$8
 REMOTE_FOLDER=$ID-$TYPE-$BRANCH
 
 if [ $TYPE = "IT" ]; then
-    cd build/reports/androidTests/connected/flavors/debugAndroidTest
+    cd build/reports/androidTests/connected
 else 
     cd build/reports/tests/testDebugUnitTest
 fi
