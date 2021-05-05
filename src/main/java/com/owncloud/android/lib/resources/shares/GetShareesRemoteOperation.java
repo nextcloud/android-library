@@ -75,10 +75,12 @@ public class GetShareesRemoteOperation extends RemoteOperation {
     private static final String PARAM_SEARCH = "search";
     private static final String PARAM_PAGE = "page";                //  default = 1
     private static final String PARAM_PER_PAGE = "perPage";         //  default = 200
+    private static final String PARAM_LOOKUP = "lookup";
 
     // Arguments - constant values
     private static final String VALUE_FORMAT = "json";
     private static final String VALUE_ITEM_TYPE = "file";         //  to get the server search for users / groups
+    private static final String VALUE_FALSE = "false";
 
 
     // JSON Node names
@@ -132,6 +134,7 @@ public class GetShareesRemoteOperation extends RemoteOperation {
             uriBuilder.appendQueryParameter(PARAM_SEARCH, searchString);
             uriBuilder.appendQueryParameter(PARAM_PAGE, String.valueOf(page));
             uriBuilder.appendQueryParameter(PARAM_PER_PAGE, String.valueOf(perPage));
+            uriBuilder.appendQueryParameter(PARAM_LOOKUP, VALUE_FALSE);
 
             // Get Method
             get = new GetMethod(uriBuilder.build().toString());
