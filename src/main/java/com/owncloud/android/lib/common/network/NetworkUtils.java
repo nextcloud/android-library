@@ -110,12 +110,18 @@ public class NetworkUtils {
                 
             SSLContext sslContext;
             try {
-            	sslContext = SSLContext.getInstance("TLSv1.2");
+                sslContext = SSLContext.getInstance("TLSv1.3");
             } catch (NoSuchAlgorithmException e) {
-            	Log_OC.w(TAG, "TLSv1.2 is not supported in this device; falling through TLSv1.0");
-            	sslContext = SSLContext.getInstance("TLSv1");
-            	// should be available in any device; see reference of supported protocols in 
-            	// http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
+                Log_OC.w(TAG, "TLSv1.3 is not supported in this device; trying v1.2");
+
+                try {
+                    sslContext = SSLContext.getInstance("TLSv1.2");
+                } catch (NoSuchAlgorithmException e1) {
+                    Log_OC.w(TAG, "TLSv1.2 is not supported in this device; falling through TLSv1.0");
+                    sslContext = SSLContext.getInstance("TLSv1");
+                    // should be available in any device; see reference of supported protocols in 
+                    // http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
+                }
             }
             sslContext.init(null, tms, null);
                     
