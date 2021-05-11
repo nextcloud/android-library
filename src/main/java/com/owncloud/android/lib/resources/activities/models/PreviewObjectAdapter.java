@@ -31,6 +31,8 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * PreviewList Parser
  */
@@ -59,13 +61,20 @@ public class PreviewObjectAdapter extends TypeAdapter<PreviewObject> {
         return preview;
     }
 
+    @SuppressFBWarnings(value = "SF_SWITCH_NO_DEFAULT",
+            justification = "default case is not found correctly")
     private PreviewObject readObject(JsonReader in) throws IOException {
         String tag;
         PreviewObject preview = new PreviewObject();
 
         do {
-            tag = in.nextName();
-            
+            try {
+                tag = in.nextName();
+            } catch (IllegalStateException e) {
+                in.skipValue();
+                tag = "";
+            }
+
             switch (tag) {
                 case "source":
                     preview.setSource(in.nextString());
@@ -90,6 +99,9 @@ public class PreviewObjectAdapter extends TypeAdapter<PreviewObject> {
                 case "view":
                     preview.setView(in.nextString());
                     break;
+
+                case "filename":
+                    preview.setFilename(in.nextString());
 
                 default:
                     // do nothing
