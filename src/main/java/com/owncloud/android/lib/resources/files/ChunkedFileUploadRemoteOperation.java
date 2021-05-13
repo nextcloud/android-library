@@ -54,8 +54,8 @@ import java.util.Locale;
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
 
-    public static final long CHUNK_SIZE_MOBILE = 1024000;
-    public static final long CHUNK_SIZE_WIFI = 10240000;
+    public static final long CHUNK_SIZE_MOBILE = 10240000;
+    public static final long CHUNK_SIZE_WIFI = 102400000;
     private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
     private final boolean onWifiConnection;
