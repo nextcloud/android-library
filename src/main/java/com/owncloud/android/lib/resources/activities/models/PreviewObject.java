@@ -44,4 +44,5 @@ public class PreviewObject {
     private Boolean mimeTypeIcon;
     private String mimeType;
     private String view;
+    private String filename;
 }
