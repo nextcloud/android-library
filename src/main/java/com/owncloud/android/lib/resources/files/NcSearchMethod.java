@@ -103,19 +103,25 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         Element remoteIdElement = query.createElementNS(NAMESPACE_OC, "oc:id");
         Element sizeElement = query.createElementNS(NAMESPACE_OC, "oc:size");
         Element favoriteElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
+        Element previewElement = query.createElementNS(NAMESPACE_OC, "nc:has-preview");
 
-        selectPropsElement.appendChild(displayNameElement);
+        if (searchType != SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
+            selectPropsElement.appendChild(displayNameElement);
+            selectPropsElement.appendChild(creationDate);
+            selectPropsElement.appendChild(quotaUsedElement);
+            selectPropsElement.appendChild(quotaAvailableElement);
+            selectPropsElement.appendChild(permissionsElement);
+            selectPropsElement.appendChild(sizeElement);
+        }
+        if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
+            selectPropsElement.appendChild(previewElement);
+        }
         selectPropsElement.appendChild(contentTypeElement);
         selectPropsElement.appendChild(resourceTypeElement);
         selectPropsElement.appendChild(contentLengthElement);
         selectPropsElement.appendChild(lastModifiedElement);
-        selectPropsElement.appendChild(creationDate);
         selectPropsElement.appendChild(etagElement);
-        selectPropsElement.appendChild(quotaUsedElement);
-        selectPropsElement.appendChild(quotaAvailableElement);
-        selectPropsElement.appendChild(permissionsElement);
         selectPropsElement.appendChild(remoteIdElement);
-        selectPropsElement.appendChild(sizeElement);
         selectPropsElement.appendChild(favoriteElement);
 
         Element fromElement = query.createElementNS(DAV_NAMESPACE, "d:from");
@@ -230,7 +236,9 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
 
         Element orderByElement = query.createElementNS(DAV_NAMESPACE, "d:orderby");
 
-        if (searchType == SearchRemoteOperation.SearchType.PHOTO_SEARCH || searchType == SearchRemoteOperation.SearchType.RECENTLY_MODIFIED_SEARCH) {
+        if (searchType == SearchRemoteOperation.SearchType.PHOTO_SEARCH ||
+                searchType == SearchRemoteOperation.SearchType.RECENTLY_MODIFIED_SEARCH ||
+                searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
             Element orderElement = query.createElementNS(DAV_NAMESPACE, "d:order");
             orderByElement.appendChild(orderElement);
             Element orderPropElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
