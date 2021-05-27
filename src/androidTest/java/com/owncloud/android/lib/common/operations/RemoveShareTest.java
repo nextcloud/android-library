@@ -43,8 +43,6 @@ import static org.junit.Assert.assertTrue;
 public class RemoveShareTest extends AbstractIT {
     private static final String FILE_TO_UNSHARE = "/fileToUnshare.txt";
 
-    private long mShareId;
-
     /**
      * Test remove share
      */

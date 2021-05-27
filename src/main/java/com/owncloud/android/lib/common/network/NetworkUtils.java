@@ -64,23 +64,32 @@ public class NetworkUtils {
     /** Standard name for protocol TLS version 1.0 in JSSE API */
     public static final String PROTOCOL_TLSv1_0 = "TLSv1";
 
-    /** Connection manager for all the OwnCloudClients */
+    /**
+     * Connection manager for all the OwnCloudClients
+     */
     private static MultiThreadedHttpConnectionManager mConnManager = null;
-    
+
     private static Protocol mDefaultHttpsProtocol = null;
 
     private static AdvancedSslSocketFactory mAdvancedSslSocketFactory = null;
 
     private static X509HostnameVerifier mHostnameVerifier = null;
-    
-    
+
+    private static String LOCAL_TRUSTSTORE_FILENAME = "knownServers.bks";
+
+    private static String LOCAL_TRUSTSTORE_PASSWORD = "password";
+
+    private static KeyStore mKnownServersStore = null;
+
+
     /**
      * Registers or unregisters the proper components for advanced SSL handling.
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     @SuppressWarnings("deprecation")
-	public static void registerAdvancedSslContext(boolean register, Context context) 
-    		throws GeneralSecurityException, IOException {
+    public static void registerAdvancedSslContext(boolean register, Context context)
+            throws GeneralSecurityException, IOException {
         Protocol pr = null;
         try {
             pr = Protocol.getProtocol("https");
@@ -130,13 +139,6 @@ public class NetworkUtils {
         }
         return mAdvancedSslSocketFactory;
     }
-
-
-    private static String LOCAL_TRUSTSTORE_FILENAME = "knownServers.bks";
-    
-    private static String LOCAL_TRUSTSTORE_PASSWORD = "password";
-
-    private static KeyStore mKnownServersStore = null;
     
     /**
      * Returns the local store of reliable server certificates, explicitly accepted by the user.
