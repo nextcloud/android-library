@@ -33,8 +33,6 @@ import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;

@@ -27,9 +27,7 @@
 package com.owncloud.android.lib.common.operations;
 
 import com.owncloud.android.AbstractIT;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.testclient.TestActivity;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -48,9 +46,9 @@ public class DownloadFileTest extends AbstractIT {
     private static final String LOG_TAG = DownloadFileTest.class.getCanonicalName();
 
     /* Files to download. These files must exist on the account */
-    private static final String IMAGE_PATH = "/fileToDownload.png";
-    private static final String IMAGE_PATH_WITH_SPECIAL_CHARS = "/@file@download.png";
-    private static final String IMAGE_NOT_FOUND = "/fileNotFound.png";
+//    private static final String IMAGE_PATH = "/fileToDownload.png";
+//    private static final String IMAGE_PATH_WITH_SPECIAL_CHARS = "/@file@download.png";
+    // private static final String IMAGE_NOT_FOUND = "/fileNotFound.png";
 
     private String mFullPath2Image;
     private String mFullPath2ImageWitSpecialChars;

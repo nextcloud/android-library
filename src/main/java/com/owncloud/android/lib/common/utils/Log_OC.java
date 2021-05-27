@@ -17,6 +17,24 @@ public class Log_OC {
 
     private static Adapter impl = new LegacyImpl();
 
+    private static final String SIMPLE_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+    private static final String LOG_FOLDER_NAME = "log";
+    private static final long MAX_FILE_SIZE = 1000000; // 1MB
+
+    private static final String TAG = Log_OC.class.getSimpleName();
+
+    private static String mNextcloudDataFolderLog;
+
+    private static File mLogFile;
+    private static File mFolder;
+    private static BufferedWriter mBuf;
+
+    private static String[] mLogFileNames = {"currentLog.txt", "olderLog.txt"};
+
+    private static boolean isMaxFileSizeReached = false;
+    private static boolean isEnabled = false;
+
+
     /**
      * This adapter allows external library users to hook up
      * application-specific logging framework, redirecting calls to legacy
@@ -24,6 +42,7 @@ public class Log_OC {
      */
     public interface Adapter {
         void i(String tag, String message);
+
         void d(String tag, String message);
         void d(String tag, String message, Exception e);
         void e(String tag, String message);
@@ -107,23 +126,6 @@ public class Log_OC {
             }
         }
     }
-
-    private static final String SIMPLE_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
-    private static final String LOG_FOLDER_NAME = "log";
-    private static final long MAX_FILE_SIZE = 1000000; // 1MB
-
-    private static final String TAG = Log_OC.class.getSimpleName();
-
-    private static String mNextcloudDataFolderLog;
-
-    private static File mLogFile;
-    private static File mFolder;
-    private static BufferedWriter mBuf;
-
-    private static String[] mLogFileNames = {"currentLog.txt", "olderLog.txt"};
-
-    private static boolean isMaxFileSizeReached = false;
-    private static boolean isEnabled = false;
 
     public static String getLogPath() {
         return mNextcloudDataFolderLog;

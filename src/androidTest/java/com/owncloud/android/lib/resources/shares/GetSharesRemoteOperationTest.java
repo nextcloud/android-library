@@ -37,11 +37,8 @@ import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class GetSharesRemoteOperationTest extends AbstractIT {
-    private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
-    private static final String ENTITY_CHARSET = "UTF-8";
-
     @Test
-    public void searchSharedFiles() throws Exception {
+    public void searchSharedFiles() {
         assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/shareToGroup/", true).execute(client).isSuccess());
         assertTrue(new CreateFolderRemoteOperation("/shareViaLink/", true).execute(client).isSuccess());

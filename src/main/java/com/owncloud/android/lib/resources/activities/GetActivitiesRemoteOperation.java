@@ -67,7 +67,6 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
     // OCS Routes
     private static final String OCS_ROUTE_V12_AND_UP = "/ocs/v2.php/apps/activity/api/v2/activity";
-    private static final String OCS_ROUTE_PRE_V12 = "/ocs/v1.php/cloud/activity";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";

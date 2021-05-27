@@ -1,6 +1,5 @@
 package com.owncloud.android.lib.common;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
 

@@ -56,7 +56,7 @@ public class Creator implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(editor);
         dest.writeString(name);
