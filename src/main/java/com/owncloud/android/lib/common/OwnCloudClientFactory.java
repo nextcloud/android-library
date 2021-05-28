@@ -195,11 +195,11 @@ public class OwnCloudClientFactory {
      *
      * @param account                       The nextcloud account
      * @param appContext                    Android application context
-     * @return                              A Nextcloud object ready to be used
+     * @return A Nextcloud object ready to be used
      * @throws AccountNotFoundException     If 'account' is unknown for the AccountManager
      */
     public static NextcloudClient createNextcloudClient(Account account, Context appContext)
-            throws AccountNotFoundException {
+            throws AccountNotFoundException, IllegalArgumentException, AuthenticatorException, OperationCanceledException, IOException {
         //Log_OC.d(TAG, "Creating OwnCloudClient associated to " + account.name);
         Uri baseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(appContext, account));
         AccountManager am = AccountManager.get(appContext);
@@ -211,6 +211,22 @@ public class OwnCloudClientFactory {
         // Restore cookies
         // TODO v2 cookie handling
         // AccountUtils.restoreCookies(account, client, appContext);
+
+        if (username == null) {
+            throw new IllegalArgumentException("username may not be null");
+        }
+
+        if (password == null) {
+            Log_OC.d(TAG, "Password not retrieved via peekAuthToken, trying blockingGetAuthToken");
+
+            password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type),
+                    false);
+
+            if (password == null) {
+                Log_OC.d(TAG, "Password still null, userId: " + userId + " username: " + username);
+                throw new IllegalArgumentException("password may to nbe null");
+            }
+        }
 
         return createNextcloudClient(baseUri,
                 userId,
