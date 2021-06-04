@@ -206,7 +206,20 @@ public class OwnCloudClientFactory {
         // TODO avoid calling to getUserData here
         String userId = am.getUserData(account, AccountUtils.Constants.KEY_USER_ID);
         String username = AccountUtils.getUsernameForAccount(account);
-        String password = am.peekAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type));
+        String password = null;
+        try
+        {
+            password = am.blockingGetAuthToken(account,AccountTypeUtils.getAuthTokenTypePass(account.type),false);
+            if (password==null)
+            {
+                Log_OC.e(TAG, "Error receiving password token (password==null)");
+                throw new AccountNotFoundException(account,"Error receiving password token (password==null)",null);
+            }
+        }
+        catch (Exception e){
+            Log_OC.e(TAG, "Error receiving password token", e);
+            throw new AccountNotFoundException(account,"Error receiving password token",e);
+        }
 
         if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
             throw new AccountNotFoundException(
