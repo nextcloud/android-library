@@ -1,8 +1,12 @@
 import com.github.spotbugs.snom.SpotBugsTask
 
 buildscript {
-    ext.kotlin_version = '1.4.32'
-    ext.junit_version = '4.13.2'
+    ext{
+        kotlin_version = '1.4.32'
+        junit_version = '4.13.2'
+        jacoco_version = '0.8.4'
+    }
+    
     repositories {
         google()
         maven {
@@ -13,7 +17,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
-        classpath('com.hiya:jacoco-android:0.2')
+        classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath 'gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
@@ -24,7 +28,7 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.hiya.jacoco-android'
+apply plugin: 'jacoco'
 apply plugin: "com.github.spotbugs"
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
@@ -156,24 +160,35 @@ android {
     }
 
     testOptions {
+        unitTests {
+            all {
+                jacoco {
+                    includeNoLocationClasses = true
+                }
+            }
+        }
         unitTests.returnDefaultValues = true
     }
 }
 
-tasks.register("combinedTestReport", JacocoReport) {
+//task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport) {
 
     reports {
-        xml.enabled true
-        html.enabled true
-        csv.enabled false
+        xml.enabled = true
+        html.enabled = true
     }
 
-    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
-    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories.setFrom files(subprojects.sourceSets.main.output)
-    executionData.setFrom project.fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/debugAndroidTest/connected/*coverage.ec'
-    ])
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.setFrom(files([debugTree]))
+    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code_coverage/debugAndroidTest/connected/*coverage.ec"
+    ]))
 }
 
 task ktlint(type: JavaExec, group: "verification") {
