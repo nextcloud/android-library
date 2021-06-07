@@ -62,10 +62,10 @@ steps:
     - ./gradlew assembleDebug
     - ./scripts/wait_for_emulator.sh
     - ./scripts/wait_for_server.sh server-master
-    - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+    - ./gradlew testDebugUnitTest || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
     - ./gradlew installDebugAndroidTest
-    - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
-    - ./gradlew combinedTestReport
+    - ./gradlew connectedDebugAndroidTest || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+    - ./gradlew jacocoTestReport
     - curl -o codecov.sh https://codecov.io/bash
     - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
 
