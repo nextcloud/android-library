@@ -170,9 +170,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
      */
     public RemoteOperationResult(ResultCode code) {
         mCode = code;
-		mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL ||
-                code == ResultCode.OK_NO_SSL ||
-                code == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION);
+        mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL || code == ResultCode.OK_NO_SSL ||
+                code == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION || code == ResultCode.ETAG_CHANGED ||
+                code == ResultCode.ETAG_UNCHANGED);
         mData = null;
     }
 
