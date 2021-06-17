@@ -109,35 +109,41 @@ public class NetworkUtils {
             }
         }
     }
-    
-    public static AdvancedSslSocketFactory getAdvancedSslSocketFactory(Context context) 
-    		throws GeneralSecurityException, IOException {
-        if (mAdvancedSslSocketFactory  == null) {
+
+    public static AdvancedSslSocketFactory getAdvancedSslSocketFactory(Context context)
+            throws GeneralSecurityException, IOException {
+        if (mAdvancedSslSocketFactory == null) {
             KeyStore trustStore = getKnownServersStore(context);
             AdvancedX509TrustManager trustMgr = new AdvancedX509TrustManager(trustStore);
-            TrustManager[] tms = new TrustManager[] { trustMgr };
-                
-            SSLContext sslContext;
-            try {
-                sslContext = SSLContext.getInstance("TLSv1.3");
-            } catch (NoSuchAlgorithmException e) {
-                Log_OC.w(TAG, "TLSv1.3 is not supported in this device; trying v1.2");
+            TrustManager[] tms = new TrustManager[]{trustMgr};
 
-                try {
-                    sslContext = SSLContext.getInstance("TLSv1.2");
-                } catch (NoSuchAlgorithmException e1) {
-                    Log_OC.w(TAG, "TLSv1.2 is not supported in this device; falling through TLSv1.0");
-                    sslContext = SSLContext.getInstance("TLSv1");
-                    // should be available in any device; see reference of supported protocols in 
-                    // http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
-                }
-            }
+            SSLContext sslContext = getSSLContext();
             sslContext.init(null, tms, null);
-                    
+
             mHostnameVerifier = new BrowserCompatHostnameVerifier();
             mAdvancedSslSocketFactory = new AdvancedSslSocketFactory(sslContext, trustMgr, mHostnameVerifier);
         }
         return mAdvancedSslSocketFactory;
+    }
+
+    public static SSLContext getSSLContext() throws NoSuchAlgorithmException {
+        SSLContext sslContext;
+        try {
+            sslContext = SSLContext.getInstance("TLSv1.3");
+        } catch (NoSuchAlgorithmException e) {
+            Log_OC.w(TAG, "TLSv1.3 is not supported in this device; trying v1.2");
+
+            try {
+                sslContext = SSLContext.getInstance("TLSv1.2");
+            } catch (NoSuchAlgorithmException e1) {
+                Log_OC.w(TAG, "TLSv1.2 is not supported in this device; falling through TLSv1.0");
+                sslContext = SSLContext.getInstance("TLSv1");
+                // should be available in any device; see reference of supported protocols in 
+                // http://developer.android.com/reference/javax/net/ssl/SSLSocket.html
+            }
+        }
+
+        return sslContext;
     }
     
     /**
