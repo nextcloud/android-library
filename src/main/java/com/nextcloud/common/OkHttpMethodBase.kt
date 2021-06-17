@@ -35,6 +35,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import javax.net.ssl.SSLHandshakeException
 
 /**
  * Common base class for all new OkHttpMethods
@@ -147,7 +148,11 @@ abstract class OkHttpMethodBase(
         try {
             response = nextcloudClient.client.newCall(request).execute()
         } catch (ex: IOException) {
-            return UNKNOWN_STATUS_CODE
+            if (ex is SSLHandshakeException) {
+                throw ex
+            } else {
+                return UNKNOWN_STATUS_CODE
+            }
         }
 
         return if (nextcloudClient.followRedirects) {
