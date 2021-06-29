@@ -50,12 +50,12 @@ public class WebDavFileUtils {
      *                   retrieved.
      * @return content of the target folder
      */
-    public ArrayList<Object> readData(MultiStatus remoteData,
-                                      OwnCloudClient client,
-                                      boolean isReadFolderOperation,
-                                      boolean isSearchOperation,
-                                      String userIdPlain) {
-        ArrayList<Object> mFolderAndFiles = new ArrayList<>();
+    public ArrayList<RemoteFile> readData(MultiStatus remoteData,
+                                          OwnCloudClient client,
+                                          boolean isReadFolderOperation,
+                                          boolean isSearchOperation,
+                                          String userIdPlain) {
+        ArrayList<RemoteFile> mFolderAndFiles = new ArrayList<>();
 
         WebdavEntry we;
         int start = 1;
