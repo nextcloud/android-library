@@ -59,14 +59,14 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_META_DATA = "meta-data";
 
-    private String fileId;
-    private String encryptedMetadataJson;
-    private String token;
+    private final long fileId;
+    private final String encryptedMetadataJson;
+    private final String token;
 
     /**
      * Constructor
      */
-    public UpdateMetadataRemoteOperation(String fileId, String encryptedMetadataJson, String token) {
+    public UpdateMetadataRemoteOperation(long fileId, String encryptedMetadataJson, String token) {
         this.fileId = fileId;
         this.encryptedMetadataJson = URLEncoder.encode(encryptedMetadataJson);
         this.token = token;

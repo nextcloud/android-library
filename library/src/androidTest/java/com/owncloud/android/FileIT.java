@@ -328,4 +328,21 @@ public class FileIT extends AbstractIT {
             assertTrue(sharees.contains(user));
         }
     }
+
+    @Test
+    public void testLocalID() {
+        // create & verify folder
+        String path = "/testFolder/";
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+
+        RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(client);
+        assertTrue(result.isSuccess());
+
+        RemoteFile folder = (RemoteFile) result.getData().get(0);
+
+        // we do this only here for testing, this might not work on large installations
+        int localId = Integer.parseInt(folder.getRemoteId().substring(0, 8).replaceAll("^0*", ""));
+
+        assertEquals(folder.getLocalId(), localId);
+    }
 }

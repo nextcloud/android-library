@@ -33,7 +33,6 @@ import com.owncloud.android.lib.resources.shares.ShareeUser;
 
 import java.io.Serializable;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,6 +57,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private long uploadTimestamp;
     private String etag;
     private String permissions;
+    private long localId;
     private String remoteId;
     private long size;
     private boolean favorite;
@@ -107,6 +107,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setUploadTimestamp(we.getUploadTimestamp());
         setEtag(we.getETag());
         setPermissions(we.getPermissions());
+        setLocalId(we.getLocalId());
         setRemoteId(we.getRemoteId());
         setSize(we.getSize());
         setFavorite(we.isFavorite());
@@ -140,6 +141,7 @@ public class RemoteFile implements Parcelable, Serializable {
         modifiedTimestamp = 0;
         etag = null;
         permissions = null;
+        localId = -1;
         remoteId = null;
         size = 0;
         favorite = false;
@@ -191,6 +193,7 @@ public class RemoteFile implements Parcelable, Serializable {
         modifiedTimestamp = source.readLong();
         etag = source.readString();
         permissions = source.readString();
+        localId = source.readLong();
         remoteId = source.readString();
         size = source.readLong();
         favorite = Boolean.parseBoolean(source.readString());
@@ -225,6 +228,7 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeLong(modifiedTimestamp);
         dest.writeString(etag);
         dest.writeString(permissions);
+        dest.writeLong(localId);
         dest.writeString(remoteId);
         dest.writeLong(size);
         dest.writeString(Boolean.toString(favorite));
@@ -244,10 +248,4 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeLong(lockTimeout);
         dest.writeString(lockToken);
     }
-
-    @SuppressFBWarnings(value = "STT_STRING_PARSING_A_FIELD", justification = "remoteId contains cloud id and local id")
-    public String getLocalId() {
-        return remoteId.substring(0, 8).replaceAll("^0*", "");
-    }
-
 }

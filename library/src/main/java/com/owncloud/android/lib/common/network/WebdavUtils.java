@@ -102,6 +102,7 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.CREATIONDATE);
         propSet.add(DavPropertyName.GETETAG);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_LOCAL_ID, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, ocNamespace);
@@ -145,6 +146,7 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.CREATIONDATE);
         propSet.add(DavPropertyName.GETETAG);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_LOCAL_ID, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, ocNamespace);
