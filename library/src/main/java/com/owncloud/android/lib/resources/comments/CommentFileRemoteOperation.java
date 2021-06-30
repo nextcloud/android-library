@@ -58,15 +58,15 @@ public class CommentFileRemoteOperation extends RemoteOperation {
     private static final String VERB_VALUE = "comment";
     private static final String MESSAGE = "message";
 
-    private String message;
-    private String fileId;
+    private final String message;
+    private final long fileId;
 
     /**
      * Constructor
      *
      * @param message Comment to store
      */
-    public CommentFileRemoteOperation(String message, String fileId) {
+    public CommentFileRemoteOperation(String message, long fileId) {
         this.message = message;
         this.fileId = fileId;
     }

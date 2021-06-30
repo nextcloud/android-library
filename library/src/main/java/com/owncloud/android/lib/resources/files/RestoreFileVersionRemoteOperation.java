@@ -50,8 +50,8 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
     private static final int RESTORE_READ_TIMEOUT = 30000;
     private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
-    private String fileId;
-    private String fileName;
+    private final long fileId;
+    private final String fileName;
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
      * @param fileId   fileId
      * @param fileName version date in unixtime
      */
-    public RestoreFileVersionRemoteOperation(String fileId, String fileName) {
+    public RestoreFileVersionRemoteOperation(long fileId, String fileName) {
         this.fileId = fileId;
         this.fileName = fileName;
     }

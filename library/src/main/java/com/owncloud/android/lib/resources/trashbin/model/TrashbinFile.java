@@ -61,14 +61,6 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     private String originalLocation;
     private long deletionTimestamp;
 
-    /**
-     * For trashbin this is the same as remoteId
-     */
-    @Override
-    public String getLocalId() {
-        return getRemoteId();
-    }
-
     @Override
     public boolean isFolder() {
         return DIRECTORY.equals(mimeType);
@@ -79,13 +71,18 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     }
 
     @Override
+    public String getImageKey() {
+        return remoteId;
+    }
+
+    @Override
     public boolean isFavorite() {
         return false;
     }
 
     public TrashbinFile(WebdavEntry we, String userId) {
         String path = we.decodedPath();
-        
+
         if (path == null || path.length() <= 0 || !path.startsWith(FileUtils.PATH_SEPARATOR)) {
             throw new IllegalArgumentException("Trying to create a TrashbinFile with a non valid remote path: " + path);
         }

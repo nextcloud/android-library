@@ -8,9 +8,7 @@ public interface ServerFileInterface {
 
     String getRemotePath();
     
-    String getLocalId();
-    
-    String getRemoteId();
+    String getImageKey();
     
     boolean isFavorite();
     
