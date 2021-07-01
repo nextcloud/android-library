@@ -75,7 +75,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setNote(note)
@@ -86,7 +86,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
 
-        val updatedShare = getShareOperationResult.data[0] as OCShare
+        val updatedShare = getShareOperationResult.resultData[0]
 
         assertEquals(note, updatedShare.note)
 
@@ -110,7 +110,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setLabel(label)
@@ -121,7 +121,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
 
-        val updatedShare = getShareOperationResult.data[0] as OCShare
+        val updatedShare = getShareOperationResult.resultData[0]
 
         assertEquals(label, updatedShare.label)
 
@@ -145,7 +145,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("1")
@@ -185,7 +185,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("arnservcvcbtp234")

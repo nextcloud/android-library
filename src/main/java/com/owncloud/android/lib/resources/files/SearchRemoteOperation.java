@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.WebDavFileUtils;
+import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.MultiStatus;
@@ -39,16 +40,17 @@ import org.apache.jackrabbit.webdav.search.SearchInfo;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Remote operation performing the search in the Nextcloud server.
  */
-public class SearchRemoteOperation extends RemoteOperation {
+public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
 
 
     public enum SearchType {
         FILE_SEARCH, // search by name
-        FAVORITE_SEARCH, // get all favorited files/folder
+        FAVORITE_SEARCH, // get all favorite files/folder
         RECENTLY_MODIFIED_SEARCH, // get files/folders that were modified within last 7 days, ordered descending by time
         PHOTO_SEARCH, // gets all files with mimetype "image/%"
         SHARED_SEARCH, // show all shares
@@ -59,9 +61,9 @@ public class SearchRemoteOperation extends RemoteOperation {
         SHARED_FILTER
     }
 
-    private String searchQuery;
-    private SearchType searchType;
-    private boolean filterOutFiles;
+    private final String searchQuery;
+    private final SearchType searchType;
+    private final boolean filterOutFiles;
     private int limit;
     private long timestamp = -1;
 
@@ -70,7 +72,7 @@ public class SearchRemoteOperation extends RemoteOperation {
         this.searchType = searchType;
         this.filterOutFiles = filterOutFiles;
     }
-    
+
     public void setLimit(int limit) {
         this.limit = limit;
     }
@@ -80,8 +82,8 @@ public class SearchRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<List<RemoteFile>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<RemoteFile>> result;
         NcSearchMethod searchMethod = null;
         OptionsMethod optionsMethod;
 
@@ -112,30 +114,30 @@ public class SearchRemoteOperation extends RemoteOperation {
                     // get data from remote folder
                     MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
                     WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
-                    ArrayList<Object> mFolderAndFiles = webDavFileUtils.readData(dataInServer,
-                                                                                 client,
-                                                                                 false,
-                                                                                 true,
-                                                                                 client.getUserIdPlain());
+                    ArrayList<RemoteFile> mFolderAndFiles = webDavFileUtils.readData(dataInServer,
+                            client,
+                            false,
+                            true,
+                            client.getUserIdPlain());
 
                     // Result of the operation
-                    result = new RemoteOperationResult(true, status, searchMethod.getResponseHeaders());
+                    result = new RemoteOperationResult<>(true, status, searchMethod.getResponseHeaders());
                     // Add data to the result
                     if (result.isSuccess()) {
-                        result.setData(mFolderAndFiles);
+                        result.setResultData(mFolderAndFiles);
                     }
                 } else {
                     // synchronization failed
                     client.exhaustResponse(searchMethod.getResponseBodyAsStream());
-                    result = new RemoteOperationResult(false, status, searchMethod.getResponseHeaders());
+                    result = new RemoteOperationResult<>(false, status, searchMethod.getResponseHeaders());
                 }
             } else {
                 client.exhaustResponse(optionsMethod.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, optionsStatus, optionsMethod.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, optionsStatus, optionsMethod.getResponseHeaders());
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (searchMethod != null) {
                 searchMethod.releaseConnection();  // let the connection available for other methods

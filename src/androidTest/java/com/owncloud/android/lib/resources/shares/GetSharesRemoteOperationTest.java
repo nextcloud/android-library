@@ -33,6 +33,8 @@ import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 
 import org.junit.Test;
 
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -48,10 +50,10 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
 
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
 
-        RemoteOperationResult result = sut.execute(client);
+        RemoteOperationResult<List<OCShare>> result = sut.execute(client);
         assertTrue(result.isSuccess());
 
-        assertEquals(0, result.getData().size());
+        assertEquals(0, result.getResultData().size());
 
         // share folder to user "admin"
         assertTrue(new CreateShareRemoteOperation("/shareToAdmin/",
@@ -73,12 +75,12 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
 
         // share folder to group
         assertTrue(new CreateShareRemoteOperation("/shareToGroup/",
-                                                  ShareType.GROUP,
-                                                  "users",
-                                                  false,
-                                                  "",
-                                                  OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                ShareType.GROUP,
+                "users",
+                false,
+                "",
+                OCShare.NO_PERMISSION)
+                .execute(client).isSuccess());
 
         // share folder to circle
         // get share 
@@ -111,11 +113,9 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
         result = sut.execute(client);
         assertTrue(result.isSuccess());
 
-        assertEquals(3, result.getData().size());
+        assertEquals(3, result.getResultData().size());
 
-        for (Object object : result.getData()) {
-            OCShare ocShare = (OCShare) object;
-
+        for (OCShare ocShare : result.getResultData()) {
             switch (ocShare.getShareType()) {
                 case USER:
                     assertEquals("/shareToAdmin/", ocShare.getPath());

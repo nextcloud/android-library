@@ -34,17 +34,19 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import java.util.List;
+
 /**
  * Get the data from the server about ALL the known shares owned by the requester.
  */
-public class GetSharesRemoteOperation extends RemoteOperation {
+public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesRemoteOperation.class.getSimpleName();
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
+        int status;
 
         // Get Method
         GetMethod get = null;
@@ -65,11 +67,11 @@ public class GetSharesRemoteOperation extends RemoteOperation {
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting remote shares ", e);
 
         } finally {
