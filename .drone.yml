@@ -29,10 +29,12 @@ steps:
         - failure
       branch:
         - master
+        - stable-*
 
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - pull_request
     - push
@@ -90,6 +92,7 @@ steps:
       - failure
     branch:
       - master
+      - stable-*
 
 services:
   - name: server-master
@@ -118,6 +121,7 @@ services:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
@@ -174,6 +178,7 @@ steps:
         - failure
       branch:
         - master
+        - stable-*
 
 services:
   - name: server-stable
@@ -246,10 +251,12 @@ steps:
         - failure
       branch:
         - master
+        - stable-*
 
 trigger:
   branch:
     - master
+      - stable-*
   event:
     - push
     - pull_request
