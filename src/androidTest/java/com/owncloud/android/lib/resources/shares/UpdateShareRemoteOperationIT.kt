@@ -157,12 +157,22 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         Assert.assertTrue(capabilityResult.isSuccess)
         val capability = capabilityResult.singleData as OCCapability
 
-        if (capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22)) {
-            assertEquals("Password needs to be at least 10 characters long.", result.message)
-        } else if (capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21)) {
-            assertEquals("Password needs to be at least 8 characters long.", result.message)
-        } else {
-            assertEquals("Password needs to be at least 8 characters long", result.message)
+        when {
+            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_23) -> {
+                assertEquals(
+                    "Password needs to be at least 10 characters long. Password is present in compromised password list. Please choose a different password.",
+                    result.message
+                )
+            }
+            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {
+                assertEquals("Password needs to be at least 10 characters long.", result.message)
+            }
+            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21) -> {
+                assertEquals("Password needs to be at least 8 characters long.", result.message)
+            }
+            else -> {
+                assertEquals("Password needs to be at least 8 characters long", result.message)
+            }
         }
 
         assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
