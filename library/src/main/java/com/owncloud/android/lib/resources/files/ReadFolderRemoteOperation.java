@@ -38,6 +38,7 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Remote operation performing the read of remote file or folder in the ownCloud server.
@@ -46,12 +47,12 @@ import java.util.ArrayList;
  * @author masensio
  */
 
-public class ReadFolderRemoteOperation extends RemoteOperation {
+public class ReadFolderRemoteOperation extends RemoteOperation<List<RemoteFile>> {
 
     private static final String TAG = ReadFolderRemoteOperation.class.getSimpleName();
 
-    private String mRemotePath;
-    private ArrayList<Object> mFolderAndFiles;
+    private final String remotePath;
+    private ArrayList<RemoteFile> folderAndFiles;
 
     /**
      * Constructor
@@ -59,7 +60,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
      * @param remotePath Remote path of the file.
      */
     public ReadFolderRemoteOperation(String remotePath) {
-        mRemotePath = remotePath;
+        this.remotePath = remotePath;
     }
 
     /**
@@ -68,13 +69,13 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<List<RemoteFile>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<RemoteFile>> result = null;
         PropFindMethod query = null;
 
         try {
             // remote request
-            query = new PropFindMethod(client.getFilesDavUri(mRemotePath),
+            query = new PropFindMethod(client.getFilesDavUri(remotePath),
                     WebdavUtils.getAllPropSet(),    // PropFind Properties
                     DavConstants.DEPTH_1);
             int status = client.executeMethod(query);
@@ -88,34 +89,34 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
                 readData(dataInServer, client);
 
                 // Result of the operation
-                result = new RemoteOperationResult(true, query);
+                result = new RemoteOperationResult<>(true, query);
                 // Add data to the result
                 if (result.isSuccess()) {
-                    result.setData(mFolderAndFiles);
+                    result.setResultData(folderAndFiles);
                 }
             } else {
                 // synchronization failed
                 client.exhaustResponse(query.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, query);
+                result = new RemoteOperationResult<>(false, query);
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (query != null)
                 query.releaseConnection();  // let the connection available for other methods
 
             if (result == null) {
-                result = new RemoteOperationResult(new Exception("unknown error"));
-                Log_OC.e(TAG, "Synchronized " + mRemotePath + ": failed");
+                result = new RemoteOperationResult<>(new Exception("unknown error"));
+                Log_OC.e(TAG, "Synchronized " + remotePath + ": failed");
             } else {
                 if (result.isSuccess()) {
-                    Log_OC.i(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage());
+                    Log_OC.i(TAG, "Synchronized " + remotePath + ": " + result.getLogMessage());
                 } else {
                     if (result.isException()) {
-                        Log_OC.e(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage(),
+                        Log_OC.e(TAG, "Synchronized " + remotePath + ": " + result.getLogMessage(),
                                 result.getException());
                     } else {
-                        Log_OC.e(TAG, "Synchronized " + mRemotePath + ": " + result.getLogMessage());
+                        Log_OC.e(TAG, "Synchronized " + remotePath + ": " + result.getLogMessage());
                     }
                 }
             }
@@ -135,14 +136,13 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
      *                   folder and its direct children.
      * @param client     Client instance to the remote server where the data were
      *                   retrieved.
-     * @return
      */
     private void readData(MultiStatus remoteData, OwnCloudClient client) {
-        mFolderAndFiles = new ArrayList<>();
+        folderAndFiles = new ArrayList<>();
 
         // parse data from remote folder 
         WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getFilesDavUri().getEncodedPath());
-        mFolderAndFiles.add(new RemoteFile(we));
+        folderAndFiles.add(new RemoteFile(we));
 
         // loop to update every child
         RemoteFile remoteFile;
@@ -150,7 +150,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
             /// new OCFile instance with the data from the server
             we = new WebdavEntry(remoteData.getResponses()[i], client.getFilesDavUri().getEncodedPath());
             remoteFile = new RemoteFile(we);
-            mFolderAndFiles.add(remoteFile);
+            folderAndFiles.add(remoteFile);
         }
 
     }

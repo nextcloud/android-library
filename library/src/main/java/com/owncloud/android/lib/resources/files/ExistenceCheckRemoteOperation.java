@@ -38,22 +38,22 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 
 /**
  * Operation to check the existence or absence of a path in a remote server.
- * 
+ *
  * @author David A. Velasco
  */
-public class ExistenceCheckRemoteOperation extends RemoteOperation {
-    
+public class ExistenceCheckRemoteOperation extends RemoteOperation<Void> {
+
     /** Maximum time to wait for a response from the server in MILLISECONDs.  */
     public static final int TIMEOUT = 50000;
-    
+
     private static final String TAG = ExistenceCheckRemoteOperation.class.getSimpleName();
-    
-    private String mPath;
-    private boolean mSuccessIfAbsent;
+
+    private final String path;
+    private final boolean successIfAbsent;
 
     /** Sequence of redirections followed. Available only after executing the operation */
-    private RedirectionPath mRedirectionPath = null;
-        // TODO move to {@link RemoteOperation}, that needs a nice refactoring
+    private RedirectionPath redirectionPath = null;
+    // TODO move to {@link RemoteOperation}, that needs a nice refactoring
 
     /**
      * Full constructor. Success of the operation will depend upon the value of successIfAbsent.
@@ -63,8 +63,8 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
      *                          NOT exist in the remote server (HTTP 404).
      */
     public ExistenceCheckRemoteOperation(String remotePath, boolean successIfAbsent) {
-        mPath = (remotePath != null) ? remotePath : "";
-        mSuccessIfAbsent = successIfAbsent;
+        path = (remotePath != null) ? remotePath : "";
+        this.successIfAbsent = successIfAbsent;
     }
 
     /**
@@ -81,41 +81,40 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
     }
 
     @Override
-	protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<Void> run(OwnCloudClient client) {
+        RemoteOperationResult<Void> result;
         HeadMethod head = null;
         boolean previousFollowRedirects = client.isFollowRedirects();
         try {
             if (client.getCredentials() instanceof OwnCloudAnonymousCredentials) {
                 head = new HeadMethod(client.getDavUri().toString());
             } else {
-                head = new HeadMethod(client.getFilesDavUri(mPath));
+                head = new HeadMethod(client.getFilesDavUri(path));
             }
             client.setFollowRedirects(false);
             int status = client.executeMethod(head, TIMEOUT, TIMEOUT);
             if (previousFollowRedirects) {
-                mRedirectionPath = client.followRedirection(head);
-                status = mRedirectionPath.getLastStatus();
+                redirectionPath = client.followRedirection(head);
+                status = redirectionPath.getLastStatus();
             }
             client.exhaustResponse(head.getResponseBodyAsStream());
-            boolean success = (status == HttpStatus.SC_OK && !mSuccessIfAbsent) ||
-                    (status == HttpStatus.SC_NOT_FOUND && mSuccessIfAbsent);
-            result = new RemoteOperationResult(
-                success,
-                status,
-                head.getStatusText(),
-                head.getResponseHeaders()
+            boolean success = (status == HttpStatus.SC_OK && !successIfAbsent) ||
+                    (status == HttpStatus.SC_NOT_FOUND && successIfAbsent);
+            result = new RemoteOperationResult<>(
+                    success,
+                    status,
+                    head.getStatusText(),
+                    head.getResponseHeaders()
             );
-            Log_OC.d(TAG, "Existence check for " + client.getFilesDavUri(mPath) + " targeting for " +
-                    (mSuccessIfAbsent ? " absence " : " existence ") +
+            Log_OC.d(TAG, "Existence check for " + client.getFilesDavUri(path) + " targeting for " +
+                    (successIfAbsent ? " absence " : " existence ") +
                     "finished with HTTP status " + status + (!success ? "(FAIL)" : ""));
-            
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Existence check for " + client.getFilesDavUri(mPath) + " targeting for " +
-                    (mSuccessIfAbsent ? " absence " : " existence ") + ": " +
+            result = new RemoteOperationResult<>(e);
+            Log_OC.e(TAG, "Existence check for " + client.getFilesDavUri(path) + " targeting for " +
+                    (successIfAbsent ? " absence " : " existence ") + ": " +
                     result.getLogMessage(), result.getException());
-            
+
         } finally {
             if (head != null)
                 head.releaseConnection();
@@ -131,13 +130,13 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
      * @return      Sequence of redirections followed, if any, or NULL if the operation was not executed.
      */
     public RedirectionPath getRedirectionPath() {
-        return mRedirectionPath;
+        return redirectionPath;
     }
 
     /**
      * @return      'True' if the operation was executed and at least one redirection was followed.
      */
     public boolean wasRedirected() {
-        return (mRedirectionPath != null && mRedirectionPath.getRedirectionsCount() > 0);
+        return (redirectionPath != null && redirectionPath.getRedirectionsCount() > 0);
     }
 }

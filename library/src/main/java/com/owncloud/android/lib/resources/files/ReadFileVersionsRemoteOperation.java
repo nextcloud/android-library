@@ -44,17 +44,18 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Remote operation performing the read of remote versions on Nextcloud server.
  */
 
-public class ReadFileVersionsRemoteOperation extends RemoteOperation {
+public class ReadFileVersionsRemoteOperation extends RemoteOperation<List<FileVersion>> {
 
     private static final String TAG = ReadFileVersionsRemoteOperation.class.getSimpleName();
 
-    private String fileId;
-    private ArrayList<Object> versions;
+    private final String fileId;
+    private ArrayList<FileVersion> versions;
 
     /**
      * Constructor
@@ -71,8 +72,8 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<List<FileVersion>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<FileVersion>> result = null;
         PropFindMethod query = null;
 
         try {
@@ -91,24 +92,24 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
                 readData(dataInServer, client);
 
                 // Result of the operation
-                result = new RemoteOperationResult(true, query);
+                result = new RemoteOperationResult<>(true, query);
                 // Add data to the result
                 if (result.isSuccess()) {
-                    result.setData(versions);
+                    result.setResultData(versions);
                 }
             } else {
                 // synchronization failed
                 client.exhaustResponse(query.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, query);
+                result = new RemoteOperationResult<>(false, query);
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (query != null)
                 query.releaseConnection();  // let the connection available for other methods
 
             if (result == null) {
-                result = new RemoteOperationResult(new Exception("unknown error"));
+                result = new RemoteOperationResult<>(new Exception("unknown error"));
                 Log_OC.e(TAG, "Synchronized file with id " + fileId + ": failed");
             } else {
                 if (result.isSuccess()) {

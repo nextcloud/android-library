@@ -27,20 +27,19 @@
 
 package com.owncloud.android.lib.resources.status;
 
-        import org.junit.Test;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class OwnCloudVersionTest {
     @Test
     public void testOwnCloudVersion() {
-        OwnCloudVersion version = new OwnCloudVersion("17.0.0");
+        NextcloudVersion version = new NextcloudVersion("17.0.0");
 
         assertEquals(0, version.compareTo(OwnCloudVersion.nextcloud_17));
 
-        version = new OwnCloudVersion("17.99.99");
+        version = new NextcloudVersion("17.99.99");
 
         assertEquals(0, version.compareTo(new OwnCloudVersion(0x11636300))); // 13.99.99 in hex
     }

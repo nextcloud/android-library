@@ -36,21 +36,19 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 
 /**
  * Lock a file
  */
-public class LockFileRemoteOperation extends RemoteOperation {
+public class LockFileRemoteOperation extends RemoteOperation<String> {
 
     private static final String TAG = LockFileRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
 
-    private String localId;
-    private String token;
+    private final String localId;
+    private final String token;
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
@@ -75,8 +73,8 @@ public class LockFileRemoteOperation extends RemoteOperation {
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
         Utf8PostMethod postMethod = null;
 
         try {
@@ -102,16 +100,14 @@ public class LockFileRemoteOperation extends RemoteOperation {
                         .getJSONObject(NODE_DATA)
                         .get(E2E_TOKEN);
 
-                result = new RemoteOperationResult(true, postMethod);
-                ArrayList<Object> tokenArray = new ArrayList<>();
-                tokenArray.add(token);
-                result.setData(tokenArray);
+                result = new RemoteOperationResult<>(true, postMethod);
+                result.setResultData(token);
             } else {
-                result = new RemoteOperationResult(false, postMethod);
+                result = new RemoteOperationResult<>(false, postMethod);
                 client.exhaustResponse(postMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Lock file with id " + localId + " failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (postMethod != null)

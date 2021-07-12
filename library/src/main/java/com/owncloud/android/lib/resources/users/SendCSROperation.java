@@ -36,14 +36,12 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 
 /**
  * Remote operation performing the storage of the public key for an user
  */
 
-public class SendCSROperation extends RemoteOperation {
+public class SendCSROperation extends RemoteOperation<String> {
 
     private static final String TAG = SendCSROperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
@@ -58,7 +56,7 @@ public class SendCSROperation extends RemoteOperation {
 
     private static final String JSON_FORMAT = "?format=json";
 
-    private String csr;
+    private final String csr;
 
     /**
      * Constructor
@@ -71,9 +69,9 @@ public class SendCSROperation extends RemoteOperation {
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
         Utf8PostMethod postMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<String> result;
 
         try {
             // remote request
@@ -90,17 +88,15 @@ public class SendCSROperation extends RemoteOperation {
                 JSONObject respJSON = new JSONObject(response);
                 String key = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).get(NODE_PUBLIC_KEY);
 
-                result = new RemoteOperationResult(true, postMethod);
-                ArrayList<Object> keys = new ArrayList<>();
-                keys.add(key);
-                result.setData(keys);
+                result = new RemoteOperationResult<>(true, postMethod);
+                result.setResultData(key);
             } else {
-                result = new RemoteOperationResult(false, postMethod);
+                result = new RemoteOperationResult<>(false, postMethod);
                 client.exhaustResponse(postMethod.getResponseBodyAsStream());
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Fetching of signing CSR failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (postMethod != null)

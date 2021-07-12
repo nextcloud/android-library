@@ -24,7 +24,6 @@ package com.nextcloud.lib.resources.users
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.activities.GetActivitiesRemoteOperation
-import com.owncloud.android.lib.resources.activities.model.Activity
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -38,10 +37,9 @@ class GetActivitiesRemoteOperationIT : AbstractIT() {
         val result = nextcloudClient.execute(GetActivitiesRemoteOperation())
         assertTrue(result.isSuccess)
 
-        val activities = result.data[0] as ArrayList<Activity>
-        val lastGiven = result.data[1] as Integer
+        val activitiesResponse = result.resultData
 
-        assertTrue(activities.isNotEmpty())
-        assertTrue(lastGiven > 0)
+        assertTrue(activitiesResponse.activities.isNotEmpty())
+        assertTrue(activitiesResponse.lastGiven > 0)
     }
 }
