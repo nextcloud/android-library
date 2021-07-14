@@ -157,8 +157,8 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result = null;
         int status;
 
         /// prepare array of parameters to update
@@ -232,7 +232,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
                     result = parser.parse(response);
 
                 } else {
-                    result = new RemoteOperationResult(false, put);
+                    result = new RemoteOperationResult<>(false, put);
                 }
                 if (!result.isSuccess()) {
                     break;
@@ -240,7 +240,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while updating remote share ", e);
             if (put != null) {
                 put.releaseConnection();
