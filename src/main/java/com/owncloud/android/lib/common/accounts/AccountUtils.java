@@ -51,27 +51,6 @@ public class AccountUtils {
 	public static final String WEBDAV_PATH_9_0 = "/remote.php/dav";
     public static final String DAV_UPLOAD = "/remote.php/dav/uploads";
     public static final String STATUS_PATH = "/status.php";
-
-    /**
-     * Constructs full url to host and webdav resource basing on host version
-     * 
-     * @deprecated 		To be removed in release 1.0. 
-     * 
-     * @param context
-     * @param account
-     * @return url or null on failure
-     * @throws AccountNotFoundException     When 'account' is unknown for the AccountManager
-     */
-    @Deprecated
-    public static String constructFullURLForAccount(Context context, Account account) throws AccountNotFoundException {
-        AccountManager ama = AccountManager.get(context);
-        String baseurl = ama.getUserData(account, Constants.KEY_OC_BASE_URL);
-
-		if (baseurl == null) 
-            throw new AccountNotFoundException(account, "Account not found", null);
-
-		return baseurl + WEBDAV_PATH_4_0;
-    }
     
     /**
      * Extracts url server from the account

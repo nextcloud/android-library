@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-URL=https://nextcloud.kaminsky.me/remote.php/webdav/library-integrationTests
 USER=$1
 PASS=$2
 ID=$3
@@ -11,6 +10,7 @@ GIT_USERNAME=$7
 GIT_TOKEN=$8
 REMOTE_FOLDER=$ID-$TYPE-$BRANCH-$(date +%H-%M)
 BRANCH_TYPE=$BRANCH-$TYPE
+URL=https://nextcloud.kaminsky.me/remote.php/dav/files/$USER/library-integrationTests
 
 if [ $TYPE = "IT" ]; then
     cd build/reports/androidTests/connected
