@@ -95,7 +95,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
     androidTestImplementation 'commons-io:commons-io:2.11.0'
-    androidTestImplementation 'net.bytebuddy:byte-buddy:1.11.7'
+    androidTestImplementation 'net.bytebuddy:byte-buddy:1.11.8'
 }
 
 spotbugs {
