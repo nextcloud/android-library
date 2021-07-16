@@ -25,7 +25,6 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -67,7 +66,7 @@ public class RemoveFileRemoteOperation extends RemoteOperation {
         DeleteMethod delete = null;
 
         try {
-            delete = new DeleteMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath));
+            delete = new DeleteMethod(client.getFilesDavUri(mRemotePath));
             int status = client.executeMethod(delete, REMOVE_READ_TIMEOUT, REMOVE_CONNECTION_TIMEOUT);
 
             delete.getResponseBodyAsString();   // exhaust the response, although not interesting

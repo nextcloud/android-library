@@ -27,7 +27,6 @@ package com.owncloud.android.lib.resources.files;
 import android.text.TextUtils;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -98,7 +97,7 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
         RemoteOperationResult result;
         MkColMethod mkCol = null;
         try {
-            mkCol = new MkColMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
+            mkCol = new MkColMethod(client.getFilesDavUri(remotePath));
 
             if (!TextUtils.isEmpty(token)) {
                 mkCol.addRequestHeader(E2E_TOKEN, token);

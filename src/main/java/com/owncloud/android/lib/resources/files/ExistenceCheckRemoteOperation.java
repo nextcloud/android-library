@@ -28,7 +28,6 @@ import android.content.Context;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.RedirectionPath;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -86,7 +85,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
         HeadMethod head = null;
         boolean previousFollowRedirects = client.isFollowRedirects();
         try {
-            head = new HeadMethod(client.getWebdavUri() + WebdavUtils.encodePath(mPath));
+            head = new HeadMethod(client.getFilesDavUri(mPath));
             client.setFollowRedirects(false);
             int status = client.executeMethod(head, TIMEOUT, TIMEOUT);
             if (previousFollowRedirects) {
@@ -102,15 +101,13 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
                 head.getStatusText(),
                 head.getResponseHeaders()
             );
-            Log_OC.d(TAG, "Existence check for " + client.getWebdavUri() +
-                    WebdavUtils.encodePath(mPath) + " targeting for " +
+            Log_OC.d(TAG, "Existence check for " + client.getFilesDavUri(mPath) + " targeting for " +
                     (mSuccessIfAbsent ? " absence " : " existence ") +
-                    "finished with HTTP status " + status + (!success?"(FAIL)":""));
+                    "finished with HTTP status " + status + (!success ? "(FAIL)" : ""));
             
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Existence check for " + client.getWebdavUri() +
-                    WebdavUtils.encodePath(mPath) + " targeting for " +
+            Log_OC.e(TAG, "Existence check for " + client.getFilesDavUri(mPath) + " targeting for " +
                     (mSuccessIfAbsent ? " absence " : " existence ") + ": " +
                     result.getLogMessage(), result.getException());
             

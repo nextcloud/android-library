@@ -74,9 +74,9 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
 
         try {
             // remote request
-            query = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath),
-                WebdavUtils.getAllPropSet(),    // PropFind Properties
-                DavConstants.DEPTH_1);
+            query = new PropFindMethod(client.getFilesDavUri(mRemotePath),
+                    WebdavUtils.getAllPropSet(),    // PropFind Properties
+                    DavConstants.DEPTH_1);
             int status = client.executeMethod(query);
 
             // check and process response
@@ -141,14 +141,14 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
         mFolderAndFiles = new ArrayList<>();
 
         // parse data from remote folder 
-        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getWebdavUri().getPath());
+        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getFilesDavUri().getPath());
         mFolderAndFiles.add(fillOCFile(we));
 
         // loop to update every child
         RemoteFile remoteFile;
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
             /// new OCFile instance with the data from the server
-            we = new WebdavEntry(remoteData.getResponses()[i], client.getWebdavUri().getPath());
+            we = new WebdavEntry(remoteData.getResponses()[i], client.getFilesDavUri().getPath());
             remoteFile = fillOCFile(we);
             mFolderAndFiles.add(remoteFile);
         }

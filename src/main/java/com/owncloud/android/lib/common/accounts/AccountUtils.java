@@ -47,31 +47,9 @@ public class AccountUtils {
 	
 	private static final String TAG = AccountUtils.class.getSimpleName();
 
-	public static final String WEBDAV_PATH_4_0 = "/remote.php/webdav";
 	public static final String WEBDAV_PATH_9_0 = "/remote.php/dav";
     public static final String DAV_UPLOAD = "/remote.php/dav/uploads";
     public static final String STATUS_PATH = "/status.php";
-
-    /**
-     * Constructs full url to host and webdav resource basing on host version
-     * 
-     * @deprecated 		To be removed in release 1.0. 
-     * 
-     * @param context
-     * @param account
-     * @return url or null on failure
-     * @throws AccountNotFoundException     When 'account' is unknown for the AccountManager
-     */
-    @Deprecated
-    public static String constructFullURLForAccount(Context context, Account account) throws AccountNotFoundException {
-        AccountManager ama = AccountManager.get(context);
-        String baseurl = ama.getUserData(account, Constants.KEY_OC_BASE_URL);
-
-		if (baseurl == null) 
-            throw new AccountNotFoundException(account, "Account not found", null);
-
-		return baseurl + WEBDAV_PATH_4_0;
-    }
     
     /**
      * Extracts url server from the account
@@ -224,7 +202,7 @@ public class AccountUtils {
 		// Account Manager
 		AccountManager am = AccountManager.get(context.getApplicationContext());
 
-		Uri serverUri = (client.getBaseUri() != null)? client.getBaseUri() : client.getWebdavUri();
+		Uri serverUri = (client.getBaseUri() != null) ? client.getBaseUri() : client.getDavUri();
 
 		String cookiesString = null;
 		try {
@@ -233,7 +211,7 @@ public class AccountUtils {
 			Log_OC.e(TAG, e.getMessage());
 		}
 
-		if (cookiesString !=null) {
+		if (cookiesString != null) {
 			String[] cookies = cookiesString.split(";");
 			if (cookies.length > 0) {
 				for (int i=0; i< cookies.length; i++) {

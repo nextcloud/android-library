@@ -28,7 +28,6 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.FileRequestEntity;
 import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.OperationCancelledException;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -149,11 +148,11 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 				client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, noRetryHandler);
 			}
 
-			putMethod = new PutMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
+			putMethod = new PutMethod(client.getFilesDavUri(remotePath));
 
-            if (token != null) {
-                putMethod.addRequestHeader(E2E_TOKEN, token);
-            }
+			if (token != null) {
+				putMethod.addRequestHeader(E2E_TOKEN, token);
+			}
 
 			if (cancellationRequested.get()) {
 				// the operation was cancelled before getting it's turn to be executed in the queue of uploads

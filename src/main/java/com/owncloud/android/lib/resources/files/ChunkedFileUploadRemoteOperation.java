@@ -172,7 +172,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             }
 
             // assemble
-            String destinationUri = client.getNewWebdavUri() + "/files/" + client.getUserId() +
+            String destinationUri = client.getDavUri() + "/files/" + client.getUserId() +
                     WebdavUtils.encodePath(remotePath);
             String originUri = uploadFolderUri + "/.file";
             MoveMethod moveMethod = new MoveMethod(originUri, destinationUri, true);
