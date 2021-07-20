@@ -82,7 +82,7 @@ public class CommentFileRemoteOperation extends RemoteOperation {
         Utf8PostMethod postMethod = null;
         RemoteOperationResult result;
         try {
-            String url = client.getNewWebdavUri() + "/comments/files/" + fileId;
+            String url = client.getCommentsUri(fileId);
             postMethod = new Utf8PostMethod(url);
             postMethod.addRequestHeader("Content-type", "application/json");
 

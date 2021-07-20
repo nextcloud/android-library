@@ -320,6 +320,7 @@ public class OwnCloudClient extends HttpClient {
     	}
     }
 
+    @Deprecated
     public Uri getWebdavUri() {
         return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_4_0);
     }
@@ -331,17 +332,21 @@ public class OwnCloudClient extends HttpClient {
     public Uri getNewWebdavUri() {
         return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_9_0);
     }
-    
+
+    public String getCommentsUri(String fileId) {
+        return getNewWebdavUri() + "/comments/files/" + fileId;
+    }
+
     /**
-     * Sets the root URI to the ownCloud server.   
+     * Sets the root URI to the ownCloud server.
+     * <p>
+     * Use with care.
      *
-     * Use with care. 
-     * 
      * @param uri
      */
     public void setBaseUri(Uri uri) {
         if (uri == null) {
-        	throw new IllegalArgumentException("URI cannot be NULL");
+            throw new IllegalArgumentException("URI cannot be NULL");
         }
         baseUri = uri;
     }
