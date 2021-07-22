@@ -59,7 +59,7 @@ public class EmptyTrashbinRemoteOperation extends RemoteOperation {
         DeleteMethod delete = null;
         RemoteOperationResult result;
         try {
-            delete = new DeleteMethod(client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/trash");
+            delete = new DeleteMethod(client.getDavUri() + "/trashbin/" + client.getUserId() + "/trash");
             int status = client.executeMethod(delete, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
 
             result = new RemoteOperationResult(isSuccess(status), delete);

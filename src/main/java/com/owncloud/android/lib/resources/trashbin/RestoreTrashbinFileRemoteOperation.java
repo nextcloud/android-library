@@ -76,8 +76,8 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
         MoveMethod move = null;
         RemoteOperationResult result;
         try {
-            String source = client.getNewWebdavUri() + WebdavUtils.encodePath(sourcePath);
-            String target = client.getNewWebdavUri() + "/trashbin/" + client.getUserId() + "/restore/" +
+            String source = client.getDavUri() + WebdavUtils.encodePath(sourcePath);
+            String target = client.getDavUri() + "/trashbin/" + client.getUserId() + "/restore/" +
                     Uri.encode(fileName);
 
             move = new MoveMethod(source, target, true);

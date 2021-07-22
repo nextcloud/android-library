@@ -87,7 +87,7 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
         NcSearchMethod searchMethod = null;
         OptionsMethod optionsMethod;
 
-        String webDavUrl = client.getNewWebdavUri().toString();
+        String webDavUrl = client.getDavUri().toString();
         optionsMethod = new OptionsMethod(webDavUrl);
 
         try {
@@ -117,8 +117,7 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
                     ArrayList<RemoteFile> mFolderAndFiles = webDavFileUtils.readData(dataInServer,
                             client,
                             false,
-                            true,
-                            client.getUserIdPlain());
+                            true);
 
                     // Result of the operation
                     result = new RemoteOperationResult<>(true, status, searchMethod.getResponseHeaders());

@@ -67,7 +67,7 @@ public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
         DeleteMethod delete = null;
 
         try {
-            delete = new DeleteMethod(client.getNewWebdavUri() + WebdavUtils.encodePath(remotePath));
+            delete = new DeleteMethod(client.getDavUri() + WebdavUtils.encodePath(remotePath));
             int status = client.executeMethod(delete, REMOVE_READ_TIMEOUT, REMOVE_CONNECTION_TIMEOUT);
 
             delete.getResponseBodyAsString();   // exhaust the response, although not interesting

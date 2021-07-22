@@ -68,7 +68,7 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             DavPropertyNameSet propSet = new DavPropertyNameSet();
             propSet.add(DavPropertyName.GETETAG);
 
-            propfind = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(path),
+            propfind = new PropFindMethod(client.getFilesDavUri(path),
                     propSet,
                     0);
             int status = client.executeMethod(propfind, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);

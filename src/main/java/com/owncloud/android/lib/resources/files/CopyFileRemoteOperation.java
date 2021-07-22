@@ -27,7 +27,6 @@ package com.owncloud.android.lib.resources.files;
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
@@ -101,8 +100,8 @@ public class CopyFileRemoteOperation extends RemoteOperation {
         RemoteOperationResult result = null;
         try {
             copyMethod = new CopyMethod(
-                    client.getWebdavUri() + WebdavUtils.encodePath(mSrcRemotePath),
-                    client.getWebdavUri() + WebdavUtils.encodePath(mTargetRemotePath),
+                    client.getFilesDavUri(mSrcRemotePath),
+                    client.getFilesDavUri(mTargetRemotePath),
                     mOverwrite
             );
             int status = client.executeMethod(copyMethod, COPY_READ_TIMEOUT, COPY_CONNECTION_TIMEOUT);

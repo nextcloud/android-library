@@ -139,7 +139,7 @@ class NextcloudClient(
                 }
 
                 if (destination != null) {
-                    val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0)
+                    val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
                     val redirectionBase = location.substring(0, suffixIndex)
                     val destinationStr = destination
                     val destinationPath = destinationStr.substring(baseUri.toString().length)

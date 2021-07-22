@@ -25,7 +25,6 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
@@ -94,12 +93,14 @@ public class RenameFileRemoteOperation extends RemoteOperation {
             }
 
             // check if a file with the new name already exists
-            if (client.existsFile(mNewRemotePath)) {
+            RemoteOperationResult existenceResult = new ExistenceCheckRemoteOperation(mNewRemotePath, false)
+                    .execute(client);
+            if (existenceResult.isSuccess()) {
                 return new RemoteOperationResult(ResultCode.INVALID_OVERWRITE);
             }
 
-            move = new MoveMethod(client.getWebdavUri() + WebdavUtils.encodePath(mOldRemotePath),
-                    client.getWebdavUri() + WebdavUtils.encodePath(mNewRemotePath), true);
+            move = new MoveMethod(client.getFilesDavUri(mOldRemotePath),
+                    client.getFilesDavUri(mNewRemotePath), true);
             client.executeMethod(move, RENAME_READ_TIMEOUT, RENAME_CONNECTION_TIMEOUT);
             result = new RemoteOperationResult(move.succeeded(), move);
             Log_OC.i(TAG, "Rename " + mOldRemotePath + " to " + mNewRemotePath + ": " +

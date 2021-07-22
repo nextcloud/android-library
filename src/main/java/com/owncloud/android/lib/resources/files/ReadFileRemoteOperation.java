@@ -77,9 +77,9 @@ public class ReadFileRemoteOperation extends RemoteOperation {
         /// take the duty of check the server for the current state of the file there
         try {
             // remote request
-            propfind = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(mRemotePath),
-                WebdavUtils.getFilePropSet(),    // PropFind Properties
-                DavConstants.DEPTH_0);
+            propfind = new PropFindMethod(client.getFilesDavUri(mRemotePath),
+                    WebdavUtils.getFilePropSet(),    // PropFind Properties
+                    DavConstants.DEPTH_0);
             int status;
             status = client.executeMethod(propfind, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
@@ -91,7 +91,7 @@ public class ReadFileRemoteOperation extends RemoteOperation {
                 // Parse response
                 MultiStatus resp = propfind.getResponseBodyAsMultiStatus();
                 WebdavEntry we = new WebdavEntry(resp.getResponses()[0],
-                    client.getWebdavUri().getPath());
+                        client.getDavUri().getPath());
                 RemoteFile remoteFile = new RemoteFile(we);
                 ArrayList<Object> files = new ArrayList<Object>();
                 files.add(remoteFile);
