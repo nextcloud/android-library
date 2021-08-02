@@ -4,7 +4,7 @@ name: compile
 
 steps:
   - name: compile
-    image: nextcloudci/android:android-49
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     commands:
       - ./gradlew assemble
 
@@ -46,7 +46,7 @@ name: test-master
 
 steps:
 - name: test
-  image: nextcloudci/android:android-49
+  image: ghcr.io/nextcloud/continuous-integration-android8:2
   privileged: true
   environment:
     LOG_USERNAME:
@@ -58,7 +58,7 @@ steps:
     GIT_TOKEN:
       from_secret: GIT_TOKEN
   commands:
-    - emulator-headless -avd android-27 -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
+    - emulator -avd android -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
     - sed -i s"#server#server-master#" gradle.properties
     - sed -i s"#1#5#" ./src/androidTest/java/com/owncloud/android/RetryTestRule.kt
     - ./gradlew assembleDebug
@@ -134,7 +134,7 @@ name: test-stable
 
 steps:
   - name: test
-    image: nextcloudci/android:android-49
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     privileged: true
     environment:
       LOG_USERNAME:
@@ -146,7 +146,7 @@ steps:
       GIT_TOKEN:
         from_secret: GIT_TOKEN
     commands:
-      - emulator-headless -avd android-27 -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
+      - emulator -avd android -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
       - sed -i s"#server#server-stable#" gradle.properties
       - sed -i s"#1#5#" ./src/androidTest/java/com/owncloud/android/RetryTestRule.kt
       - ./gradlew assembleDebug
@@ -220,7 +220,7 @@ name: analysis
 
 steps:
   - name: analysis
-    image: nextcloudci/android:android-49
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     environment:
       GIT_USERNAME:
         from_secret: GIT_USERNAME
