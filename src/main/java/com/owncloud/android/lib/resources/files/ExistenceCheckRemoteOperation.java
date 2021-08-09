@@ -26,6 +26,7 @@ package com.owncloud.android.lib.resources.files;
 
 import android.content.Context;
 
+import com.owncloud.android.lib.common.OwnCloudAnonymousCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -85,7 +86,11 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
         HeadMethod head = null;
         boolean previousFollowRedirects = client.isFollowRedirects();
         try {
-            head = new HeadMethod(client.getFilesDavUri(mPath));
+            if (client.getCredentials() instanceof OwnCloudAnonymousCredentials) {
+                head = new HeadMethod(client.getDavUri().toString());
+            } else {
+                head = new HeadMethod(client.getFilesDavUri(mPath));
+            }
             client.setFollowRedirects(false);
             int status = client.executeMethod(head, TIMEOUT, TIMEOUT);
             if (previousFollowRedirects) {
