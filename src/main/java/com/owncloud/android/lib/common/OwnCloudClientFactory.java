@@ -208,6 +208,13 @@ public class OwnCloudClientFactory {
         String username = AccountUtils.getUsernameForAccount(account);
         String password = am.peekAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type));
 
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new AccountNotFoundException(
+                    account,
+                    "Username or password could not be retrieved",
+                    null);
+        }
+
         // Restore cookies
         // TODO v2 cookie handling
         // AccountUtils.restoreCookies(account, client, appContext);
