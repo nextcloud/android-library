@@ -46,7 +46,7 @@ import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import java.util.ArrayList;
 
 /**
- * Remote operation performing the read of remote trashbin folder on Nextcloud server.
+ * Remote operation performing the read of remote versions on Nextcloud server.
  */
 
 public class ReadFileVersionsRemoteOperation extends RemoteOperation {
