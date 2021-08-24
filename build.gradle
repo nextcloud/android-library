@@ -25,6 +25,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.github.spotbugs"
 apply plugin: 'io.gitlab.arturbosch.detekt'
+apply plugin: 'maven-publish' // needed for JitPack.io
 
 repositories {
     google()
