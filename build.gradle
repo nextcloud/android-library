@@ -199,3 +199,16 @@ detekt {
     config = files("detekt.yml")
     input = files("src/")
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.nextcloud.android-library'
+                artifactId = 'master'
+            }
+        }
+    }
+}
