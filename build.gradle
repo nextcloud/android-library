@@ -25,6 +25,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.github.spotbugs"
 apply plugin: 'io.gitlab.arturbosch.detekt'
+apply plugin: 'maven-publish' // needed for JitPack.io
 
 repositories {
     google()
@@ -98,6 +99,7 @@ dependencies {
 
 spotbugs {
     toolVersion = '3.1.12'
+    ignoreFailures = true
 }
 
 android {
@@ -196,4 +198,17 @@ detekt {
     }
     config = files("detekt.yml")
     input = files("src/")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.nextcloud.android-library'
+                artifactId = 'master'
+            }
+        }
+    }
 }
