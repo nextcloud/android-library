@@ -50,7 +50,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.lang.Math;
 
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
@@ -182,7 +181,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             if (token != null) {
                 moveMethod.addRequestHeader(E2E_TOKEN, token);
             }
-            int moveResult = client.executeMethod(moveMethod, CalcAssembleTimeout(file), -1);
+            
+            final int DO_NOT_CHANGE_DEFAULT = -1;
+            int moveResult = client.executeMethod(moveMethod, calcAssembleTimeout(file), DO_NOT_CHANGE_DEFAULT);
 
             result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
         } catch (Exception e) {
@@ -318,10 +319,11 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     }
 
     private int calcAssembleTimeout(File file) {
-        final double threeMinutes = 3.0 * 60 * 1000;
         final int thirtySeconds = 30 * 1000;
+        final int threeMinutes = 3 * 60 * 1000;
         final int thirtyMinutes = 30 * 60 * 1000;
-        int AssembleReadTimeout = Math.max(thirtySeconds , Math.min((int)(threeMinutes * file.length() / 1e9) , thirtyMinutes) );
-        return AssembleReadTimeout;
+        final double fileSizeInGb = file.length() / 1e9;
+        
+        return Math.max(thirtySeconds , Math.min((int)(threeMinutes * fileSizeInGb) , thirtyMinutes) );
     }
 }
