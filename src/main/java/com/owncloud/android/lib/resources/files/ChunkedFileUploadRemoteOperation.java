@@ -317,7 +317,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         return putMethod;
     }
 
-    private int CalcAssembleTimeout(File file) {
+    private int calcAssembleTimeout(File file) {
         final double threeMinutes = 3.0 * 60 * 1000;
         final int thirtySeconds = 30 * 1000;
         final int thirtyMinutes = 30 * 60 * 1000;
