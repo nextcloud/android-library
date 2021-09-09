@@ -55,7 +55,8 @@ class SearchResultEntryTest {
         assertEquals(
             "/Notes/ShoppingList/Test 123.txt",
             setPath(
-                "http://localhost/nc/index.php/apps/files/?dir=/Notes/ShoppingList&scrollto=Test%20123.txt", // ktlint-disable max-line-length
+                "http://localhost/nc/index.php/apps/files/" +
+                    "?dir=/Notes/ShoppingList&scrollto=Test%20123.txt",
                 sut
             )
         )

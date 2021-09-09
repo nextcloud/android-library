@@ -36,6 +36,7 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Get all search providers for unified search
  */
+@Suppress("TooGenericExceptionCaught")
 class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders>() {
     companion object {
         private val TAG = UnifiedSearchProvidersRemoteOperation::class.java.simpleName

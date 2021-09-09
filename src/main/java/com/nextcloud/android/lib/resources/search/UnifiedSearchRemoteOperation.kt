@@ -37,6 +37,7 @@ import java.net.URLEncoder
 /**
  * Get search result by a specific unified search provider
  */
+@Suppress("TooGenericExceptionCaught")
 class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String) :
     OCSRemoteOperation<SearchResult>() {
     companion object {
