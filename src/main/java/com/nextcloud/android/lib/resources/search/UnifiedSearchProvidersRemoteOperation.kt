@@ -27,7 +27,6 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.SearchProvider
 import com.owncloud.android.lib.common.SearchProviders
-import com.owncloud.android.lib.common.SearchResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
@@ -54,11 +53,13 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
             getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val searchProviders = getServerResponse(getMethod,
-                        object : TypeToken<ServerResponse<ArrayList<SearchProvider>?>?>() {})
-                        ?.ocs
-                        ?.data
-                        ?: ArrayList()
+                val searchProviders = getServerResponse(
+                    getMethod,
+                    object : TypeToken<ServerResponse<ArrayList<SearchProvider>?>?>() {}
+                )
+                    ?.ocs
+                    ?.data
+                    ?: ArrayList()
 
                 val eTag = getMethod.getResponseHeader("ETag") ?: ""
 
@@ -69,13 +70,13 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
             }
         } catch (e: Exception) {
             result = RemoteOperationResult(e)
-            Log_OC.e(TAG, "Get all search provider failed: " + result.logMessage,
-                    result.exception)
+            Log_OC.e(
+                TAG, "Get all search provider failed: " + result.logMessage,
+                result.exception
+            )
         } finally {
             getMethod?.releaseConnection()
         }
         return result
     }
-
-
 }

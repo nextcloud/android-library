@@ -31,32 +31,44 @@ class SearchResultEntryTest {
     fun testFilePath() {
         val sut = SearchResultEntry()
         assertEquals(
-                "/version/testVersion.txt",
-                setPath("http://localhost/nc/index.php/apps/files/?dir=/version&scrollto=testVersion.txt", sut)
+            "/version/testVersion.txt",
+            setPath(
+                "http://localhost/nc/index.php/apps/files/?dir=/version&scrollto=testVersion.txt",
+                sut
+            )
         )
         assertEquals(
-                "/_act/test.txt",
-                setPath("http:/localhost/nc/index.php/apps/files/?dir=/_act&scrollto=test.txt", sut)
+            "/_act/test.txt",
+            setPath("http:/localhost/nc/index.php/apps/files/?dir=/_act&scrollto=test.txt", sut)
         )
         assertEquals(
-                "/_version/test.md",
-                setPath("http://localhost/nc/index.php/apps/files/?dir=/_version&scrollto=test.md", sut)
+            "/_version/test.md",
+            setPath("http://localhost/nc/index.php/apps/files/?dir=/_version&scrollto=test.md", sut)
         )
         assertEquals(
-                "/allTypes/testWithLink.md",
-                setPath("http://localhost/nc/index.php/apps/files/?dir=/allTypes&scrollto=testWithLink.md", sut)
+            "/allTypes/testWithLink.md",
+            setPath(
+                "http://localhost/nc/index.php/apps/files/?dir=/allTypes&scrollto=testWithLink.md",
+                sut
+            )
         )
         assertEquals(
-                "/Notes/ShoppingList/Test 123.txt",
-                setPath("http://localhost/nc/index.php/apps/files/?dir=/Notes/ShoppingList&scrollto=Test%20123.txt", sut)
+            "/Notes/ShoppingList/Test 123.txt",
+            setPath(
+                "http://localhost/nc/index.php/apps/files/?dir=/Notes/ShoppingList&scrollto=Test%20123.txt", // ktlint-disable max-line-length
+                sut
+            )
         )
         assertEquals(
-                "/[Reportage] Test",
-                setPath("http://localhost/nc/index.php/apps/files/?dir=/&scrollto=%5BReportage%5D%20Test", sut)
+            "/[Reportage] Test",
+            setPath(
+                "http://localhost/nc/index.php/apps/files/?dir=/&scrollto=%5BReportage%5D%20Test",
+                sut
+            )
         )
         assertEquals(
-                "/file.txt",
-                setPath("http://localhost/nc/index.php/apps/files/?dir=/&scrollto=file.txt", sut)
+            "/file.txt",
+            setPath("http://localhost/nc/index.php/apps/files/?dir=/&scrollto=file.txt", sut)
         )
     }
 

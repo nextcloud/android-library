@@ -37,7 +37,8 @@ import java.net.URLEncoder
 /**
  * Get search result by a specific unified search provider
  */
-class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String) : OCSRemoteOperation<SearchResult>() {
+class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String) :
+    OCSRemoteOperation<SearchResult>() {
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"
@@ -47,28 +48,32 @@ class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val q
 
     override fun run(client: NextcloudClient): RemoteOperationResult<SearchResult> {
         if (query.isBlank()) {
-            return RemoteOperationResult(IllegalArgumentException("Query may not be empty or blank!"))
+            return RemoteOperationResult(
+                IllegalArgumentException("Query may not be empty or blank!")
+            )
         }
 
         var result: RemoteOperationResult<SearchResult>
         var getMethod: GetMethod? = null
         try {
-            getMethod = GetMethod(client.baseUri.toString() +
+            getMethod = GetMethod(
+                client.baseUri.toString() +
                     ENDPOINT +
                     provider +
                     SEARCH_TERM +
                     URLEncoder.encode(query, "UTF-8") +
                     JSON_FORMAT,
-                    true)
+                true
+            )
 
             // remote request
             getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val searchProviders = getServerResponse(getMethod,
-                        object : TypeToken<ServerResponse<SearchResult>?>() {})
-                        ?.ocs
-                        ?.data
+                val searchProviders = getServerResponse(
+                    getMethod,
+                    object : TypeToken<ServerResponse<SearchResult>?>() {}
+                )?.ocs?.data
 
                 if (searchProviders != null) {
                     result = RemoteOperationResult(true, getMethod)
@@ -81,14 +86,14 @@ class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val q
             }
         } catch (e: Exception) {
             result = RemoteOperationResult(e)
-            Log_OC.e(TAG,
-                    "Search with " + query + " to " + provider + " failed:" + result.logMessage,
-                    result.exception)
+            Log_OC.e(
+                TAG,
+                "Search with " + query + " to " + provider + " failed:" + result.logMessage,
+                result.exception
+            )
         } finally {
             getMethod?.releaseConnection()
         }
         return result
     }
-
-
 }

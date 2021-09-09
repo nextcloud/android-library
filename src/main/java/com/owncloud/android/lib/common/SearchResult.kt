@@ -29,7 +29,9 @@ package com.owncloud.android.lib.common
 /**
  * Search result of an unified search
  */
-data class SearchResult(var name: String = "",
-                        var isPaginated: Boolean = false,
-                        var entries: List<SearchResultEntry> = emptyList(),
-                        var cursor: String = "")
+data class SearchResult(
+    var name: String = "",
+    var isPaginated: Boolean = false,
+    var entries: List<SearchResultEntry> = emptyList(),
+    var cursor: String = ""
+)
