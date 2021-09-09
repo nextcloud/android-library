@@ -27,6 +27,7 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.SearchProvider
 import com.owncloud.android.lib.common.SearchProviders
+import com.owncloud.android.lib.common.SearchResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
@@ -36,15 +37,15 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Get all search providers for unified search
  */
-class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation() {
+class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders>() {
     companion object {
         private val TAG = UnifiedSearchProvidersRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers"
         private const val JSON_FORMAT = "?format=json"
     }
 
-    override fun run(client: NextcloudClient): RemoteOperationResult {
-        var result: RemoteOperationResult
+    override fun run(client: NextcloudClient): RemoteOperationResult<SearchProviders> {
+        var result: RemoteOperationResult<SearchProviders>
         var getMethod: GetMethod? = null
         try {
             getMethod = GetMethod(client.baseUri.toString() + ENDPOINT + JSON_FORMAT, true)

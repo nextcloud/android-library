@@ -37,7 +37,7 @@ import java.net.URLEncoder
 /**
  * Get search result by a specific unified search provider
  */
-class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String) : OCSRemoteOperation() {
+class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String) : OCSRemoteOperation<SearchResult>() {
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"
@@ -45,12 +45,12 @@ class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val q
         private const val JSON_FORMAT = "&format=json"
     }
 
-    override fun run(client: NextcloudClient): RemoteOperationResult {
+    override fun run(client: NextcloudClient): RemoteOperationResult<SearchResult> {
         if (query.isBlank()) {
             return RemoteOperationResult(IllegalArgumentException("Query may not be empty or blank!"))
         }
 
-        var result: RemoteOperationResult
+        var result: RemoteOperationResult<SearchResult>
         var getMethod: GetMethod? = null
         try {
             getMethod = GetMethod(client.baseUri.toString() +
