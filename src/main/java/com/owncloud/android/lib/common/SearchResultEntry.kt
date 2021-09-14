@@ -48,7 +48,7 @@ data class SearchResultEntry(
         sanitizer.allowUnregisteredParamaters = true
         sanitizer.unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAllButNulLegal()
         sanitizer.parseUrl(resourceUrl)
-        sanitizer.parseQuery(URL(resourceUrl).query)
+        URL(resourceUrl).query?.let { sanitizer.parseQuery(it) }
         val dir = if (sanitizer.getValue("dir") == "/") {
             ""
         } else {
