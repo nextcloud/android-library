@@ -65,7 +65,7 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
                 val eTag = getMethod.getResponseHeader("ETag") ?: ""
 
                 result = RemoteOperationResult(true, getMethod)
-                result.singleData = SearchProviders(eTag, searchProviders)
+                result.resultData = SearchProviders(eTag, searchProviders)
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }

@@ -78,7 +78,7 @@ class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val q
 
                 if (searchProviders != null) {
                     result = RemoteOperationResult(true, getMethod)
-                    result.singleData = searchProviders
+                    result.resultData = searchProviders
                 } else {
                     result = RemoteOperationResult(false, getMethod)
                 }
