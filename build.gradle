@@ -1,7 +1,7 @@
 import com.github.spotbugs.snom.SpotBugsTask
 
 buildscript {
-    ext.kotlin_version = '1.4.32'
+    ext.kotlin_version = '1.5.31'
     ext.junit_version = '4.13.2'
     repositories {
         google()
