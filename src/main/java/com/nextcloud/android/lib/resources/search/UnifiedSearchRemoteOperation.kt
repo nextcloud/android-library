@@ -38,13 +38,14 @@ import java.net.URLEncoder
  * Get search result by a specific unified search provider
  */
 @Suppress("TooGenericExceptionCaught")
-class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String) :
+class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String, val cursor: Int? = null) :
     OCSRemoteOperation<SearchResult>() {
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"
         private const val SEARCH_TERM = "/search?term="
         private const val JSON_FORMAT = "&format=json"
+        private const val CURSOR = "&cursor=%d"
     }
 
     override fun run(client: NextcloudClient): RemoteOperationResult<SearchResult> {
@@ -57,13 +58,17 @@ class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val q
         var result: RemoteOperationResult<SearchResult>
         var getMethod: GetMethod? = null
         try {
+            var uri = client.baseUri.toString() +
+                ENDPOINT +
+                provider +
+                SEARCH_TERM +
+                URLEncoder.encode(query, "UTF-8") +
+                JSON_FORMAT
+            cursor?.let {
+                uri += CURSOR.format(it)
+            }
             getMethod = GetMethod(
-                client.baseUri.toString() +
-                    ENDPOINT +
-                    provider +
-                    SEARCH_TERM +
-                    URLEncoder.encode(query, "UTF-8") +
-                    JSON_FORMAT,
+                uri,
                 true
             )
 
