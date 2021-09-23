@@ -38,13 +38,19 @@ import java.net.URLEncoder
  * Get search result by a specific unified search provider
  */
 @Suppress("TooGenericExceptionCaught")
-class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val query: String, val cursor: Int? = null) :
+class UnifiedSearchRemoteOperation(
+    @NonNull val provider: String,
+    @NonNull val query: String,
+    val cursor: Int? = null,
+    val limit: Int = 5
+) :
     OCSRemoteOperation<SearchResult>() {
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"
         private const val SEARCH_TERM = "/search?term="
         private const val JSON_FORMAT = "&format=json"
+        private const val LIMIT = "&limit=%d"
         private const val CURSOR = "&cursor=%d"
     }
 
@@ -63,7 +69,8 @@ class UnifiedSearchRemoteOperation(@NonNull val provider: String, @NonNull val q
                 provider +
                 SEARCH_TERM +
                 URLEncoder.encode(query, "UTF-8") +
-                JSON_FORMAT
+                JSON_FORMAT +
+                LIMIT.format(limit)
             cursor?.let {
                 uri += CURSOR.format(it)
             }
