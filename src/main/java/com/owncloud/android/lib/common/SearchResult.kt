@@ -33,5 +33,5 @@ data class SearchResult(
     var name: String = "",
     var isPaginated: Boolean = false,
     var entries: List<SearchResultEntry> = emptyList(),
-    var cursor: String = ""
+    var cursor: String? = ""
 )
