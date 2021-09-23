@@ -56,6 +56,7 @@ public class OwnCloudClientFactory {
     
     /** Default timeout for establishing a connection */
     public static final int DEFAULT_CONNECTION_TIMEOUT = 60000;
+    public static final long DEFAULT_CONNECTION_TIMEOUT_LONG = 60000;
 
 
     /**
