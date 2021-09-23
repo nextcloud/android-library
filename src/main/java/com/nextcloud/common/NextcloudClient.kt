@@ -31,6 +31,7 @@ package com.nextcloud.common
 import android.content.Context
 import android.net.Uri
 import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_CONNECTION_TIMEOUT_LONG
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
 import com.owncloud.android.lib.common.accounts.AccountUtils
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
@@ -70,7 +71,9 @@ class NextcloudClient(
 
             return OkHttpClient.Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
-                .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                .connectTimeout(DEFAULT_CONNECTION_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                .readTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                .callTimeout(DEFAULT_CONNECTION_TIMEOUT_LONG + DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .dns(IPV6PreferringDNS())
