@@ -61,7 +61,6 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation("/testFolder/", true).execute(client).isSuccess)
         val remoteFile = ReadFileRemoteOperation("/testFolder/")
             .execute(client).data[0] as RemoteFile
-        val fileId = remoteFile.localId
 
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
@@ -73,8 +72,6 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
         val firstResult = data.entries.find { it.title == "testFolder" }
 
         assertNotNull(firstResult)
-        assertEquals("file", firstResult?.objectType)
-        assertEquals(fileId, firstResult?.objectId)
     }
 
     @Test
