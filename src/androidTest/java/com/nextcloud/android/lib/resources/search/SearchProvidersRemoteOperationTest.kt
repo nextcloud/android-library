@@ -23,7 +23,6 @@
 package com.nextcloud.android.lib.resources.search
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.common.SearchProviders
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.OCCapability
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
@@ -44,7 +43,7 @@ class SearchProvidersRemoteOperationTest : AbstractIT() {
         val result = nextcloudClient.execute(UnifiedSearchProvidersRemoteOperation())
         assertTrue(result.isSuccess)
 
-        val providers = result.singleData as SearchProviders
+        val providers = result.resultData
 
         assertTrue(providers.eTag.isNotBlank())
         assertTrue(providers.providers.isNotEmpty())

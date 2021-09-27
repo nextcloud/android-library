@@ -23,7 +23,6 @@
 package com.nextcloud.android.lib.resources.search
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.common.SearchResult
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
@@ -53,7 +52,7 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val data = result.singleData as SearchResult
+        val data = result.resultData
         assertTrue(data.entries.isEmpty())
     }
 
@@ -67,7 +66,7 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val data = result.singleData as SearchResult
+        val data = result.resultData
         assertEquals("Files", data.name)
         assertTrue(data.entries.isNotEmpty())
 
@@ -85,7 +84,7 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val data = result.singleData as SearchResult
+        val data = result.resultData
         assertTrue(data.name == "Files")
         assertTrue(data.entries.isNotEmpty())
         assertNotNull(data.entries.find { it.title == "test Folder" })
