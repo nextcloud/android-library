@@ -39,11 +39,17 @@ data class SearchResultEntry(
     var resourceUrl: String = "",
     var icon: String = "",
     var rounded: Boolean = false,
-    var objectType: String = "",
-    var objectId: String = ""
+    var attributes: Map<String, String> = emptyMap()
 ) {
+    fun fileId(): String? {
+        return attributes["fileId"]
+    }
 
     fun remotePath(): String {
+        return attributes["path"] ?: parseRemotePath()
+    }
+
+    private fun parseRemotePath(): String {
         val sanitizer = UrlQuerySanitizer()
         sanitizer.allowUnregisteredParamaters = true
         sanitizer.unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAllButNulLegal()

@@ -32,7 +32,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UnifiedSearchRemoteOperationTest : AbstractIT() {
+class UnifiedSearchRemoteOperationIT : AbstractIT() {
     @Test
     fun filesSearchEmptySearch() {
         val result = UnifiedSearchRemoteOperation("files", "").execute(nextcloudClient)
@@ -58,9 +58,11 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
 
     @Test
     fun filesSearch() {
-        assertTrue(CreateFolderRemoteOperation("/testFolder/", true).execute(client).isSuccess)
-        val remoteFile = ReadFileRemoteOperation("/testFolder/")
+        val remotePath = "/testFolder"
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        val remoteFile = ReadFileRemoteOperation(remotePath)
             .execute(client).data[0] as RemoteFile
+        val fileId = remoteFile.localId
 
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
@@ -72,6 +74,8 @@ class UnifiedSearchRemoteOperationTest : AbstractIT() {
         val firstResult = data.entries.find { it.title == "testFolder" }
 
         assertNotNull(firstResult)
+        assertEquals(remotePath, firstResult?.remotePath())
+        assertEquals(fileId, firstResult?.fileId())
     }
 
     @Test

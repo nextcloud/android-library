@@ -73,7 +73,7 @@ class SearchResultEntryTest {
         )
     }
 
-    private fun setPath(path: String, entry: SearchResultEntry): String {
+    private fun setPath(path: String, entry: SearchResultEntry): String? {
         entry.resourceUrl = path
 
         return entry.remotePath()
