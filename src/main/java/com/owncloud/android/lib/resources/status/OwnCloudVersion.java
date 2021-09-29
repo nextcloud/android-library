@@ -91,7 +91,11 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
     public boolean isNewerOrEqual(@NonNull OwnCloudVersion another) {
         return version >= another.version;
     }
-    
+
+    public boolean isOlderThan(@NonNull OwnCloudVersion another) {
+        return version < another.version;
+    }
+
     public boolean isSameMajorVersion(@NonNull OwnCloudVersion another) {
         return this.getMajorVersionNumber() == another.getMajorVersionNumber();
     }

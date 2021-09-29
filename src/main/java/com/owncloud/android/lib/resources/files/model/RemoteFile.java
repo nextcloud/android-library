@@ -207,4 +207,5 @@ public class RemoteFile implements Parcelable, Serializable {
     public String getLocalId() {
         return remoteId.substring(0, 8).replaceAll("^0*", "");
     }
+
 }
