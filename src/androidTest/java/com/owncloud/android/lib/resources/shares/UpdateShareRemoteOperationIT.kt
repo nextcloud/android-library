@@ -158,14 +158,11 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val capability = capabilityResult.singleData as OCCapability
 
         when {
-            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_23) -> {
+            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {
                 assertEquals(
                     "Password needs to be at least 10 characters long. Password is present in compromised password list. Please choose a different password.",
                     result.message
                 )
-            }
-            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {
-                assertEquals("Password needs to be at least 10 characters long.", result.message)
             }
             capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21) -> {
                 assertEquals("Password needs to be at least 8 characters long.", result.message)
