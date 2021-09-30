@@ -3,6 +3,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 buildscript {
     ext.kotlin_version = '1.5.31'
     ext.junit_version = '4.13.2'
+    ext.jacoco_version = '0.8.7'
     repositories {
         google()
         maven {
@@ -13,10 +14,13 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.2'
-        classpath('com.hiya:jacoco-android:0.2')
+        classpath 'com.hiya:jacoco-android:0.2'
         classpath 'gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.18.1"
+        classpath "org.jacoco:org.jacoco.core:$jacoco_version"
+        classpath "org.jacoco:org.jacoco.report:$jacoco_version"
+        classpath "org.jacoco:org.jacoco.agent:$jacoco_version"
     }
 }
 
@@ -46,8 +50,16 @@ configurations {
         exclude group: 'com.google.firebase', module: 'firebase-core'
         exclude group: 'org.ogce', module: 'xpp3' // xpp3 is for plain java, Android uses kxml2
 
-        // check for updates every build
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy {
+            // check for updates every build
+            cacheChangingModulesFor 0, 'seconds'
+            eachDependency { details ->
+                if ('org.jacoco' == details.requested.group) {
+                    details.useVersion "$jacoco_version"
+                }
+            }
+
+        }
     }
 }
 
@@ -162,6 +174,8 @@ android {
 
 tasks.register("combinedTestReport", JacocoReport) {
 
+    jacocoClasspath = configurations['jacocoAnt']
+
     reports {
         xml.enabled true
         html.enabled true
@@ -214,6 +228,6 @@ afterEvaluate {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "$jacoco_version"
 }
 
