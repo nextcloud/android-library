@@ -25,6 +25,8 @@ package com.owncloud.android.lib.common;
 
 import android.os.Parcel;
 
+import com.owncloud.android.lib.common.utils.OkHttpCredentialsUtil;
+
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -34,7 +36,6 @@ import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import okhttp3.Credentials;
 
 @EqualsAndHashCode
 public class OwnCloudBasicCredentials implements OwnCloudCredentials {
@@ -73,7 +74,7 @@ public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
     @Override
     public String toOkHttpCredentials() {
-        return Credentials.basic(username, authToken);
+        return OkHttpCredentialsUtil.basic(username, authToken);
     }
 
 
