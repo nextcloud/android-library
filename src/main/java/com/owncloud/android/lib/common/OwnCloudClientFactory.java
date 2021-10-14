@@ -40,7 +40,7 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.common.utils.OkHttpCredentialsUtil;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
