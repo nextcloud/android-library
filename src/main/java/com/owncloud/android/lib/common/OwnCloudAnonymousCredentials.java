@@ -2,7 +2,7 @@ package com.owncloud.android.lib.common;
 
 import android.os.Parcel;
 
-import com.owncloud.android.lib.common.utils.OkHttpCredentialsUtil;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 
 public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 

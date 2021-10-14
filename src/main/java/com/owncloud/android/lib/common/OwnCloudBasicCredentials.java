@@ -25,7 +25,7 @@ package com.owncloud.android.lib.common;
 
 import android.os.Parcel;
 
-import com.owncloud.android.lib.common.utils.OkHttpCredentialsUtil;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
