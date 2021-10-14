@@ -27,8 +27,8 @@
 package com.nextcloud.common
 
 import android.os.Build
-import java.nio.charset.StandardCharsets
 import okhttp3.Credentials
+import java.nio.charset.StandardCharsets
 
 object OkHttpCredentialsUtil {
     /**
