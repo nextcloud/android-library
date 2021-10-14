@@ -2,7 +2,7 @@ package com.owncloud.android.lib.common;
 
 import android.os.Parcel;
 
-import okhttp3.Credentials;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 
 public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 
@@ -27,7 +27,7 @@ public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 
     @Override
     public String toOkHttpCredentials() {
-        return Credentials.basic(getUsername(), getAuthToken());
+        return OkHttpCredentialsUtil.basic(getUsername(), getAuthToken());
     }
 
     @Override

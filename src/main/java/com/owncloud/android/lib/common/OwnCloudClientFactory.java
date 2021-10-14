@@ -40,11 +40,10 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
-import okhttp3.Credentials;
 
 public class OwnCloudClientFactory {
     
@@ -221,9 +220,9 @@ public class OwnCloudClientFactory {
         // AccountUtils.restoreCookies(account, client, appContext);
 
         return createNextcloudClient(baseUri,
-                userId,
-                Credentials.basic(username, password),
-                appContext,
-                true);
+                                     userId,
+                                     OkHttpCredentialsUtil.basic(username, password),
+                                     appContext,
+                                     true);
     }
 }
