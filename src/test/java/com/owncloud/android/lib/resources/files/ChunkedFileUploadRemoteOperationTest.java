@@ -27,17 +27,24 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class ChunkedFileUploadRemoteOperationTest {
 
-    private long chunkSize = 1024;
+    private final long chunkSize = 1024;
+
+    @Mock
+    File file;
 
     @Test
     public void testUploadWithoutExistingChunks() {
@@ -136,17 +143,66 @@ public class ChunkedFileUploadRemoteOperationTest {
         assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
     }
 
+    @Test
+    public void testAssembleTimeout() {
+        MockitoAnnotations.openMocks(this);
+
+        String modificationTimestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null,
+                null,
+                null,
+                null,
+                modificationTimestamp,
+                false);
+
+        // 0b
+        when(file.length()).thenReturn(0L);
+        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file));
+
+        // 100b
+        when(file.length()).thenReturn(100L);
+        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file));
+
+        // 1Mb
+        when(file.length()).thenReturn(1000 * 1000L);
+        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file));
+
+        // 100Mb
+        when(file.length()).thenReturn(100 * 1000 * 1000L);
+        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file));
+
+        // 1Gb
+        when(file.length()).thenReturn(1000 * 1000 * 1000L);
+        assertEquals(sut.ASSEMBLE_TIME_PER_GB, sut.calculateAssembleTimeout(file));
+
+        // 2Gb
+        when(file.length()).thenReturn(2 * 1000 * 1000 * 1000L);
+        assertEquals(2 * sut.ASSEMBLE_TIME_PER_GB, sut.calculateAssembleTimeout(file));
+
+        // 5Gb
+        when(file.length()).thenReturn(5 * 1000 * 1000 * 1000L);
+        assertEquals(5 * sut.ASSEMBLE_TIME_PER_GB, sut.calculateAssembleTimeout(file));
+
+        // 50Gb
+        when(file.length()).thenReturn(50 * 1000 * 1000 * 1000L);
+        assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file));
+
+        // 500Gb
+        when(file.length()).thenReturn(500 * 1000 * 1000 * 1000L);
+        assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file));
+    }
+
     private boolean test(List<Chunk> existingChunks,
                          List<Chunk> expectedMissingChunks,
                          long chunkSize,
                          long length) {
         String modificationTimestamp = String.valueOf(System.currentTimeMillis() / 1000);
         ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null,
-                                                                                    modificationTimestamp,
-                                                                                    false);
+                null,
+                null,
+                null,
+                modificationTimestamp,
+                false);
 
         List<Chunk> missingChunks = sut.checkMissingChunks(existingChunks, length, chunkSize);
 
