@@ -24,6 +24,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
@@ -59,6 +61,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
     private final boolean onWifiConnection;
+
+    public final int ASSEMBLE_TIME_MIN = 30 * 1000; // 30s
+    public final int ASSEMBLE_TIME_MAX = 30 * 60 * 1000; // 30min
+    public final int ASSEMBLE_TIME_PER_GB = 3 * 60 * 1000; // 3 min
 
     public ChunkedFileUploadRemoteOperation(String storagePath,
                                             String remotePath,
@@ -181,7 +187,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             if (token != null) {
                 moveMethod.addRequestHeader(E2E_TOKEN, token);
             }
-            int moveResult = client.executeMethod(moveMethod);
+
+            final int DO_NOT_CHANGE_DEFAULT = -1;
+            int moveResult = client.executeMethod(moveMethod, calculateAssembleTimeout(file), DO_NOT_CHANGE_DEFAULT);
 
             result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
         } catch (Exception e) {
@@ -314,5 +322,12 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         }
 
         return putMethod;
+    }
+
+    @VisibleForTesting
+    public int calculateAssembleTimeout(File file) {
+        final double fileSizeInGb = file.length() / 1e9;
+
+        return Math.max(ASSEMBLE_TIME_MIN, Math.min((int) (ASSEMBLE_TIME_PER_GB * fileSizeInGb), ASSEMBLE_TIME_MAX));
     }
 }
