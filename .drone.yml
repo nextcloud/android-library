@@ -70,8 +70,9 @@ steps:
     - ./gradlew installDebugAndroidTest
     - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
     - ./gradlew combinedTestReport
-    - curl -o codecov.sh https://codecov.io/bash
-    - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
+    - curl -Os https://uploader.codecov.io/latest/linux/codecov
+    - chmod +x codecov
+    - ./codecov -t 2eec98c3-ff20-4cad-9e08-463471a33431
 
 - name: notify
   image: drillster/drone-email
@@ -158,8 +159,9 @@ steps:
       - ./gradlew installDebugAndroidTest
       - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew combinedTestReport
-      - curl -o codecov.sh https://codecov.io/bash
-      - bash ./codecov.sh -t 2eec98c3-ff20-4cad-9e08-463471a33431
+      - curl -Os https://uploader.codecov.io/latest/linux/codecov
+      - chmod +x codecov
+      - ./codecov -t 2eec98c3-ff20-4cad-9e08-463471a33431
 
   - name: notify
     image: drillster/drone-email
