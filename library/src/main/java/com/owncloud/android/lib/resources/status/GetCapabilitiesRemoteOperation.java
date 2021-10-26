@@ -59,6 +59,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_CORE = "core";
 
     private static final String NODE_FILES_SHARING = "files_sharing";
+    private static final String NODE_SHARE_BY_MAIL = "sharebymail";
     private static final String NODE_PUBLIC = "public";
     private static final String NODE_PASSWORD = "password";
     private static final String NODE_ASK_FOR_OPTIONAL_PASSWORD = "askForOptionalPassword";
@@ -73,6 +74,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String PROPERTY_MESSAGE = "message";
 
     private static final String PROPERTY_POLLINTERVAL = "pollinterval";
+
+    private static final String PROPERTY_SEND_PASSWORD_BY_MAIL = "send_password_by_mail";
 
     private static final String PROPERTY_MAJOR = "major";
     private static final String PROPERTY_MINOR = "minor";
@@ -414,6 +417,23 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                         capability.setFilesSharingFederationIncoming(CapabilityBooleanType.fromBooleanValue(
                                 respFederation.getBoolean(PROPERTY_INCOMING)));
                     }
+
+                    if (respFilesSharing.has(NODE_SHARE_BY_MAIL)) {
+                        JSONObject respByMail = respFilesSharing.getJSONObject(NODE_SHARE_BY_MAIL);
+                        capability.setFilesSharingByMail(CapabilityBooleanType.fromBooleanValue(
+                                respByMail.getBoolean(PROPERTY_ENABLED)));
+                        if (respByMail.has(PROPERTY_SEND_PASSWORD_BY_MAIL)) {
+                            capability.setFilesSharingByMailSendPasswordByMail(
+                                    CapabilityBooleanType.fromBooleanValue(
+                                            respByMail.getBoolean(PROPERTY_SEND_PASSWORD_BY_MAIL)));
+                        } else {
+                            capability.setFilesSharingByMailSendPasswordByMail(CapabilityBooleanType.UNKNOWN);
+                        }
+                    } else {
+                        capability.setFilesSharingByMail(CapabilityBooleanType.UNKNOWN);
+                        capability.setFilesSharingByMailSendPasswordByMail(CapabilityBooleanType.UNKNOWN);
+                    }
+                    
                     Log_OC.d(TAG, "*** Added " + NODE_FILES_SHARING);
                 }
 
