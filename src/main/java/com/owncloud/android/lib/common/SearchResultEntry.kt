@@ -41,6 +41,10 @@ data class SearchResultEntry(
     var rounded: Boolean = false,
     var attributes: Map<String, String> = emptyMap()
 ) {
+
+    val isFile: Boolean
+        get() = fileId() != null
+
     fun fileId(): String? {
         return attributes["fileId"]
     }
