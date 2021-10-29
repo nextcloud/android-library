@@ -27,16 +27,24 @@
 
 package com.owncloud.android.lib.resources.shares;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.owncloud.android.AbstractIT;
+import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 
 import org.junit.Test;
 
 import java.util.List;
-
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class GetSharesRemoteOperationTest extends AbstractIT {
     @Test
@@ -141,5 +149,64 @@ public class GetSharesRemoteOperationTest extends AbstractIT {
                     throw new AssertionError("Unknown share type");
             }
         }
+    }
+
+    @Test
+    public void sharedWithMe() {
+        GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
+        GetSharesRemoteOperation sutSharedWithMe = new GetSharesRemoteOperation(true);
+
+        RemoteOperationResult<List<OCShare>> result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getResultData().size());
+
+        RemoteOperationResult<List<OCShare>> resultSharedWithMe = sutSharedWithMe.execute(client);
+        assertTrue(resultSharedWithMe.isSuccess());
+        assertEquals(0, resultSharedWithMe.getResultData().size());
+
+
+        // share folder to user "admin"
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToAdmin/",
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER)
+                .execute(client).isSuccess());
+
+        // Expect one file shared by me, no file shared with me
+        result = sut.execute(client);
+        assertEquals(1, result.getResultData().size());
+
+        resultSharedWithMe = sutSharedWithMe.execute(client);
+        assertEquals(0, resultSharedWithMe.getResultData().size());
+
+        // create client for user "user1"
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
+        String loginName = "user1";
+        String password = "user1";
+
+        OwnCloudClient clientUser1 = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
+        clientUser1.setCredentials(new OwnCloudBasicCredentials(loginName, password));
+        clientUser1.setUserId(loginName); // for test same as userId
+
+        // share folder to previous user
+        assertTrue(new CreateFolderRemoteOperation("/shareToUser/", true).execute(clientUser1).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToUser/",
+                ShareType.USER,
+                client.getCredentials().getUsername(),
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER)
+                .execute(clientUser1).isSuccess());
+
+        // Expect one file shared by me, one file shared with me
+        result = sut.execute(client);
+        assertEquals(1, result.getResultData().size());
+
+        resultSharedWithMe = sutSharedWithMe.execute(client);
+        assertEquals(1, resultSharedWithMe.getResultData().size());
     }
 }

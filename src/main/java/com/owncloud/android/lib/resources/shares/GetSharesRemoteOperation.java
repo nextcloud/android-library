@@ -42,6 +42,15 @@ import java.util.List;
 public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesRemoteOperation.class.getSimpleName();
+    private boolean sharedWithMe = false;
+
+    public GetSharesRemoteOperation() {
+        this(false);
+    }
+
+    public GetSharesRemoteOperation(boolean sharedWithMe) {
+        this.sharedWithMe = sharedWithMe;
+    }
 
     @Override
     protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
@@ -55,6 +64,11 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
         try {
             get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            if (sharedWithMe) {
+                get.setQueryString("shared_with_me=true");
+            }
+
             status = client.executeMethod(get);
 
             if (isSuccess(status)) {
@@ -62,7 +76,7 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
 
                 // Parse xml response and obtain the list of shares
                 ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
-                    new ShareXMLParser()
+                        new ShareXMLParser()
                 );
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
