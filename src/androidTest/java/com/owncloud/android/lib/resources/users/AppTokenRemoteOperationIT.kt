@@ -97,7 +97,7 @@ class AppTokenRemoteOperationIT : AbstractIT() {
         // check that new password works
         assertTrue(createPassword.execute(nextcloudClient).isSuccess)
 
-        // second: delete this new app password 
+        // second: delete this new app password
         val sut = DeleteAppPasswordRemoteOperation()
         val result2 = sut.execute(nextcloudClient)
 
