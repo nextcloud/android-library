@@ -24,6 +24,8 @@
 
 package com.owncloud.android.lib.common.network;
 
+import android.annotation.SuppressLint;
+
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.security.KeyStore;
@@ -45,6 +47,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * @author David A. Velasco
  */
+@SuppressLint("CustomX509TrustManager")
 public class AdvancedX509TrustManager implements X509TrustManager {
     
     private static final String TAG = AdvancedX509TrustManager.class.getSimpleName();
