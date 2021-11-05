@@ -124,11 +124,13 @@ android {
     }
 
     lintOptions {
+        // config
         warningsAsErrors true
         abortOnError true
+        disable 'GradleDependency','InvalidPackage'
+        // output
         htmlReport true
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
-        disable 'GradleDependency'
     }
 
     defaultConfig {
