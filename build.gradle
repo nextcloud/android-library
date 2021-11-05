@@ -61,6 +61,8 @@ configurations {
 
 ext {
     lombokVersion = "1.18.22"
+
+    ciBuild = System.getenv("CI") == "true"
 }
 
 dependencies {
@@ -129,6 +131,7 @@ android {
         abortOnError true
         disable 'GradleDependency','InvalidPackage'
         // output
+        textReport ciBuild
         htmlReport true
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
     }
