@@ -19,3 +19,9 @@ jobs:
           java-version: 11
       - name: Run lint
         run: ./gradlew lint
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: lint-report
+          path: build/reports/lint/lint.html
+
