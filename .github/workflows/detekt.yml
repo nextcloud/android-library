@@ -17,5 +17,5 @@ jobs:
             with:
               distribution: "adopt"
               java-version: 11
-          - name: Runt detekt
+          - name: Run detekt
             run: ./gradlew detekt

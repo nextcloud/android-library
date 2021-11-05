@@ -17,5 +17,5 @@ jobs:
         with:
           distribution: "adopt"
           java-version: 11
-      - name: Runt lint
+      - name: Run lint
         run: ./gradlew lint
