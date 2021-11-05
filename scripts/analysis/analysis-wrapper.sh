@@ -25,7 +25,7 @@ if [ $3 = $stableBranch ]; then
     echo "New SpotBugs result for $stableBranch at: https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html"
     curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/dav/files/$4/$repository-findbugs/$stableBranch.html --upload-file build/reports/spotbugs/spotbugs.html
 
-    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/spotbugs/spotbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"/Summary/SpotBugs ($stableBranch)/" | tr "\"" "\'" | tr -d "\r\n")
+    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/spotbugs/spotbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"/Summary/SpotBugs ($stableBranch)/" | tr "\"" "\'" | tr -d "\r\n" | sed 's/^ *//')
     curl -u $4:$5 -X PUT -d "$summary" https://nextcloud.kaminsky.me/remote.php/dav/files/$4/$repository-findbugs/findbugs-summary-$stableBranch.html
 else
     if [ -e $6 ]; then
@@ -48,8 +48,8 @@ else
     fi
 
     # add comment with results
-    findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/spotbugs/spotbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html\">SpotBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n")
-    findbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/$repository-findbugs/findbugs-summary-$stableBranch.html | tr "\"" "\'" | tr -d "\r\n" | sed s"#SpotBugs#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html\">SpotBugs</a>#" | tr "\"" "\'" | tr -d "\n")
+    findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/spotbugs/spotbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html\">SpotBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n" | sed 's/^ *//')
+    findbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/$repository-findbugs/findbugs-summary-$stableBranch.html | tr "\"" "\'" | tr -d "\r\n" | sed s"#SpotBugs#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html\">SpotBugs</a>#" | tr "\"" "\'" | tr -d "\n" | sed 's/^ *//')
 
     if ( [ $findbugsValue -eq 1 ] ) ; then
         findbugsMessage="<h1>SpotBugs increased!</h1>"
