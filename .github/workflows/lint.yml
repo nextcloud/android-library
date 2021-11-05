@@ -1,4 +1,4 @@
-name: KtLint
+name: Lint
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches: [ master, stable-* ]
 
 jobs:
-  ktlint:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,5 +17,5 @@ jobs:
         with:
           distribution: "adopt"
           java-version: 11
-      - name: Runt ktlint
-        run: ./gradlew ktlint
+      - name: Runt lint
+        run: ./gradlew lint
