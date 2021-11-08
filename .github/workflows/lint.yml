@@ -1,4 +1,4 @@
-name: KtLint
+name: Lint
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches: [ master, stable-* ]
 
 jobs:
-  ktlint:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,11 +17,11 @@ jobs:
         with:
           distribution: "adopt"
           java-version: 11
-      - name: Run ktlint
-        run: ./gradlew ktlint
+      - name: Run lint
+        run: ./gradlew lint
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
-          name: ktlint-report
-          path: build/ktlint.txt
+          name: lint-report
+          path: build/reports/lint/lint.html
 

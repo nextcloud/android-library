@@ -17,5 +17,10 @@ jobs:
             with:
               distribution: "adopt"
               java-version: 11
-          - name: Runt detekt
+          - name: Run detekt
             run: ./gradlew detekt
+          - uses: actions/upload-artifact@v2
+            if: ${{ always() }}
+            with:
+              name: detekt-report
+              path: build/reports/detekt/detekt.html
