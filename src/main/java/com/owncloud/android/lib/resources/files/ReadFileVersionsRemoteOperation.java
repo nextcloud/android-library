@@ -27,6 +27,8 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import androidx.annotation.NonNull;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -43,10 +45,8 @@ import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-
 /**
- * Remote operation performing the read of remote trashbin folder on Nextcloud server.
+ * Remote operation performing the read of remote versions on Nextcloud server.
  */
 
 public class ReadFileVersionsRemoteOperation extends RemoteOperation {
@@ -76,7 +76,7 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
         PropFindMethod query = null;
 
         try {
-            String uri = client.getNewWebdavUri() + "/versions/" + client.getUserId() + "/versions/" + fileId;
+            String uri = client.getDavUri() + "/versions/" + client.getUserId() + "/versions/" + fileId;
             DavPropertyNameSet propSet = WebdavUtils.getFileVersionPropSet();
 
             query = new PropFindMethod(uri, propSet, DavConstants.DEPTH_1);
@@ -137,7 +137,7 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
         versions = new ArrayList<>();
 
         // parse data from remote folder
-        String splitElement = client.getNewWebdavUri().getPath();
+        String splitElement = client.getDavUri().getPath();
 
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {

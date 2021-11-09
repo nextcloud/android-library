@@ -65,7 +65,7 @@ public class MarkCommentsAsReadRemoteOperation extends RemoteOperation {
                 Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
         newProps.add(readMarkerProperty);
 
-        String commentsPath = client.getNewWebdavUri() + COMMENTS_URL + fileId;
+        String commentsPath = client.getCommentsUri(fileId);
 
         try {
             propPatchMethod = new PropPatchMethod(commentsPath, newProps, removeProperties);

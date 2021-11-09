@@ -103,7 +103,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
     private int downloadFile(OwnCloudClient client, File targetFile) throws IOException, OperationCancelledException {
         int status;
         boolean savedFile = false;
-        getMethod = new GetMethod(client.getWebdavUri() + WebdavUtils.encodePath(remotePath));
+        getMethod = new GetMethod(client.getFilesDavUri(remotePath));
         Iterator<OnDatatransferProgressListener> it;
 
         FileOutputStream fos = null;

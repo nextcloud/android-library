@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -67,7 +68,7 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             DavPropertyNameSet propSet = new DavPropertyNameSet();
             propSet.add(DavPropertyName.GETETAG);
 
-            propfind = new PropFindMethod(client.getWebdavUri() + WebdavUtils.encodePath(path),
+            propfind = new PropFindMethod(client.getFilesDavUri(path),
                     propSet,
                     0);
             int status = client.executeMethod(propfind, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
@@ -79,10 +80,9 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
                         .get(DavPropertyName.GETETAG).getValue());
 
                 if (etag.equals(expectedEtag)) {
-                    return new RemoteOperationResult(RemoteOperationResult.ResultCode.ETAG_UNCHANGED);
+                    return new RemoteOperationResult(ResultCode.ETAG_UNCHANGED);
                 } else {
-                    RemoteOperationResult result = new RemoteOperationResult(
-                            RemoteOperationResult.ResultCode.ETAG_CHANGED);
+                    RemoteOperationResult result = new RemoteOperationResult(ResultCode.ETAG_CHANGED);
 
                     ArrayList<Object> list = new ArrayList<>();
                     list.add(etag);
@@ -93,7 +93,7 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             }
             
             if (status == HttpStatus.SC_NOT_FOUND) {
-                return new RemoteOperationResult(RemoteOperationResult.ResultCode.FILE_NOT_FOUND);
+                return new RemoteOperationResult(ResultCode.FILE_NOT_FOUND);
             }
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while retrieving eTag");
@@ -103,6 +103,6 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             }
         }
 
-        return new RemoteOperationResult(RemoteOperationResult.ResultCode.ETAG_CHANGED);
+        return new RemoteOperationResult(ResultCode.ETAG_CHANGED);
     }
 }

@@ -34,10 +34,12 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
+import java.util.List;
+
 /**
  * Creates a new share.  This allows sharing with a user or group or as a link.
  */
-public class CreateShareRemoteOperation extends RemoteOperation {
+public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = CreateShareRemoteOperation.class.getSimpleName();
 
@@ -48,13 +50,13 @@ public class CreateShareRemoteOperation extends RemoteOperation {
     private static final String PARAM_PASSWORD = "password";
     private static final String PARAM_PERMISSIONS = "permissions";
 
-    private String mRemoteFilePath;
-    private ShareType mShareType;
-    private String mShareWith;
-    private boolean mPublicUpload;
-    private String mPassword;
-    private int mPermissions;
-    private boolean mGetShareDetails;
+    private final String remoteFilePath;
+    private final ShareType shareType;
+    private final String shareWith;
+    private final boolean publicUpload;
+    private final String password;
+    private final int permissions;
+    private boolean getShareDetails;
 
     /**
      * Constructor
@@ -86,13 +88,13 @@ public class CreateShareRemoteOperation extends RemoteOperation {
             int permissions,
             boolean getShareDetails
                                      ) {
-        mRemoteFilePath = remoteFilePath;
-        mShareType = shareType;
-        mShareWith = shareWith;
-        mPublicUpload = publicUpload;
-        mPassword = password;
-        mPermissions = permissions;
-        mGetShareDetails = getShareDetails;        // defaults to false for backwards compatibility
+        this.remoteFilePath = remoteFilePath;
+        this.shareType = shareType;
+        this.shareWith = shareWith;
+        this.publicUpload = publicUpload;
+        this.password = password;
+        this.permissions = permissions;
+        this.getShareDetails = getShareDetails;        // defaults to false for backwards compatibility
     }
 
     public CreateShareRemoteOperation(
@@ -106,16 +108,16 @@ public class CreateShareRemoteOperation extends RemoteOperation {
     }
 
     public boolean isGettingShareDetails() {
-        return mGetShareDetails;
+        return getShareDetails;
     }
 
     public void setGetShareDetails(boolean set) {
-        mGetShareDetails = set;
+        getShareDetails = set;
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
         int status;
 
         Utf8PostMethod post = null;
@@ -126,17 +128,17 @@ public class CreateShareRemoteOperation extends RemoteOperation {
 
             post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
-            post.addParameter(PARAM_PATH, mRemoteFilePath);
-            post.addParameter(PARAM_SHARE_TYPE, Integer.toString(mShareType.getValue()));
-            post.addParameter(PARAM_SHARE_WITH, mShareWith);
-            if (mPublicUpload) {
+            post.addParameter(PARAM_PATH, remoteFilePath);
+            post.addParameter(PARAM_SHARE_TYPE, Integer.toString(shareType.getValue()));
+            post.addParameter(PARAM_SHARE_WITH, shareWith);
+            if (publicUpload) {
                 post.addParameter(PARAM_PUBLIC_UPLOAD, Boolean.toString(true));
             }
-            if (mPassword != null && mPassword.length() > 0) {
-                post.addParameter(PARAM_PASSWORD, mPassword);
+            if (password != null && password.length() > 0) {
+                post.addParameter(PARAM_PASSWORD, password);
             }
-            if (OCShare.NO_PERMISSION != mPermissions) {
-                post.addParameter(PARAM_PERMISSIONS, Integer.toString(mPermissions));
+            if (OCShare.NO_PERMISSION != permissions) {
+                post.addParameter(PARAM_PERMISSIONS, Integer.toString(permissions));
             }
 
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
@@ -153,19 +155,19 @@ public class CreateShareRemoteOperation extends RemoteOperation {
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
 
-                if (result.isSuccess() && mGetShareDetails) {
+                if (result.isSuccess() && getShareDetails) {
                     // retrieve more info - POST only returns the index of the new share
-                    OCShare emptyShare = (OCShare) result.getData().get(0);
+                    OCShare emptyShare = result.getResultData().get(0);
                     GetShareRemoteOperation getInfo = new GetShareRemoteOperation(emptyShare.getRemoteId());
                     result = getInfo.execute(client);
                 }
 
             } else {
-                result = new RemoteOperationResult(false, post);
+                result = new RemoteOperationResult<>(false, post);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while Creating New Share", e);
 
         } finally {

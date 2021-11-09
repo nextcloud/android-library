@@ -35,6 +35,8 @@ import com.owncloud.android.lib.resources.shares.ShareType;
 
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -57,16 +59,16 @@ public class GetSharesTest extends AbstractIT {
 
         assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(client).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/2/",
-                                                  ShareType.PUBLIC_LINK,
-                                                  "",
-                                                  false,
-                                                  "",
-                                                  1).execute(client).isSuccess());
+                ShareType.PUBLIC_LINK,
+                "",
+                false,
+                "",
+                1).execute(client).isSuccess());
 
-        RemoteOperationResult result = new GetSharesRemoteOperation().execute(client);
+        RemoteOperationResult<List<OCShare>> result = new GetSharesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(2, result.getData().size());
-        assertEquals("/1/", ((OCShare) result.getData().get(0)).getPath());
-        assertEquals("/2/", ((OCShare) result.getData().get(1)).getPath());
+        assertEquals(2, result.getResultData().size());
+        assertEquals("/1/", result.getResultData().get(0).getPath());
+        assertEquals("/2/", result.getResultData().get(1).getPath());
     }
 }

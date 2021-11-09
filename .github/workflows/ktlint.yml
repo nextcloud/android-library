@@ -7,14 +7,21 @@ on:
     branches: [ master, stable-* ]
 
 jobs:
-    ktlint:
-        runs-on: ubuntu-latest
+  ktlint:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v2
-            - name: Set up JDK 1.8
-              uses: actions/setup-java@v1
-              with:
-                  java-version: 1.8
-            - name: Runt ktlint
-              run: ./gradlew ktlint
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: 11
+      - name: Run ktlint
+        run: ./gradlew ktlint
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: ktlint-report
+          path: build/ktlint.txt
+

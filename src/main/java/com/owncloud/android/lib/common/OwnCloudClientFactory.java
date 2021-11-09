@@ -40,11 +40,10 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
-import okhttp3.Credentials;
 
 public class OwnCloudClientFactory {
     
@@ -56,6 +55,7 @@ public class OwnCloudClientFactory {
     
     /** Default timeout for establishing a connection */
     public static final int DEFAULT_CONNECTION_TIMEOUT = 60000;
+    public static final long DEFAULT_CONNECTION_TIMEOUT_LONG = 60000;
 
 
     /**
@@ -221,14 +221,21 @@ public class OwnCloudClientFactory {
             throw new AccountNotFoundException(account,"Error receiving password token",e);
         }
 
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new AccountNotFoundException(
+                    account,
+                    "Username or password could not be retrieved",
+                    null);
+        }
+
         // Restore cookies
         // TODO v2 cookie handling
         // AccountUtils.restoreCookies(account, client, appContext);
 
         return createNextcloudClient(baseUri,
-                userId,
-                Credentials.basic(username, password),
-                appContext,
-                true);
+                                     userId,
+                                     OkHttpCredentialsUtil.basic(username, password),
+                                     appContext,
+                                     true);
     }
 }

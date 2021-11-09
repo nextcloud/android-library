@@ -4,20 +4,20 @@
  * @author Tobias Kaminsky
  * Copyright (C) 2020 Tobias Kaminsky
  * Copyright (C) 2020 Nextcloud GmbH
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  */
 package com.owncloud.android.lib.resources.shares
 
@@ -75,7 +75,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setNote(note)
@@ -86,7 +86,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
 
-        val updatedShare = getShareOperationResult.data[0] as OCShare
+        val updatedShare = getShareOperationResult.resultData[0]
 
         assertEquals(note, updatedShare.note)
 
@@ -110,7 +110,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setLabel(label)
@@ -121,7 +121,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
 
-        val updatedShare = getShareOperationResult.data[0] as OCShare
+        val updatedShare = getShareOperationResult.resultData[0]
 
         assertEquals(label, updatedShare.label)
 
@@ -145,7 +145,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("1")
@@ -157,12 +157,19 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         Assert.assertTrue(capabilityResult.isSuccess)
         val capability = capabilityResult.singleData as OCCapability
 
-        if (capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22)) {
-            assertEquals("Password needs to be at least 10 characters long.", result.message)
-        } else if (capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21)) {
-            assertEquals("Password needs to be at least 8 characters long.", result.message)
-        } else {
-            assertEquals("Password needs to be at least 8 characters long", result.message)
+        when {
+            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {
+                assertEquals(
+                    "Password needs to be at least 10 characters long. Password is present in compromised password list. Please choose a different password.",
+                    result.message
+                )
+            }
+            capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21) -> {
+                assertEquals("Password needs to be at least 8 characters long.", result.message)
+            }
+            else -> {
+                assertEquals("Password needs to be at least 8 characters long", result.message)
+            }
         }
 
         assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
@@ -185,7 +192,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         assertTrue(createOperationResult.isSuccess)
 
-        val share = createOperationResult.data[0] as OCShare
+        val share = createOperationResult.resultData[0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("arnservcvcbtp234")

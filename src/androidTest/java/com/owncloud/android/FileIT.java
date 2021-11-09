@@ -97,7 +97,7 @@ public class FileIT extends AbstractIT {
     public void testCreateFolderWithWrongURL() {
         String path = "/testFolder/";
         Uri uri = client.getBaseUri();
-        client.setBaseUri(Uri.parse(uri.toString() + "/remote.php/webdav"));
+        client.setBaseUri(Uri.parse(uri.toString() + "/remote.php/dav/files/"));
 
         // create folder
         assertFalse(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());

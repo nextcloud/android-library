@@ -37,6 +37,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -50,22 +51,22 @@ public class RemoveShareTest extends AbstractIT {
     public void testRemoveShare() throws IOException {
         File textFile = getFile(ASSETS__TEXT_FILE_NAME);
         assertTrue(new UploadFileRemoteOperation(textFile.getAbsolutePath(),
-                                                 FILE_TO_UNSHARE,
-                                                 "txt/plain",
-                                                 String.valueOf(System.currentTimeMillis() / 1000))
-                           .execute(client).isSuccess());
+                FILE_TO_UNSHARE,
+                "txt/plain",
+                String.valueOf(System.currentTimeMillis() / 1000))
+                .execute(client).isSuccess());
 
-        RemoteOperationResult result = new CreateShareRemoteOperation(FILE_TO_UNSHARE,
-                                                                      ShareType.PUBLIC_LINK,
-                                                                      "",
-                                                                      false,
-                                                                      "", 1).execute(client);
-        
+        RemoteOperationResult<List<OCShare>> result = new CreateShareRemoteOperation(FILE_TO_UNSHARE,
+                ShareType.PUBLIC_LINK,
+                "",
+                false,
+                "", 1).execute(client);
+
         assertTrue(result.isSuccess());
 
-        OCShare ocShare = (OCShare) result.getData().get(0);
+        OCShare ocShare = result.getResultData().get(0);
 
         assertTrue(new RemoveShareRemoteOperation((int) ocShare.getRemoteId()).execute(client)
-                           .isSuccess());
+                .isSuccess());
     }
 }

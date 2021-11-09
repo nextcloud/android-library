@@ -45,20 +45,23 @@ public enum ShareType {
     NO_SHARED(-1),
     USER(0),
     GROUP(1),
+    // USERGROUP(2) // only internal
     PUBLIC_LINK(3),
     EMAIL(4),
     CONTACT(5),
-    FEDERATED(6),
+    FEDERATED(6), // "remote" on server
     CIRCLE(7),
-    ROOM(10);
-    
-    private int value;
+    GUEST(8),
+    FEDERATED_GROUP(9), // "remote_group" on server
+    ROOM(10),
+    DECK(12);
 
-    ShareType(int value)
-    {
+    private final int value;
+
+    ShareType(int value) {
         this.value = value;
     }
-    
+
     public int getValue() {
         return value;
     }
@@ -83,8 +86,14 @@ public enum ShareType {
                 return FEDERATED;
             case 7:
                 return CIRCLE;
+            case 8:
+                return GUEST;
+            case 9:
+                return FEDERATED_GROUP;
             case 10:
                 return ROOM;
+            case 12:
+                return DECK;
             case -1:
             default:
                 return NO_SHARED;

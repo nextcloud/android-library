@@ -31,6 +31,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 
+import androidx.annotation.NonNull;
+
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -43,8 +45,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
 
-import androidx.annotation.NonNull;
-
 
 /**
  * Operation which execution involves one or several interactions with an ownCloud server.
@@ -53,15 +53,19 @@ import androidx.annotation.NonNull;
  *
  * @author David A. Velasco
  */
-public abstract class RemoteOperation<T extends Object> implements Runnable {
+public abstract class RemoteOperation<T> implements Runnable {
 
     private static final String TAG = RemoteOperation.class.getSimpleName();
 
-    /** OCS API header name */
+    /**
+     * OCS API header name
+     */
     public static final String OCS_API_HEADER = "OCS-APIREQUEST";
     public static final String OCS_ETAG_HEADER = "If-None-Match";
 
-    /** OCS API header value */
+    /**
+     * OCS API header value
+     */
     public static final String OCS_API_HEADER_VALUE = "true";
 
     public static final String CONTENT_TYPE = "Content-Type";

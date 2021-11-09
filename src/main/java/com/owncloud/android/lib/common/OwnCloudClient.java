@@ -43,7 +43,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.HttpVersion;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.params.HttpParams;
 
@@ -137,29 +136,6 @@ public class OwnCloudClient extends HttpClient {
 		}
 		credentials.applyTo(this);
 	}
-    
-    /**
-     * Check if a file exists in the OC server
-     * 
-     * @deprecated	Use ExistenceCheckOperation instead
-     * 
-     * @return              	'true' if the file exists; 'false' it doesn't exist
-     * @throws  	Exception   When the existence could not be determined
-     */
-    @Deprecated
-    public boolean existsFile(String path) throws IOException {
-        HeadMethod head = new HeadMethod(getWebdavUri() + WebdavUtils.encodePath(path));
-        try {
-            int status = executeMethod(head);
-            Log_OC.d(TAG, "HEAD to " + path + " finished with HTTP status " + status +
-            		((status != HttpStatus.SC_OK)?"(FAIL)":""));
-            exhaustResponse(head.getResponseBodyAsStream());
-            return (status == HttpStatus.SC_OK);
-            
-        } finally {
-            head.releaseConnection();    // let the connection available for other methods
-        }
-    }
     
     /**
      * Requests the received method with the received timeout (milliseconds).
@@ -267,7 +243,7 @@ public class OwnCloudClient extends HttpClient {
                 	destination = method.getRequestHeader("destination");
                 }
                 if (destination != null) {
-                    int suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_4_0);
+                    int suffixIndex = locationStr.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0);
                     String redirectionBase = locationStr.substring(0, suffixIndex);
 
                     String destinationStr = destination.getValue();
@@ -312,36 +288,44 @@ public class OwnCloudClient extends HttpClient {
      * performed by this client.
      */
     public void setDefaultTimeouts(int defaultDataTimeout, int defaultConnectionTimeout) {
-    	if (defaultDataTimeout >= 0) { 
-    		getParams().setSoTimeout(defaultDataTimeout);
-    	}
-    	if (defaultConnectionTimeout >= 0) {
-    		getHttpConnectionManager().getParams().setConnectionTimeout(defaultConnectionTimeout);
-    	}
+        if (defaultDataTimeout >= 0) {
+            getParams().setSoTimeout(defaultDataTimeout);
+        }
+        if (defaultConnectionTimeout >= 0) {
+            getHttpConnectionManager().getParams().setConnectionTimeout(defaultConnectionTimeout);
+        }
+    }
+    
+    public String getFilesDavUri(String path) {
+        return getDavUri() + "/files/" + userId + "/" + WebdavUtils.encodePath(path);
     }
 
-    public Uri getWebdavUri() {
-        return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_4_0);
+    public Uri getFilesDavUri() {
+        return Uri.parse(getDavUri() + "/files/" + userId);
     }
 
     public Uri getUploadUri() {
         return Uri.parse(baseUri + AccountUtils.DAV_UPLOAD);
     }
 
-    public Uri getNewWebdavUri() {
+    public Uri getDavUri() {
         return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_9_0);
     }
-    
+
+    public String getCommentsUri(String fileId) {
+        return getDavUri() + "/comments/files/" + fileId;
+    }
+
     /**
-     * Sets the root URI to the ownCloud server.   
+     * Sets the root URI to the ownCloud server.
+     * <p>
+     * Use with care.
      *
-     * Use with care. 
-     * 
      * @param uri
      */
     public void setBaseUri(Uri uri) {
         if (uri == null) {
-        	throw new IllegalArgumentException("URI cannot be NULL");
+            throw new IllegalArgumentException("URI cannot be NULL");
         }
         baseUri = uri;
     }
