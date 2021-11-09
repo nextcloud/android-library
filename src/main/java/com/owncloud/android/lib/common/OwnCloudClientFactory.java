@@ -35,12 +35,12 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 import com.owncloud.android.lib.common.accounts.AccountTypeUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.nextcloud.common.OkHttpCredentialsUtil;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -206,9 +206,19 @@ public class OwnCloudClientFactory {
         // TODO avoid calling to getUserData here
         String userId = am.getUserData(account, AccountUtils.Constants.KEY_USER_ID);
         String username = AccountUtils.getUsernameForAccount(account);
-        String password = am.peekAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type));
+        String password;
+        try {
+            password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type), false);
+            if (password == null) {
+                Log_OC.e(TAG, "Error receiving password token (password==null)");
+                throw new AccountNotFoundException(account, "Error receiving password token (password==null)", null);
+            }
+        } catch (Exception e) {
+            Log_OC.e(TAG, "Error receiving password token", e);
+            throw new AccountNotFoundException(account, "Error receiving password token", e);
+        }
 
-        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+        if (username == null || username.isEmpty() || password.isEmpty()) {
             throw new AccountNotFoundException(
                     account,
                     "Username or password could not be retrieved",
