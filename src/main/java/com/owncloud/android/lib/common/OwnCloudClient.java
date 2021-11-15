@@ -297,7 +297,7 @@ public class OwnCloudClient extends HttpClient {
     }
     
     public String getFilesDavUri(String path) {
-        return getDavUri() + "/files/" + userId + "/" + WebdavUtils.encodePath(path);
+        return getDavUri() + "/files/" + getUserId() + "/" + WebdavUtils.encodePath(path);
     }
 
     public Uri getFilesDavUri() {
