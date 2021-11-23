@@ -141,14 +141,14 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
         mFolderAndFiles = new ArrayList<>();
 
         // parse data from remote folder 
-        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getFilesDavUri().getPath());
+        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getFilesDavUri().getEncodedPath());
         mFolderAndFiles.add(fillOCFile(we));
 
         // loop to update every child
         RemoteFile remoteFile;
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
             /// new OCFile instance with the data from the server
-            we = new WebdavEntry(remoteData.getResponses()[i], client.getFilesDavUri().getPath());
+            we = new WebdavEntry(remoteData.getResponses()[i], client.getFilesDavUri().getEncodedPath());
             remoteFile = fillOCFile(we);
             mFolderAndFiles.add(remoteFile);
         }
