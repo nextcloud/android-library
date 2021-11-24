@@ -301,7 +301,7 @@ public class OwnCloudClient extends HttpClient {
     }
 
     public Uri getFilesDavUri() {
-        return Uri.parse(getDavUri() + "/files/" + userId);
+        return Uri.parse(getDavUri() + "/files/" + getUserId());
     }
 
     public Uri getUploadUri() {

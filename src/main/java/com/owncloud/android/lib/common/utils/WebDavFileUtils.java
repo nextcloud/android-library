@@ -61,15 +61,10 @@ public class WebDavFileUtils {
 
         if (isReadFolderOperation) {
             we = new WebdavEntry(remoteData.getResponses()[0],
-                    client.getFilesDavUri().getPath());
+                    client.getFilesDavUri().getEncodedPath());
             mFolderAndFiles.add(fillOCFile(we));
         } else {
             start = 0;
-        }
-
-        String stripString = client.getFilesDavUri().getPath();
-        if (isSearchOperation) {
-            stripString = stripString.replaceAll(" ", "%20");
         }
 
         // loop to update every child
@@ -77,7 +72,7 @@ public class WebDavFileUtils {
         MultiStatusResponse[] responses = remoteData.getResponses();
         for (int i = start; i < responses.length; i++) {
             /// new OCFile instance with the data from the server
-            we = new WebdavEntry(responses[i], stripString);
+            we = new WebdavEntry(responses[i], client.getFilesDavUri().getEncodedPath());
             remoteFile = fillOCFile(we);
             mFolderAndFiles.add(remoteFile);
         }
