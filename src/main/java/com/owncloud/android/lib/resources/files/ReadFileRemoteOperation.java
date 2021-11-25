@@ -91,7 +91,7 @@ public class ReadFileRemoteOperation extends RemoteOperation {
                 // Parse response
                 MultiStatus resp = propfind.getResponseBodyAsMultiStatus();
                 WebdavEntry we = new WebdavEntry(resp.getResponses()[0],
-                        client.getFilesDavUri().getPath());
+                        client.getFilesDavUri().getEncodedPath());
                 RemoteFile remoteFile = new RemoteFile(we);
                 ArrayList<Object> files = new ArrayList<Object>();
                 files.add(remoteFile);
