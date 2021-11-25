@@ -27,7 +27,6 @@
 package com.owncloud.android.lib.common
 
 import android.net.UrlQuerySanitizer
-import java.net.URL
 
 /**
  * One search result entry of an unified search
@@ -42,8 +41,14 @@ data class SearchResultEntry(
     var attributes: Map<String, String> = emptyMap()
 ) {
 
+    companion object {
+        private const val PARAM_DIR = "dir"
+        private const val PARAM_FILE = "scrollto"
+        private const val DIR_ROOT = "/"
+    }
+
     val isFile: Boolean
-        get() = fileId() != null
+        get() = fileId() != null || listOf(PARAM_DIR, PARAM_FILE).all { resourceUrl.contains(it) }
 
     fun fileId(): String? {
         return attributes["fileId"]
@@ -54,17 +59,20 @@ data class SearchResultEntry(
     }
 
     private fun parseRemotePath(): String {
-        val sanitizer = UrlQuerySanitizer()
-        sanitizer.allowUnregisteredParamaters = true
-        sanitizer.unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAllButNulLegal()
-        sanitizer.parseUrl(resourceUrl)
-        URL(resourceUrl).query?.let { sanitizer.parseQuery(it) }
-        val dir = if (sanitizer.getValue("dir") == "/") {
-            ""
-        } else {
-            sanitizer.getValue("dir")
+        val sanitizer = UrlQuerySanitizer().apply {
+            allowUnregisteredParamaters = true
+            unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAllButNulLegal()
         }
-        val file = sanitizer.getValue("scrollto")
+
+        sanitizer.parseUrl(resourceUrl)
+
+        val dirParam = sanitizer.getValue(PARAM_DIR)
+        val dir = when (dirParam) {
+            DIR_ROOT -> ""
+            else -> dirParam
+        }
+
+        val file = sanitizer.getValue(PARAM_FILE)
 
         return "$dir/$file"
     }
