@@ -26,6 +26,8 @@
 
 package com.owncloud.android.lib.resources.shares;
 
+import android.text.TextUtils;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -34,6 +36,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -49,6 +52,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private static final String PARAM_PUBLIC_UPLOAD = "publicUpload";
     private static final String PARAM_PASSWORD = "password";
     private static final String PARAM_PERMISSIONS = "permissions";
+    private static final String PARAM_NOTE = "note";
 
     private final String remoteFilePath;
     private final ShareType shareType;
@@ -57,6 +61,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private final String password;
     private final int permissions;
     private boolean getShareDetails;
+    private String note;
 
     /**
      * Constructor
@@ -86,8 +91,9 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
             boolean publicUpload,
             String password,
             int permissions,
-            boolean getShareDetails
-                                     ) {
+            boolean getShareDetails,
+            String note
+    ) {
         this.remoteFilePath = remoteFilePath;
         this.shareType = shareType;
         this.shareWith = shareWith;
@@ -95,6 +101,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
         this.password = password;
         this.permissions = permissions;
         this.getShareDetails = getShareDetails;        // defaults to false for backwards compatibility
+        this.note = note;
     }
 
     public CreateShareRemoteOperation(
@@ -104,7 +111,18 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
             boolean publicUpload,
             String password,
             int permissions) {
-        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false);
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, "");
+    }
+
+    public CreateShareRemoteOperation(
+            String remoteFilePath,
+            ShareType shareType,
+            String shareWith,
+            boolean publicUpload,
+            String password,
+            int permissions,
+            String note) {
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, note);
     }
 
     public boolean isGettingShareDetails() {
@@ -141,6 +159,10 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
                 post.addParameter(PARAM_PERMISSIONS, Integer.toString(permissions));
             }
 
+            if (!TextUtils.isEmpty(note)) {
+                post.addParameter(PARAM_NOTE, note);
+            }
+
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             status = client.executeMethod(post);
@@ -149,7 +171,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
                 String response = post.getResponseBodyAsString();
 
                 ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
-                    new ShareXMLParser()
+                        new ShareXMLParser()
                 );
                 parser.setOneOrMoreSharesRequired(true);
                 parser.setServerBaseUri(client.getBaseUri());
@@ -166,7 +188,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
                 result = new RemoteOperationResult<>(false, post);
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while Creating New Share", e);
 
