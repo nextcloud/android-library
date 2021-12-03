@@ -60,12 +60,7 @@ public class OwnCloudClient extends HttpClient {
     private static final String PARAM_SINGLE_COOKIE_HEADER = "http.protocol.single-cookie-header";
     private static final boolean PARAM_SINGLE_COOKIE_HEADER_VALUE = true;
     private static final String PARAM_PROTOCOL_VERSION = "http.protocol.version";
-    /**
-     * Characters to skip during userID encoding
-     */
-    private static final String ALLOWED_USERID_CHARACTERS = "@";
-
-
+    
     private static byte[] sExhaustBuffer = new byte[1024];
     
     private static int sIntanceCounter = 0;
@@ -419,7 +414,7 @@ public class OwnCloudClient extends HttpClient {
      * @return uri-encoded userId
      */
     public String getUserId() {
-        return Uri.encode(userId, ALLOWED_USERID_CHARACTERS);
+        return Uri.encode(userId);
     }
 
     public String getUserIdPlain() {
