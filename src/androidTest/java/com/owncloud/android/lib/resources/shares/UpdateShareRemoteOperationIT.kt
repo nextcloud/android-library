@@ -27,10 +27,10 @@ import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OCCapability
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UpdateShareRemoteOperationIT : AbstractIT() {
@@ -70,7 +70,8 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
             false,
             "",
             OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
-            true
+            true,
+            ""
         ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
