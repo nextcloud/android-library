@@ -26,6 +26,8 @@
  */
 package com.owncloud.android;
 
+import static junit.framework.TestCase.assertTrue;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -66,8 +68,6 @@ import java.security.cert.X509Certificate;
 
 import okhttp3.Credentials;
 
-import static junit.framework.TestCase.assertTrue;
-
 /**
  * Common base for all integration tests
  */
@@ -75,8 +75,9 @@ import static junit.framework.TestCase.assertTrue;
 public abstract class AbstractIT {
     @Rule
     public RetryTestRule retryTestRule = new RetryTestRule();
-    
+
     private static final int BUFFER_SIZE = 1024;
+    public static final String RANDOM_MTIME = "1464818400";
 
     public static OwnCloudClient client;
     protected static NextcloudClient nextcloudClient;

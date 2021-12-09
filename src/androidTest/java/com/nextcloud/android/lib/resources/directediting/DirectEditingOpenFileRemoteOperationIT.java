@@ -27,6 +27,9 @@
 
 package com.nextcloud.android.lib.resources.directediting;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
@@ -38,17 +41,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
+public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
     @Test
     public void openFile() throws IOException {
         // create file
         String filePath = createFile("text");
         String remotePath = "/text.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
-                                    .execute(client).isSuccess());
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "1464818400")
+                .execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
@@ -66,7 +66,7 @@ public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/äää.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "1464818400")
                 .execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
@@ -85,7 +85,7 @@ public class DirectEditingOpenFileRemoteOperationTest extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/あ.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "123")
+        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "1464818400")
                 .execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());

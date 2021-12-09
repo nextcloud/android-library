@@ -40,7 +40,7 @@ class MoveFileRemoteOperationIT : AbstractIT() {
         val oldRemotePath = "/move1.jpg"
         val newRemotePath = "/move2.png"
         assertTrue(
-            UploadFileRemoteOperation(filePath, oldRemotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, oldRemotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
         )
@@ -69,13 +69,13 @@ class MoveFileRemoteOperationIT : AbstractIT() {
         val firstRemotePath = "/overwrite1.jpg"
         val secondRemotePath = "/overwrite2.png"
         assertTrue(
-            UploadFileRemoteOperation(filePath, firstRemotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, firstRemotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
         )
 
         assertTrue(
-            UploadFileRemoteOperation(filePath, secondRemotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, secondRemotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
         )

@@ -39,7 +39,7 @@ class CommentFileRemoteOperationIT : AbstractIT() {
         val filePath: String = createFile("commentFile")
         val remotePath = "/commentFile.txt"
         assertTrue(
-            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client).isSuccess
         )
 

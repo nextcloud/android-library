@@ -38,7 +38,7 @@ import java.util.List;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class GetSharesRemoteOperationTest extends AbstractIT {
+public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void searchSharedFiles() {
         assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());

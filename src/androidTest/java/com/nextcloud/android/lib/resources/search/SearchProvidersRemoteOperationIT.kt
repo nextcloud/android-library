@@ -32,7 +32,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 
-class SearchProvidersRemoteOperationTest : AbstractIT() {
+class SearchProvidersRemoteOperationIT : AbstractIT() {
     @Test
     fun getSearchProviders() {
         // only on NC20+

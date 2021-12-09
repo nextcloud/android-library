@@ -26,6 +26,9 @@
  */
 package com.owncloud.android.lib.common.operations;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
@@ -37,25 +40,22 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Class to test Get Shares Operation
  *
  * @author masensio
  */
 
-public class GetSharesTest extends AbstractIT {
-    @Test    
+public class GetSharesIT extends AbstractIT {
+    @Test
     public void testGetShares() {
         assertTrue(new CreateFolderRemoteOperation("/1/", true).execute(client).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/1/",
-                                                  ShareType.PUBLIC_LINK,
-                                                  "",
-                                                  false,
-                                                  "",
-                                                  1).execute(client).isSuccess());
+                ShareType.PUBLIC_LINK,
+                "",
+                false,
+                "",
+                1).execute(client).isSuccess());
 
         assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(client).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/2/",

@@ -27,20 +27,20 @@
 
 package com.nextcloud.android.lib.resources.directediting;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-public class DirectEditingCreateFileRemoteOperationTest extends AbstractIT {
+public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
     @Test
     public void createEmptyFile() {
         RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/test.md",
-                                                                                          "text",
-                                                                                          "textdocument")
+                "text",
+                "textdocument")
                 .execute(client);
         assertTrue(result.isSuccess());
 
