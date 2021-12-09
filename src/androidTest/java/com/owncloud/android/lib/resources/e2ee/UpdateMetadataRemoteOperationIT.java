@@ -22,6 +22,12 @@
 
 package com.owncloud.android.lib.resources.e2ee;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assume.assumeTrue;
+
 import android.text.TextUtils;
 
 import com.owncloud.android.AbstractIT;
@@ -37,13 +43,7 @@ import net.bytebuddy.utility.RandomString;
 
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assume.assumeTrue;
-
-public class UpdateMetadataRemoteOperationTest extends AbstractIT {
+public class UpdateMetadataRemoteOperationIT extends AbstractIT {
     @Test
     public void uploadAndModify() {
         // tests only for NC19+

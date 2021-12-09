@@ -27,6 +27,10 @@
 
 package com.nextcloud.android.lib.resources.users;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotEquals;
+
 import android.text.TextUtils;
 
 import com.owncloud.android.AbstractIT;
@@ -37,11 +41,7 @@ import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertNotEquals;
-
-public class GenerateAppPasswordRemoteOperationTest extends AbstractIT {
+public class GenerateAppPasswordRemoteOperationIT extends AbstractIT {
 
     @Test
     public void generateAppPassword() {

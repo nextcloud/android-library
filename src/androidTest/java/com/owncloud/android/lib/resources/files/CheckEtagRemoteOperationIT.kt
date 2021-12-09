@@ -39,7 +39,7 @@ class CheckEtagRemoteOperationIT : AbstractIT() {
         val filePath = createFile("eTagFile")
         val remotePath = "/eTagFile.txt"
         assertTrue(
-            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "1464818400")
                 .execute(client).isSuccess
         )
 
