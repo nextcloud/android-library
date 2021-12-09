@@ -178,7 +178,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         String oldPath = createFile("pdf");
-        assertTrue(new UploadFileRemoteOperation(oldPath, "/old.pdf", "application/pdf", "1")
+        assertTrue(new UploadFileRemoteOperation(oldPath, "/old.pdf", "application/pdf", RANDOM_MTIME)
                 .execute(client).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("",
@@ -273,7 +273,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         assertEquals(10, result.getResultData().size());
 
         // limit to timestamp 5
-        sut.setTimestamp(5);
+        sut.setTimestamp(1464818405);
 
         result = sut.execute(client);
         assertTrue(result.isSuccess());
