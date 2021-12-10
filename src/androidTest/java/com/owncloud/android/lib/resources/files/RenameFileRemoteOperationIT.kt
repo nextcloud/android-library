@@ -40,7 +40,7 @@ class RenameFileRemoteOperationIT : AbstractIT() {
         val oldRemotePath = "/file1.jpg"
         val newRemotePath = "/file2.png"
         assertTrue(
-            UploadFileRemoteOperation(filePath, oldRemotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, oldRemotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
         )
@@ -61,13 +61,13 @@ class RenameFileRemoteOperationIT : AbstractIT() {
         val firstRemotePath = "/file1.jpg"
         val secondRemotePath = "/file2.png"
         assertTrue(
-            UploadFileRemoteOperation(filePath, firstRemotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, firstRemotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
         )
 
         assertTrue(
-            UploadFileRemoteOperation(filePath, secondRemotePath, "image/jpg", "123")
+            UploadFileRemoteOperation(filePath, secondRemotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
         )

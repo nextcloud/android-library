@@ -27,6 +27,9 @@
 
 package com.owncloud.android.lib.resources.users;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.UserInfo;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -36,10 +39,7 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-public class SetUserInfoRemoteOperationTest extends AbstractIT {
+public class SetUserInfoRemoteOperationIT extends AbstractIT {
     @Test
     public void testSetEmail() {
         RemoteOperationResult<UserInfo> userInfo = new GetUserInfoRemoteOperation().execute(nextcloudClient);

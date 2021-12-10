@@ -26,6 +26,8 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
@@ -37,13 +39,11 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Class to test Delete a File Operation
  */
 
-public class DeleteFileTest extends AbstractIT {
+public class DeleteFileIT extends AbstractIT {
     /* Folder data to delete. */
     private static final String FOLDER_PATH = "/folderToDelete";
 

@@ -23,6 +23,11 @@
 
 package com.nextcloud.android.lib.resources.directediting;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.Creator;
 import com.owncloud.android.lib.common.DirectEditing;
@@ -31,12 +36,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-public class DirectEditingObtainRemoteOperationTest extends AbstractIT {
+public class DirectEditingObtainRemoteOperationIT extends AbstractIT {
 
     @Test
     public void testGetAll() {

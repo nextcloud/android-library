@@ -27,16 +27,16 @@
 
 package com.nextcloud.android.lib.resources.directediting;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.TemplateList;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-public class DirectEditingObtainListOfTemplatesRemoteOperationTest extends AbstractIT {
+public class DirectEditingObtainListOfTemplatesRemoteOperationIT extends AbstractIT {
 
     @Test
     public void testGetAll() {

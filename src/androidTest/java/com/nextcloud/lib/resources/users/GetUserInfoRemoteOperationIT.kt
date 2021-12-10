@@ -36,7 +36,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class GetUserInfoRemoteOperationTest : AbstractIT() {
+class GetUserInfoRemoteOperationIT : AbstractIT() {
     @Test
     fun testGetUserNoQuota() {
         nextcloudClient.credentials = Credentials.basic("user1", "user1")
