@@ -46,7 +46,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class GetSharesRemoteOperationTest extends AbstractIT {
+public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void searchSharedFiles() {
         assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());

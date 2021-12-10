@@ -26,6 +26,10 @@
  */
 package com.owncloud.android.lib.common.operations;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
@@ -37,14 +41,10 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Test create share
  */
-public class CreateShareTest extends AbstractIT {
+public class CreateShareIT extends AbstractIT {
     private static final String NON_EXISTENT_FILE = "/nonExistentFile.txt";
     private static final String serverUri2 = "server2";
 

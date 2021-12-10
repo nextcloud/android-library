@@ -21,6 +21,9 @@
 
 package com.nextcloud.android.lib.richWorkspace;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.webkit.URLUtil;
 
 import com.owncloud.android.AbstractIT;
@@ -33,10 +36,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-public class RichWorkspaceDirectEditingRemoteOperationTest extends AbstractIT {
+public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
 
     @Test
     public void getEditLinkForRoot() {
