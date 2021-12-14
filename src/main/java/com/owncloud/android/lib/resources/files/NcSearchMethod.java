@@ -53,17 +53,19 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
     private long timestamp;
     private int limit;
     private boolean filterOutFiles;
+    private boolean isNextcloudVersionEqualOrHigherThan22;
     private String userId;
 
     public NcSearchMethod(String uri, SearchInfo searchInfo,
                           SearchRemoteOperation.SearchType searchType, String userId, long timestamp,
-                          int limit, boolean filterOutFiles) throws IOException {
+                          int limit, boolean filterOutFiles, boolean isNextcloudVersionEqualOrHigherThan22) throws IOException {
         super(uri, searchInfo);
         this.searchType = searchType;
         this.userId = userId;
         this.limit = limit;
         this.filterOutFiles = filterOutFiles;
         this.timestamp = timestamp;
+        this.isNextcloudVersionEqualOrHigherThan22 = isNextcloudVersionEqualOrHigherThan22;
 
         setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
         setRequestBody(createQuery(searchInfo.getQuery()));
@@ -286,10 +288,24 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             whereElement.appendChild(and);
         } else {
             if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
-                Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
+                if (isNextcloudVersionEqualOrHigherThan22) {
+                    whereElement.appendChild(equalsElement);
+                } else {
+                    Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
+                    Element lessThan = query.createElementNS(DAV_NAMESPACE, "d:eq");
+                    Element lastModified = query.createElementNS(NAMESPACE_OC, "oc:owner-id");
+                    Element literal = query.createElementNS(DAV_NAMESPACE, "d:literal");
+                    Element prop = query.createElementNS(DAV_NAMESPACE, "d:prop");
+                    prop.appendChild(lastModified);
+                    literal.setTextContent(String.valueOf(userId));
 
-                and.appendChild(equalsElement);
-                whereElement.appendChild(and);
+                    lessThan.appendChild(prop);
+                    lessThan.appendChild(literal);
+
+                    and.appendChild(lessThan);
+                    and.appendChild(equalsElement);
+                    whereElement.appendChild(and);
+                }
             } else {
                 whereElement.appendChild(equalsElement);
             }
