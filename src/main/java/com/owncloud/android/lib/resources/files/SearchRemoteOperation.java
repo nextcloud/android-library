@@ -32,7 +32,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.WebDavFileUtils;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
-import com.owncloud.android.lib.resources.status.NextcloudVersion;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.MultiStatus;
@@ -99,7 +100,7 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
             RemoteOperation getCapabilities = new GetCapabilitiesRemoteOperation();
             RemoteOperationResult capabilitiesResult = getCapabilities.execute(client);
             OCCapability capability = (OCCapability) capabilitiesResult.getData().get(0);
-            boolean isNextcloudVersionEqualOrHigherThan22 = capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_22);
+            String remoteNextcloudVersion = capability.getVersion();
 
             if (isSearchSupported) {
                 searchMethod = new NcSearchMethod(webDavUrl,
@@ -111,7 +112,7 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
                                                   timestamp,
                                                   limit,
                                                   filterOutFiles,
-                                                  isNextcloudVersionEqualOrHigherThan22);
+                                                  remoteNextcloudVersion);
 
                 int status = client.executeMethod(searchMethod);
 
