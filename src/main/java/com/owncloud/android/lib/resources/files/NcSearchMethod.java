@@ -26,6 +26,11 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
+
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
+import com.owncloud.android.lib.resources.status.OCCapability;
+
 import org.apache.jackrabbit.webdav.search.SearchInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,9 +47,6 @@ import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
-import com.owncloud.android.lib.resources.status.NextcloudVersion;
-
 public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
     private static final String DAV_NAMESPACE = "DAV:";
@@ -54,19 +56,23 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
     private long timestamp;
     private int limit;
     private boolean filterOutFiles;
-    private String remoteNextcloudVersion;
+    private OCCapability capability;
     private String userId;
 
     public NcSearchMethod(String uri, SearchInfo searchInfo,
-                          SearchRemoteOperation.SearchType searchType, String userId, long timestamp,
-                          int limit, boolean filterOutFiles, String remoteNextcloudVersion) throws IOException {
+                          SearchRemoteOperation.SearchType searchType,
+                          String userId,
+                          long timestamp,
+                          int limit,
+                          boolean filterOutFiles,
+                          OCCapability capability) throws IOException {
         super(uri, searchInfo);
         this.searchType = searchType;
         this.userId = userId;
         this.limit = limit;
         this.filterOutFiles = filterOutFiles;
         this.timestamp = timestamp;
-        this.remoteNextcloudVersion = remoteNextcloudVersion;
+        this.capability = capability;
 
         setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
         setRequestBody(createQuery(searchInfo.getQuery()));
@@ -289,7 +295,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             whereElement.appendChild(and);
         } else {
             if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
-                if (remoteNextcloudVersion.isNewerOrEqual(NextcloudVersion.nextcloud_22)) {
+                if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_22)) {
                     whereElement.appendChild(equalsElement);
                 } else {
                     Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
