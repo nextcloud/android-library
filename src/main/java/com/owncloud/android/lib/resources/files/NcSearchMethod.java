@@ -294,25 +294,22 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             and.appendChild(equalsElement);
             whereElement.appendChild(and);
         } else {
-            if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
-                if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_22)) {
-                    whereElement.appendChild(equalsElement);
-                } else {
-                    Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
-                    Element lessThan = query.createElementNS(DAV_NAMESPACE, "d:eq");
-                    Element lastModified = query.createElementNS(NAMESPACE_OC, "oc:owner-id");
-                    Element literal = query.createElementNS(DAV_NAMESPACE, "d:literal");
-                    Element prop = query.createElementNS(DAV_NAMESPACE, "d:prop");
-                    prop.appendChild(lastModified);
-                    literal.setTextContent(String.valueOf(userId));
+            if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH
+                    && capability.getVersion().isOlderThan(NextcloudVersion.nextcloud_22)) {
+                Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
+                Element lessThan = query.createElementNS(DAV_NAMESPACE, "d:eq");
+                Element lastModified = query.createElementNS(NAMESPACE_OC, "oc:owner-id");
+                Element literal = query.createElementNS(DAV_NAMESPACE, "d:literal");
+                Element prop = query.createElementNS(DAV_NAMESPACE, "d:prop");
+                prop.appendChild(lastModified);
+                literal.setTextContent(String.valueOf(userId));
 
-                    lessThan.appendChild(prop);
-                    lessThan.appendChild(literal);
+                lessThan.appendChild(prop);
+                lessThan.appendChild(literal);
 
-                    and.appendChild(lessThan);
-                    and.appendChild(equalsElement);
-                    whereElement.appendChild(and);
-                }
+                and.appendChild(lessThan);
+                and.appendChild(equalsElement);
+                whereElement.appendChild(and);
             } else {
                 whereElement.appendChild(equalsElement);
             }
