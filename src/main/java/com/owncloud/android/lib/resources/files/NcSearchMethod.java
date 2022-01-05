@@ -56,7 +56,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
     private long timestamp;
     private int limit;
     private boolean filterOutFiles;
-    private OCCapability capability;
+    private final OCCapability capability;
     private String userId;
 
     public NcSearchMethod(String uri, SearchInfo searchInfo,
@@ -65,7 +65,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
                           long timestamp,
                           int limit,
                           boolean filterOutFiles,
-                          OCCapability capability) throws IOException {
+                          final OCCapability capability) throws IOException {
         super(uri, searchInfo);
         this.searchType = searchType;
         this.userId = userId;

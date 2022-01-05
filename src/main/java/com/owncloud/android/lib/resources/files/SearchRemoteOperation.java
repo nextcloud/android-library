@@ -72,7 +72,7 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
     public SearchRemoteOperation(String query,
                                  SearchType searchType,
                                  boolean filterOutFiles,
-                                 OCCapability capability) {
+                                 final OCCapability capability) {
         this.searchQuery = query;
         this.searchType = searchType;
         this.filterOutFiles = filterOutFiles;
