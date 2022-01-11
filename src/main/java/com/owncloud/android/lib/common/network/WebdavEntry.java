@@ -54,6 +54,7 @@ public class WebdavEntry {
 
 	public static final String NAMESPACE_OC = "http://owncloud.org/ns";
 	public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
+    public static final String NAMESPACE_DAV = "DAV:";
 	public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
 	public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
