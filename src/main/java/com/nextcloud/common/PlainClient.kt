@@ -32,6 +32,7 @@ import android.content.Context
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
+import okhttp3.ConnectionPool
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -56,12 +57,15 @@ class PlainClient(context: Context) {
             sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
+            val connectionPool = ConnectionPool()
             return OkHttpClient.Builder()
+                .connectionPool(connectionPool)
                 .cookieJar(CookieJar.NO_COOKIES)
                 .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
-                .dns(IPV6PreferringDNS())
+                .addNetworkInterceptor(IPv4FallbackInterceptor(connectionPool))
+                .dns(IPV6PreferringDNS)
                 .build()
         }
     }
