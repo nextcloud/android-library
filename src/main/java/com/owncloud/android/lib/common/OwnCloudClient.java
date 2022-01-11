@@ -63,7 +63,7 @@ public class OwnCloudClient extends HttpClient {
     /**
      * Characters to skip during userID encoding
      */
-    private static final String ALLOWED_USERID_CHARACTERS = "@";
+    private static final String ALLOWED_USERID_CHARACTERS = "@+";
 
 
     private static byte[] sExhaustBuffer = new byte[1024];
