@@ -5,14 +5,16 @@ import okhttp3.ConnectionPool
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 
-@Suppress("MagicNumber")
 class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Interceptor {
     companion object {
         private const val TAG = "IPv4FallbackInterceptor"
+        private val SERVER_ERROR_RANGE = 500..599
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response = chain.proceed(request)
@@ -20,19 +22,17 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
         val hostname = request.url.host
 
         return try {
-            if (response.code in 500..599 && DNSCache.isIPV6(hostname)) {
+            if (response.code in SERVER_ERROR_RANGE && DNSCache.isIPV6(hostname)) {
                 Log_OC.d(TAG, "Response error with IPv6, trying IPv4")
                 retryWithIPv4(hostname, chain, request)
             } else {
                 response
             }
-        } catch (e: SocketTimeoutException) {
-            if (DNSCache.isIPV6(hostname)) {
-                Log_OC.d(TAG, "Socket timeout with IPv6, trying IPv4")
-                retryWithIPv4(hostname, chain, request)
-            } else {
-                throw e
+        } catch (e: Exception) {
+            if (DNSCache.isIPV6(hostname) && (e is SocketTimeoutException || e is ConnectException)) {
+                return retryWithIPv4(hostname, chain, request)
             }
+            throw e
         }
     }
 
@@ -41,6 +41,7 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
         chain: Interceptor.Chain,
         request: Request
     ): Response {
+        Log_OC.d(TAG, "Error with IPv6, trying IPv4")
         DNSCache.setIPVersionPreference(hostname, true)
         connectionPool.evictAll()
         return chain.proceed(request)

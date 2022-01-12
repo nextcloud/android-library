@@ -49,6 +49,7 @@ import org.apache.commons.httpclient.params.HttpParams;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Locale;
 
@@ -217,7 +218,7 @@ public class OwnCloudClient extends HttpClient {
 
             return status;
 
-        } catch (SocketTimeoutException e) {
+        } catch (SocketTimeoutException | ConnectException e) {
             if (DNSCache.INSTANCE.isIPV6(hostname)) {
                 return retryMethodWithIPv4(method, hostname);
             } else {
@@ -230,6 +231,7 @@ public class OwnCloudClient extends HttpClient {
     }
 
     private int retryMethodWithIPv4(HttpMethod method, String hostname) throws IOException {
+        Log_OC.d(TAG, "IPv6 connection failed. Retrying with IPV4");
         DNSCache.INSTANCE.setIPVersionPreference(hostname, true);
         return executeMethod(method);
     }

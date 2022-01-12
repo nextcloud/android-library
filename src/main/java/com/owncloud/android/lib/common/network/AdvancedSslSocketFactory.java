@@ -25,7 +25,6 @@
 package com.owncloud.android.lib.common.network;
 
 import com.nextcloud.common.DNSCache;
-import com.nextcloud.common.IPV6PreferringDNS;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
