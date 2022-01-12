@@ -20,14 +20,14 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
         val hostname = request.url.host
 
         return try {
-            if (response.code in 500..599 && IPV6PreferringDNS.isIPV6(hostname)) {
+            if (response.code in 500..599 && DNSCache.isIPV6(hostname)) {
                 Log_OC.d(TAG, "Response error with IPv6, trying IPv4")
                 retryWithIPv4(hostname, chain, request)
             } else {
                 response
             }
         } catch (e: SocketTimeoutException) {
-            if (IPV6PreferringDNS.isIPV6(hostname)) {
+            if (DNSCache.isIPV6(hostname)) {
                 Log_OC.d(TAG, "Socket timeout with IPv6, trying IPv4")
                 retryWithIPv4(hostname, chain, request)
             } else {
@@ -41,7 +41,7 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
         chain: Interceptor.Chain,
         request: Request
     ): Response {
-        IPV6PreferringDNS.setIPVersionPreference(hostname, true)
+        DNSCache.setIPVersionPreference(hostname, true)
         connectionPool.evictAll()
         return chain.proceed(request)
     }
