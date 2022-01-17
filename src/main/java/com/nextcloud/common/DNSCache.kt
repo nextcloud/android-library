@@ -39,20 +39,6 @@ object DNSCache {
         return sortedAddresses
     }
 
-    private fun sortAddresses(
-        addresses: List<InetAddress>,
-        preferIPV4: Boolean
-    ): List<InetAddress> = addresses.sortedWith { address1, _ ->
-        val order = when (address1) {
-            is Inet4Address -> 1
-            else -> -1
-        }
-        when (preferIPV4) {
-            true -> order * -1
-            else -> order
-        }
-    }
-
     /**
      * Set IP version preference for a hostname, and re-sort addresses if needed
      */
@@ -73,5 +59,27 @@ object DNSCache {
     @Synchronized
     fun isIPV6(hostname: String): Boolean {
         return cache[hostname]?.addresses?.firstOrNull() is Inet6Address
+    }
+
+    /**
+     * Clears the cache
+     */
+    @Synchronized
+    fun clear() {
+        cache.clear()
+    }
+
+    private fun sortAddresses(
+        addresses: List<InetAddress>,
+        preferIPV4: Boolean
+    ): List<InetAddress> = addresses.sortedWith { address1, _ ->
+        val order = when (address1) {
+            is Inet4Address -> 1
+            else -> -1
+        }
+        when (preferIPV4) {
+            true -> order * -1
+            else -> order
+        }
     }
 }
