@@ -17,6 +17,7 @@ object DNSCache {
 
     @Throws(UnknownHostException::class)
     @Synchronized
+    @JvmStatic
     fun lookup(hostname: String): List<InetAddress> {
         val entry = cache[hostname]
         if (entry?.addresses?.isNotEmpty() == true) {
@@ -43,6 +44,7 @@ object DNSCache {
      * Set IP version preference for a hostname, and re-sort addresses if needed
      */
     @Synchronized
+    @JvmStatic
     fun setIPVersionPreference(hostname: String, preferIPV4: Boolean) {
         val entry = cache[hostname]
         if (entry != null) {
@@ -57,6 +59,7 @@ object DNSCache {
      * Check whether we have addresses for a hostname, and the first one is IPv6
      */
     @Synchronized
+    @JvmStatic
     fun isIPV6(hostname: String): Boolean {
         return cache[hostname]?.addresses?.firstOrNull() is Inet6Address
     }
@@ -65,6 +68,7 @@ object DNSCache {
      * Clears the cache
      */
     @Synchronized
+    @JvmStatic
     fun clear() {
         cache.clear()
     }

@@ -204,7 +204,7 @@ public class OwnCloudClient extends HttpClient {
 
             int status = super.executeMethod(method);
 
-            if (status >= 500 && status < 600 && DNSCache.INSTANCE.isIPV6(hostname)) {
+            if (status >= 500 && status < 600 && DNSCache.isIPV6(hostname)) {
                 return retryMethodWithIPv4(method, hostname);
             }
 
@@ -219,7 +219,7 @@ public class OwnCloudClient extends HttpClient {
             return status;
 
         } catch (SocketTimeoutException | ConnectException e) {
-            if (DNSCache.INSTANCE.isIPV6(hostname)) {
+            if (DNSCache.isIPV6(hostname)) {
                 return retryMethodWithIPv4(method, hostname);
             } else {
                 throw e;
@@ -232,7 +232,7 @@ public class OwnCloudClient extends HttpClient {
 
     private int retryMethodWithIPv4(HttpMethod method, String hostname) throws IOException {
         Log_OC.d(TAG, "IPv6 connection failed. Retrying with IPV4");
-        DNSCache.INSTANCE.setIPVersionPreference(hostname, true);
+        DNSCache.setIPVersionPreference(hostname, true);
         return executeMethod(method);
     }
 

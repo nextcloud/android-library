@@ -188,7 +188,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
     }
 
     private InetAddress getInetAddressForHost(String host) throws UnknownHostException {
-        return DNSCache.INSTANCE.lookup(host).get(0);
+        return DNSCache.lookup(host).get(0);
     }
 
     /**
