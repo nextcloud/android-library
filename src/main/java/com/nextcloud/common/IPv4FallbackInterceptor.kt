@@ -49,14 +49,14 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
         val hostname = request.url.host
 
         return try {
-            if (response.code in SERVER_ERROR_RANGE && DNSCache.isIPV6(hostname)) {
+            if (response.code in SERVER_ERROR_RANGE && DNSCache.isIPV6First(hostname)) {
                 Log_OC.d(TAG, "Response error with IPv6, trying IPv4")
                 retryWithIPv4(hostname, chain, request)
             } else {
                 response
             }
         } catch (e: Exception) {
-            if (DNSCache.isIPV6(hostname) && (e is SocketTimeoutException || e is ConnectException)) {
+            if (DNSCache.isIPV6First(hostname) && (e is SocketTimeoutException || e is ConnectException)) {
                 return retryWithIPv4(hostname, chain, request)
             }
             throw e

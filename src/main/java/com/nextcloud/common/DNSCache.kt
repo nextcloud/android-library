@@ -83,12 +83,17 @@ object DNSCache {
     }
 
     /**
-     * Check whether we have addresses for a hostname, and the first one is IPv6
+     * Only returns <code>true</code> if, for a given address all of the following is true:
+     *  - There are saved IP addresses for the hostname
+     *  - The first address is an IPv6 address
+     *  - There are IPv4 addresses available too
      */
     @Synchronized
     @JvmStatic
-    fun isIPV6(hostname: String): Boolean {
-        return cache[hostname]?.addresses?.firstOrNull() is Inet6Address
+    fun isIPV6First(hostname: String): Boolean {
+        val firstV6 = cache[hostname]?.addresses?.firstOrNull() is Inet6Address
+        val anyV4 = cache[hostname]?.addresses?.any { it is Inet4Address } == true
+        return firstV6 && anyV4
     }
 
     /**
