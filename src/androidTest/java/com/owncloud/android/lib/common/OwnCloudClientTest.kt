@@ -52,4 +52,25 @@ class OwnCloudClientTest : AbstractIT() {
             client.uploadUri
         )
     }
+
+    @Test
+    fun testUserId() {
+        val client = OwnCloudClientFactory.createOwnCloudClient(
+            Uri.parse("https://10.0.2.2/nc"),
+            context,
+            false
+        )
+
+        client.userId = "test"
+        assertEquals("Wrong encoded userId", "test", client.userId)
+
+        client.userId = "test+test@test.localhost"
+        assertEquals("Wrong encoded userId", "test+test@test.localhost", client.userId)
+
+        client.userId = "test - ab4c"
+        assertEquals("Wrong encoded userId", "test%20-%20ab4c", client.userId)
+
+        client.userId = "test.-&51_+-?@test.localhost"
+        assertEquals("Wrong encoded userId", "test.-%2651_+-%3F@test.localhost", client.userId)
+    }
 }
