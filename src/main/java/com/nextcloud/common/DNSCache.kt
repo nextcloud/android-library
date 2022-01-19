@@ -27,6 +27,7 @@
 
 package com.nextcloud.common
 
+import androidx.annotation.VisibleForTesting
 import okhttp3.Dns
 import java.net.Inet4Address
 import java.net.Inet6Address
@@ -41,6 +42,8 @@ object DNSCache {
     data class DNSInfo(val addresses: List<InetAddress>, val preferIPV4: Boolean = false)
 
     private val cache: MutableMap<String, DNSInfo> = HashMap()
+    @VisibleForTesting
+    var dns: Dns = Dns.SYSTEM
 
     @Throws(UnknownHostException::class)
     @Synchronized
@@ -55,7 +58,7 @@ object DNSCache {
             else -> entry.preferIPV4
         }
 
-        val addresses = Dns.SYSTEM.lookup(hostname).toMutableList()
+        val addresses = dns.lookup(hostname).toMutableList()
         if (addresses.isEmpty()) {
             throw UnknownHostException("Unknown host $hostname")
         }
