@@ -24,6 +24,7 @@
 
 package com.owncloud.android.lib.common.network;
 
+import com.nextcloud.common.DNSCache;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -187,7 +188,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
     }
 
     private InetAddress getInetAddressForHost(String host) throws UnknownHostException {
-        return InetAddress.getByName(host);
+        return DNSCache.lookup(host).get(0);
     }
 
     /**
