@@ -32,6 +32,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.WebDavFileUtils;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.MultiStatus;
@@ -66,11 +67,16 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
     private final boolean filterOutFiles;
     private int limit;
     private long timestamp = -1;
+    private final OCCapability capability;
 
-    public SearchRemoteOperation(String query, SearchType searchType, boolean filterOutFiles) {
+    public SearchRemoteOperation(String query,
+                                 SearchType searchType,
+                                 boolean filterOutFiles,
+                                 final OCCapability capability) {
         this.searchQuery = query;
         this.searchType = searchType;
         this.filterOutFiles = filterOutFiles;
+        this.capability = capability;
     }
 
     public void setLimit(int limit) {
@@ -96,14 +102,15 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
 
             if (isSearchSupported) {
                 searchMethod = new NcSearchMethod(webDavUrl,
-                                                  new SearchInfo("NC",
-                                                                 Namespace.XMLNS_NAMESPACE,
-                                                                 searchQuery),
-                                                  searchType,
-                                                  getClient().getUserIdPlain(),
-                                                  timestamp,
-                                                  limit,
-                                                  filterOutFiles);
+                        new SearchInfo("NC",
+                                Namespace.XMLNS_NAMESPACE,
+                                searchQuery),
+                        searchType,
+                        getClient().getUserIdPlain(),
+                        timestamp,
+                        limit,
+                        filterOutFiles,
+                        capability);
 
                 int status = client.executeMethod(searchMethod);
 
