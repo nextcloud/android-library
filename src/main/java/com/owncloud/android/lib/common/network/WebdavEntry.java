@@ -67,6 +67,8 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_NOTE = "note";
     public static final String EXTENDED_PROPERTY_SHAREES = "sharees";
     public static final String EXTENDED_PROPERTY_RICH_WORKSPACE = "rich-workspace";
+    public static final String EXTENDED_PROPERTY_CREATION_TIME = "creation_time";
+    public static final String EXTENDED_PROPERTY_UPLOAD_TIME = "upload_time";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -96,8 +98,12 @@ public class WebdavEntry {
     @Getter private MountType mountType;
     @Getter private long contentLength;
     @Getter private long createTimestamp;
-    @Getter private long modifiedTimestamp;
-    @Getter private long size;
+    @Getter
+    private long modifiedTimestamp;
+    @Getter
+    private long uploadTimestamp;
+    @Getter
+    private long size;
     @Getter private BigDecimal quotaUsedBytes;
     @Getter private BigDecimal quotaAvailableBytes;
     @Getter private String ownerId;
@@ -181,10 +187,24 @@ public class WebdavEntry {
                 modifiedTimestamp = (d != null) ? d.getTime() : 0;
             }
 
-            prop = propSet.get(DavPropertyName.CREATIONDATE);
+            // {NS:} creation_time
+            prop = propSet.get(EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
             if (prop != null) {
-                Date d = WebdavUtils.parseResponseDate((String) prop.getValue());
-                createTimestamp = (d != null) ? d.getTime() : 0;
+                try {
+                    createTimestamp = Long.parseLong((String) prop.getValue());
+                } catch (NumberFormatException e) {
+                    createTimestamp = 0;
+                }
+            }
+
+            // {NS:} upload_time
+            prop = propSet.get(EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
+            if (prop != null) {
+                try {
+                    uploadTimestamp = Long.parseLong((String) prop.getValue());
+                } catch (NumberFormatException e) {
+                    uploadTimestamp = 0;
+                }
             }
 
             // {DAV:}getetag

@@ -24,6 +24,12 @@
 
 package com.owncloud.android.lib.resources.files;
 
+import android.os.Build;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.VisibleForTesting;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.FileRequestEntity;
 import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
@@ -31,6 +37,7 @@ import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
 import com.owncloud.android.lib.common.operations.OperationCancelledException;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpStatus;
@@ -40,13 +47,16 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Remote operation performing the upload of a remote file to the ownCloud server.
- * 
+ *
  * @author David A. Velasco
  * @author masensio
  */
@@ -54,32 +64,38 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class UploadFileRemoteOperation extends RemoteOperation {
 	private static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
 	private static final String IF_MATCH_HEADER = "If-Match";
-    private static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
+	protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
+	protected static final String OC_X_OC_CTIME_HEADER = "X-OC-Ctime";
 
 	protected String localPath;
 	protected String remotePath;
 	protected String mimeType;
 	private String lastModificationTimestamp;
-	protected final boolean disableRetries;
+	protected boolean disableRetries = false;
 	PutMethod putMethod = null;
 	private String requiredEtag = null;
-    String token = null;
+	String token = null;
 
 	final AtomicBoolean cancellationRequested = new AtomicBoolean(false);
-    RemoteOperationResult.ResultCode cancellationReason = null;
+	RemoteOperationResult.ResultCode cancellationReason = null;
 	final Set<OnDatatransferProgressListener> dataTransferListeners = new HashSet<>();
 
 	protected RequestEntity entity = null;
 
-    public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-                                     String requiredEtag,
-                                     String lastModificationTimestamp) {
-        this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null);
-    }
+	@VisibleForTesting
+	public UploadFileRemoteOperation() {
+		// empty 
+	}
 
-    public UploadFileRemoteOperation(String localPath,
+	public UploadFileRemoteOperation(String localPath,
+									 String remotePath,
+									 String mimeType,
+									 String requiredEtag,
+									 String lastModificationTimestamp) {
+		this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null);
+	}
+
+	public UploadFileRemoteOperation(String localPath,
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
@@ -196,13 +212,22 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 			entity = new FileRequestEntity(f, mimeType);
 			synchronized (dataTransferListeners) {
 				((ProgressiveDataTransfer) entity)
-                        .addDataTransferProgressListeners(dataTransferListeners);
+						.addDataTransferProgressListeners(dataTransferListeners);
 			}
 			if (requiredEtag != null && requiredEtag.length() > 0) {
 				putMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + requiredEtag + "\"");
 			}
 			putMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
-            putMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp);
+			putMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp);
+
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+				Long creationTimestamp = getCreationTimestamp(f);
+
+				if (creationTimestamp != null && creationTimestamp > 0) {
+					putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
+				}
+			}
+
 			putMethod.setRequestEntity(entity);
 			status = client.executeMethod(putMethod);
 
@@ -242,14 +267,25 @@ public class UploadFileRemoteOperation extends RemoteOperation {
         synchronized (cancellationRequested) {
             cancellationRequested.set(true);
 
-            if (cancellationReason != null) {
-                this.cancellationReason = cancellationReason;
-            }
+			if (cancellationReason != null) {
+				this.cancellationReason = cancellationReason;
+			}
 
-            if (putMethod != null) {
-                putMethod.abort();
-            }
-        }
-    }
+			if (putMethod != null) {
+				putMethod.abort();
+			}
+		}
+	}
 
+	@RequiresApi(api = Build.VERSION_CODES.O)
+	protected @Nullable
+	Long getCreationTimestamp(File file) {
+		try {
+			return Files.readAttributes(file.toPath(), BasicFileAttributes.class)
+					.creationTime().to(TimeUnit.SECONDS);
+		} catch (IOException e) {
+			Log_OC.e(this, "Failed to read creation timestamp for file: " + file.getName());
+			return null;
+		}
+	}
 }

@@ -27,6 +27,8 @@ package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -40,28 +42,29 @@ import java.util.Locale;
 
 public class WebdavUtils {
     private static final SimpleDateFormat DATETIME_FORMATS[] = {
-    	new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
-    	new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),	
-		new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US),
-		new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US),
-		new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US),
-		new SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
-		new SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US),
-		new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US)
-	};
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
+            new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US),
+            new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US),
+            new SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
+            new SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US),
+            new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US)
+    };
 
-    public static Date parseResponseDate(String date) {
-        Date returnDate = null;
-        SimpleDateFormat format = null;
+    public static @Nullable
+    Date parseResponseDate(String date) {
+        Date returnDate;
+        SimpleDateFormat format;
         for (int i = 0; i < DATETIME_FORMATS.length; ++i) {
             try {
-            	format = DATETIME_FORMATS[i];
-            	synchronized(format) {
-            		returnDate = format.parse(date);
-            	}
+                format = DATETIME_FORMATS[i];
+                synchronized (format) {
+                    returnDate = format.parse(date);
+                }
                 return returnDate;
             } catch (ParseException e) {
-            	// this is not the format
+                // this is not the format
             }
         }
         return null;
@@ -111,6 +114,8 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NOTE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_SHAREES, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
 
         return propSet;
     }
@@ -137,6 +142,8 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_SHAREES, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
 
         return propSet;
     }
