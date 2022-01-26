@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.android.tools.build:gradle:7.1.0'
         classpath 'com.hiya:jacoco-android:0.2'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -140,14 +140,12 @@ android {
         }
     }
 
-    lintOptions {
-        // config
-        warningsAsErrors true
+    lint {
         abortOnError true
         disable 'GradleDependency','InvalidPackage'
-        // output
-        htmlReport true
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
+        htmlReport true
+        warningsAsErrors true
     }
 
     defaultConfig {
