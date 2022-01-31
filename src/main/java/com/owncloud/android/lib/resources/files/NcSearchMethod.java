@@ -50,22 +50,27 @@ import javax.xml.parsers.ParserConfigurationException;
 public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
     private static final String DAV_NAMESPACE = "DAV:";
-    private static final String OC_NAMESPACE = "oc:";
 
-    private SearchRemoteOperation.SearchType searchType;
-    private long timestamp;
-    private int limit;
-    private boolean filterOutFiles;
+    private final SearchRemoteOperation.SearchType searchType;
+    private final long timestamp;
+    private final int limit;
+    private final boolean filterOutFiles;
     private final OCCapability capability;
-    private String userId;
+    private final String userId;
+    private final Long startDate;
+    private final Long endDate;
 
-    public NcSearchMethod(String uri, SearchInfo searchInfo,
+    @SuppressWarnings("PMD.ExcessiveParameterList")
+    public NcSearchMethod(String uri, 
+                          SearchInfo searchInfo,
                           SearchRemoteOperation.SearchType searchType,
                           String userId,
                           long timestamp,
                           int limit,
                           boolean filterOutFiles,
-                          final OCCapability capability) throws IOException {
+                          final OCCapability capability,
+                          Long startDate,
+                          Long endDate) throws IOException {
         super(uri, searchInfo);
         this.searchType = searchType;
         this.userId = userId;
@@ -73,6 +78,8 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         this.filterOutFiles = filterOutFiles;
         this.timestamp = timestamp;
         this.capability = capability;
+        this.startDate = startDate;
+        this.endDate = endDate;
 
         setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
         setRequestBody(createQuery(searchInfo.getQuery()));
@@ -291,6 +298,35 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             lessThan.appendChild(literal);
 
             and.appendChild(lessThan);
+            and.appendChild(equalsElement);
+            whereElement.appendChild(and);
+        } else if (startDate != null && endDate != null) {
+            Element and = query.createElementNS(DAV_NAMESPACE, "d:and");
+            
+            Element lessThanProp = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element lessThan = query.createElementNS(DAV_NAMESPACE, "d:lt");
+            Element lessThanLiteral = query.createElementNS(DAV_NAMESPACE, "d:literal");
+            Element lessThanLastModified = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+
+            lessThanProp.appendChild(lessThanLastModified);
+            lessThanLiteral.setTextContent(String.valueOf(endDate));
+            
+            lessThan.appendChild(lessThanProp);
+            lessThan.appendChild(lessThanLiteral);
+
+            Element greaterThanProp = query.createElementNS(DAV_NAMESPACE, "d:prop");
+            Element greaterThan = query.createElementNS(DAV_NAMESPACE, "d:gt");
+            Element greaterThanLiteral = query.createElementNS(DAV_NAMESPACE, "d:literal");
+            Element greaterThanLastModified = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+
+            greaterThanProp.appendChild(greaterThanLastModified);
+            greaterThanLiteral.setTextContent(String.valueOf(startDate));
+            
+            greaterThan.appendChild(greaterThanProp);
+            greaterThan.appendChild(greaterThanLiteral);
+
+            and.appendChild(lessThan);
+            and.appendChild(greaterThan);
             and.appendChild(equalsElement);
             whereElement.appendChild(and);
         } else {

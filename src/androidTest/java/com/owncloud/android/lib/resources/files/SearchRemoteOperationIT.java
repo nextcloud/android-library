@@ -307,6 +307,39 @@ public class SearchRemoteOperationIT extends AbstractIT {
     }
 
     @Test
+    public void testPhotoSearchLimitDates() throws IOException {
+        long randomUnixTimestamp = 1464818400;
+
+        for (int i = 0; i < 10; i++) {
+            String filePath = createFile("image" + i);
+            String remotePath = "/image" + i + ".jpg";
+            assertTrue(new UploadFileRemoteOperation(
+                    filePath,
+                    remotePath,
+                    "image/jpg",
+                    String.valueOf(randomUnixTimestamp + i))
+                    .execute(client).isSuccess());
+        }
+
+        SearchRemoteOperation sut = new SearchRemoteOperation("image/%",
+                SearchRemoteOperation.SearchType.PHOTO_SEARCH,
+                false,
+                capability);
+
+        // get all
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        assertEquals(10, result.getResultData().size());
+
+        // limit to greater than start / less than end date
+        sut.setStartDate(randomUnixTimestamp + 2L);
+        sut.setEndDate(randomUnixTimestamp + 6L);
+
+        result = sut.execute(client);
+        assertTrue(result.isSuccess());
+        assertEquals(3, result.getResultData().size());
+    }
+
+    @Test
     public void testPhotoSearchLimitAndTimestamp() throws IOException {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);

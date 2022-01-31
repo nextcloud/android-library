@@ -68,6 +68,8 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
     private int limit;
     private long timestamp = -1;
     private final OCCapability capability;
+    private Long startDate = null;
+    private Long endDate = null;
 
     public SearchRemoteOperation(String query,
                                  SearchType searchType,
@@ -86,6 +88,14 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+    
+    public void setStartDate(Long startDate) {
+        this.startDate = startDate;
+    }
+    
+    public void setEndDate(Long endDate) {
+        this.endDate = endDate;
+    }
 
     @Override
     protected RemoteOperationResult<List<RemoteFile>> run(OwnCloudClient client) {
@@ -102,15 +112,17 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
 
             if (isSearchSupported) {
                 searchMethod = new NcSearchMethod(webDavUrl,
-                        new SearchInfo("NC",
-                                Namespace.XMLNS_NAMESPACE,
-                                searchQuery),
-                        searchType,
-                        getClient().getUserIdPlain(),
-                        timestamp,
-                        limit,
-                        filterOutFiles,
-                        capability);
+                                                  new SearchInfo("NC",
+                                                                 Namespace.XMLNS_NAMESPACE,
+                                                                 searchQuery),
+                                                  searchType,
+                                                  getClient().getUserIdPlain(),
+                                                  timestamp,
+                                                  limit,
+                                                  filterOutFiles,
+                                                  capability,
+                                                  startDate,
+                                                  endDate);
 
                 int status = client.executeMethod(searchMethod);
 
