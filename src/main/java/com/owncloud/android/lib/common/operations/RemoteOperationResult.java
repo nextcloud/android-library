@@ -77,8 +77,10 @@ import okhttp3.Headers;
 public class RemoteOperationResult<T extends Object> implements Serializable {
 
     // Generated - should be refreshed every time the class changes!!
-    private static final long serialVersionUID = -1909603208238358633L;
+    private static final long serialVersionUID = -4325446958558896222L;
     private static final String TAG = RemoteOperationResult.class.getSimpleName();
+    private static final String HEADER_WWW_AUTHENTICATE = "www-authenticate";
+    private static final String HEADER_LOCATION = "location";
 
     public enum ResultCode {
         OK,
@@ -218,11 +220,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
         if (headers != null) {
             for (Header header : headers) {
-                if ("location".equals(header.getName().toLowerCase(Locale.US))) {
+                if (HEADER_LOCATION.equals(header.getName().toLowerCase(Locale.US))) {
                     mRedirectedLocation = header.getValue();
-                    continue;
-                }
-                if ("www-authenticate".equals(header.getName().toLowerCase(Locale.US))) {
+
+                } else if (HEADER_WWW_AUTHENTICATE.equals(header.getName().toLowerCase(Locale.US))) {
                     mAuthenticateHeaders.add(header.getValue());
                 }
             }
@@ -377,13 +378,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             Header current;
             for (Header httpHeader : httpHeaders) {
                 current = httpHeader;
-                if ("location".equals(current.getName().toLowerCase(Locale.US))) {
+                if (HEADER_LOCATION.equals(current.getName().toLowerCase(Locale.US))) {
                     mRedirectedLocation = current.getValue();
-                    continue;
-                }
-                if ("www-authenticate".equals(current.getName().toLowerCase(Locale.US))) {
+                } else if (HEADER_WWW_AUTHENTICATE.equals(current.getName().toLowerCase(Locale.US))) {
                     mAuthenticateHeaders.add(current.getValue());
-                    break;
                 }
             }
         }
@@ -414,12 +412,12 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
                                  Headers httpHeaders) {
         this(success, httpCode, httpPhrase);
 
-        String location = httpHeaders.get("location");
+        String location = httpHeaders.get(HEADER_LOCATION);
         if (location != null) {
             mRedirectedLocation = location;
         }
 
-        String auth = httpHeaders.get("www-authenticat");
+        String auth = httpHeaders.get(HEADER_WWW_AUTHENTICATE);
         if (auth != null) {
             mAuthenticateHeaders.add(auth);
         }
