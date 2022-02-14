@@ -92,6 +92,8 @@ public class WebDavFileUtils {
         file.setLength(we.getContentLength());
         file.setMimeType(we.getContentType());
         file.setModifiedTimestamp(we.getModifiedTimestamp());
+        file.setCreationTimestamp(we.getCreateTimestamp());
+        file.setUploadTimestamp(we.getUploadTimestamp());
         file.setEtag(we.getETag());
         file.setPermissions(we.getPermissions());
         file.setRemoteId(we.getRemoteId());

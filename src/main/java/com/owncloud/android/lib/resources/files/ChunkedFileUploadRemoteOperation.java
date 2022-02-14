@@ -58,7 +58,6 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
     public static final long CHUNK_SIZE_MOBILE = 1024000;
     public static final long CHUNK_SIZE_WIFI = 10240000;
-    private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
     private final boolean onWifiConnection;
 
@@ -182,7 +181,15 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                     WebdavUtils.encodePath(remotePath);
             String originUri = uploadFolderUri + "/.file";
             MoveMethod moveMethod = new MoveMethod(originUri, destinationUri, true);
-            moveMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, String.valueOf(file.lastModified() / 1000));
+            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(file.lastModified() / 1000));
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                Long creationTimestamp = getCreationTimestamp(file);
+
+                if (creationTimestamp != null && creationTimestamp > 0) {
+                    putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
+                }
+            }
 
             if (token != null) {
                 moveMethod.addRequestHeader(E2E_TOKEN, token);

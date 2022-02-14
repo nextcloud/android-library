@@ -55,6 +55,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private long length;
     private long creationTimestamp;
     private long modifiedTimestamp;
+    private long uploadTimestamp;
     private String etag;
     private String permissions;
     private String remoteId;
@@ -95,6 +96,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setLength(we.getContentLength());
         setMimeType(we.getContentType());
         setModifiedTimestamp(we.getModifiedTimestamp());
+        setUploadTimestamp(we.getUploadTimestamp());
         setEtag(we.getETag());
         setPermissions(we.getPermissions());
         setRemoteId(we.getRemoteId());
