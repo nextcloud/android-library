@@ -99,7 +99,7 @@ steps:
 
 services:
   - name: server-master
-    image: nextcloudci/server:server-17
+    image: ghcr.io/nextcloud/continuous-integration-server:latest
     commands:
       - /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
@@ -188,7 +188,7 @@ steps:
 
 services:
   - name: server-stable
-    image: nextcloudci/server:server-17
+    image: ghcr.io/nextcloud/continuous-integration-server:latest
     commands:
       - BRANCH='stable22' /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
