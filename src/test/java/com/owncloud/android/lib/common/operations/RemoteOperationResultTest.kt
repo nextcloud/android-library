@@ -72,7 +72,7 @@ class RemoteOperationResultTest {
         )
         Assert.assertEquals(
             "Wrong location header",
-            LOCATION_HEADER.value,
+            null,
             sut.redirectedLocation
         )
     }
