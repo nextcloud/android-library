@@ -378,10 +378,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             Header current;
             for (Header httpHeader : httpHeaders) {
                 current = httpHeader;
-                if (HEADER_LOCATION.equals(current.getName().toLowerCase(Locale.US))) {
-                    mRedirectedLocation = current.getValue();
-                } else if (HEADER_WWW_AUTHENTICATE.equals(current.getName().toLowerCase(Locale.US))) {
+                if (HEADER_WWW_AUTHENTICATE.equals(current.getName().toLowerCase(Locale.US))) {
                     mAuthenticateHeaders.add(current.getValue());
+                } else if (HEADER_LOCATION.equals(current.getName().toLowerCase(Locale.US)) && mAuthenticateHeaders.isEmpty()) {
+                    mRedirectedLocation = current.getValue();
                 }
             }
         }
