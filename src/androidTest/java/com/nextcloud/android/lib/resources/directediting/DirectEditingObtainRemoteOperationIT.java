@@ -45,18 +45,18 @@ public class DirectEditingObtainRemoteOperationIT extends AbstractIT {
 
         DirectEditing directEditing = result.getResultData();
 
-        assertTrue(directEditing.editors.containsKey("text"));
+        assertTrue(directEditing.getEditors().containsKey("text"));
 
-        Editor textEditor = directEditing.editors.get("text");
+        Editor textEditor = directEditing.getEditors().get("text");
         assertNotNull(textEditor);
 
-        assertEquals("Nextcloud Text", textEditor.name);
+        assertEquals("Nextcloud Text", textEditor.getName());
 
-        assertTrue(textEditor.mimetypes.contains("text/markdown"));
-        assertTrue(textEditor.mimetypes.contains("text/plain"));
-        assertEquals(0, textEditor.optionalMimetypes.size());
+        assertTrue(textEditor.getMimetypes().contains("text/markdown"));
+        assertTrue(textEditor.getMimetypes().contains("text/plain"));
+        assertEquals(0, textEditor.getOptionalMimetypes().size());
 
-        Creator creator = directEditing.creators.get("textdocument");
+        Creator creator = directEditing.getCreators().get("textdocument");
         assertNotNull(creator);
         assertFalse(creator.templates);
     }

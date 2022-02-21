@@ -25,29 +25,16 @@
  *
  */
 
-package com.owncloud.android.lib.common;
+package com.owncloud.android.lib.common
 
-import org.parceler.Parcel;
-
-import java.util.ArrayList;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
- * Editor for direct editing data model
+ * Direct editing data model
  */
-@Parcel
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Editor {
-    public String id;
-    public String name;
-    public ArrayList<String> mimetypes;
-    public ArrayList<String> optionalMimetypes;
-    public boolean secure;
-}
+@Parcelize
+data class DirectEditing(
+    val editors: Map<String, Editor> = HashMap(),
+    val creators: Map<String, Creator> = HashMap()
+) : Parcelable

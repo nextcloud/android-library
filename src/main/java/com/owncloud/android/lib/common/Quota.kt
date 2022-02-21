@@ -1,8 +1,8 @@
-/* Nextcloud Android Library is available under MIT license
+/*   Nextcloud Android Library is available under MIT license
  *
- *   @author Tobias Kaminsky
- *   Copyright (C) 2019 Tobias Kaminsky
- *   Copyright (C) 2019 Nextcloud GmbH
+ *   @author Mario Danic
+ *   Copyright (C) 2017 Mario Danic
+ *   Copyright (C) 2017 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -25,31 +25,24 @@
  *
  */
 
-package com.owncloud.android.lib.common;
+package com.owncloud.android.lib.common
 
-import org.parceler.Parcel;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import lombok.ToString
 
 /**
- * List of templates data model
+ * Quota data model
  */
-@Parcel
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class TemplateList {
-    public Map<String, Template> templates = new HashMap<>();
-    
-    public ArrayList<Template> getTemplateList() {
-        return new ArrayList<>(templates.values());
-    }
+
+@Parcelize
+@ToString
+data class Quota(
+    val free: Long = 0,
+    val used: Long = 0,
+    val total: Long = 0,
+    val relative: Double = 0.0,
+    val quota: Long = 0,
+) : Parcelable {
+    constructor(quota: Long) : this(0, quota = quota)
 }
