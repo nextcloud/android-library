@@ -33,6 +33,7 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.http.conn.ssl.BrowserCompatHostnameVerifier;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -189,12 +190,10 @@ public class NetworkUtils {
     	
         KeyStore knownServers = getKnownServersStore(context);
         knownServers.setCertificateEntry(Integer.toString(cert.hashCode()), cert);
-        FileOutputStream fos = null;
-        try {
-            fos = context.openFileOutput(LOCAL_TRUSTSTORE_FILENAME, Context.MODE_PRIVATE);
-            knownServers.store(fos, LOCAL_TRUSTSTORE_PASSWORD.toCharArray());
-        } finally {
-            fos.close();
+        try (BufferedOutputStream buffOut = new BufferedOutputStream(
+                context.openFileOutput(LOCAL_TRUSTSTORE_FILENAME, Context.MODE_PRIVATE))
+        ) {
+            knownServers.store(buffOut, LOCAL_TRUSTSTORE_PASSWORD.toCharArray());
         }
     }
     
