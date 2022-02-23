@@ -25,25 +25,21 @@
  *
  */
 
-package com.owncloud.android.lib.common;
+package com.owncloud.android.lib.common
 
-import org.parceler.Parcel;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
  * Quota data model
  */
-@Parcel
-@NoArgsConstructor
-@AllArgsConstructor
-public class ExternalLink {
-    public Integer id;
-    public String iconUrl;
-    public String language;
-    public ExternalLinkType type;
-    public String name;
-    public String url;
-    public boolean redirect;
-}
+@Parcelize
+data class ExternalLink(
+    val id: Int,
+    val iconUrl: String,
+    val language: String,
+    val type: ExternalLinkType,
+    val name: String,
+    val url: String,
+    val redirect: Boolean,
+) : Parcelable

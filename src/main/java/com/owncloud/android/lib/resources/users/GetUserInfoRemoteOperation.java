@@ -98,15 +98,10 @@ public class GetUserInfoRemoteOperation extends OCSRemoteOperation<UserInfo> {
                         new TypeToken<ServerResponse<UserInfo>>() {
                         });
 
-                UserInfo userInfo = ocsResponse.getOcs().getData();
+                UserInfo userInfo = ocsResponse.ocs.data;
 
-                if (userInfo.getQuota() == null) {
-                    userInfo.setQuota(new Quota());
-                    userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
-                }
-
-                if (userInfo.getQuota().getQuota() == 0) {
-                    userInfo.getQuota().setQuota(QUOTA_LIMIT_INFO_NOT_AVAILABLE);
+                if (userInfo.getQuota() == null || userInfo.getQuota().getQuota() == 0) {
+                    userInfo.setQuota(new Quota(QUOTA_LIMIT_INFO_NOT_AVAILABLE));
                 }
 
                 result = new RemoteOperationResult<>(true, get);

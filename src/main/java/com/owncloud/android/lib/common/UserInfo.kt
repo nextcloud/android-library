@@ -1,8 +1,8 @@
-/* Nextcloud Android Library is available under MIT license
+/*   Nextcloud Android Library is available under MIT license
  *
- *   @author Tobias Kaminsky
- *   Copyright (C) 2019 Tobias Kaminsky
- *   Copyright (C) 2019 Nextcloud GmbH
+ *   @author Mario Danic
+ *   Copyright (C) 2017 Mario Danic
+ *   Copyright (C) 2017 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,34 @@
  *   THE SOFTWARE.
  *
  */
+package com.owncloud.android.lib.common
 
-package com.owncloud.android.lib.common;
-
-import org.parceler.Parcel;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 /**
- * Template for direct editing data model
+ * User information data model
  */
-@Parcel
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Template {
-    public String id;
-    public String extension;
-    public String title;
-    public String preview;
-}
+@Parcelize
+data class UserInfo(
+    var id: String?,
+    var enabled: Boolean?,
+
+    @SerializedName(value = "display-name", alternate = ["displayname"])
+    var displayName: String?,
+
+    var email: String?,
+
+    var phone: String?,
+
+    var address: String?,
+
+    @SerializedName(value = "website", alternate = ["webpage"])
+    var website: String?,
+
+    var twitter: String?,
+
+    var quota: Quota?,
+    var groups: ArrayList<String>?,
+) : Parcelable

@@ -25,29 +25,15 @@
  *
  */
 
-package com.nextcloud.android.lib.resources.directediting;
+package com.owncloud.android.lib.common
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-import com.owncloud.android.AbstractIT;
-import com.owncloud.android.lib.common.TemplateList;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-
-import org.junit.Test;
-
-public class DirectEditingObtainListOfTemplatesRemoteOperationIT extends AbstractIT {
-
-    @Test
-    public void testGetAll() {
-        RemoteOperationResult result = new DirectEditingObtainListOfTemplatesRemoteOperation("text",
-                "textdocument")
-                .execute(client);
-        assertTrue(result.isSuccess());
-
-        TemplateList templateList = (TemplateList) result.getResultData();
-
-        assertEquals("Empty file", templateList.getTemplates().get("empty").getTitle());
-        assertEquals("md", templateList.getTemplates().get("empty").getExtension());
-    }
-}
+/**
+ * List of templates data model
+ */
+@Parcelize
+data class TemplateList(
+    val templates: Map<String, Template> = HashMap(),
+) : Parcelable
