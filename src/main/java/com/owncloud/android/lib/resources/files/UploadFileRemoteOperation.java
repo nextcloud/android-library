@@ -24,10 +24,6 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import android.os.Build;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -37,7 +33,6 @@ import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
 import com.owncloud.android.lib.common.operations.OperationCancelledException;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpStatus;
@@ -47,11 +42,8 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -71,6 +63,7 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 	protected String remotePath;
 	protected String mimeType;
 	private String lastModificationTimestamp;
+	protected Long creationTimestamp = null;
 	protected boolean disableRetries = false;
 	PutMethod putMethod = null;
 	private String requiredEtag = null;
@@ -96,26 +89,34 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 	}
 
 	public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-                                     String requiredEtag,
-                                     String lastModificationTimestamp,
-                                     boolean disableRetries) {
-        this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null, disableRetries);
-    }
+									 String remotePath,
+									 String mimeType,
+									 String requiredEtag,
+									 String lastModificationTimestamp,
+									 Long creationTimestamp,
+									 boolean disableRetries) {
+		this(localPath,
+				remotePath,
+				mimeType,
+				requiredEtag,
+				lastModificationTimestamp,
+				creationTimestamp,
+				null,
+				disableRetries);
+	}
 
-    public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
+	public UploadFileRemoteOperation(String localPath,
+									 String remotePath,
+									 String mimeType,
 									 String lastModificationTimestamp) {
 		this(localPath, remotePath, mimeType, lastModificationTimestamp, true);
 	}
 
-    public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-                                     String lastModificationTimestamp,
-                                     boolean disableRetries) {
+	public UploadFileRemoteOperation(String localPath,
+									 String remotePath,
+									 String mimeType,
+									 String lastModificationTimestamp,
+									 boolean disableRetries) {
 		this.localPath = localPath;
 		this.remotePath = remotePath;
 		this.mimeType = mimeType;
@@ -136,19 +137,21 @@ public class UploadFileRemoteOperation extends RemoteOperation {
                                      String requiredEtag,
                                      String lastModificationTimestamp,
                                      String token) {
-		this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, token, true);
+		this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null, token, true);
 	}
 
 	public UploadFileRemoteOperation(String localPath,
-                                     String remotePath,
-                                     String mimeType,
-                                     String requiredEtag,
-                                     String lastModificationTimestamp,
-                                     String token,
-                                     boolean disableRetries) {
+									 String remotePath,
+									 String mimeType,
+									 String requiredEtag,
+									 String lastModificationTimestamp,
+									 Long creationTimestamp,
+									 String token,
+									 boolean disableRetries) {
 		this(localPath, remotePath, mimeType, lastModificationTimestamp, disableRetries);
 		this.requiredEtag = requiredEtag;
 		this.token = token;
+		this.creationTimestamp = creationTimestamp;
 	}
 
 	@Override
@@ -220,12 +223,8 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 			putMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
 			putMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp);
 
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-				Long creationTimestamp = getCreationTimestamp(f);
-
-				if (creationTimestamp != null && creationTimestamp > 0) {
-					putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
-				}
+			if (creationTimestamp != null && creationTimestamp > 0) {
+				putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
 			}
 
 			putMethod.setRequestEntity(entity);
@@ -274,18 +273,6 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 			if (putMethod != null) {
 				putMethod.abort();
 			}
-		}
-	}
-
-	@RequiresApi(api = Build.VERSION_CODES.O)
-	protected @Nullable
-	Long getCreationTimestamp(File file) {
-		try {
-			return Files.readAttributes(file.toPath(), BasicFileAttributes.class)
-					.creationTime().to(TimeUnit.SECONDS);
-		} catch (IOException e) {
-			Log_OC.e(this, "Failed to read creation timestamp for file: " + file.getName());
-			return null;
 		}
 	}
 }
