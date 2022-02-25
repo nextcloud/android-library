@@ -27,14 +27,14 @@
 
 package com.owncloud.android.lib.resources.activities;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.lib.resources.activities.model.Activity;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class GetActivitiesRemoteOperationTest {
 
@@ -42,7 +42,7 @@ public class GetActivitiesRemoteOperationTest {
     public void testParseActivities() {
         String activities = "{\"ocs\":{\"meta\":{\"status\":\"ok\",\"statuscode\":200," +
                 "\"message\":\"OK\"},\"data\":[{\"activity_id\":1,\"app\":\"core\",\"type\":" +
-                "\"security\",\"user\":\"test\",\"subject\":" +
+                "\"security\",\"user\":\"test\",\"affecteduser\":\"Test User\",\"subject\":" +
                 "\"You logged in success with your two factor device (U2F device)\"," +
                 "\"subject_rich\":[\"\",[]],\"message\":\"\",\"message_rich\":[\"\",[]]," +
                 "\"object_type\":\"\",\"object_id\":0,\"object_name\":\"\",\"objects\":[\"\"]," +
@@ -55,6 +55,12 @@ public class GetActivitiesRemoteOperationTest {
         ArrayList<Activity> activityList = sut.parseResult(activities);
 
         assertTrue(activityList.size() > 0);
+
+        Activity firstItem = activityList.get(0);
+        assertEquals("test", firstItem.getUser());
+        assertEquals("Test User", firstItem.getAffectedUser());
+        assertEquals("You logged in success with your two factor device (U2F device)", firstItem.getSubject());
+        assertEquals("0", firstItem.getObjectId());
     }
 
     @Test

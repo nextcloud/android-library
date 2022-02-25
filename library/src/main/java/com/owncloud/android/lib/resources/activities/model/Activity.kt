@@ -1,6 +1,6 @@
-/*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Alejandro Bautista
+/*   Nextcloud Android Library is available under MIT license
  *
+ *   Copyright (C) 2017 Alejandro Bautista
  *   @author Alejandro Bautista
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,23 +23,43 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
+package com.owncloud.android.lib.resources.activities.model
 
-import java.util.ArrayList;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.google.gson.annotations.SerializedName
+import com.owncloud.android.lib.resources.activities.models.PreviewObject
+import java.util.Date
 
 /**
- * RichElement Data Model
+ * Activity Data Model
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class RichElement {
-    private String richSubject;
-    private ArrayList<RichObject> richObjectList = new ArrayList<>();
-}
+data class Activity(
+    @SerializedName("activity_id")
+    val activityId: Int,
+    val datetime: Date,
+
+    // legacy purposes
+    val date: Date,
+    val app: String,
+    val type: String,
+    val user: String,
+
+    @SerializedName("affecteduser")
+    val affectedUser: String,
+    val subject: String,
+    val message: String,
+    val icon: String,
+    val link: String,
+
+    @SerializedName("object_type")
+    val objectType: String,
+
+    @SerializedName("object_id")
+    val objectId: String,
+
+    @SerializedName("object_name")
+    val objectName: String,
+    val previews: List<PreviewObject>,
+
+    @SerializedName("subject_rich")
+    val richSubjectElement: RichElement
+)

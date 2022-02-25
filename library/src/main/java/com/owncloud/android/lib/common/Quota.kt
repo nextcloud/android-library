@@ -29,14 +29,12 @@ package com.owncloud.android.lib.common
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import lombok.ToString
 
 /**
  * Quota data model
  */
 
 @Parcelize
-@ToString
 data class Quota(
     val free: Long = 0,
     val used: Long = 0,

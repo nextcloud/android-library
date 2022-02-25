@@ -41,13 +41,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-
 /**
  * Get direct editing url for rich workspace
  */
 
-@AllArgsConstructor
 public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
     private static final String TAG = RichWorkspaceDirectEditingRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
@@ -57,6 +54,10 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
     private static final String PATH = "path";
 
     private String path;
+
+    public RichWorkspaceDirectEditingRemoteOperation(String path) {
+        this.path = path;
+    }
 
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;

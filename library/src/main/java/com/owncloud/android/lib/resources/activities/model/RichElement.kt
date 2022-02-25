@@ -1,6 +1,6 @@
-/*   Nextcloud Android Library is available under MIT license
- *
+/*  Nextcloud Android Library is available under MIT license
  *   Copyright (C) 2017 Alejandro Bautista
+ *
  *   @author Alejandro Bautista
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,47 +23,14 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
-
-import com.google.gson.annotations.SerializedName;
-import com.owncloud.android.lib.resources.activities.models.PreviewObject;
-
-import java.util.Date;
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+package com.owncloud.android.lib.resources.activities.model
 
 /**
- * Activity Data Model
+ * RichElement Data Model
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Activity {
-
-    @SerializedName("activity_id")
-    private int activityId;
-    private Date datetime;
-    // legacy purposes
-    private Date date;
-    private String app;
-    private String type;
-    private String user;
-    @SerializedName("affecteduser")
-    private String affectedUser;
-    private String subject;
-    private String message;
-    private String icon;
-    private String link;
-    @SerializedName("object_type")
-    private String objectType;
-    @SerializedName("object_id")
-    private String objectId;
-    @SerializedName("object_name")
-    private String objectName;
-    private List<PreviewObject> previews;
-    @SerializedName("subject_rich")
-    private RichElement richSubjectElement;
+data class RichElement(
+    var richSubject: String,
+    var richObjectList: List<RichObject>
+) {
+    constructor() : this("", listOf<RichObject>())
 }

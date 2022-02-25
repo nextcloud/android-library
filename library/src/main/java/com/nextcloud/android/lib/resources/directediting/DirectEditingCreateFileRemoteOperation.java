@@ -36,13 +36,10 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 import org.json.JSONObject;
 
-import lombok.AllArgsConstructor;
-
 /**
  * Create file with direct editing api
  */
 
-@AllArgsConstructor
 public class DirectEditingCreateFileRemoteOperation extends RemoteOperation<String> {
     private static final String TAG = DirectEditingCreateFileRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
@@ -51,10 +48,20 @@ public class DirectEditingCreateFileRemoteOperation extends RemoteOperation<Stri
 
     private static final String JSON_FORMAT = "?format=json";
 
-    private String path;
-    private String editor;
-    private String creator;
-    private String template;
+    private final String path;
+    private final String editor;
+    private final String creator;
+    private final String template;
+
+    public DirectEditingCreateFileRemoteOperation(String path,
+                                                  String editor,
+                                                  String creator,
+                                                  String template) {
+        this.path = path;
+        this.editor = editor;
+        this.creator = creator;
+        this.template = template;
+    }
 
     public DirectEditingCreateFileRemoteOperation(String path, String editor, String creator) {
         this(path, editor, creator, "");
@@ -94,8 +101,8 @@ public class DirectEditingCreateFileRemoteOperation extends RemoteOperation<Stri
             }
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
-            Log_OC.e(TAG, "Get all direct editing informations failed: " + result.getLogMessage(),
-                     result.getException());
+            Log_OC.e(TAG, "Get all direct editing information failed: " + result.getLogMessage(),
+                    result.getException());
         } finally {
             if (postMethod != null) {
                 postMethod.releaseConnection();
