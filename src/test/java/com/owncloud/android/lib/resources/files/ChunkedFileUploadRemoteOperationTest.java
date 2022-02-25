@@ -28,6 +28,7 @@
 package com.owncloud.android.lib.resources.files;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -190,6 +191,24 @@ public class ChunkedFileUploadRemoteOperationTest {
         // 500Gb
         when(file.length()).thenReturn(500 * 1000 * 1000 * 1000L);
         assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file));
+    }
+
+    @Test
+    public void testChunks() {
+        Chunk chunk1 = new Chunk(0, 5);
+        Chunk chunk2 = new Chunk(0, 5);
+        Chunk differentStart = new Chunk(1, 5);
+        Chunk differentEnd = new Chunk(0, 6);
+        Chunk differentAll = new Chunk(1, 6);
+
+        assertEquals(chunk1, chunk2);
+        assertNotEquals(chunk1, null);
+        assertNotEquals(chunk1, "Test");
+        assertNotEquals(chunk1, differentStart);
+        assertNotEquals(chunk1, differentEnd);
+        assertNotEquals(chunk1, differentAll);
+
+        assertEquals(chunk1.hashCode(), chunk2.hashCode());
     }
 
     private boolean test(List<Chunk> existingChunks,
