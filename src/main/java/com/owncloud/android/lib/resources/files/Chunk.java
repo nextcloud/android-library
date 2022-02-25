@@ -43,8 +43,16 @@ public class Chunk {
 
     @Override
     public boolean equals(Object obj) {
-        Chunk otherChunk = (Chunk) obj;
+        if (obj instanceof Chunk) {
+            Chunk otherChunk = (Chunk) obj;
+            return this.start == otherChunk.start && this.end == otherChunk.end;
+        } else {
+            return false;
+        }
+    }
 
-        return this.start == otherChunk.start && this.end == otherChunk.end;
+    @Override
+    public int hashCode() {
+        return Long.valueOf(start).hashCode() * Long.valueOf(end).hashCode();
     }
 }
