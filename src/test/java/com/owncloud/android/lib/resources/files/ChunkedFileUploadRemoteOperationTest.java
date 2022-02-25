@@ -197,10 +197,16 @@ public class ChunkedFileUploadRemoteOperationTest {
     public void testChunks() {
         Chunk chunk1 = new Chunk(0, 5);
         Chunk chunk2 = new Chunk(0, 5);
+        Chunk differentStart = new Chunk(1, 5);
+        Chunk differentEnd = new Chunk(0, 6);
+        Chunk differentAll = new Chunk(1, 6);
 
         assertEquals(chunk1, chunk2);
         assertNotEquals(chunk1, null);
         assertNotEquals(chunk1, "Test");
+        assertNotEquals(chunk1, differentStart);
+        assertNotEquals(chunk1, differentEnd);
+        assertNotEquals(chunk1, differentAll);
 
         assertEquals(chunk1.hashCode(), chunk2.hashCode());
     }
