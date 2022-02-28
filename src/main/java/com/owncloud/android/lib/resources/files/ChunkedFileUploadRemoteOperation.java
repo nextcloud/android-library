@@ -79,7 +79,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             String mimeType,
                                             String requiredEtag,
                                             String lastModificationTimestamp,
-                                            long creationTimestamp,
+                                            Long creationTimestamp,
                                             boolean onWifiConnection,
                                             boolean disableRetries) {
         this(storagePath,
