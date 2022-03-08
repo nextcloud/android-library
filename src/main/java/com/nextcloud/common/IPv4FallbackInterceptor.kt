@@ -71,6 +71,11 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
         Log_OC.d(TAG, "Error with IPv6, trying IPv4")
         DNSCache.setIPVersionPreference(hostname, true)
         connectionPool.evictAll()
-        return chain.proceed(request)
+        return try {
+            chain.proceed(request)
+        } catch (e: IllegalStateException) {
+            Log_OC.w(TAG, e.stackTraceToString())
+            chain.call().clone().execute()
+        }
     }
 }
