@@ -27,8 +27,10 @@
 package com.owncloud.android.lib.common
 
 import android.net.Uri
+import com.nextcloud.common.NextcloudClient
 import com.owncloud.android.AbstractIT
 import junit.framework.Assert.assertEquals
+import okhttp3.Credentials.basic
 import org.junit.Test
 
 class OwnCloudClientTest : AbstractIT() {
@@ -61,16 +63,29 @@ class OwnCloudClientTest : AbstractIT() {
             false
         )
 
-        client.userId = "test"
-        assertEquals("Wrong encoded userId", "test", client.userId)
+        val credentials = basic("user", "password")
+        val nextcloudClient = NextcloudClient(url, "user", credentials, context)
 
-        client.userId = "test+test@test.localhost"
-        assertEquals("Wrong encoded userId", "test+test@test.localhost", client.userId)
+        val testList = ArrayList<Pair<String, String>>()
+        testList.add(Pair("test@test.de", "test@test.de"))
+        testList.add(Pair("Test User", "Test%20User"))
+        testList.add(Pair("test", "test"))
+        testList.add(Pair("test+test@test.localhost", "test+test@test.localhost"))
+        testList.add(Pair("test - ab4c", "test%20-%20ab4c"))
+        testList.add(Pair("test.-&51_+-?@test.localhost", "test.-%2651_+-%3F@test.localhost"))
 
-        client.userId = "test - ab4c"
-        assertEquals("Wrong encoded userId", "test%20-%20ab4c", client.userId)
+        testList.forEach { pair ->
+            client.userId = pair.first
+            assertEquals("Wrong encoded userId with ownCloudClient", pair.second, client.userId)
+            assertEquals(pair.first, client.userIdPlain)
 
-        client.userId = "test.-&51_+-?@test.localhost"
-        assertEquals("Wrong encoded userId", "test.-%2651_+-%3F@test.localhost", client.userId)
+            nextcloudClient.userId = pair.first
+            assertEquals(
+                "Wrong encoded userId with nextcloudClient",
+                pair.second,
+                nextcloudClient.getUserIdEncoded()
+            )
+            assertEquals(pair.first, nextcloudClient.getUserIdPlain())
+        }
     }
 }
