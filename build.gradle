@@ -21,6 +21,7 @@ buildscript {
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath "org.jacoco:org.jacoco.report:$jacoco_version"
         classpath "org.jacoco:org.jacoco.agent:$jacoco_version"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:10.2.1"
     }
 }
 
@@ -31,6 +32,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.github.spotbugs"
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: 'maven-publish' // needed for JitPack.io
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 repositories {
     google()
@@ -41,8 +43,6 @@ repositories {
 }
 
 configurations {
-    ktlint
-
     all {
         exclude group: 'com.google.firebase', module: 'firebase-core'
         exclude group: 'org.ogce', module: 'xpp3' // xpp3 is for plain java, Android uses kxml2
@@ -75,8 +75,6 @@ dependencies {
     //noinspection AnnotationProcessorOnCompilePath
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-
-    ktlint "com.pinterest:ktlint:0.44.0"
 
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -186,20 +184,6 @@ tasks.register("combinedTestReport", JacocoReport) {
     executionData.setFrom project.fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/debugAndroidTest/connected/*coverage.ec'
     ])
-}
-
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check Kotlin code style."
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    args "--reporter=plain", "--reporter=plain,output=${buildDir}/ktlint.txt,src/**/*.kt"
-}
-
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    description = "Fix Kotlin code style deviations."
-    main = "com.pinterest.ktlint.Main"
-    classpath = configurations.ktlint
-    args "-F", "src/**/*.kt"
 }
 
 task installGitHooks(type: Copy, group: "development") {
