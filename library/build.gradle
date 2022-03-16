@@ -104,10 +104,6 @@ tasks.withType(SpotBugsTask){task ->
 android {
     compileSdkVersion 31
 
-    sourceSets {
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
-    }
-
     buildTypes {
         debug {
             testCoverageEnabled true
@@ -178,7 +174,7 @@ detekt {
         }
     }
     config = files("detekt.yml")
-    input = files("src/")
+    input = files("$projectDir/src/")
 }
 
 afterEvaluate {

@@ -13,9 +13,9 @@ BRANCH_TYPE=$BRANCH-$TYPE
 URL=https://nextcloud.kaminsky.me/remote.php/dav/files/$USER/library-integrationTests
 
 if [ $TYPE = "IT" ]; then
-    cd build/reports/androidTests/connected
+    cd library/build/reports/androidTests/connected
 else 
-    cd build/reports/tests/testDebugUnitTest
+    cd library/build/reports/tests/testDebugUnitTest
 fi
 
 find . -type d -exec curl -u $USER:$PASS -X MKCOL $URL/$REMOTE_FOLDER/$(echo {} | sed s#\./##) \;
