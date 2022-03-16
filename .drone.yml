@@ -60,7 +60,7 @@ steps:
   commands:
     - emulator -avd android -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
     - sed -i s"#server#server-master#" gradle.properties
-    - sed -i s"#1#5#" ./src/androidTest/java/com/owncloud/android/RetryTestRule.kt
+    - sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
     - ./gradlew assembleDebug
     - ./scripts/wait_for_emulator.sh
     - ./scripts/wait_for_server.sh server-master
@@ -152,7 +152,7 @@ steps:
     commands:
       - emulator -avd android -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
       - sed -i s"#server#server-stable#" gradle.properties
-      - sed -i s"#1#5#" ./src/androidTest/java/com/owncloud/android/RetryTestRule.kt
+      - sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
       - ./gradlew assembleDebug
       - ./scripts/wait_for_emulator.sh
       - ./scripts/wait_for_server.sh server-stable
