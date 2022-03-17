@@ -9,6 +9,6 @@ if ! ./gradlew --daemon ktlintCheck &>/dev/null; then
 fi
 
 if ! ./gradlew --daemon detekt &>/dev/null; then
-    echo >&2 "Detekt failed! See report at file://$(pwd)/build/reports/detekt/detekt.html"
+    echo >&2 "Detekt failed! See report at file://$(pwd)/library/build/reports/detekt/detekt.html"
     exit 1
 fi
