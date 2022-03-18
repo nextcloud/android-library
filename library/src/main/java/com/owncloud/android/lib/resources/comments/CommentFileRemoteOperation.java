@@ -47,8 +47,6 @@ import java.util.Map;
  */
 public class CommentFileRemoteOperation extends RemoteOperation {
 
-
-    
     private static final String TAG = CommentFileRemoteOperation.class.getSimpleName();
     private static final int POST_READ_TIMEOUT = 30000;
     private static final int POST_CONNECTION_TIMEOUT = 5000;
