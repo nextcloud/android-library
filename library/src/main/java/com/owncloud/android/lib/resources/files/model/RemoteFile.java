@@ -59,6 +59,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private String etag;
     private String permissions;
     private String remoteId;
+    private String localId;
     private long size;
     private boolean favorite;
     private boolean encrypted;
@@ -100,6 +101,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setEtag(we.getETag());
         setPermissions(we.getPermissions());
         setRemoteId(we.getRemoteId());
+        setLocalId(we.getLocalId());
         setSize(we.getSize());
         setFavorite(we.isFavorite());
         setEncrypted(we.isEncrypted());
@@ -125,6 +127,7 @@ public class RemoteFile implements Parcelable, Serializable {
         etag = null;
         permissions = null;
         remoteId = null;
+        localId = null;
         size = 0;
         favorite = false;
         encrypted = false;
@@ -168,6 +171,7 @@ public class RemoteFile implements Parcelable, Serializable {
         etag = source.readString();
         permissions = source.readString();
         remoteId = source.readString();
+        localId = source.readString();
         size = source.readLong();
         favorite = Boolean.parseBoolean(source.readString());
         encrypted = Boolean.parseBoolean(source.readString());
@@ -194,6 +198,7 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(etag);
         dest.writeString(permissions);
         dest.writeString(remoteId);
+        dest.writeString(localId);
         dest.writeLong(size);
         dest.writeString(Boolean.toString(favorite));
         dest.writeString(Boolean.toString(encrypted));
@@ -204,10 +209,4 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(note);
         dest.writeParcelableArray(sharees, 0);
     }
-
-    @SuppressFBWarnings(value = "STT_STRING_PARSING_A_FIELD", justification = "remoteId contains cloud id and local id")
-    public String getLocalId() {
-        return remoteId.substring(0, 8).replaceAll("^0*", "");
-    }
-
 }

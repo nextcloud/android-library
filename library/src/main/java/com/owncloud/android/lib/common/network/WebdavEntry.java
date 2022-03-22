@@ -52,10 +52,11 @@ public class WebdavEntry {
 
     private static final String TAG = WebdavEntry.class.getSimpleName();
 
-	public static final String NAMESPACE_OC = "http://owncloud.org/ns";
-	public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
-	public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
-	public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
+    public static final String NAMESPACE_OC = "http://owncloud.org/ns";
+    public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
+    public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
+    public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
+    public static final String EXTENDED_PROPERTY_NAME_FILE_ID = "fileid";
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
     public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
@@ -90,6 +91,7 @@ public class WebdavEntry {
     @Getter private String eTag;
     @Getter private String permissions;
     @Getter private String remoteId;
+    @Getter private String localId;
     @Getter private String trashbinOriginalLocation;
     @Getter private String trashbinFilename;
     @Getter private long trashbinDeletionTimestamp;
@@ -252,6 +254,12 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
             if (prop != null) {
                 remoteId = prop.getValue().toString();
+            }
+
+            // OC remote id property <oc:fileid>
+            prop = propSet.get(EXTENDED_PROPERTY_NAME_FILE_ID, ocNamespace);
+            if (prop != null) {
+                localId = prop.getValue().toString();
             }
 
             // OC size property <oc:size>
