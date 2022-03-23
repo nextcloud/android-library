@@ -26,6 +26,10 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -43,10 +47,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Tests related to file operations
  */
@@ -59,7 +59,17 @@ public class FileIT extends AbstractIT {
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
 
         // verify folder
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(client);
+        assertTrue(result.isSuccess());
+
+        RemoteFile folder = (RemoteFile) result.getData().get(0);
+        assertEquals(path, folder.getRemotePath());
+        assertNotNull(folder.getLocalId());
+        assertEquals(
+                folder.getLocalId(),
+                folder.getRemoteId().substring(0, 8).replaceAll("^0*", "")
+        );
+
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(path).execute(client).isSuccess());
