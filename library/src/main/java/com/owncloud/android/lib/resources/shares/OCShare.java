@@ -85,7 +85,7 @@ public class OCShare implements Parcelable, Serializable {
     @Getter @Setter private long id;
     @Getter @Setter private long fileSource;
     @Getter @Setter private long itemSource;
-    @Getter private ShareType shareType;
+    @Getter @Setter private ShareType shareType;
     @Getter private String shareWith;
     @Getter private String path;
     @Getter @Setter private int permissions;
@@ -101,14 +101,18 @@ public class OCShare implements Parcelable, Serializable {
     @Getter private String note;
     @Getter @Setter private boolean hideFileDownload;
     @Getter @Setter private String label;
-    
+    @Getter @Setter private boolean hasPreview;
+    @Getter @Setter private String mimetype;
+    @Getter @Setter private String ownerDisplayName;
+
+
     public OCShare() {
-    	super();
-    	resetData();
+        super();
+        resetData();
     }
-    
-	public OCShare(String path) {
-		resetData();
+
+    public OCShare(String path) {
+        resetData();
         if (path == null || path.length() <= 0 || !path.startsWith(FileUtils.PATH_SEPARATOR)) {
             Log_OC.e(TAG, "Trying to create a OCShare with a non valid path");
             throw new IllegalArgumentException("Trying to create a OCShare with a non valid path: " + path);
@@ -139,6 +143,9 @@ public class OCShare implements Parcelable, Serializable {
         note = "";
         hideFileDownload = false;
         label = "";
+        hasPreview = false;
+        mimetype = "";
+        ownerDisplayName = "";
     }	
     
     // custom Getters and Setters
@@ -222,6 +229,9 @@ public class OCShare implements Parcelable, Serializable {
         isPasswordProtected = source.readInt() == 1;
         hideFileDownload = source.readInt() == 1;
         label = source.readString();
+        hasPreview = source.readInt() == 1;
+        mimetype = source.readString();
+        ownerDisplayName = source.readString();
     }
 
 
@@ -251,6 +261,9 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeInt(isPasswordProtected ? 1 : 0);
         dest.writeInt(hideFileDownload ? 1 : 0);
         dest.writeString(label);
+        dest.writeInt(hasPreview ? 1 : 0);
+        dest.writeString(mimetype);
+        dest.writeString(ownerDisplayName);
     }
 
     public OCShare setShareType(ShareType type) {
