@@ -79,7 +79,10 @@ public class ShareXMLParser {
     private static final String NODE_HIDE_DOWNLOAD = "hide_download";
     private static final String NODE_UID_OWNER = "uid_owner";
 	private static final String NODE_LABEL = "label";
-	
+	private static final String NODE_HAS_PREVIEW = "has_preview";
+	private static final String NODE_MIMETYPE =  "mimetype";
+	private static final String NODE_DISPLAYNAME_FILE_OWNER =  "displayname_file_owner";
+
 	private static final String NODE_URL = "url";
 
 	private static final String TYPE_FOLDER = "folder";
@@ -401,6 +404,18 @@ public class ShareXMLParser {
 
 				case NODE_LABEL:
 					share.setLabel(readNode(parser, NODE_LABEL));
+					break;
+
+				case NODE_HAS_PREVIEW:
+					share.setHasPreview(TRUE.equalsIgnoreCase(readNode(parser, NODE_HAS_PREVIEW)));
+					break;
+
+				case NODE_MIMETYPE:
+					share.setMimetype(readNode(parser, NODE_MIMETYPE));
+					break;
+
+				case NODE_DISPLAYNAME_FILE_OWNER:
+					share.setOwnerDisplayName(readNode(parser, NODE_DISPLAYNAME_FILE_OWNER));
 					break;
 
 				default:
