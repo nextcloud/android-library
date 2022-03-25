@@ -54,7 +54,6 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
         FAVORITE_SEARCH, // get all favorite files/folder
         RECENTLY_MODIFIED_SEARCH, // get files/folders that were modified within last 7 days, ordered descending by time
         PHOTO_SEARCH, // gets all files with mimetype "image/%"
-        SHARED_SEARCH, // show all shares
         GALLERY_SEARCH, // combined photo and video
         FILE_ID_SEARCH, // search one file specified by file id
         CONTENT_TYPE_SEARCH,
