@@ -1,5 +1,6 @@
 package com.nextcloud.common
 
+import com.nextcloud.android.lib.core.ClockImpl
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -22,7 +23,17 @@ class DNSCacheTest : TestCase() {
         )
     }
 
+    private fun setStaticClock() {
+        DNSCache.clock = ClockStub(currentTimeValue = 1000)
+    }
+
+    override fun setUp() {
+        setStaticClock()
+    }
+
     public override fun tearDown() {
+        DNSCache.ttlMillis = DNSCache.ttlMillis
+        DNSCache.clock = ClockImpl()
         DNSCache.dns = Dns.SYSTEM
         DNSCache.clear()
     }
@@ -78,5 +89,44 @@ class DNSCacheTest : TestCase() {
         DNSCache.setIPVersionPreference(TEST_HOST, false)
         Assert.assertEquals(true, DNSCache.isIPV6First(TEST_HOST))
         compareLookupLists(listOf(TEST_IPV6, TEST_IPV4), DNSCache.lookup(TEST_HOST))
+    }
+
+    @Test
+    fun testDNSEntry_expired() {
+        DNSCache.ttlMillis = 50
+
+        val staticClockValue = DNSCache.clock.currentTimeMillis
+
+        val expiredEntry = DNSCache.DNSInfo(emptyList(), false, staticClockValue - 200)
+        assertTrue("Entry should be expired", expiredEntry.isExpired())
+
+        val nonExpiredEntry = DNSCache.DNSInfo(emptyList(), false, staticClockValue - 10)
+        assertFalse("Entry should not be expired", nonExpiredEntry.isExpired())
+    }
+
+    @Test
+    fun testDNSLookupExpiration() {
+        val dns: Dns = mock()
+        val initialList = listOf(TEST_IPV4)
+        val secondList = listOf(TEST_IPV6)
+        whenever(dns.lookup(any())) doReturn initialList
+        DNSCache.dns = dns
+
+        DNSCache.clock = ClockStub(currentTimeValue = 1000)
+        DNSCache.ttlMillis = 500
+
+        // initial lookup
+        compareLookupLists(initialList, DNSCache.lookup(TEST_HOST))
+
+        // change DNS response upstream
+        whenever(dns.lookup(any())) doReturn secondList
+
+        // increase clock by less than expiration TTL, same initial list is expected
+        DNSCache.clock = ClockStub(currentTimeValue = 1100)
+        compareLookupLists(initialList, DNSCache.lookup(TEST_HOST))
+
+        // increase clock so that lookup expires, and change IP list to sense the change
+        DNSCache.clock = ClockStub(currentTimeValue = 1501)
+        compareLookupLists(secondList, DNSCache.lookup(TEST_HOST))
     }
 }
