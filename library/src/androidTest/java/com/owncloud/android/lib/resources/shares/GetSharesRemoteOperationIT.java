@@ -28,6 +28,7 @@
 package com.owncloud.android.lib.resources.shares;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.net.Uri;
@@ -123,22 +124,29 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 
         assertEquals(3, result.getResultData().size());
 
+        final Bundle arguments = InstrumentationRegistry.getArguments();
+        final String loginName = arguments.getString("TEST_SERVER_USERNAME");
+
         for (OCShare ocShare : result.getResultData()) {
             switch (ocShare.getShareType()) {
                 case USER:
                     assertEquals("/shareToAdmin/", ocShare.getPath());
+                    assertFolderAttributes(ocShare, loginName);
                     break;
 
                 case PUBLIC_LINK:
                     assertEquals("/shareViaLink/", ocShare.getPath());
+                    assertFolderAttributes(ocShare, loginName);
                     break;
 
                 case GROUP:
                     assertEquals("/shareToGroup/", ocShare.getPath());
+                    assertFolderAttributes(ocShare, loginName);
                     break;
 
                 case CIRCLE:
                     assertEquals("/shareToCircle/", ocShare.getPath());
+                    assertFolderAttributes(ocShare, loginName);
                     break;
 
 //                case EMAIL:
@@ -149,6 +157,12 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
                     throw new AssertionError("Unknown share type");
             }
         }
+    }
+
+    private void assertFolderAttributes(final OCShare share, final String expectedDisplayName) {
+        assertEquals(expectedDisplayName, share.getOwnerDisplayName());
+        assertEquals("httpd/unix-directory", share.getMimetype());
+        assertFalse(share.isHasPreview());
     }
 
     @Test
