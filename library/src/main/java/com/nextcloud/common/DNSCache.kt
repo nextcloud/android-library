@@ -28,29 +28,45 @@
 package com.nextcloud.common
 
 import androidx.annotation.VisibleForTesting
+import com.nextcloud.android.lib.core.Clock
+import com.nextcloud.android.lib.core.ClockImpl
 import okhttp3.Dns
 import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetAddress
 import java.net.UnknownHostException
-import java.util.HashMap
 
 /**
  * DNS Cache which prefers IPv6 unless otherwise specified
  */
 object DNSCache {
-    data class DNSInfo(val addresses: List<InetAddress>, val preferIPV4: Boolean = false)
 
-    private val cache: MutableMap<String, DNSInfo> = HashMap()
+    const val DEFAULT_TTL = 30 * 1000L
+
+    // 30 seconds is the Java default. Let's keep it.
+    @VisibleForTesting
+    var ttlMillis: Long = DEFAULT_TTL
+    @VisibleForTesting
+    var clock: Clock = ClockImpl()
     @VisibleForTesting
     var dns: Dns = Dns.SYSTEM
+
+    data class DNSInfo(
+        val addresses: List<InetAddress>,
+        val preferIPV4: Boolean = false,
+        val timestamp: Long = clock.currentTimeMillis
+    ) {
+        fun isExpired(): Boolean = clock.currentTimeMillis - timestamp > ttlMillis
+    }
+
+    private val cache: MutableMap<String, DNSInfo> = HashMap()
 
     @Throws(UnknownHostException::class)
     @Synchronized
     @JvmStatic
     fun lookup(hostname: String): List<InetAddress> {
         val entry = cache[hostname]
-        if (entry?.addresses?.isNotEmpty() == true) {
+        if (entry?.addresses?.isNotEmpty() == true && !entry.isExpired()) {
             return entry.addresses
         }
         val preferIPV4 = when (entry) {
