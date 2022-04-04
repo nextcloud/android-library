@@ -26,8 +26,6 @@
  */
 package com.owncloud.android.lib.resources.files;
 
-import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
-
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
@@ -46,6 +44,8 @@ import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
 
 public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
@@ -126,7 +126,6 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             selectPropsElement.appendChild(creationDate);
             selectPropsElement.appendChild(quotaUsedElement);
             selectPropsElement.appendChild(quotaAvailableElement);
-            selectPropsElement.appendChild(permissionsElement);
             selectPropsElement.appendChild(sizeElement);
         }
         if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
@@ -139,6 +138,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         selectPropsElement.appendChild(etagElement);
         selectPropsElement.appendChild(remoteIdElement);
         selectPropsElement.appendChild(favoriteElement);
+        selectPropsElement.appendChild(permissionsElement);
 
         Element fromElement = query.createElementNS(DAV_NAMESPACE, "d:from");
         Element scopeElement = query.createElementNS(DAV_NAMESPACE, "d:scope");
