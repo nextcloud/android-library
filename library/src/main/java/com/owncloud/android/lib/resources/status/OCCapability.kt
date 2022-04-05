@@ -74,6 +74,8 @@ class OCCapability {
     var filesUndelete = CapabilityBooleanType.UNKNOWN
     var filesVersioning = CapabilityBooleanType.UNKNOWN
 
+    var filesLockingVersion: String? = null
+
     var supportsNotificationsV1 = CapabilityBooleanType.UNKNOWN
     var supportsNotificationsV2 = CapabilityBooleanType.UNKNOWN
 
