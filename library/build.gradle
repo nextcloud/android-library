@@ -4,7 +4,7 @@ buildscript {
     ext {
         kotlin_version = '1.6.20'
         junit_version = '4.13.2'
-        jacoco_version = '0.8.7'
+        jacoco_version = '0.8.8'
         lombokVersion = "1.18.22"
     }
     dependencies {
