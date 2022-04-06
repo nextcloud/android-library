@@ -70,6 +70,10 @@ public class RemoteFile implements Parcelable, Serializable {
     private String note;
     private ShareeUser[] sharees;
     private String richWorkspace;
+    private boolean isLocked;
+    private String lockOwner;
+    private String lockOwnerDisplayName;
+    private long lockTimestamp;
 
     public RemoteFile() {
         resetData();
@@ -111,6 +115,10 @@ public class RemoteFile implements Parcelable, Serializable {
         setHasPreview(we.isHasPreview());
         setSharees(we.getSharees());
         setRichWorkspace(we.getRichWorkspace());
+        setLocked(we.getIsLocked());
+        setLockOwner(we.getLockOwnerId());
+        setLockOwnerDisplayName(we.getLockOwnerDisplayName());
+        setLockTimestamp(we.getLockTimestamp());
     }
 
     /**
@@ -131,6 +139,10 @@ public class RemoteFile implements Parcelable, Serializable {
         ownerId = "";
         ownerDisplayName = "";
         note = "";
+        isLocked = false;
+        lockOwner = null;
+        lockOwnerDisplayName = null;
+        lockTimestamp = 0;
     }
 
     /**

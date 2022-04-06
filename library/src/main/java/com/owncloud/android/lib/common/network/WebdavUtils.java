@@ -27,8 +27,6 @@ package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
 
-import androidx.annotation.Nullable;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -39,6 +37,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
 
 public class WebdavUtils {
     private static final SimpleDateFormat DATETIME_FORMATS[] = {
@@ -116,6 +116,10 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
 
         return propSet;
     }
@@ -144,6 +148,10 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_SHAREES, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
 
         return propSet;
     }

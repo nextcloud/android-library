@@ -61,8 +61,8 @@ public class WebDavFileUtils {
 
         if (isReadFolderOperation) {
             we = new WebdavEntry(remoteData.getResponses()[0],
-                    client.getFilesDavUri().getEncodedPath());
-            mFolderAndFiles.add(fillOCFile(we));
+                                 client.getFilesDavUri().getEncodedPath());
+            mFolderAndFiles.add(new RemoteFile(we));
         } else {
             start = 0;
         }
@@ -73,34 +73,10 @@ public class WebDavFileUtils {
         for (int i = start; i < responses.length; i++) {
             /// new OCFile instance with the data from the server
             we = new WebdavEntry(responses[i], client.getFilesDavUri().getEncodedPath());
-            remoteFile = fillOCFile(we);
+            remoteFile = new RemoteFile(we);
             mFolderAndFiles.add(remoteFile);
         }
 
         return mFolderAndFiles;
-    }
-
-    /**
-     * Creates and populates a new {@link RemoteFile} object with the data read from the server.
-     *
-     * @param we WebDAV entry read from the server for a WebDAV resource (remote file or folder).
-     * @return New OCFile instance representing the remote resource described by we.
-     */
-    private RemoteFile fillOCFile(WebdavEntry we) {
-        RemoteFile file = new RemoteFile(we.decodedPath());
-        file.setCreationTimestamp(we.getCreateTimestamp());
-        file.setLength(we.getContentLength());
-        file.setMimeType(we.getContentType());
-        file.setModifiedTimestamp(we.getModifiedTimestamp());
-        file.setCreationTimestamp(we.getCreateTimestamp());
-        file.setUploadTimestamp(we.getUploadTimestamp());
-        file.setEtag(we.getETag());
-        file.setPermissions(we.getPermissions());
-        file.setRemoteId(we.getRemoteId());
-        file.setSize(we.getSize());
-        file.setFavorite(we.isFavorite());
-        file.setHasPreview(we.isHasPreview());
-        file.setSharees(we.getSharees());
-        return file;
     }
 }
