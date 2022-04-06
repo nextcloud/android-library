@@ -69,6 +69,10 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_RICH_WORKSPACE = "rich-workspace";
     public static final String EXTENDED_PROPERTY_CREATION_TIME = "creation_time";
     public static final String EXTENDED_PROPERTY_UPLOAD_TIME = "upload_time";
+    public static final String EXTENDED_PROPERTY_LOCK = "lock";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER = "lock-owner";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME = "lock-owner-displayname";
+    public static final String EXTENDED_PROPERTY_LOCK_TIME = "lock-time";
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -113,6 +117,10 @@ public class WebdavEntry {
     @Getter private String note = "";
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
     @Getter private String richWorkspace = null;
+    @Getter private Boolean isLocked = false;
+    @Getter private String lockOwnerId = null;
+    @Getter private String lockOwnerDisplayName = null;
+    @Getter private long lockTimestamp;
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -121,7 +129,7 @@ public class WebdavEntry {
 
         Namespace ocNamespace = Namespace.getNamespace(NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(NAMESPACE_NC);
-        
+
         if (ms.getStatus().length != 0) {
             uri = ms.getHref();
 
@@ -392,8 +400,44 @@ public class WebdavEntry {
                     }
                 }
             }
+
+            parseLockProperties(ncNamespace, propSet);
+
+
         } else {
-            Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
+            Log_OC.e("WebdavEntry", "General error, no status for webdav response");
+        }
+    }
+
+    private void parseLockProperties(Namespace ncNamespace, DavPropertySet propSet) {
+        @SuppressWarnings("rawtypes") DavProperty prop;
+        // file locking
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            isLocked = prop.getValue().toString().equals("1");
+        } else {
+            isLocked = false;
+        }
+
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            lockOwnerId = prop.getValue().toString();
+        } else {
+            lockOwnerId = null;
+        }
+
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            lockOwnerDisplayName = prop.getValue().toString();
+        } else {
+            lockOwnerDisplayName = null;
+        }
+
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            lockTimestamp = Long.parseLong(prop.getValue().toString());
+        } else {
+            lockTimestamp = 0;
         }
     }
 
