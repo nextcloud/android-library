@@ -171,7 +171,7 @@ class NextcloudClient(
     }
 
     fun getUserIdEncoded(): String {
-        return Uri.encode(userId, OwnCloudClient.ALLOWED_USERID_CHARACTERS)
+        return UserIdEncoder.encode(userId)
     }
 
     fun getUserIdPlain(): String {
