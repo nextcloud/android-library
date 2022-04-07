@@ -28,6 +28,7 @@ package com.owncloud.android.lib.common;
 import android.net.Uri;
 
 import com.nextcloud.common.DNSCache;
+import com.nextcloud.common.UserIdEncoder;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -63,11 +64,6 @@ public class OwnCloudClient extends HttpClient {
     private static final String PARAM_SINGLE_COOKIE_HEADER = "http.protocol.single-cookie-header";
     private static final boolean PARAM_SINGLE_COOKIE_HEADER_VALUE = true;
     private static final String PARAM_PROTOCOL_VERSION = "http.protocol.version";
-    /**
-     * Characters to skip during userID encoding
-     */
-    public static final String ALLOWED_USERID_CHARACTERS = "@+";
-
 
     private static byte[] sExhaustBuffer = new byte[1024];
 
@@ -440,7 +436,10 @@ public class OwnCloudClient extends HttpClient {
      * @return uri-encoded userId
      */
     public String getUserId() {
-        return Uri.encode(userId, ALLOWED_USERID_CHARACTERS);
+        if (userId == null) {
+            return null;
+        }
+        return UserIdEncoder.encode(userId);
     }
 
     public String getUserIdPlain() {
