@@ -66,13 +66,15 @@ class OwnCloudClientTest : AbstractIT() {
         val credentials = basic("user", "password")
         val nextcloudClient = NextcloudClient(url, "user", credentials, context)
 
-        val testList = ArrayList<Pair<String, String>>()
-        testList.add(Pair("test@test.de", "test@test.de"))
-        testList.add(Pair("Test User", "Test%20User"))
-        testList.add(Pair("test", "test"))
-        testList.add(Pair("test+test@test.localhost", "test+test@test.localhost"))
-        testList.add(Pair("test - ab4c", "test%20-%20ab4c"))
-        testList.add(Pair("test.-&51_+-?@test.localhost", "test.-%2651_+-%3F@test.localhost"))
+        val testList = listOf(
+            Pair("test@test.de", "test@test.de"),
+            Pair("Test User", "Test%20User"),
+            Pair("test", "test"),
+            Pair("test+test@test.localhost", "test+test@test.localhost"),
+            Pair("test - ab4c", "test%20-%20ab4c"),
+            Pair("test.-&51_+-?@test.localhost", "test.-%2651_+-%3F@test.localhost"),
+            Pair("test'ab4c", "test%27ab4c")
+        )
 
         testList.forEach { pair ->
             client.userId = pair.first
