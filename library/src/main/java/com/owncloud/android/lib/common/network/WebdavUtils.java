@@ -117,9 +117,13 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
 
         return propSet;
     }
@@ -149,9 +153,13 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
 
         return propSet;
     }
