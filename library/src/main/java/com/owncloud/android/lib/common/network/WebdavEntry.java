@@ -27,6 +27,7 @@ package com.owncloud.android.lib.common.network;
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.files.model.FileLockType;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.shares.ShareeUser;
 
@@ -70,9 +71,14 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_CREATION_TIME = "creation_time";
     public static final String EXTENDED_PROPERTY_UPLOAD_TIME = "upload_time";
     public static final String EXTENDED_PROPERTY_LOCK = "lock";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER_TYPE = "lock-owner-type";
     public static final String EXTENDED_PROPERTY_LOCK_OWNER = "lock-owner";
     public static final String EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME = "lock-owner-displayname";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER_EDITOR = "lock-owner-editor";
     public static final String EXTENDED_PROPERTY_LOCK_TIME = "lock-time";
+    public static final String EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout";
+    public static final String EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token";
+
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -118,9 +124,13 @@ public class WebdavEntry {
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
     @Getter private String richWorkspace = null;
     @Getter private Boolean isLocked = false;
+    @Getter private FileLockType lockOwnerType = null;
     @Getter private String lockOwnerId = null;
     @Getter private String lockOwnerDisplayName = null;
     @Getter private long lockTimestamp;
+    @Getter private String lockOwnerEditor = null;
+    @Getter private long lockTimeout;
+    @Getter private String lockToken = null;
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -419,6 +429,14 @@ public class WebdavEntry {
             isLocked = false;
         }
 
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            final int value = Integer.parseInt(prop.getValue().toString());
+            lockOwnerType = FileLockType.fromValue(value);
+        } else {
+            lockOwnerType = null;
+        }
+
         prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
         if (prop != null && prop.getValue() != null) {
             lockOwnerId = prop.getValue().toString();
@@ -433,11 +451,32 @@ public class WebdavEntry {
             lockOwnerDisplayName = null;
         }
 
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            lockOwnerEditor = prop.getValue().toString();
+        } else {
+            lockOwnerEditor = null;
+        }
+
         prop = propSet.get(EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
         if (prop != null && prop.getValue() != null) {
             lockTimestamp = Long.parseLong(prop.getValue().toString());
         } else {
             lockTimestamp = 0;
+        }
+
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            lockTimeout = Long.parseLong(prop.getValue().toString());
+        } else {
+            lockTimeout = 0;
+        }
+
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            lockToken = prop.getValue().toString();
+        } else {
+            lockToken = null;
         }
     }
 
