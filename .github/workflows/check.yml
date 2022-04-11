@@ -22,7 +22,7 @@ jobs:
                     java-version: 11
             -   name: Check ${{ matrix.task }}
                 run: ./gradlew ${{ matrix.task }}
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v3
               if: ${{ always() }}
               with:
                   name: ${{ matrix.task }}-report
