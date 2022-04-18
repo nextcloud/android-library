@@ -5,7 +5,7 @@ buildscript {
         kotlin_version = '1.6.20'
         junit_version = '4.13.2'
         jacoco_version = '0.8.8'
-        lombokVersion = "1.18.22"
+        lombokVersion = "1.18.24"
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.2'
