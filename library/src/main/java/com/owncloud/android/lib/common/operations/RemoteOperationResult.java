@@ -151,6 +151,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     private Exception mException = null;
     private ResultCode mCode = ResultCode.UNKNOWN_ERROR;
     private String message;
+    private Headers mHeaders = null; 
+
     @ToString.Exclude private String mRedirectedLocation;
     @ToString.Exclude private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
     @ToString.Exclude private String mLastPermanentLocation = null;
@@ -219,6 +221,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         this(success, httpCode);
 
         if (headers != null) {
+            Headers.Builder headersBuilder = new Headers.Builder();
             for (Header header : headers) {
                 if (HEADER_LOCATION.equals(header.getName().toLowerCase(Locale.US))) {
                     mRedirectedLocation = header.getValue();
@@ -226,7 +229,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
                 } else if (HEADER_WWW_AUTHENTICATE.equals(header.getName().toLowerCase(Locale.US))) {
                     mAuthenticateHeaders.add(header.getValue());
                 }
+                headersBuilder.add(header.getName(), header.getValue());
             }
+            mHeaders = headersBuilder.build();
         }
         if (isIdPRedirection()) {
             mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
@@ -375,6 +380,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     public RemoteOperationResult(boolean success, int httpCode, String httpPhrase, Header[] httpHeaders) {
         this(success, httpCode, httpPhrase);
         if (httpHeaders != null) {
+            Headers.Builder headersBuilder = new Headers.Builder();
             Header current;
             for (Header httpHeader : httpHeaders) {
                 current = httpHeader;
@@ -383,7 +389,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
                 } else if (HEADER_LOCATION.equals(current.getName().toLowerCase(Locale.US)) && mAuthenticateHeaders.isEmpty()) {
                     mRedirectedLocation = current.getValue();
                 }
+                headersBuilder.add(httpHeader.getName(), httpHeader.getValue());
             }
+            mHeaders = headersBuilder.build();
         }
         if (isIdPRedirection()) {
             mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
@@ -421,6 +429,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         if (auth != null) {
             mAuthenticateHeaders.add(auth);
         }
+
+        mHeaders = httpHeaders;
 
         if (isIdPRedirection()) {
             mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
@@ -596,6 +606,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     public boolean isRedirectToNonSecureConnection() {
         return mCode == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION;
+    }
+
+    public Headers getHeaders() {
+        return mHeaders;
     }
 
     private CertificateCombinedException getCertificateCombinedException(Exception e) {
