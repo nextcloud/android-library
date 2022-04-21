@@ -35,6 +35,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
@@ -56,6 +57,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class UploadFileRemoteOperation extends RemoteOperation {
 	private static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
 	private static final String IF_MATCH_HEADER = "If-Match";
+	protected static final String RESULT_ETAG_HEADER = "etag";
 	protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
 	protected static final String OC_X_OC_CTIME_HEADER = "X-OC-Ctime";
 
@@ -231,6 +233,11 @@ public class UploadFileRemoteOperation extends RemoteOperation {
 			status = client.executeMethod(putMethod);
 
 			result = new RemoteOperationResult(isSuccess(status), putMethod);
+
+			final Header resultEtagHeader = putMethod.getResponseHeader(RESULT_ETAG_HEADER);
+			if (resultEtagHeader != null) {
+				result.setResultData(resultEtagHeader.getValue());
+			}
 
 			client.exhaustResponse(putMethod.getResponseBodyAsStream());
 
