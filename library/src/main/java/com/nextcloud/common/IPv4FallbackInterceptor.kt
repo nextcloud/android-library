@@ -30,7 +30,6 @@ package com.nextcloud.common
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.ConnectionPool
 import okhttp3.Interceptor
-import okhttp3.Request
 import okhttp3.Response
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -44,20 +43,22 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
     @Suppress("TooGenericExceptionCaught")
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val response = chain.proceed(request)
-
         val hostname = request.url.host
+        var response: Response? = null
 
         return try {
+            response = chain.proceed(request)
             if (response.code in SERVER_ERROR_RANGE && DNSCache.isIPV6First(hostname)) {
                 Log_OC.d(TAG, "Response error with IPv6, trying IPv4")
-                retryWithIPv4(hostname, chain, request)
+                response.close()
+                retryWithIPv4(hostname, chain)
             } else {
                 response
             }
         } catch (e: Exception) {
             if (DNSCache.isIPV6First(hostname) && (e is SocketTimeoutException || e is ConnectException)) {
-                return retryWithIPv4(hostname, chain, request)
+                response?.close()
+                return retryWithIPv4(hostname, chain)
             }
             throw e
         }
@@ -65,12 +66,11 @@ class IPv4FallbackInterceptor(private val connectionPool: ConnectionPool) : Inte
 
     private fun retryWithIPv4(
         hostname: String,
-        chain: Interceptor.Chain,
-        request: Request
+        chain: Interceptor.Chain
     ): Response {
         Log_OC.d(TAG, "Error with IPv6, trying IPv4")
         DNSCache.setIPVersionPreference(hostname, true)
         connectionPool.evictAll()
-        return chain.proceed(request)
+        return chain.call().clone().execute()
     }
 }
