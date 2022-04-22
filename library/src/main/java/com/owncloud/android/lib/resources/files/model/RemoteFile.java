@@ -119,7 +119,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setHasPreview(we.isHasPreview());
         setSharees(we.getSharees());
         setRichWorkspace(we.getRichWorkspace());
-        setLocked(we.getIsLocked());
+        setLocked(we.isLocked());
         setLockType(we.getLockOwnerType());
         setLockOwner(we.getLockOwnerId());
         setLockOwnerDisplayName(we.getLockOwnerDisplayName());

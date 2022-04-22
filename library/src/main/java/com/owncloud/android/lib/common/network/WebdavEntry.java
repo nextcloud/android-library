@@ -123,7 +123,7 @@ public class WebdavEntry {
     @Getter private String note = "";
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
     @Getter private String richWorkspace = null;
-    @Getter private Boolean isLocked = false;
+    @Getter private boolean isLocked = false;
     @Getter private FileLockType lockOwnerType = null;
     @Getter private String lockOwnerId = null;
     @Getter private String lockOwnerDisplayName = null;
