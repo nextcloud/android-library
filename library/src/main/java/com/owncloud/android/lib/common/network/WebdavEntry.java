@@ -420,63 +420,46 @@ public class WebdavEntry {
     }
 
     private void parseLockProperties(Namespace ncNamespace, DavPropertySet propSet) {
-        @SuppressWarnings("rawtypes") DavProperty prop;
+        DavProperty<?> prop;
         // file locking
         prop = propSet.get(EXTENDED_PROPERTY_LOCK, ncNamespace);
         if (prop != null && prop.getValue() != null) {
-            isLocked = prop.getValue().toString().equals("1");
+            isLocked = "1".equals((String) prop.getValue());
         } else {
             isLocked = false;
         }
 
         prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace);
         if (prop != null && prop.getValue() != null) {
-            final int value = Integer.parseInt(prop.getValue().toString());
+            final int value = Integer.parseInt((String) prop.getValue());
             lockOwnerType = FileLockType.fromValue(value);
         } else {
             lockOwnerType = null;
         }
 
-        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
-        if (prop != null && prop.getValue() != null) {
-            lockOwnerId = prop.getValue().toString();
-        } else {
-            lockOwnerId = null;
-        }
+        lockOwnerId = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
+        lockOwnerDisplayName = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        lockOwnerEditor = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
+        lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
+        lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
+        lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
+    }
 
-        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+    private String parseStringProp(final DavPropertySet propSet, final String propName, final Namespace namespace) {
+        final DavProperty<?> prop = propSet.get(propName, namespace);
         if (prop != null && prop.getValue() != null) {
-            lockOwnerDisplayName = prop.getValue().toString();
+            return (String) prop.getValue();
         } else {
-            lockOwnerDisplayName = null;
+            return null;
         }
+    }
 
-        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
-        if (prop != null && prop.getValue() != null) {
-            lockOwnerEditor = prop.getValue().toString();
+    private Long parseLongProp(final DavPropertySet propSet, final String propName, final Namespace namespace) {
+        final String stringValue = parseStringProp(propSet, propName, namespace);
+        if (stringValue != null) {
+            return Long.parseLong(stringValue);
         } else {
-            lockOwnerEditor = null;
-        }
-
-        prop = propSet.get(EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
-        if (prop != null && prop.getValue() != null) {
-            lockTimestamp = Long.parseLong(prop.getValue().toString());
-        } else {
-            lockTimestamp = 0;
-        }
-
-        prop = propSet.get(EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
-        if (prop != null && prop.getValue() != null) {
-            lockTimeout = Long.parseLong(prop.getValue().toString());
-        } else {
-            lockTimeout = 0;
-        }
-
-        prop = propSet.get(EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
-        if (prop != null && prop.getValue() != null) {
-            lockToken = prop.getValue().toString();
-        } else {
-            lockToken = null;
+            return 0L;
         }
     }
 
