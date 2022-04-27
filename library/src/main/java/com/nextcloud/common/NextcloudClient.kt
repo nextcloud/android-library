@@ -50,13 +50,25 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 
-class NextcloudClient(
-    var baseUri: Uri,
-    var userId: String,
+class NextcloudClient private constructor(
+    val delegate: NextcloudUriDelegate,
     var credentials: String,
-    val client: OkHttpClient
-) {
+    val client: OkHttpClient,
+) : NextcloudUriProvider by delegate {
     var followRedirects = true
+
+    constructor(
+        baseUri: Uri,
+        userId: String,
+        credentials: String,
+        client: OkHttpClient,
+    ) : this(NextcloudUriDelegate(baseUri, userId), credentials, client)
+
+    var userId: String
+        get() = delegate.userId!!
+        set(value) {
+            delegate.userId = value
+        }
 
     companion object {
         @JvmStatic
@@ -171,10 +183,10 @@ class NextcloudClient(
     }
 
     fun getUserIdEncoded(): String {
-        return UserIdEncoder.encode(userId)
+        return UserIdEncoder.encode(delegate.userId!!)
     }
 
     fun getUserIdPlain(): String {
-        return userId
+        return delegate.userId!!
     }
 }
