@@ -74,6 +74,7 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
         assertEquals(remotePath, remoteFile.remotePath)
         assertEquals(creationTimestamp, remoteFile.creationTimestamp)
+        assertEquals(uploadResult.resultData, remoteFile.etag)
         assertTrue(
             uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
                 uploadTimestamp + TIME_OFFSET > remoteFile.uploadTimestamp
