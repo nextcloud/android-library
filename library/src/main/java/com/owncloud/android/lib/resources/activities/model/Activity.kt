@@ -23,47 +23,43 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
+package com.owncloud.android.lib.resources.activities.model
 
-import com.google.gson.annotations.SerializedName;
-import com.owncloud.android.lib.resources.activities.models.PreviewObject;
-
-import java.util.Date;
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.google.gson.annotations.SerializedName
+import com.owncloud.android.lib.resources.activities.models.PreviewObject
+import java.util.Date
 
 /**
  * Activity Data Model
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Activity {
-
+data class Activity(
     @SerializedName("activity_id")
-    private int activityId;
-    private Date datetime;
+    val activityId: Int,
+    val datetime: Date,
+
     // legacy purposes
-    private Date date;
-    private String app;
-    private String type;
-    private String user;
+    val date: Date,
+    val app: String,
+    val type: String,
+    val user: String,
+
     @SerializedName("affecteduser")
-    private String affectedUser;
-    private String subject;
-    private String message;
-    private String icon;
-    private String link;
+    val affectedUser: String,
+    val subject: String,
+    val message: String,
+    val icon: String,
+    val link: String,
+
     @SerializedName("object_type")
-    private String objectType;
+    val objectType: String,
+
     @SerializedName("object_id")
-    private String objectId;
+    val objectId: String,
+
     @SerializedName("object_name")
-    private String objectName;
-    private List<PreviewObject> previews;
+    val objectName: String,
+    val previews: List<PreviewObject>,
+
     @SerializedName("subject_rich")
-    private RichElement richSubjectElement;
-}
+    val richSubjectElement: RichElement
+)

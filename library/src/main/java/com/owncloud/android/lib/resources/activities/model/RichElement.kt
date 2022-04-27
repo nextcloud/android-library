@@ -23,23 +23,14 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
-
-import java.util.ArrayList;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package com.owncloud.android.lib.resources.activities.model
 
 /**
  * RichElement Data Model
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class RichElement {
-    private String richSubject;
-    private ArrayList<RichObject> richObjectList = new ArrayList<>();
+data class RichElement(
+    var richSubject: String,
+    var richObjectList: MutableList<RichObject>
+) {
+    constructor() : this("", mutableListOf())
 }
