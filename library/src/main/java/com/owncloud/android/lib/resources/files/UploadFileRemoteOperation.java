@@ -236,7 +236,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
 
 			final Header resultEtagHeader = putMethod.getResponseHeader(RESULT_ETAG_HEADER);
 			if (resultEtagHeader != null) {
-				result.setResultData(resultEtagHeader.getValue());
+				result.setResultData(resultEtagHeader.getValue().replace("\"", ""));
 			}
 
 			client.exhaustResponse(putMethod.getResponseBodyAsStream());
