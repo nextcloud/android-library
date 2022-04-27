@@ -24,15 +24,13 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.common.OkHttpMethodBase
 import com.nextcloud.operations.LockMethod
 import com.nextcloud.operations.UnlockMethod
-import com.owncloud.android.lib.common.accounts.AccountUtils
-import com.owncloud.android.lib.common.network.WebdavUtils
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import org.apache.commons.httpclient.HttpStatus
 
 /**
- * Favorite or unfavorite a file.
+ * Lock or unlock a file.
  *
  * @param toLock `true` if file is to be locked, `false` if it is to be unlocked
  */
@@ -46,7 +44,7 @@ class ToggleFileLockRemoteOperation(private val toLock: Boolean, private val fil
 
         try {
             // remote request
-            val uri = getUri(client)
+            val uri = client.getFilesDavUri(filePath)
             method = when (toLock) {
                 true -> LockMethod(uri, false)
                 false -> UnlockMethod(uri, false)
@@ -68,11 +66,6 @@ class ToggleFileLockRemoteOperation(private val toLock: Boolean, private val fil
         }
 
         return result!!
-    }
-
-    private fun getUri(client: NextcloudClient): String {
-        return client.baseUri.toString() + AccountUtils.WEBDAV_PATH_9_0 +
-            "/files/" + client.getUserIdEncoded() + "/" + WebdavUtils.encodePath(filePath)
     }
 
     private fun isSuccess(status: Int): Boolean =
