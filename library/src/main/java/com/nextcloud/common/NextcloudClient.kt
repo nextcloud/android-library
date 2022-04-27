@@ -104,6 +104,7 @@ class NextcloudClient private constructor(
         context: Context
     ) : this(baseUri, userId, credentials, createDefaultClient(context))
 
+    @Suppress("TooGenericExceptionCaught")
     fun <T> execute(remoteOperation: RemoteOperation<T>): RemoteOperationResult<T> {
         return try {
             remoteOperation.run(this)
@@ -132,20 +133,16 @@ class NextcloudClient private constructor(
         var status = method.getStatusCode()
         val result = RedirectionPath(status, OwnCloudClient.MAX_REDIRECTIONS_COUNT)
 
-        while (
-            redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT &&
-            (
-                status == HttpStatus.SC_MOVED_PERMANENTLY ||
-                    status == HttpStatus.SC_MOVED_TEMPORARILY ||
-                    status == HttpStatus.SC_TEMPORARY_REDIRECT
-                )
-        ) {
+        val statusIsRedirection = status == HttpStatus.SC_MOVED_PERMANENTLY ||
+            status == HttpStatus.SC_MOVED_TEMPORARILY ||
+            status == HttpStatus.SC_TEMPORARY_REDIRECT
+        while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT && statusIsRedirection) {
             var location = method.getResponseHeader("Location")
             if (location == null) {
                 location = method.getResponseHeader("location")
             }
             if (location != null) {
-                Log_OC.d(TAG, "Location to redirect: " + location)
+                Log_OC.d(TAG, "Location to redirect: $location")
                 result.addLocation(location)
                 // Release the connection to avoid reach the max number of connections per host
                 // due to it will be set a different url
