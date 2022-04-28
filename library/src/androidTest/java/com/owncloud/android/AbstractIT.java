@@ -242,12 +242,12 @@ public abstract class AbstractIT {
                             remoteFile.getLocalId(),
                             remoteFile.getRemotePath(),
                             false)
-                                              .execute(client)
-                                              .isSuccess());
+                            .execute(client)
+                            .isSuccess());
                 }
-                
-                assertTrue(new RemoveFileRemoteOperation(remoteFile.getRemotePath())
-                        .execute(client).isSuccess());
+
+                assertTrue("Failed to remove " + remoteFile.getRemotePath(),
+                        new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(client).isSuccess());
             }
         }
 
