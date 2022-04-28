@@ -56,7 +56,7 @@ class ToggleFileLockRemoteOperationIT : AbstractIT() {
         assertTrue("File lock failed", lockResult.isSuccess)
         val lockFile = ReadFileRemoteOperation(remotePath).execute(client).singleData as RemoteFile
         assertTrue("File should be locked", lockFile.isLocked)
-        assertEquals("Wrong lock type", FileLockType.COLLABORATIVE, lockFile.lockType)
+        assertEquals("Wrong lock type", FileLockType.MANUAL, lockFile.lockType)
 
         // unlock again
         val unlockResult = ToggleFileLockRemoteOperation(toLock = false, remotePath).execute(nextcloudClient)
