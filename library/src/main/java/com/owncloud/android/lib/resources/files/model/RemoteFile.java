@@ -70,6 +70,14 @@ public class RemoteFile implements Parcelable, Serializable {
     private String note;
     private ShareeUser[] sharees;
     private String richWorkspace;
+    private boolean isLocked;
+    private FileLockType lockType;
+    private String lockOwner;
+    private String lockOwnerDisplayName;
+    private long lockTimestamp;
+    private String lockOwnerEditor;
+    private long lockTimeout;
+    private String lockToken;
 
     public RemoteFile() {
         resetData();
@@ -111,6 +119,14 @@ public class RemoteFile implements Parcelable, Serializable {
         setHasPreview(we.isHasPreview());
         setSharees(we.getSharees());
         setRichWorkspace(we.getRichWorkspace());
+        setLocked(we.isLocked());
+        setLockType(we.getLockOwnerType());
+        setLockOwner(we.getLockOwnerId());
+        setLockOwnerDisplayName(we.getLockOwnerDisplayName());
+        setLockOwnerEditor(we.getLockOwnerEditor());
+        setLockTimestamp(we.getLockTimestamp());
+        setLockTimeout(we.getLockTimeout());
+        setLockToken(we.getLockToken());
     }
 
     /**
@@ -131,6 +147,14 @@ public class RemoteFile implements Parcelable, Serializable {
         ownerId = "";
         ownerDisplayName = "";
         note = "";
+        isLocked = false;
+        lockOwner = null;
+        lockType = null;
+        lockOwnerDisplayName = null;
+        lockOwnerEditor = null;
+        lockTimestamp = 0;
+        lockTimeout = 0;
+        lockToken = null;
     }
 
     /**
@@ -177,6 +201,14 @@ public class RemoteFile implements Parcelable, Serializable {
         hasPreview = Boolean.parseBoolean(source.readString());
         note = source.readString();
         source.readParcelableArray(ShareeUser.class.getClassLoader());
+        isLocked = source.readInt() == 1;
+        lockType = FileLockType.fromValue(source.readInt());
+        lockOwner = source.readString();
+        lockOwnerDisplayName = source.readString();
+        lockOwnerEditor = source.readString();
+        lockTimestamp = source.readLong();
+        lockTimeout = source.readLong();
+        lockToken = source.readString();
     }
 
     @Override
@@ -203,6 +235,14 @@ public class RemoteFile implements Parcelable, Serializable {
         dest.writeString(Boolean.toString(hasPreview));
         dest.writeString(note);
         dest.writeParcelableArray(sharees, 0);
+        dest.writeInt(isLocked ? 1 : 0);
+        dest.writeInt(lockType != null ? lockType.getValue() : -1);
+        dest.writeString(lockOwner);
+        dest.writeString(lockOwnerDisplayName);
+        dest.writeString(lockOwnerEditor);
+        dest.writeLong(lockTimestamp);
+        dest.writeLong(lockTimeout);
+        dest.writeString(lockToken);
     }
 
     @SuppressFBWarnings(value = "STT_STRING_PARSING_A_FIELD", justification = "remoteId contains cloud id and local id")

@@ -28,10 +28,10 @@ package com.owncloud.android.lib.common;
 import android.net.Uri;
 
 import com.nextcloud.common.DNSCache;
+import com.nextcloud.common.NextcloudUriDelegate;
 import com.nextcloud.common.UserIdEncoder;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
-import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.Cookie;
@@ -67,13 +67,11 @@ public class OwnCloudClient extends HttpClient {
 
     private static byte[] sExhaustBuffer = new byte[1024];
 
-    private static int sIntanceCounter = 0;
+    private static int sInstanceCounter = 0;
+    private final NextcloudUriDelegate nextcloudUriDelegate;
     @Getter @Setter private boolean followRedirects = true;
     @Getter private OwnCloudCredentials credentials = null;
     private int mInstanceNumber;
-
-    @Getter private Uri baseUri;
-    @Setter private String userId;
 
     /**
      * Constructor
@@ -84,9 +82,9 @@ public class OwnCloudClient extends HttpClient {
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
-        this.baseUri = baseUri;
+        nextcloudUriDelegate = new NextcloudUriDelegate(baseUri);
 
-        mInstanceNumber = sIntanceCounter++;
+        mInstanceNumber = sInstanceCounter++;
         Log_OC.d(TAG + " #" + mInstanceNumber, "Creating OwnCloudClient");
 
         String userAgent;
@@ -269,7 +267,7 @@ public class OwnCloudClient extends HttpClient {
                     String redirectionBase = locationStr.substring(0, suffixIndex);
 
                     String destinationStr = destination.getValue();
-                    String destinationPath = destinationStr.substring(baseUri.toString().length());
+                    String destinationPath = destinationStr.substring(getBaseUri().toString().length());
                     String redirectedDestination = redirectionBase + destinationPath;
 
                     destination.setValue(redirectedDestination);
@@ -319,46 +317,45 @@ public class OwnCloudClient extends HttpClient {
     }
 
     public String getFilesDavUri(String path) {
-        return getDavUri() + "/files/" + getUserId() + "/" + WebdavUtils.encodePath(path);
+        return nextcloudUriDelegate.getFilesDavUri(path);
     }
 
     public Uri getFilesDavUri() {
-        return Uri.parse(getDavUri() + "/files/" + getUserId());
+        return nextcloudUriDelegate.getFilesDavUri();
     }
 
     public Uri getUploadUri() {
-        return Uri.parse(baseUri + AccountUtils.DAV_UPLOAD);
+        return nextcloudUriDelegate.getUploadUri();
     }
 
     public Uri getDavUri() {
-        return Uri.parse(baseUri + AccountUtils.WEBDAV_PATH_9_0);
+        return nextcloudUriDelegate.getDavUri();
     }
 
     public String getCommentsUri(String fileId) {
-        return getDavUri() + "/comments/files/" + fileId;
+        return nextcloudUriDelegate.getCommentsUri(fileId);
     }
 
-    /**
-     * Sets the root URI to the ownCloud server.
-     * <p>
-     * Use with care.
-     *
-     * @param uri
-     */
+
+    public Uri getBaseUri() {
+        return nextcloudUriDelegate.getBaseUri();
+    }
+
     public void setBaseUri(Uri uri) {
-        if (uri == null) {
-            throw new IllegalArgumentException("URI cannot be NULL");
-        }
-        baseUri = uri;
+        nextcloudUriDelegate.setBaseUri(uri);
     }
 
-	private void logCookiesAtRequest(Header[] headers, String when) {
+    public void setUserId(String userId) {
+        nextcloudUriDelegate.setUserId(userId);
+    }
+
+    private void logCookiesAtRequest(Header[] headers, String when) {
         int counter = 0;
         for (Header header : headers) {
             if ("cookie".equals(header.getName().toLowerCase(Locale.US))) {
                 Log_OC.d(TAG + " #" + mInstanceNumber,
-                        "Cookies at request (" + when + ") (" + counter++ + "): " +
-                                header.getValue());
+                         "Cookies at request (" + when + ") (" + counter++ + "): " +
+                                 header.getValue());
             }
         }
 
@@ -436,6 +433,7 @@ public class OwnCloudClient extends HttpClient {
      * @return uri-encoded userId
      */
     public String getUserId() {
+        final String userId = nextcloudUriDelegate.getUserId();
         if (userId == null) {
             return null;
         }
@@ -443,6 +441,6 @@ public class OwnCloudClient extends HttpClient {
     }
 
     public String getUserIdPlain() {
-        return userId;
+        return nextcloudUriDelegate.getUserId();
     }
 }
