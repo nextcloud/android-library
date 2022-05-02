@@ -110,6 +110,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String PROPERTY_UNDELETE = "undelete";
     private static final String PROPERTY_VERSIONING = "versioning";
 
+    private static final String PROPERTY_LOCKING = "locking";
+
     private static final String PROPERTY_SERVERNAME = "name";
     private static final String PROPERTY_SERVERSLOGAN = "slogan";
     private static final String PROPERTY_SERVERCOLOR = "color";
@@ -423,6 +425,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     if (respFiles.has(PROPERTY_VERSIONING)) {
                         capability.setFilesVersioning(CapabilityBooleanType.fromBooleanValue(
                                 respFiles.getBoolean(PROPERTY_VERSIONING)));
+                    }
+
+                    if (respFiles.has(PROPERTY_LOCKING)) {
+                        capability.setFilesLockingVersion(respFiles.getString(PROPERTY_LOCKING));
                     }
 
                     // direct editing

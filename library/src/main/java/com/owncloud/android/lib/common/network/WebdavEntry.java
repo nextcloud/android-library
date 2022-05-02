@@ -27,6 +27,7 @@ package com.owncloud.android.lib.common.network;
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.files.model.FileLockType;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.shares.ShareeUser;
 
@@ -69,6 +70,15 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_RICH_WORKSPACE = "rich-workspace";
     public static final String EXTENDED_PROPERTY_CREATION_TIME = "creation_time";
     public static final String EXTENDED_PROPERTY_UPLOAD_TIME = "upload_time";
+    public static final String EXTENDED_PROPERTY_LOCK = "lock";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER_TYPE = "lock-owner-type";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER = "lock-owner";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME = "lock-owner-displayname";
+    public static final String EXTENDED_PROPERTY_LOCK_OWNER_EDITOR = "lock-owner-editor";
+    public static final String EXTENDED_PROPERTY_LOCK_TIME = "lock-time";
+    public static final String EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout";
+    public static final String EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token";
+
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
     public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
@@ -113,6 +123,14 @@ public class WebdavEntry {
     @Getter private String note = "";
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
     @Getter private String richWorkspace = null;
+    @Getter private boolean isLocked = false;
+    @Getter private FileLockType lockOwnerType = null;
+    @Getter private String lockOwnerId = null;
+    @Getter private String lockOwnerDisplayName = null;
+    @Getter private long lockTimestamp;
+    @Getter private String lockOwnerEditor = null;
+    @Getter private long lockTimeout;
+    @Getter private String lockToken = null;
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -121,7 +139,7 @@ public class WebdavEntry {
 
         Namespace ocNamespace = Namespace.getNamespace(NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(NAMESPACE_NC);
-        
+
         if (ms.getStatus().length != 0) {
             uri = ms.getHref();
 
@@ -392,8 +410,56 @@ public class WebdavEntry {
                     }
                 }
             }
+
+            parseLockProperties(ncNamespace, propSet);
+
+
         } else {
-            Log_OC.e("WebdavEntry", "General fuckup, no status for webdav response");
+            Log_OC.e("WebdavEntry", "General error, no status for webdav response");
+        }
+    }
+
+    private void parseLockProperties(Namespace ncNamespace, DavPropertySet propSet) {
+        DavProperty<?> prop;
+        // file locking
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            isLocked = "1".equals((String) prop.getValue());
+        } else {
+            isLocked = false;
+        }
+
+        prop = propSet.get(EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace);
+        if (prop != null && prop.getValue() != null) {
+            final int value = Integer.parseInt((String) prop.getValue());
+            lockOwnerType = FileLockType.fromValue(value);
+        } else {
+            lockOwnerType = null;
+        }
+
+        lockOwnerId = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
+        lockOwnerDisplayName = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+        lockOwnerEditor = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
+        lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
+        lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
+        lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
+    }
+
+    private String parseStringProp(final DavPropertySet propSet, final String propName, final Namespace namespace) {
+        final DavProperty<?> prop = propSet.get(propName, namespace);
+        if (prop != null && prop.getValue() != null) {
+            return (String) prop.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    private Long parseLongProp(final DavPropertySet propSet, final String propName, final Namespace namespace) {
+        final String stringValue = parseStringProp(propSet, propName, namespace);
+        if (stringValue != null) {
+            return Long.parseLong(stringValue);
+        } else {
+            return 0L;
         }
     }
 

@@ -29,6 +29,7 @@ package com.owncloud.android;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
@@ -137,6 +138,12 @@ public class GetCapabilitiesIT extends AbstractIT {
         } else {
             assertFalse(capability.getUserStatus().isTrue());
             assertFalse(capability.getUserStatusSupportsEmoji().isTrue());
+        }
+
+        // locking
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_24)) {
+            // files_lock app needs to be installed in server for this to work
+            assertNotNull(capability.getFilesLockingVersion());
         }
     }
 }

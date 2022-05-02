@@ -22,11 +22,7 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.status;
-
-import androidx.annotation.NonNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package com.owncloud.android.lib.resources.status
 
 /**
  * Enum for Boolean Type in OCCapability parameters, with values:
@@ -34,45 +30,31 @@ import lombok.Getter;
  * 0 - False
  * 1 - True
  */
-@AllArgsConstructor
-public enum CapabilityBooleanType {
+enum class CapabilityBooleanType(val value: Int) {
     UNKNOWN(-1),
     FALSE(0),
     TRUE(1);
 
-    @Getter
-    private int value;
+    val isUnknown: Boolean
+        get() = value == -1
+    val isFalse: Boolean
+        get() = value == 0
+    val isTrue: Boolean
+        get() = value == 1
 
-    public static @NonNull
-    CapabilityBooleanType fromValue(int value) {
-        switch (value) {
-            case -1:
-                return UNKNOWN;
-            case 0:
-                return FALSE;
-            case 1:
-                return TRUE;
+    companion object {
+        @JvmStatic
+        fun fromValue(value: Int): CapabilityBooleanType = when (value) {
+            -1 -> UNKNOWN
+            0 -> FALSE
+            1 -> TRUE
+            else -> UNKNOWN
         }
-        return UNKNOWN;
-    }
 
-    public static CapabilityBooleanType fromBooleanValue(boolean boolValue) {
-        if (boolValue) {
-            return TRUE;
-        } else {
-            return FALSE;
+        @JvmStatic
+        fun fromBooleanValue(boolValue: Boolean): CapabilityBooleanType = when {
+            boolValue -> TRUE
+            else -> FALSE
         }
-    }
-
-    public boolean isUnknown() {
-        return getValue() == -1;
-    }
-
-    public boolean isFalse() {
-        return getValue() == 0;
-    }
-
-    public boolean isTrue() {
-        return getValue() == 1;
     }
 }

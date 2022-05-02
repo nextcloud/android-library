@@ -80,7 +80,7 @@ public class SetUserInfoRemoteOperation extends RemoteOperation<Boolean> {
                     ", \"value\": \"" + value + "\"}");
 
             // remote request
-            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserId(),
+            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserIdPlain(),
                     true,
                     requestBody);
 
