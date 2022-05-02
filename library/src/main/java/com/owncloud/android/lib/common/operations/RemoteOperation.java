@@ -34,6 +34,7 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 
 import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.common.User;
 import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
@@ -44,7 +45,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCo
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
-
 
 /**
  * Operation which execution involves one or several interactions with an ownCloud server.
@@ -144,6 +144,15 @@ public abstract class RemoteOperation<T> implements Runnable {
     }
 
     /**
+     * This is a transitional wrapper around {@link #execute(Account, Context)}
+     * using modern {@link User} interface instead of platform {@link Account}
+     */
+    @Deprecated
+    public RemoteOperationResult<T> execute(User user, Context context) {
+        return execute(user.toPlatformAccount(), context);
+    }
+
+    /**
      * Synchronously executes the remote operation on the received ownCloud account.
      * <p>
      * Do not call this method from the main thread.
@@ -167,6 +176,14 @@ public abstract class RemoteOperation<T> implements Runnable {
             return new RemoteOperationResult<T>(e);
         }
         return run(clientNew);
+    }
+
+    /**
+     * This is a transitional wrapper around {@link #executeNextcloudClient(Account, Context)} 
+     * using modern {@link User} interface instead of platform {@link Account}
+     */
+    public RemoteOperationResult<T> executeNextcloudClient(@NonNull User user, @NonNull Context context) {
+        return executeNextcloudClient(user.toPlatformAccount(), context);
     }
 
     /**
@@ -242,6 +259,15 @@ public abstract class RemoteOperation<T> implements Runnable {
         return runnerThread;
     }
 
+    /**
+     * This is a transitional wrapper around {@link #execute(Account, Context, OnRemoteOperationListener, Handler, Activity)}
+     * using modern {@link User} interface instead of platform {@link Account}
+     */
+    @Deprecated
+    public Thread execute(User user, Context context, OnRemoteOperationListener listener,
+                          Handler listenerHandler, Activity callerActivity) {
+	    return execute(user.toPlatformAccount(), context, listener, listenerHandler, callerActivity);
+    }
     
     /**
      * Asynchronously executes the remote operation
@@ -281,6 +307,15 @@ public abstract class RemoteOperation<T> implements Runnable {
         return runnerThread;
     }
 
+    /**
+     * This is a transitional wrapper around
+     * {@link #execute(Account, Context, OnRemoteOperationListener, Handler)}
+     * using modern {@link User} interface instead of platform {@link Account}
+     */
+    public Thread execute(User user, Context context,
+                          OnRemoteOperationListener listener, Handler listenerHandler) {
+        return execute(user.toPlatformAccount(), context, listener, listenerHandler);
+    }
     
 	/**
 	 * Asynchronously executes the remote operation
