@@ -39,15 +39,15 @@ class OCCapability {
     var versionEdition: String? = null
 
     // Theming
-    var serverName = ""
-    var serverSlogan = ""
-    var serverColor = ""
-    var serverTextColor = ""
-    var serverElementColor = ""
-    var serverElementColorBright = ""
-    var serverElementColorDark = ""
-    var serverLogo = ""
-    var serverBackground = ""
+    var serverName: String? = ""
+    var serverSlogan: String? = ""
+    var serverColor: String? = ""
+    var serverTextColor: String? = ""
+    var serverElementColor: String? = ""
+    var serverElementColorBright: String? = ""
+    var serverElementColorDark: String? = ""
+    var serverLogo: String? = ""
+    var serverBackground: String? = ""
     var serverBackgroundDefault = CapabilityBooleanType.UNKNOWN
     var serverBackgroundPlain = CapabilityBooleanType.UNKNOWN
 
@@ -100,7 +100,7 @@ class OCCapability {
     var extendedSupport = CapabilityBooleanType.UNKNOWN
 
     // DirectEditing
-    var directEditingEtag: String = ""
+    var directEditingEtag: String? = ""
 
     // user status
     var userStatus = CapabilityBooleanType.UNKNOWN
