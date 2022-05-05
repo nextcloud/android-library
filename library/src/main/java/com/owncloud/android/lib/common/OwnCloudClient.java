@@ -433,11 +433,7 @@ public class OwnCloudClient extends HttpClient {
      * @return uri-encoded userId
      */
     public String getUserId() {
-        final String userId = nextcloudUriDelegate.getUserId();
-        if (userId == null) {
-            return null;
-        }
-        return UserIdEncoder.encode(userId);
+        return nextcloudUriDelegate.getUserIdEncoded();
     }
 
     public String getUserIdPlain() {
