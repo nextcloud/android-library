@@ -41,6 +41,9 @@ class NextcloudUriDelegate(baseUri: Uri, var userId: String?) : NextcloudUriProv
 
     constructor(baseUri: Uri) : this(baseUri, null)
 
+    val userIdEncoded: String?
+        get() = userId?.let { UserIdEncoder.encode(it) }
+
     /**
      * Root URI of the Nextcloud server
      */
@@ -51,7 +54,7 @@ class NextcloudUriDelegate(baseUri: Uri, var userId: String?) : NextcloudUriProv
         }
 
     override val filesDavUri: Uri
-        get() = Uri.parse("$davUri/files/$userId")
+        get() = Uri.parse("$davUri/files/$userIdEncoded")
     override val uploadUri: Uri
         get() = Uri.parse(baseUri.toString() + AccountUtils.DAV_UPLOAD)
     override val davUri: Uri

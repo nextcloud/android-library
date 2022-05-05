@@ -180,7 +180,7 @@ class NextcloudClient private constructor(
     }
 
     fun getUserIdEncoded(): String {
-        return UserIdEncoder.encode(delegate.userId!!)
+        return delegate.userIdEncoded!!
     }
 
     fun getUserIdPlain(): String {
