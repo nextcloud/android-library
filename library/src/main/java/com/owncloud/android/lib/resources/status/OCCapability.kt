@@ -29,13 +29,13 @@ package com.owncloud.android.lib.resources.status
  */
 class OCCapability {
     var id: Long = 0
-    var accountName = ""
+    var accountName: String? = ""
 
     // Server version
     var versionMayor = 0
     var versionMinor = 0
     var versionMicro = 0
-    var versionString = ""
+    var versionString: String? = ""
     var versionEdition: String? = null
 
     // Theming
@@ -91,9 +91,9 @@ class OCCapability {
     var richDocuments = CapabilityBooleanType.UNKNOWN
     var richDocumentsDirectEditing = CapabilityBooleanType.FALSE
     var richDocumentsTemplatesAvailable = CapabilityBooleanType.FALSE
-    var richDocumentsMimeTypeList: List<String> = emptyList()
-    var richDocumentsOptionalMimeTypeList: List<String> = emptyList()
-    var richDocumentsProductName: String = "Collabora Online"
+    var richDocumentsMimeTypeList: List<String>? = emptyList()
+    var richDocumentsOptionalMimeTypeList: List<String>? = emptyList()
+    var richDocumentsProductName: String? = "Collabora Online"
 
     var activity = CapabilityBooleanType.UNKNOWN
 
@@ -107,7 +107,7 @@ class OCCapability {
     var userStatusSupportsEmoji = CapabilityBooleanType.UNKNOWN
 
     // Etag for capabilities
-    var etag: String = ""
+    var etag: String? = ""
 
     val version: OwnCloudVersion
         get() = OwnCloudVersion(listOf(versionMayor, versionMinor, versionMicro).joinToString(VERSION_DOT))
