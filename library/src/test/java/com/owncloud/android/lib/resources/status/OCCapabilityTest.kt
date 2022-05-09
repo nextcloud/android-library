@@ -38,6 +38,9 @@ class OCCapabilityTest {
     @Test
     fun testFieldNullability() {
         OCCapability().apply {
+            accountName = null
+            versionString = null
+            versionEdition = null
             serverName = null
             serverSlogan = null
             serverColor = null
@@ -47,6 +50,9 @@ class OCCapabilityTest {
             serverElementColorDark = null
             serverLogo = null
             serverBackground = null
+            richDocumentsMimeTypeList = null
+            richDocumentsOptionalMimeTypeList = null
+            richDocumentsProductName = null
             directEditingEtag = null
         }
     }
