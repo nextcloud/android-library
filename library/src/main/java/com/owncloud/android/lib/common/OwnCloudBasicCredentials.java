@@ -35,13 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 @EqualsAndHashCode
 public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
-    @Getter private String username;
-    @Getter private String authToken;
+    private String username;
+    private String authToken;
     private boolean mAuthenticationPreemptive;
 
     public OwnCloudBasicCredentials(String username, String password) {
@@ -112,4 +111,12 @@ public class OwnCloudBasicCredentials implements OwnCloudCredentials {
             return new OwnCloudBasicCredentials[size];
         }
     };
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getAuthToken() {
+        return this.authToken;
+    }
 }
