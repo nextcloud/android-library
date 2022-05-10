@@ -29,7 +29,6 @@ import android.net.Uri;
 
 import com.nextcloud.common.DNSCache;
 import com.nextcloud.common.NextcloudUriDelegate;
-import com.nextcloud.common.UserIdEncoder;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -54,9 +53,6 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Locale;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class OwnCloudClient extends HttpClient {
 
     private static final String TAG = OwnCloudClient.class.getSimpleName();
@@ -69,8 +65,8 @@ public class OwnCloudClient extends HttpClient {
 
     private static int sInstanceCounter = 0;
     private final NextcloudUriDelegate nextcloudUriDelegate;
-    @Getter @Setter private boolean followRedirects = true;
-    @Getter private OwnCloudCredentials credentials = null;
+    private boolean followRedirects = true;
+    private OwnCloudCredentials credentials = null;
     private int mInstanceNumber;
 
     /**
@@ -438,5 +434,17 @@ public class OwnCloudClient extends HttpClient {
 
     public String getUserIdPlain() {
         return nextcloudUriDelegate.getUserId();
+    }
+
+    public boolean isFollowRedirects() {
+        return this.followRedirects;
+    }
+
+    public OwnCloudCredentials getCredentials() {
+        return this.credentials;
+    }
+
+    public void setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
     }
 }
