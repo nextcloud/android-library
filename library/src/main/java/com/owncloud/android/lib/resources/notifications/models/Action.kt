@@ -24,35 +24,40 @@
  *   THE SOFTWARE.
  *
  */
-
-package com.owncloud.android.lib.resources.notifications.models;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package com.owncloud.android.lib.resources.notifications.models
 
 /**
- * Rich object data model providing rich data to be used within rich content, e.g.
- * in {@link Notification}s.
+ * Action data model.
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RichObject {
+class Action() {
     /**
-     * A unique identifier for the object type.
+     * Translated short label of the action/button that should be presented to the user.
      */
-    public String type;
+    @JvmField
+    var label: String? = null
 
     /**
-     * A short identifier of the object on the server (int or string).
+     * A link that should be followed when the action is performed/clicked.
      */
-    public String id;
+    @JvmField
+    var link: String? = null
 
     /**
-     * A name which should be used in the visual representation.
+     * HTTP method that should be used for the request against the link: GET, POST, DELETE.
      */
-    public String name;
+    @JvmField
+    var type: String? = null
+
+    /**
+     * If the action is the primary action for the notification or not.
+     */
+    @JvmField
+    var primary = false
+
+    constructor(label: String?, link: String?, type: String?, primary: Boolean) : this() {
+        this.label = label
+        this.link = link
+        this.type = type
+        this.primary = primary
+    }
 }

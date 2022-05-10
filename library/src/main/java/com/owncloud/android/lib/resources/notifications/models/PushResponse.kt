@@ -24,21 +24,17 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.notifications.models;
+package com.owncloud.android.lib.resources.notifications.models
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+class PushResponse() {
+    var publicKey: String? = null
+    var deviceIdentifier: String? = null
+    var signature: String? = null
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class PushResponse {
-    public String publicKey;
-
-    public String deviceIdentifier;
-
-    public String signature;
+    @Suppress("unused") // used by json parser
+    constructor(publicKey: String?, deviceIdentifier: String?, signature: String?) : this() {
+        this.publicKey = publicKey
+        this.deviceIdentifier = deviceIdentifier
+        this.signature = signature
+    }
 }
