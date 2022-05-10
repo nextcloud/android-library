@@ -23,25 +23,26 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package com.owncloud.android.lib.resources.activities.model
 
 /**
  * RichObject Data Model
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class RichObject {
-    private String type;
-    private String id;
-    private String name;
-    private String path;
-    private String link;
-    private String tag;
+class RichObject() {
+    var type: String? = null
+    var id: String? = null
+    var name: String? = null
+    var path: String? = null
+    var link: String? = null
+    var tag: String? = null
+
+    @Suppress("LongParameterList")
+    constructor(type: String?, id: String?, name: String?, path: String?, link: String?, tag: String?) : this() {
+        this.type = type
+        this.id = id
+        this.name = name
+        this.path = path
+        this.link = link
+        this.tag = tag
+    }
 }
