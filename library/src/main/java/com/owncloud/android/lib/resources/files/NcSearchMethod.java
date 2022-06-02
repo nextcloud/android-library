@@ -45,6 +45,8 @@ import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED;
+import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_NC;
 import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
 
 public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
@@ -120,6 +122,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         Element sizeElement = query.createElementNS(NAMESPACE_OC, "oc:size");
         Element favoriteElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
         Element previewElement = query.createElementNS(NAMESPACE_OC, "nc:has-preview");
+        Element encryptedElement = query.createElementNS(NAMESPACE_NC, EXTENDED_PROPERTY_IS_ENCRYPTED);
 
         if (searchType != SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
             selectPropsElement.appendChild(displayNameElement);
@@ -127,6 +130,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             selectPropsElement.appendChild(quotaUsedElement);
             selectPropsElement.appendChild(quotaAvailableElement);
             selectPropsElement.appendChild(sizeElement);
+            selectPropsElement.appendChild(encryptedElement);
         }
         if (searchType == SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
             selectPropsElement.appendChild(previewElement);
