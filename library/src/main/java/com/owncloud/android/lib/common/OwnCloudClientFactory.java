@@ -36,6 +36,7 @@ import android.os.Bundle;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.common.OkHttpCredentialsUtil;
+import com.nextcloud.common.User;
 import com.owncloud.android.lib.common.accounts.AccountTypeUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
@@ -185,6 +186,10 @@ public class OwnCloudClientFactory {
         client.setFollowRedirects(followRedirects);
 
         return client;
+    }
+
+    public static NextcloudClient createNextcloudClient(User user, Context appContext) throws AccountNotFoundException {
+        return createNextcloudClient(user.toPlatformAccount(), appContext);
     }
 
     /**
