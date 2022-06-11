@@ -137,7 +137,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         DefaultHttpMethodRetryHandler oldRetryHandler = (DefaultHttpMethodRetryHandler) 
                 client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
         File file = new File(localPath);
-
+        MoveMethod moveMethod = null;
         try {
             if (disableRetries) {
                 // prevent that uploads are retried automatically by network library
@@ -205,11 +205,12 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             String destinationUri = client.getDavUri() + "/files/" + client.getUserId() +
                     WebdavUtils.encodePath(remotePath);
             String originUri = uploadFolderUri + "/.file";
-            MoveMethod moveMethod = new MoveMethod(originUri, destinationUri, true);
+
+            moveMethod = new MoveMethod(originUri, destinationUri, true);
             moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(file.lastModified() / 1000));
 
             if (creationTimestamp != null && creationTimestamp > 0) {
-                putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
+                moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
             }
 
             if (token != null) {
@@ -221,7 +222,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
         } catch (Exception e) {
-            if (putMethod != null && putMethod.isAborted()) {
+            if (moveMethod != null && moveMethod.isAborted()) {
                 if (cancellationRequested.get() && cancellationReason != null) {
                     result = new RemoteOperationResult(cancellationReason);
                 } else {
