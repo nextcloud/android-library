@@ -61,6 +61,7 @@ class WebdavEntryTest {
                         <nc:lock-time>1650637795</nc:lock-time>
                         <nc:lock-timeout>1800</nc:lock-timeout>
                         <nc:lock-owner-type>0</nc:lock-owner-type>
+                        <nc:encrypted>0</nc:encrypted>
                     </d:prop>
                     <d:status>HTTP/1.1 200 OK</d:status>
                 </d:propstat>
@@ -100,5 +101,6 @@ class WebdavEntryTest {
         Assert.assertEquals("Wrong lock timestamp", 1650637795, entry.lockTimestamp)
         Assert.assertEquals("Wrong lock timeout", 1800, entry.lockTimeout)
         Assert.assertEquals("Wrong lock token", null, entry.lockToken)
+        Assert.assertEquals("Wrong encryption state", false, entry.encrypted)
     }
 }
