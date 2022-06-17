@@ -6,11 +6,14 @@ on:
     push:
         branches: [ master, stable-* ]
 
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
     detekt:
         runs-on: ubuntu-latest
 
         steps:
-            -   uses: actions/checkout@v2
-            -   name: Detect SNAPSHOT
-                run: scripts/analysis/detectSNAPSHOT.sh
+            - uses: actions/checkout@v2
+            - name: Detect SNAPSHOT
+              run: scripts/analysis/detectSNAPSHOT.sh

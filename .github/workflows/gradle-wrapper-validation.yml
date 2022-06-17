@@ -5,10 +5,13 @@ on:
     push:
         branches: [ master, stable-* ]
 
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
     validation:
         name: "Validation"
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v2
-            -   uses: gradle/wrapper-validation-action@v1
+            - uses: actions/checkout@v2
+            - uses: gradle/wrapper-validation-action@v1
