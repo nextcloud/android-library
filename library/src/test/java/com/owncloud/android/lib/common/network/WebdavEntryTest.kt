@@ -101,6 +101,6 @@ class WebdavEntryTest {
         Assert.assertEquals("Wrong lock timestamp", 1650637795, entry.lockTimestamp)
         Assert.assertEquals("Wrong lock timeout", 1800, entry.lockTimeout)
         Assert.assertEquals("Wrong lock token", null, entry.lockToken)
-        Assert.assertEquals("Wrong encryption state", false, entry.encrypted)
+        Assert.assertEquals("Wrong encryption state", false, entry.isEncrypted)
     }
 }

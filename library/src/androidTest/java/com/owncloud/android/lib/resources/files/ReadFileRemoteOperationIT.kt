@@ -80,6 +80,6 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         // re-read
         result = ReadFileRemoteOperation(remotePath).execute(client)
-        assertEquals(true, (result.data[0] as RemoteFile).encrypted)
+        assertEquals(true, (result.data[0] as RemoteFile).isEncrypted)
     }
 }
