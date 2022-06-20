@@ -21,6 +21,7 @@
 package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -53,5 +54,32 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(result.isSuccess)
         assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+    }
+
+    @Test
+    fun readEncryptedState() {
+        val remotePath = "/test/"
+
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+
+        var result = ReadFileRemoteOperation(remotePath).execute(client)
+
+        assertTrue(result.isSuccess)
+        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+
+        // mark as encrypted
+        assertTrue(
+            ToggleEncryptionRemoteOperation(
+                "not needed",
+                remotePath,
+                true
+            )
+                .execute(client)
+                .isSuccess
+        )
+
+        // re-read
+        result = ReadFileRemoteOperation(remotePath).execute(client)
+        assertEquals(true, (result.data[0] as RemoteFile).encrypted)
     }
 }
