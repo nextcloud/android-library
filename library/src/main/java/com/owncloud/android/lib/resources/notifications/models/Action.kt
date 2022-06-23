@@ -1,7 +1,8 @@
 /*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Alejandro Bautista
  *
- *   @author Alejandro Bautista
+ *   @author Andy Scherzinger
+ *   Copyright (C) 2017 Andy Scherzinger
+ *   Copyright (C) 2017 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -23,25 +24,40 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package com.owncloud.android.lib.resources.notifications.models
 
 /**
- * RichObject Data Model
+ * Action data model.
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class RichObject {
-    private String type;
-    private String id;
-    private String name;
-    private String path;
-    private String link;
-    private String tag;
+class Action() {
+    /**
+     * Translated short label of the action/button that should be presented to the user.
+     */
+    @JvmField
+    var label: String? = null
+
+    /**
+     * A link that should be followed when the action is performed/clicked.
+     */
+    @JvmField
+    var link: String? = null
+
+    /**
+     * HTTP method that should be used for the request against the link: GET, POST, DELETE.
+     */
+    @JvmField
+    var type: String? = null
+
+    /**
+     * If the action is the primary action for the notification or not.
+     */
+    @JvmField
+    var primary = false
+
+    constructor(label: String?, link: String?, type: String?, primary: Boolean) : this() {
+        this.label = label
+        this.link = link
+        this.type = type
+        this.primary = primary
+    }
 }

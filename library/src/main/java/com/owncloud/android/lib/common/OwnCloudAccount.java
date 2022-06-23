@@ -40,7 +40,6 @@ import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundExce
 import java.io.IOException;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 /**
  * OwnCloud Account
@@ -50,13 +49,13 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class OwnCloudAccount implements Parcelable {
 
-    @Getter private Uri baseUri;
-    @Getter private OwnCloudCredentials credentials;
+    private Uri baseUri;
+    private OwnCloudCredentials credentials;
 
     private String displayName;
 
-    @Getter private String name;
-    @Getter private Account savedAccount;
+    private String name;
+    private Account savedAccount;
 
     /**
      * Constructor for already saved OC accounts.
@@ -177,4 +176,20 @@ public class OwnCloudAccount implements Parcelable {
             return new OwnCloudAccount[size];
         }
     };
+
+    public Uri getBaseUri() {
+        return this.baseUri;
+    }
+
+    public OwnCloudCredentials getCredentials() {
+        return this.credentials;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Account getSavedAccount() {
+        return this.savedAccount;
+    }
 }

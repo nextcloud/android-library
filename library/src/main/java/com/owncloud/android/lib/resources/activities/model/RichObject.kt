@@ -1,8 +1,7 @@
 /*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Mario Danic
+ *   Copyright (C) 2017 Alejandro Bautista
  *
- *   @author Mario Danic
- *
+ *   @author Alejandro Bautista
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +23,26 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.notifications.models;
+package com.owncloud.android.lib.resources.activities.model
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+/**
+ * RichObject Data Model
+ */
+class RichObject() {
+    var type: String? = null
+    var id: String? = null
+    var name: String? = null
+    var path: String? = null
+    var link: String? = null
+    var tag: String? = null
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class PushResponse {
-    public String publicKey;
-
-    public String deviceIdentifier;
-
-    public String signature;
+    @Suppress("LongParameterList")
+    constructor(type: String?, id: String?, name: String?, path: String?, link: String?, tag: String?) : this() {
+        this.type = type
+        this.id = id
+        this.name = name
+        this.path = path
+        this.link = link
+        this.tag = tag
+    }
 }

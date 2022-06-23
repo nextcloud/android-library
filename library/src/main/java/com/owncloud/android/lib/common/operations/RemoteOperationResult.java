@@ -62,7 +62,6 @@ import java.util.Locale;
 
 import javax.net.ssl.SSLException;
 
-import lombok.ToString;
 import okhttp3.Headers;
 
 
@@ -73,7 +72,6 @@ import okhttp3.Headers;
  *
  * @author David A. Velasco
  */
-@ToString
 public class RemoteOperationResult<T extends Object> implements Serializable {
 
     // Generated - should be refreshed every time the class changes!!
@@ -151,17 +149,14 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     private Exception mException = null;
     private ResultCode mCode = ResultCode.UNKNOWN_ERROR;
     private String message;
-    @ToString.Exclude private String mRedirectedLocation;
-    @ToString.Exclude private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
-    @ToString.Exclude private String mLastPermanentLocation = null;
+    private String mRedirectedLocation;
+    private ArrayList<String> mAuthenticateHeaders = new ArrayList<>();
+    private String mLastPermanentLocation = null;
 
-    @ToString.Exclude
     private ArrayList<Object> mData;
-    @ToString.Exclude
     private T resultData;
-    @ToString.Exclude
     private List<Notification> mNotificationData;
-    @ToString.Exclude private PushResponse mPushResponse;
+    private PushResponse mPushResponse;
 
     /**
      * Public constructor from result code.
@@ -616,7 +611,6 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         return result;
     }
 
-    @ToString.Include
     public String getLogMessage() {
 
         if (mException != null) {
@@ -762,5 +756,18 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
      */
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "RemoteOperationResult{" +
+                "mSuccess=" + mSuccess +
+                ", mHttpCode=" + mHttpCode +
+                ", mHttpPhrase='" + mHttpPhrase + '\'' +
+                ", mException=" + mException +
+                ", mCode=" + mCode +
+                ", message='" + message + '\'' +
+                ", getLogMessage='" + getLogMessage() + '\'' +
+                '}';
     }
 }

@@ -1,7 +1,8 @@
-/*  Nextcloud Android Library is available under MIT license
- *   Copyright (C) 2017 Joas Schilling
+/* Nextcloud Android Library is available under MIT license
  *
- *   @author Joas Schilling
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2019 Tobias Kaminsky
+ *   Copyright (C) 2022 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -23,26 +24,10 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.resources.activities.models;
+package com.owncloud.android.lib.resources.shares
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-/**
- * PreviewObject Data Model
- */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class PreviewObject {
-    private int fileId;
-    private String source;
-    private String link;
-    private Boolean mimeTypeIcon;
-    private String mimeType;
-    private String view;
-    private String filename;
-}
+@Parcelize
+data class ShareeUser(val userId: String?, val displayName: String?, val shareType: ShareType?) : Parcelable

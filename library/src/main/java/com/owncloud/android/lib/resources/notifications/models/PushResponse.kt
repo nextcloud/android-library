@@ -1,8 +1,8 @@
 /*  Nextcloud Android Library is available under MIT license
+ *   Copyright (C) 2017 Mario Danic
  *
- *   @author Andy Scherzinger
- *   Copyright (C) 2017 Andy Scherzinger
- *   Copyright (C) 2017 Nextcloud GmbH
+ *   @author Mario Danic
+ *
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,17 @@
  *   THE SOFTWARE.
  *
  */
+package com.owncloud.android.lib.resources.notifications.models
 
-package com.owncloud.android.lib.resources.notifications.models;
+class PushResponse() {
+    var publicKey: String? = null
+    var deviceIdentifier: String? = null
+    var signature: String? = null
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-/**
- * Rich object data model providing rich data to be used within rich content, e.g.
- * in {@link Notification}s.
- */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RichObject {
-    /**
-     * A unique identifier for the object type.
-     */
-    public String type;
-
-    /**
-     * A short identifier of the object on the server (int or string).
-     */
-    public String id;
-
-    /**
-     * A name which should be used in the visual representation.
-     */
-    public String name;
+    @Suppress("unused") // used by json parser
+    constructor(publicKey: String?, deviceIdentifier: String?, signature: String?) : this() {
+        this.publicKey = publicKey
+        this.deviceIdentifier = deviceIdentifier
+        this.signature = signature
+    }
 }
