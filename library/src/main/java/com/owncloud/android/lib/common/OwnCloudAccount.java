@@ -38,15 +38,13 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 
 import java.io.IOException;
-
-import lombok.EqualsAndHashCode;
+import java.util.Objects;
 
 /**
  * OwnCloud Account
  * 
  * @author David A. Velasco
  */
-@EqualsAndHashCode
 public class OwnCloudAccount implements Parcelable {
 
     private Uri baseUri;
@@ -191,5 +189,45 @@ public class OwnCloudAccount implements Parcelable {
 
     public Account getSavedAccount() {
         return this.savedAccount;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof OwnCloudAccount)) {
+            return false;
+        }
+        final OwnCloudAccount other = (OwnCloudAccount) o;
+        if (!Objects.equals(this.getBaseUri(), other.getBaseUri())) {
+            return false;
+        }
+        if (!Objects.equals(this.getCredentials(), other.getCredentials())) {
+            return false;
+        }
+        if (!Objects.equals(this.getDisplayName(), other.getDisplayName())) {
+            return false;
+        }
+        if (!Objects.equals(this.getName(), other.getName())) {
+            return false;
+        }
+        return Objects.equals(this.getSavedAccount(), other.getSavedAccount());
+    }
+
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $baseUri = this.getBaseUri();
+        result = result * PRIME + ($baseUri == null ? 43 : $baseUri.hashCode());
+        final Object $credentials = this.getCredentials();
+        result = result * PRIME + ($credentials == null ? 43 : $credentials.hashCode());
+        final Object $displayName = this.getDisplayName();
+        result = result * PRIME + ($displayName == null ? 43 : $displayName.hashCode());
+        final Object $name = this.getName();
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        final Object $savedAccount = this.getSavedAccount();
+        result = result * PRIME + ($savedAccount == null ? 43 : $savedAccount.hashCode());
+        return result;
     }
 }
