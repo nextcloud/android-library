@@ -2,7 +2,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 
 buildscript {
     ext {
-        kotlin_version = '1.7.0'
+        kotlin_version = '1.6.21'
         junit_version = '4.13.2'
         jacoco_version = '0.8.8'
         lombokVersion = "1.18.24"
