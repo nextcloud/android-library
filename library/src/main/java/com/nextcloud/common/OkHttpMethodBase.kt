@@ -55,7 +55,7 @@ abstract class OkHttpMethodBase(
     private val requestBuilder: Request.Builder = Request.Builder()
     private var request: Request? = null
 
-    init {
+    fun OkHttpMethodBase() {
         requestHeaders["http.protocol.single-cookie-header"] = "true"
     }
 
