@@ -60,9 +60,12 @@ abstract class OkHttpMethodBase(
     }
 
     fun buildQueryParameter(): HttpUrl {
-        val httpBuilder = uri.toHttpUrlOrNull()?.newBuilder() ?: throw IllegalStateException("Error")
+        val httpBuilder =
+            uri.toHttpUrlOrNull()?.newBuilder() ?: throw IllegalStateException("Error")
 
-        queryMap.forEach { (k, v) -> httpBuilder.addQueryParameter(k, v) }
+        for ((k, v) in queryMap) {
+            httpBuilder.addQueryParameter(k, v)
+        }
 
         return httpBuilder.build()
     }
@@ -134,7 +137,9 @@ abstract class OkHttpMethodBase(
 
         requestHeaders[AUTHORIZATION] = nextcloudClient.credentials
         requestHeaders[USER_AGENT] = OwnCloudClientManagerFactory.getUserAgent()
-        requestHeaders.forEach { (name, value) -> temp.header(name, value) }
+        for ((name, value) in requestHeaders) {
+            temp.header(name, value)
+        }
 
         if (useOcsApiRequestHeader) {
             temp.header(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
@@ -161,7 +166,9 @@ abstract class OkHttpMethodBase(
         val temp = requestBuilder.url(buildQueryParameter())
 
         requestHeaders[USER_AGENT] = OwnCloudClientManagerFactory.getUserAgent()
-        requestHeaders.forEach { (name, value) -> temp.header(name, value) }
+        for ((name, value) in requestHeaders) {
+            temp.header(name, value)
+        }
 
         applyType(temp)
 
