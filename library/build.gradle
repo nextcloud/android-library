@@ -167,14 +167,6 @@ tasks.register("combinedTestReport", JacocoReport) {
     ])
 }
 
-task installGitHooks(type: Copy, group: "development") {
-    description = "Install git hooks"
-    from("${project.rootDir}/scripts/hooks") {
-        include '*'
-    }
-    into '.git/hooks'
-}
-
 detekt {
     reports {
         xml {
