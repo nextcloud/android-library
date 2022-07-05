@@ -28,9 +28,8 @@ package com.owncloud.android.lib.resources.status;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
+
 import lombok.Getter;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable {
@@ -171,16 +170,10 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
     };
 
     public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof OwnCloudVersion)) {
-            return false;
-        }
+        if (o == this) return true;
+        if (!(o instanceof OwnCloudVersion)) return false;
         final OwnCloudVersion other = (OwnCloudVersion) o;
-        if (!Objects.equals(this.getVersion(), other.getVersion())) {
-            return false;
-        }
+        if (this.version != other.version) return false;
         return this.versionValid == other.versionValid;
     }
 

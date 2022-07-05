@@ -38,7 +38,6 @@ import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * OwnCloud Account
@@ -191,29 +190,30 @@ public class OwnCloudAccount implements Parcelable {
         return this.savedAccount;
     }
 
+    @SuppressWarnings("EqualsReplaceableByObjectsCall") // minApi < 19
     public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof OwnCloudAccount)) {
-            return false;
-        }
+        if (o == this) return true;
+        if (!(o instanceof OwnCloudAccount)) return false;
         final OwnCloudAccount other = (OwnCloudAccount) o;
-        if (!Objects.equals(this.getBaseUri(), other.getBaseUri())) {
+        final Object this$baseUri = this.getBaseUri();
+        final Object other$baseUri = other.getBaseUri();
+        if (this$baseUri == null ? other$baseUri != null : !this$baseUri.equals(other$baseUri))
             return false;
-        }
-        if (!Objects.equals(this.getCredentials(), other.getCredentials())) {
+        final Object this$credentials = this.getCredentials();
+        final Object other$credentials = other.getCredentials();
+        if (this$credentials == null ? other$credentials != null : !this$credentials.equals(other$credentials))
             return false;
-        }
-        if (!Objects.equals(this.getDisplayName(), other.getDisplayName())) {
+        final Object this$displayName = this.getDisplayName();
+        final Object other$displayName = other.getDisplayName();
+        if (this$displayName == null ? other$displayName != null : !this$displayName.equals(other$displayName))
             return false;
-        }
-        if (!Objects.equals(this.getName(), other.getName())) {
-            return false;
-        }
-        return Objects.equals(this.getSavedAccount(), other.getSavedAccount());
+        final Object this$name = this.getName();
+        final Object other$name = other.getName();
+        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        final Object this$savedAccount = this.getSavedAccount();
+        final Object other$savedAccount = other.getSavedAccount();
+        return this$savedAccount == null ? other$savedAccount == null : this$savedAccount.equals(other$savedAccount);
     }
-
 
     public int hashCode() {
         final int PRIME = 59;

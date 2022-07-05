@@ -33,7 +33,6 @@ import org.apache.commons.httpclient.auth.AuthScope;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
@@ -118,23 +117,21 @@ public class OwnCloudBasicCredentials implements OwnCloudCredentials {
         return this.authToken;
     }
 
+    @SuppressWarnings("EqualsReplaceableByObjectsCall")  // minApi < 19
     public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof OwnCloudBasicCredentials)) {
-            return false;
-        }
+        if (o == this) return true;
+        if (!(o instanceof OwnCloudBasicCredentials)) return false;
         final OwnCloudBasicCredentials other = (OwnCloudBasicCredentials) o;
-        if (!Objects.equals(this.getUsername(), other.getUsername())) {
+        final Object this$username = this.getUsername();
+        final Object other$username = other.getUsername();
+        if (this$username == null ? other$username != null : !this$username.equals(other$username))
             return false;
-        }
-        if (!Objects.equals(this.getAuthToken(), other.getAuthToken())) {
+        final Object this$authToken = this.getAuthToken();
+        final Object other$authToken = other.getAuthToken();
+        if (this$authToken == null ? other$authToken != null : !this$authToken.equals(other$authToken))
             return false;
-        }
         return this.mAuthenticationPreemptive == other.mAuthenticationPreemptive;
     }
-
 
     public int hashCode() {
         final int PRIME = 59;
