@@ -30,10 +30,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@EqualsAndHashCode
 public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable {
     public static final OwnCloudVersion nextcloud_16 = new OwnCloudVersion(0x10000000); // 16.0
     public static final OwnCloudVersion nextcloud_17 = new OwnCloudVersion(0x11000000); // 17.0
@@ -170,4 +168,20 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
             return new OwnCloudVersion[size];
         }
     };
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof OwnCloudVersion)) return false;
+        final OwnCloudVersion other = (OwnCloudVersion) o;
+        if (this.version != other.version) return false;
+        return this.versionValid == other.versionValid;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + this.version;
+        result = result * PRIME + (this.versionValid ? 79 : 97);
+        return result;
+    }
 }

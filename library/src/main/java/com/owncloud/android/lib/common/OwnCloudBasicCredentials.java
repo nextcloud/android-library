@@ -34,9 +34,6 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
-
-@EqualsAndHashCode
 public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
     private String username;
@@ -118,5 +115,32 @@ public class OwnCloudBasicCredentials implements OwnCloudCredentials {
 
     public String getAuthToken() {
         return this.authToken;
+    }
+
+    @SuppressWarnings("EqualsReplaceableByObjectsCall")  // minApi < 19
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof OwnCloudBasicCredentials)) return false;
+        final OwnCloudBasicCredentials other = (OwnCloudBasicCredentials) o;
+        final Object this$username = this.getUsername();
+        final Object other$username = other.getUsername();
+        if (this$username == null ? other$username != null : !this$username.equals(other$username))
+            return false;
+        final Object this$authToken = this.getAuthToken();
+        final Object other$authToken = other.getAuthToken();
+        if (this$authToken == null ? other$authToken != null : !this$authToken.equals(other$authToken))
+            return false;
+        return this.mAuthenticationPreemptive == other.mAuthenticationPreemptive;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $username = this.getUsername();
+        result = result * PRIME + ($username == null ? 43 : $username.hashCode());
+        final Object $authToken = this.getAuthToken();
+        result = result * PRIME + ($authToken == null ? 43 : $authToken.hashCode());
+        result = result * PRIME + (this.mAuthenticationPreemptive ? 79 : 97);
+        return result;
     }
 }
