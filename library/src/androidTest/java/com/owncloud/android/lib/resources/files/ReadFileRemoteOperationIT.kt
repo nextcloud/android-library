@@ -21,9 +21,11 @@
 package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -58,19 +60,25 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun readEncryptedState() {
-        val remotePath = "/test/"
+        val remotePath = "/testEncryptedFolder/"
+
+        // E2E server app checks for official NC client with >=3.13.0, 
+        // and blocks all other clients, e.g. 3rd party apps using this lib
+        OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0")
 
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
 
         var result = ReadFileRemoteOperation(remotePath).execute(client)
+        val remoteFile = result.data[0] as RemoteFile
 
         assertTrue(result.isSuccess)
-        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+        assertFalse(remoteFile.isEncrypted)
+        assertEquals(remotePath, remoteFile.remotePath)
 
         // mark as encrypted
         assertTrue(
             ToggleEncryptionRemoteOperation(
-                "not needed",
+                remoteFile.localId,
                 remotePath,
                 true
             )
