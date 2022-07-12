@@ -112,10 +112,12 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         assertTrue(capability.getFilesVersioning().isTrue());
         assertTrue(capability.getFilesUndelete().isTrue());
         assertNotNull(capability.getVersion());
-        assertFalse(capability.getEtag().isEmpty());
-        assertSame(CapabilityBooleanType.FALSE, capability.getRichDocuments());
-        assertFalse(capability.getDirectEditingEtag().isEmpty());
         assertSame(CapabilityBooleanType.UNKNOWN, capability.getDropAccount());
+        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_17)) {
+            assertFalse(capability.getEtag().isEmpty());
+            assertFalse(capability.getDirectEditingEtag().isEmpty());
+        }
+        assertSame(CapabilityBooleanType.FALSE, capability.getRichDocuments());
 
         // user status
         if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_20)) {

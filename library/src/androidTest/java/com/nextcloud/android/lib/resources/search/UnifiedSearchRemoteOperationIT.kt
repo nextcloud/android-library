@@ -11,10 +11,12 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.BeforeClass
 import org.junit.Test
 
 class UnifiedSearchRemoteOperationIT : AbstractIT() {
@@ -75,5 +77,13 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
         assertTrue(data.name == "Files")
         assertTrue(data.entries.isNotEmpty())
         assertNotNull(data.entries.find { it.title == "test Folder" })
+    }
+
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun before() {
+            requireServerVersion(OwnCloudVersion.nextcloud_20)
+        }
     }
 }

@@ -8,22 +8,16 @@
 package com.nextcloud.android.lib.resources.search
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
-import com.owncloud.android.lib.resources.status.OCCapability
-import com.owncloud.android.lib.resources.status.OwnCloudVersion
-import org.junit.Assert.assertFalse
+import com.owncloud.android.lib.resources.status.OwnCloudVersion.nextcloud_20
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeTrue
+import org.junit.BeforeClass
 import org.junit.Test
 
 class SearchProvidersRemoteOperationIT : AbstractIT() {
     @Test
     fun getSearchProviders() {
-        // only on NC20+
-        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
-
         val result = nextcloudClient.execute(UnifiedSearchProvidersRemoteOperation())
         assertTrue(result.isSuccess)
 

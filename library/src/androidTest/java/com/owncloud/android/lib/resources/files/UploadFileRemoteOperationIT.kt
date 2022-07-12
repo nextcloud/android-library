@@ -11,6 +11,9 @@ import android.os.Build
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
+import com.owncloud.android.lib.resources.status.OCCapability
+import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import junit.framework.TestCase.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -32,6 +35,9 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun upload() {
+        val ocCapability = GetCapabilitiesRemoteOperation()
+            .execute(nextcloudClient).singleData as OCCapability
+
         // create file
         val filePath = createFile("text")
         val remotePath = "/test.md"
@@ -59,12 +65,15 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         var remoteFile = result.data[0] as RemoteFile
 
         assertEquals(remotePath, remoteFile.remotePath)
-        assertEquals(creationTimestamp, remoteFile.creationTimestamp)
         assertEquals(uploadResult.resultData, remoteFile.etag)
-        assertTrue(
-            uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
-                uploadTimestamp + TIME_OFFSET > remoteFile.uploadTimestamp
-        )
+
+        if (ocCapability.version.isNewerOrEqual(OwnCloudVersion.nextcloud_18)) {
+            assertEquals(creationTimestamp, remoteFile.creationTimestamp)
+            assertTrue(
+                uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
+                    uploadTimestamp + TIME_OFFSET > remoteFile.uploadTimestamp
+            )
+        }
 
         // ReadFolderRemoteOperation
         result = ReadFolderRemoteOperation(remotePath).execute(client)
@@ -73,11 +82,14 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         remoteFile = result.data[0] as RemoteFile
 
         assertEquals(remotePath, remoteFile.remotePath)
-        assertEquals(creationTimestamp, remoteFile.creationTimestamp)
-        assertTrue(
-            uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
-                uploadTimestamp + TIME_OFFSET > remoteFile.uploadTimestamp
-        )
+
+        if (ocCapability.version.isNewerOrEqual(OwnCloudVersion.nextcloud_18)) {
+            assertEquals(creationTimestamp, remoteFile.creationTimestamp)
+            assertTrue(
+                uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
+                    uploadTimestamp + TIME_OFFSET > remoteFile.uploadTimestamp
+            )
+        }
     }
 
     private fun getCreationTimestamp(file: File): Long? {

@@ -25,6 +25,7 @@ import com.owncloud.android.lib.resources.shares.ShareeUser;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
 
@@ -146,6 +147,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testShareToGroupSharees() {
+        requireServerVersion(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -188,6 +191,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testOneSharees() {
+        requireServerVersion(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -197,7 +202,7 @@ public class FileIT extends AbstractIT {
 
         // share folder
         assertTrue(new CreateShareRemoteOperation(path,
-                                                  ShareType.USER,
+                ShareType.USER,
                                                   "user1",
                                                   false,
                                                   "",
@@ -223,6 +228,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testTwoShareesOnParent() {
+        requireServerVersion(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -271,6 +278,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testTwoSharees() {
+        requireServerVersion(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
