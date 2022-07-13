@@ -217,7 +217,7 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable password_policy"
       - su www-data -c "php /var/www/html/occ app:enable external"
       - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
-      - su www-data -c "git clone git@github.com:nextcloud/files_lock.git /var/www/html/apps/files_lock/"
+      - su www-data -c "git clone https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
       - su www-data -c "php /var/www/html/occ app:enable files_lock"
       - /usr/local/bin/run.sh
 
