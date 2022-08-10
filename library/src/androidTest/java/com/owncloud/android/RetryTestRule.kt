@@ -60,8 +60,9 @@ class RetryTestRule(val retryCount: Int = 1) : TestRule {
                 }
 
                 Log.e(TAG, description.methodName + ": giving up after " + retryCount + " failures")
-                if (caughtThrowable != null)
+                if (caughtThrowable != null) {
                     throw caughtThrowable
+                }
             }
         }
     }

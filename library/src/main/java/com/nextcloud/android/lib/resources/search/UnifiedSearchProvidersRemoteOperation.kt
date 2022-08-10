@@ -72,7 +72,8 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
         } catch (e: Exception) {
             result = RemoteOperationResult(e)
             Log_OC.e(
-                TAG, "Get all search provider failed: " + result.logMessage,
+                TAG,
+                "Get all search provider failed: " + result.logMessage,
                 result.exception
             )
         } finally {

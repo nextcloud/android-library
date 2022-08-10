@@ -46,8 +46,10 @@ object DNSCache {
     // 30 seconds is the Java default. Let's keep it.
     @VisibleForTesting
     var ttlMillis: Long = DEFAULT_TTL
+
     @VisibleForTesting
     var clock: Clock = ClockImpl()
+
     @VisibleForTesting
     var dns: Dns = Dns.SYSTEM
 

@@ -40,7 +40,7 @@ data class Quota(
     val used: Long = 0,
     val total: Long = 0,
     val relative: Double = 0.0,
-    val quota: Long = 0,
+    val quota: Long = 0
 ) : Parcelable {
     constructor(quota: Long) : this(0, quota = quota)
 }

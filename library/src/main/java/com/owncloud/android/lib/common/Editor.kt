@@ -39,5 +39,5 @@ data class Editor(
     val name: String,
     val mimetypes: ArrayList<String>,
     val optionalMimetypes: ArrayList<String>,
-    val secure: Boolean,
+    val secure: Boolean
 ) : Parcelable

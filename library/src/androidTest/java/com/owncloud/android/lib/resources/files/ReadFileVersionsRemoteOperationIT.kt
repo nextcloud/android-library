@@ -37,7 +37,8 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         var uploadResult = UploadFileRemoteOperation(
             txtFile.absolutePath,
             filePath,
-            "txt/plain", (System.currentTimeMillis() / 1000).toString()
+            "txt/plain",
+            (System.currentTimeMillis() / 1000).toString()
         )
             .execute(client)
 
@@ -60,7 +61,8 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         uploadResult = UploadFileRemoteOperation(
             txtFile.absolutePath,
             filePath,
-            "txt/plain", (System.currentTimeMillis() / 1000).toString()
+            "txt/plain",
+            (System.currentTimeMillis() / 1000).toString()
         )
             .execute(client)
 

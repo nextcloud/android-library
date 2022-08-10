@@ -53,7 +53,6 @@ class RemoteOperationResultTest {
 
     @Test
     fun test_multipleAuth_withLocation() {
-
         val sut = genResultWithHeaders(
             arrayOf(
                 BEARER_HEADER,
@@ -79,7 +78,6 @@ class RemoteOperationResultTest {
 
     @Test
     fun test_noLocation_singleAuth() {
-
         val sut = genResultWithHeaders(
             arrayOf(
                 BEARER_HEADER
@@ -88,7 +86,8 @@ class RemoteOperationResultTest {
 
         Assert.assertEquals(
             "Wrong auth headers length",
-            1, sut.authenticateHeaders.size
+            1,
+            sut.authenticateHeaders.size
         )
         Assert.assertTrue(
             "Missing bearer auth header",
@@ -103,7 +102,6 @@ class RemoteOperationResultTest {
 
     @Test
     fun test_noAuth_location() {
-
         val sut = genResultWithHeaders(
             arrayOf(
                 LOCATION_HEADER
@@ -112,7 +110,8 @@ class RemoteOperationResultTest {
 
         Assert.assertEquals(
             "Wrong auth headers length",
-            0, sut.authenticateHeaders.size
+            0,
+            sut.authenticateHeaders.size
         )
         Assert.assertEquals(
             "Wrong location header",

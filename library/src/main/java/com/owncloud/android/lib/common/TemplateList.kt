@@ -35,5 +35,5 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class TemplateList(
-    val templates: Map<String, Template> = HashMap(),
+    val templates: Map<String, Template> = HashMap()
 ) : Parcelable

@@ -38,7 +38,6 @@ class ToggleFileLockRemoteOperation(private val toLock: Boolean, private val fil
     RemoteOperation<Void>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-
         var method: OkHttpMethodBase? = null
         var result: RemoteOperationResult<Void>?
 

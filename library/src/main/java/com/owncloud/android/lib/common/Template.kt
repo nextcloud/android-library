@@ -38,5 +38,5 @@ data class Template(
     val id: String,
     val extension: String,
     val title: String,
-    val preview: String,
+    val preview: String
 ) : Parcelable

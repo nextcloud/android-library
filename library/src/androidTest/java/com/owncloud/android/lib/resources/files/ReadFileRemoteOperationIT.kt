@@ -62,7 +62,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     fun readEncryptedState() {
         val remotePath = "/testEncryptedFolder/"
 
-        // E2E server app checks for official NC client with >=3.13.0, 
+        // E2E server app checks for official NC client with >=3.13.0,
         // and blocks all other clients, e.g. 3rd party apps using this lib
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0")
 
