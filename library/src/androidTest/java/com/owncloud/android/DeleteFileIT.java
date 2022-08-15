@@ -63,7 +63,7 @@ public class DeleteFileIT extends AbstractIT {
 
         File textFile = getFile(ASSETS__TEXT_FILE_NAME);
         result = new UploadFileRemoteOperation(textFile.getAbsolutePath(), mFullPath2File, "txt/plain",
-                                               String.valueOf(System.currentTimeMillis() / 1000)).execute(client);
+                                               String.valueOf(System.currentTimeMillis() / MILLI_TO_SECOND)).execute(client);
 
         assertTrue("Error uploading file " + textFile.getAbsolutePath() + ": " + result, result.isSuccess());
     }

@@ -185,7 +185,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
      */
     @Test
     public void testRecentlyModifiedSearch() throws IOException {
-        long now = System.currentTimeMillis() / 1000;
+        long now = System.currentTimeMillis() / MILLI_TO_SECOND;
         String filePath = createFile("image");
         assertTrue(new UploadFileRemoteOperation(filePath, "/image.jpg", "image/jpg", String.valueOf(now - 50))
                 .execute(client).isSuccess());

@@ -53,7 +53,7 @@ public class RemoveShareIT extends AbstractIT {
         assertTrue(new UploadFileRemoteOperation(textFile.getAbsolutePath(),
                 FILE_TO_UNSHARE,
                 "txt/plain",
-                String.valueOf(System.currentTimeMillis() / 1000))
+                String.valueOf(System.currentTimeMillis() / MILLI_TO_SECOND))
                 .execute(client).isSuccess());
 
         RemoteOperationResult<List<OCShare>> result = new CreateShareRemoteOperation(FILE_TO_UNSHARE,
