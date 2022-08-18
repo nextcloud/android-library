@@ -112,6 +112,5 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     companion object {
         const val TIME_OFFSET = 10
-        const val MILLI_TO_SECOND = 1000
     }
 }

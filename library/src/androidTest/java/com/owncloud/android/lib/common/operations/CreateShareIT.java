@@ -60,7 +60,7 @@ public class CreateShareIT extends AbstractIT {
         RemoteOperationResult result = new UploadFileRemoteOperation(textFile.getAbsolutePath(),
                                                                      mFullPath2FileToShare,
                                                                      "txt/plain",
-                                                                     String.valueOf(System.currentTimeMillis() / 1000))
+                                                                     String.valueOf(System.currentTimeMillis() / MILLI_TO_SECOND))
                 .execute(client);
 
         assertTrue("Error uploading file " + textFile + ": " + result, result.isSuccess());

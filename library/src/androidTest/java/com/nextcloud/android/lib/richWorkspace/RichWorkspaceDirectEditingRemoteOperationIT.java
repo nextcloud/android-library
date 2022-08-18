@@ -75,7 +75,7 @@ public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
         RemoteOperationResult uploadResult = new UploadFileRemoteOperation(txtFile.getAbsolutePath(),
                 filePath,
                 "txt/plain",
-                String.valueOf(System.currentTimeMillis() / 1000))
+                String.valueOf(System.currentTimeMillis() / MILLI_TO_SECOND))
                 .execute(client);
 
         assertTrue("Error uploading file " + filePath + ": " + uploadResult, uploadResult.isSuccess());

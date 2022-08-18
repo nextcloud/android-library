@@ -41,5 +41,5 @@ data class ExternalLink(
     val type: ExternalLinkType,
     val name: String,
     val url: String,
-    val redirect: Boolean,
+    val redirect: Boolean
 ) : Parcelable

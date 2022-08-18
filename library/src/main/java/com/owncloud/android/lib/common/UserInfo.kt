@@ -53,5 +53,5 @@ data class UserInfo(
     var twitter: String?,
 
     var quota: Quota?,
-    var groups: ArrayList<String>?,
+    var groups: ArrayList<String>?
 ) : Parcelable

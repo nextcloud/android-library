@@ -61,7 +61,8 @@ class GetHoverCardRemoteOperation(private val userId: String) : OCSRemoteOperati
         } catch (e: Exception) {
             result = RemoteOperationResult(e)
             Log_OC.e(
-                TAG, "Get hoverCard for user " + userId + " failed: " + result.logMessage,
+                TAG,
+                "Get hoverCard for user " + userId + " failed: " + result.logMessage,
                 result.exception
             )
         } finally {
