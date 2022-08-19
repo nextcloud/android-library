@@ -164,7 +164,7 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
 
         UploadFileRemoteOperation uploadOperation =
                 new UploadFileRemoteOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType, timeStamp);
-    	uploadOperation.addDatatransferProgressListener(this);
+    	uploadOperation.addDataTransferProgressListener(this);
     	uploadOperation.execute(mClient, this, mHandler);
     }
 
