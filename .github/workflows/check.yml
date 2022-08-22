@@ -20,10 +20,16 @@ jobs:
                 with:
                     distribution: "temurin"
                     java-version: 11
+            -   name: Setup JVM options
+                run: |
+                    mkdir -p "$HOME/.gradle"
+                    echo "org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" > "$HOME/.gradle/gradle.properties"
             -   name: Check ${{ matrix.task }}
-                run: ./gradlew ${{ matrix.task }}
-            - uses: actions/upload-artifact@v3
-              if: ${{ always() }}
-              with:
-                  name: ${{ matrix.task }}-report
-                  path: library/build/reports
+                uses: gradle/gradle-build-action@v2
+                with:
+                    arguments: ${{ matrix.task }}
+            -   uses: actions/upload-artifact@v3
+                if: ${{ always() }}
+                with:
+                    name: ${{ matrix.task }}-report
+                    path: library/build/reports
