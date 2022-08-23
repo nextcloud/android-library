@@ -24,7 +24,3 @@ jobs:
                 uses: gradle/gradle-build-action@v2
                 with:
                     arguments: assemble
-            -   uses: actions/upload-artifact@v3
-                with:
-                    name: library-outputs
-                    path: library/build/outputs
