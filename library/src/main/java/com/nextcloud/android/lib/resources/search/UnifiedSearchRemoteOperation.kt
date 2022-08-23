@@ -47,8 +47,8 @@ class UnifiedSearchRemoteOperation(
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"
-        private const val SEARCH_TERM = "/search?term="
-        private const val JSON_FORMAT = "&format=json"
+        private const val SEARCH = "/search"
+        private const val TERM = "&term="
         private const val LIMIT = "&limit=%d"
         private const val CURSOR = "&cursor=%d"
     }
@@ -66,9 +66,10 @@ class UnifiedSearchRemoteOperation(
             var uri = client.baseUri.toString() +
                 ENDPOINT +
                 provider +
-                SEARCH_TERM +
-                URLEncoder.encode(query, "UTF-8") +
                 JSON_FORMAT +
+                SEARCH +
+                TERM +
+                URLEncoder.encode(query, "UTF-8") +
                 LIMIT.format(limit)
             cursor?.let {
                 uri += CURSOR.format(it)

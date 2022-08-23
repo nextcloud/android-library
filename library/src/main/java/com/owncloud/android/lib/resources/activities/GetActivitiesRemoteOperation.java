@@ -152,7 +152,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                 Log_OC.e(TAG, "Failed response while getting user activities");
                 Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log_OC.e(TAG, "Error getting user activities", e);
             return new RemoteOperationResult(e);
         } finally {

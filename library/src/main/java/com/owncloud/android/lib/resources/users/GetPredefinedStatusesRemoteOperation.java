@@ -46,8 +46,6 @@ public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation<Arr
     private static final String TAG = GetPredefinedStatusesRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/predefined_statuses";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     /**
      * @param client Client object
      */

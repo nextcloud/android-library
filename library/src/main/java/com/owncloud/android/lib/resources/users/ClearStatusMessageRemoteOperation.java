@@ -45,8 +45,6 @@ public class ClearStatusMessageRemoteOperation extends OCSRemoteOperation {
     private static final String TAG = ClearStatusMessageRemoteOperation.class.getSimpleName();
     private static final String URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     /**
      * @param client Client object
      */

@@ -49,7 +49,6 @@ public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
     private static final String REMOTE_WIPE_URL = "/index.php/core/wipe/check";
 
     // JSON node names
-    private static final String JSON_FORMAT = "?format=json";
     private static final String WIPE = "wipe";
 
     /**

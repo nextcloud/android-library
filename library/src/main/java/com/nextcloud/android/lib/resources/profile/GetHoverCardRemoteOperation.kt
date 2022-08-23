@@ -74,6 +74,5 @@ class GetHoverCardRemoteOperation(private val userId: String) : OCSRemoteOperati
     companion object {
         private val TAG = GetHoverCardRemoteOperation::class.java.simpleName
         private const val DIRECT_ENDPOINT = "/ocs/v2.php/hovercard/v1/"
-        private const val JSON_FORMAT = "?format=json"
     }
 }

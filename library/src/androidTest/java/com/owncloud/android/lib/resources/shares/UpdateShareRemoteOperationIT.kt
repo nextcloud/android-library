@@ -129,6 +129,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     }
 
     @Test
+    @Suppress("MaxLineLength")
     fun invalidPassword() {
         val folder = "/invalidPassword/"
         Assert.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)

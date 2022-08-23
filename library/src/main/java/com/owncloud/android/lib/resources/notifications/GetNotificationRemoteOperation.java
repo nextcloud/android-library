@@ -57,7 +57,6 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
             "/ocs/v2.php/apps/notifications/api/v2/notifications/";
-    private static final String FORMAT_JSON = "?format=json";
 
     // JSON Node names
     private static final String NODE_OCS = "ocs";
@@ -76,7 +75,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
         int status;
         GetMethod get = null;
         List<Notification> notifications = new ArrayList<>();
-        String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP + id + FORMAT_JSON;
+        String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP + id + JSON_FORMAT;
 
         // get the notifications
         try {

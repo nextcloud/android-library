@@ -58,7 +58,7 @@ class GetUserInfoRemoteOperationIT : AbstractIT() {
 
         assertEquals("User Two", userInfo.displayName)
         assertEquals("user2", userInfo.id)
-        assertEquals(1073741824L, userInfo.quota?.quota)
+        assertEquals(QUOTA_1GB, userInfo.quota?.quota)
     }
 
     @After
@@ -69,5 +69,9 @@ class GetUserInfoRemoteOperationIT : AbstractIT() {
         val password = arguments.getString("TEST_SERVER_PASSWORD")
 
         nextcloudClient.credentials = Credentials.basic(loginName.orEmpty(), password.orEmpty())
+    }
+
+    companion object {
+        const val QUOTA_1GB = 1073741824L
     }
 }

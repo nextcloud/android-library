@@ -56,8 +56,6 @@ public class LockFileRemoteOperation extends RemoteOperation {
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     /**
      * Constructor
      */
