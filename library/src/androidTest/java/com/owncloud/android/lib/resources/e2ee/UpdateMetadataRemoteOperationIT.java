@@ -30,6 +30,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.text.TextUtils;
 
+import com.nextcloud.test.RandomStringGenerator;
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
@@ -38,8 +39,6 @@ import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-
-import net.bytebuddy.utility.RandomString;
 
 import org.junit.Test;
 
@@ -58,7 +57,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0");
 
         // create folder
-        String folder = "/" + RandomString.make(20) + "/";
+        String folder = "/" + RandomStringGenerator.make(20) + "/";
         assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
         RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
 
