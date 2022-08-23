@@ -23,13 +23,30 @@
 package com.nextcloud.android.lib.resources.dashboard
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
+import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation
+import com.owncloud.android.lib.resources.shares.ShareType
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
     @Test
     fun getItems() {
-        val widgetId = "recommendations"
+        // create folder to have some content
+        assertTrue(CreateFolderRemoteOperation("/testFolder", false).execute(client2).isSuccess)
+        assertTrue(
+            CreateShareRemoteOperation(
+                "/testFolder",
+                ShareType.USER,
+                client.userId,
+                false,
+                "",
+                31
+            ).execute(client2)
+                .isSuccess
+        )
+
+        val widgetId = "activity"
         val result =
             DashboardGetWidgetItemsRemoteOperation(widgetId, LIMIT_SIZE).execute(nextcloudClient)
 

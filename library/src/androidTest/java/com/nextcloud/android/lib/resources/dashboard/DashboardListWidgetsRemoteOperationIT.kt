@@ -37,11 +37,10 @@ class DashboardListWidgetsRemoteOperationIT : AbstractIT() {
 
         assertTrue(result.resultData["recommendations"]?.buttons?.getOrNull(0) == null)
 
-        assertTrue(result.resultData["notes"]?.buttons?.getOrNull(0)?.text?.isNotEmpty() == true)
-        assertTrue(result.resultData["notes"]?.buttons?.getOrNull(0)?.type == DashBoardButtonType.NEW)
-        assertTrue(result.resultData["notes"]?.roundIcons == false)
+        assertEquals(1, result.resultData["activity"]?.buttons?.size)
+        assertTrue(result.resultData["activity"]?.buttons?.getOrNull(0)?.type == DashBoardButtonType.MORE)
+        assertTrue(result.resultData["activity"]?.roundIcons == false)
 
-        assertEquals(0, result.resultData["activity"]?.buttons?.size)
-        assertTrue(result.resultData["activity"]?.roundIcons == true)
+        assertTrue(result.resultData["user_status"]?.roundIcons == true)
     }
 }

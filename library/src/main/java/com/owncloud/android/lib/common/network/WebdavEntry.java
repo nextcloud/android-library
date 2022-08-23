@@ -46,6 +46,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -124,16 +125,26 @@ public class WebdavEntry {
     @Getter private ShareeUser[] sharees = new ShareeUser[0];
     @Getter private String richWorkspace = null;
     @Getter private boolean isLocked = false;
-    @Getter private FileLockType lockOwnerType = null;
-    @Getter private String lockOwnerId = null;
-    @Getter private String lockOwnerDisplayName = null;
-    @Getter private long lockTimestamp;
-    @Getter private String lockOwnerEditor = null;
-    @Getter private long lockTimeout;
-    @Getter private String lockToken = null;
+    @Getter
+    private FileLockType lockOwnerType = null;
+    @Getter
+    private String lockOwnerId = null;
+    @Getter
+    private String lockOwnerDisplayName = null;
+    @Getter
+    private long lockTimestamp;
+    @Getter
+    private String lockOwnerEditor = null;
+    @Getter
+    private long lockTimeout;
+    @Getter
+    private String lockToken = null;
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
+    @SuppressFBWarnings(
+            value = "STT_TOSTRING_STORED_IN_FIELD",
+            justification = "Will be replaced with davX5")
     public WebdavEntry(MultiStatusResponse ms, String splitElement) {
         resetData();
 
@@ -155,8 +166,7 @@ public class WebdavEntry {
             if (prop != null) {
                 name = prop.getName().toString();
                 name = name.substring(1, name.length() - 1);
-            }
-            else {
+            } else {
                 String[] tmp = path.split("/");
                 if (tmp.length > 0)
                     name = tmp[tmp.length - 1];
@@ -178,7 +188,7 @@ public class WebdavEntry {
                     }
                 }
             }
-            
+
             // check if it's a folder in the standard way: see RFC2518 12.2 . RFC4918 14.3
             // {DAV:}resourcetype
             prop = propSet.get(DavPropertyName.RESOURCETYPE);
@@ -186,9 +196,9 @@ public class WebdavEntry {
                 Object value = prop.getValue();
                 if (value != null) {
                     contentType = "DIR";   // a specific attribute would be better,
-                                            // but this is enough;
-                                            // unless while we have no reason to distinguish
-                                            // MIME types for folders
+                    // but this is enough;
+                    // unless while we have no reason to distinguish
+                    // MIME types for folders
                 }
             }
 
@@ -341,7 +351,7 @@ public class WebdavEntry {
             } else {
                 hasPreview = true;
             }
-            
+
             // NC trashbin-original-location <nc:trashbin-original-location>
             prop = propSet.get(TRASHBIN_ORIGINAL_LOCATION, ncNamespace);
             if (prop != null) {
@@ -386,7 +396,7 @@ public class WebdavEntry {
                     ArrayList list = (ArrayList) prop.getValue();
 
                     List<ShareeUser> tempList = new ArrayList<>();
-                    
+
                     for (int i = 0; i < list.size(); i++) {
                         Element element = (Element) list.get(i);
 

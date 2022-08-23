@@ -66,8 +66,8 @@ class UnifiedSearchRemoteOperation(
             var uri = client.baseUri.toString() +
                 ENDPOINT +
                 provider +
-                JSON_FORMAT +
                 SEARCH +
+                JSON_FORMAT +
                 TERM +
                 URLEncoder.encode(query, "UTF-8") +
                 LIMIT.format(limit)
