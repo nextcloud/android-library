@@ -1,47 +1,5 @@
 kind: pipeline
 type: docker
-name: compile
-
-steps:
-  - name: compile
-    image: ghcr.io/nextcloud/continuous-integration-android8:2
-    commands:
-      - ./gradlew assemble
-
-  - name: notify
-    image: drillster/drone-email
-    settings:
-      port: 587
-      from: nextcloud-drone@kaminsky.me
-      recipients_only: true
-      username:
-        from_secret: EMAIL_USERNAME
-      password:
-        from_secret: EMAIL_PASSWORD
-      recipients:
-        from_secret: EMAIL_RECIPIENTS
-      host:
-        from_secret: EMAIL_HOST
-    when:
-      event:
-        - push
-      status:
-        - failure
-      branch:
-        - master
-        - stable-*
-
-trigger:
-  branch:
-    - master
-    - stable-*
-  event:
-    - pull_request
-    - push
-
----
-kind: pipeline
-type: docker
 name: test-master
 
 steps:
