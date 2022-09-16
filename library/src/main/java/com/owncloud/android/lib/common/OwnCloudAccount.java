@@ -41,7 +41,7 @@ import java.io.IOException;
 
 /**
  * OwnCloud Account
- * 
+ *
  * @author David A. Velasco
  */
 public class OwnCloudAccount implements Parcelable {
@@ -56,7 +56,7 @@ public class OwnCloudAccount implements Parcelable {
 
     /**
      * Constructor for already saved OC accounts.
-     *
+     * <p>
      * Do not use for anonymous credentials.
      */
     public OwnCloudAccount(Account savedAccount, Context context) throws AccountNotFoundException {
@@ -74,7 +74,7 @@ public class OwnCloudAccount implements Parcelable {
 
         AccountManager ama = AccountManager.get(context.getApplicationContext());
         String baseUrl = ama.getUserData(this.savedAccount, AccountUtils.Constants.KEY_OC_BASE_URL);
-        if (baseUrl == null ) {
+        if (baseUrl == null) {
             throw new AccountNotFoundException(this.savedAccount, "Account not found", null);
         }
         baseUri = Uri.parse(AccountUtils.getBaseUrlForAccount(context, this.savedAccount));
@@ -85,8 +85,8 @@ public class OwnCloudAccount implements Parcelable {
     /**
      * Constructor for non yet saved OC accounts.
      *
-     * @param baseUri           URI to the OC server to get access to.
-     * @param credentials       Credentials to authenticate in the server. NULL is valid for anonymous credentials.
+     * @param baseUri     URI to the OC server to get access to.
+     * @param credentials Credentials to authenticate in the server. NULL is valid for anonymous credentials.
      */
     public OwnCloudAccount(Uri baseUri, OwnCloudCredentials credentials) {
         if (baseUri == null) {
@@ -113,16 +113,16 @@ public class OwnCloudAccount implements Parcelable {
      */
     public void loadCredentials(Context context)
             throws AuthenticatorException,
-                IOException, OperationCanceledException {
+            IOException, OperationCanceledException {
 
         if (context == null) {
             throw new IllegalArgumentException("Parameter 'context' cannot be null");
         }
 
-		if (savedAccount != null) {
-			credentials = AccountUtils.getCredentialsForAccount(context, savedAccount);
-		}
-	}
+        if (savedAccount != null) {
+            credentials = AccountUtils.getCredentialsForAccount(context, savedAccount);
+        }
+    }
 
     public String getDisplayName() {
         if (displayName != null && displayName.length() > 0) {

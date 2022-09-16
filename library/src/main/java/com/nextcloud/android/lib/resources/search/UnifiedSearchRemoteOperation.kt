@@ -22,7 +22,6 @@
  */
 package com.nextcloud.android.lib.resources.search
 
-import androidx.annotation.NonNull
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
@@ -39,8 +38,8 @@ import java.net.URLEncoder
  */
 @Suppress("TooGenericExceptionCaught")
 class UnifiedSearchRemoteOperation(
-    @NonNull val provider: String,
-    @NonNull val query: String,
+    val provider: String,
+    val query: String,
     val cursor: Int? = null,
     val limit: Int = 5
 ) :
