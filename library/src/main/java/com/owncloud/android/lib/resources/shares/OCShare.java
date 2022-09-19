@@ -33,6 +33,7 @@ import com.owncloud.android.lib.resources.files.FileUtils;
 import java.io.Serializable;
 
 import androidx.annotation.NonNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -83,9 +84,14 @@ public class OCShare implements Parcelable, Serializable {
 
     @Getter @Setter private long id;
     @Getter @Setter private long fileSource;
-    @Getter @Setter private long itemSource;
-    @Getter private ShareType shareType;
-    @Getter private String shareWith;
+    @Getter
+    @Setter
+    private long itemSource;
+    @Getter
+    @Setter
+    private ShareType shareType;
+    @Getter
+    private String shareWith;
     @Getter private String path;
     @Getter @Setter private int permissions;
     @Getter @Setter private long sharedDate;
@@ -102,7 +108,12 @@ public class OCShare implements Parcelable, Serializable {
     @Getter @Setter private String label;
     @Getter @Setter private boolean hasPreview;
     @Getter @Setter private String mimetype;
-    @Getter @Setter private String ownerDisplayName;
+    @Getter
+    @Setter
+    private String ownerDisplayName;
+    @Getter
+    @Setter
+    private boolean isFavorite;
 
 
     public OCShare() {
@@ -263,16 +274,5 @@ public class OCShare implements Parcelable, Serializable {
         dest.writeInt(hasPreview ? 1 : 0);
         dest.writeString(mimetype);
         dest.writeString(ownerDisplayName);
-    }
-
-    /**
-     * @deprecated do not use this method's return value, treat it as a normal setter. Will be replaced by a normal
-     * setter in the future.
-     */
-    @Deprecated
-    public OCShare setShareType(ShareType type) {
-        shareType = type;
-
-        return this;
     }
 }

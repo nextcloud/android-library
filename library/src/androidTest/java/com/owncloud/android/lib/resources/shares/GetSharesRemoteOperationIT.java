@@ -30,6 +30,7 @@ package com.owncloud.android.lib.resources.shares;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +43,12 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
+import com.owncloud.android.lib.resources.files.ToggleFavoriteRemoteOperation;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
+import com.owncloud.android.lib.resources.status.OCCapability;
+
+import junit.framework.TestCase;
 
 import org.junit.Test;
 
@@ -222,5 +229,106 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 
         resultSharedWithMe = sutSharedWithMe.execute(client);
         assertEquals(1, resultSharedWithMe.getResultData().size());
+    }
+
+    @Test
+    public void favorites() {
+        // only on NC25+
+        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).getSingleData();
+        assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
+
+        // share folder to user "admin"
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
+        RemoteOperationResult<List<OCShare>> createResult = new CreateShareRemoteOperation("/shareToAdminNoFavorite/",
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true)
+                .execute(client);
+
+        assertTrue(createResult.isSuccess());
+
+        String path = "/shareToAdminFavorite/";
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+
+        // favorite it
+        TestCase.assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(client).isSuccess());
+
+        // share folder to user "admin"
+        createResult = new CreateShareRemoteOperation(path,
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true)
+                .execute(client);
+
+        assertTrue(createResult.isSuccess());
+
+        // check
+        RemoteOperationResult<List<OCShare>> sut = new GetSharesRemoteOperation(false).execute(client);
+        assertEquals(2, sut.getResultData().size());
+        assertFalse(sut.getResultData().get(0).isFavorite());
+        assertTrue(sut.getResultData().get(1).isFavorite());
+    }
+
+    @Test
+    public void noFavorite() {
+        // only on NC25+
+        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).getSingleData();
+        assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
+
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
+
+        // share folder to user "admin"
+        RemoteOperationResult<List<OCShare>> createResult = new CreateShareRemoteOperation("/shareToAdminNoFavorite/",
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true)
+                .execute(client);
+
+        assertTrue(createResult.isSuccess());
+
+        OCShare share = createResult.getResultData().get(0);
+
+        assertFalse(share.isFavorite());
+    }
+
+    @Test
+    public void favorite() {
+        // only on NC25+
+        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).getSingleData();
+        assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
+
+        String path = "/shareToAdminFavorite/";
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+
+        // favorite it
+        TestCase.assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(client).isSuccess());
+
+        // share folder to user "admin"
+        RemoteOperationResult<List<OCShare>> createResult = new CreateShareRemoteOperation(path,
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true)
+                .execute(client);
+
+        assertTrue(createResult.isSuccess());
+
+        OCShare share = createResult.getResultData().get(0);
+
+        assertTrue(share.isFavorite());
     }
 }
