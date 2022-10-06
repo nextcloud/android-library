@@ -61,8 +61,7 @@ configurations {
 dependencies {
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
     api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.12'
-    implementation 'com.github.bitfireAT:dav4jvm:2.2.1'
-    // in transition phase, we use old and new libs
+    api 'com.github.bitfireAT:dav4jvm:2b414984a82f57248f6d519a328e93862b471316' // in transition phase, we use old and new libs
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
     implementation 'androidx.annotation:annotation:1.9.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1u2'

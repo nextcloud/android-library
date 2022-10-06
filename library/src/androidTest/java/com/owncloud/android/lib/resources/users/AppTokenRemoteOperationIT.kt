@@ -10,6 +10,7 @@ package com.owncloud.android.lib.resources.users
 import androidx.test.platform.app.InstrumentationRegistry
 import com.owncloud.android.AbstractIT
 import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
 import okhttp3.Credentials.basic
 import org.junit.Test
@@ -27,7 +28,7 @@ class AppTokenRemoteOperationIT : AbstractIT() {
         val password: String? = arguments.getString("TEST_SERVER_PASSWORD")
         val newPassword = result.resultData
 
-        assertTrue(newPassword.isNotBlank())
+        assertTrue(newPassword?.isNotBlank() == true)
         assertTrue(password != newPassword)
     }
 
@@ -44,7 +45,8 @@ class AppTokenRemoteOperationIT : AbstractIT() {
         val password: String = arguments.getString("TEST_SERVER_PASSWORD", "")
         val newPassword = result.resultData
 
-        assertTrue(newPassword.isNotBlank())
+        assertNotNull(newPassword)
+        assertTrue(newPassword!!.isNotBlank())
         assertTrue(password != newPassword)
 
         // second use this app token to check
@@ -52,7 +54,7 @@ class AppTokenRemoteOperationIT : AbstractIT() {
         val result2 = sut.execute(nextcloudClient)
 
         assertTrue(result2.isSuccess)
-        assertTrue(result2.resultData.isEmpty())
+        assertTrue(result2.resultData?.isEmpty() == true)
     }
 
     @Test
@@ -70,7 +72,8 @@ class AppTokenRemoteOperationIT : AbstractIT() {
 
         val newPassword = result.resultData
 
-        assertTrue(newPassword.isNotBlank())
+        assertNotNull(newPassword)
+        assertTrue(newPassword!!.isNotBlank())
         assertTrue(password != newPassword)
 
         nextcloudClient.credentials = basic(username, newPassword)

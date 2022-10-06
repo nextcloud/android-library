@@ -10,6 +10,7 @@ package com.nextcloud.operations
 import com.nextcloud.common.OkHttpMethodBase
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 /**
  * HTTP PUT method that uses OkHttp with new NextcloudClient
@@ -20,8 +21,6 @@ class PutMethod(
     val body: RequestBody? = null
 ) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
     override fun applyType(temp: Request.Builder) {
-        body?.let {
-            temp.put(it)
-        }
+        temp.put(body ?: "".toRequestBody())
     }
 }

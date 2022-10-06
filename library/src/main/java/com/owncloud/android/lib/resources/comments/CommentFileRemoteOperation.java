@@ -57,7 +57,8 @@ public class CommentFileRemoteOperation extends RemoteOperation<Void> {
         RemoteOperationResult<Void> result;
         try {
             // request body
-            JSONRequestBody jsonRequestBody = new JSONRequestBody(ACTOR_ID, client.getUserId());
+            JSONRequestBody jsonRequestBody = new JSONRequestBody();
+            jsonRequestBody.put(ACTOR_ID, client.getUserId());
             jsonRequestBody.put(ACTOR_TYPE, ACTOR_TYPE_VALUE);
             jsonRequestBody.put(VERB, VERB_VALUE);
             jsonRequestBody.put(MESSAGE, message);
@@ -67,7 +68,6 @@ public class CommentFileRemoteOperation extends RemoteOperation<Void> {
             postMethod = new PostMethod(url, false, jsonRequestBody.get());
 
             int status = client.execute(postMethod);
-
             result = new RemoteOperationResult<>(status == HttpStatus.SC_CREATED, postMethod);
 
         } catch (IOException e) {

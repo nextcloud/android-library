@@ -24,9 +24,9 @@ class GetUserInfoRemoteOperationIT : AbstractIT() {
         assertTrue(userInfoResult.isSuccess)
 
         val userInfo = userInfoResult.resultData
-        assertEquals("User One", userInfo.displayName)
-        assertEquals("user1", userInfo.id)
-        assertEquals(GetUserInfoRemoteOperation.SPACE_UNLIMITED, userInfo.quota?.quota)
+        assertEquals("User One", userInfo?.displayName)
+        assertEquals("user1", userInfo?.id)
+        assertEquals(GetUserInfoRemoteOperation.SPACE_UNLIMITED, userInfo?.quota?.quota)
     }
 
     @Test
@@ -36,9 +36,9 @@ class GetUserInfoRemoteOperationIT : AbstractIT() {
         assertTrue(userInfoResult.isSuccess)
         val userInfo = userInfoResult.resultData
 
-        assertEquals("User Two", userInfo.displayName)
-        assertEquals("user2", userInfo.id)
-        assertEquals(QUOTA_1GB, userInfo.quota?.quota)
+        assertEquals("User Two", userInfo?.displayName)
+        assertEquals("user2", userInfo?.id)
+        assertEquals(QUOTA_1GB, userInfo?.quota?.quota)
     }
 
     @After

@@ -29,7 +29,7 @@ import org.w3c.dom.Element
 import java.math.BigDecimal
 
 @Suppress("Detekt.TooGenericExceptionCaught") // legacy code
-class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
+class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
     var name: String? = null
         private set
     var path: String? = null
@@ -68,7 +68,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var unreadCommentsCount = 0
     var isHasPreview = false
     var note = ""
-    var sharees = arrayOfNulls<ShareeUser>(0)
+    var sharees = arrayOf<ShareeUser>()
     var richWorkspace: String? = null
     var isLocked = false
         private set
@@ -86,7 +86,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         private set
     var lockToken: String? = null
         private set
-    var tags = arrayOfNulls<String>(0)
+    var tags = arrayOf<String>()
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
@@ -104,8 +104,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
     init {
         resetData()
-        val ocNamespace = Namespace.getNamespace(NAMESPACE_OC)
-        val ncNamespace = Namespace.getNamespace(NAMESPACE_NC)
         if (ms.status.isNotEmpty()) {
             uri = ms.href
             path =
@@ -132,12 +130,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 val contentType = prop.value as String?
                 // dvelasco: some builds of ownCloud server 4.0.x added a trailing ';'
                 // to the MIME type ; if looks fixed, but let's be cautious
-                if (contentType != null) {
-                    if (contentType.contains(";")) {
-                        this.contentType = contentType.substring(0, contentType.indexOf(";"))
-                    } else {
-                        this.contentType = contentType
-                    }
+                contentType?.let {
+                    this.contentType = it.substringBefore(";")
                 }
             }
 
@@ -147,7 +141,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             if (prop != null) {
                 val value = prop.value
                 if (value != null) {
-                    contentType = "DIR" // a specific attribute would be better,
+                    contentType = DIR_TYPE // a specific attribute would be better,
                     // but this is enough;
                     // unless while we have no reason to distinguish
                     // MIME types for folders
@@ -168,7 +162,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             }
 
             // {NS:} creation_time
-            prop = propSet[EXTENDED_PROPERTY_CREATION_TIME, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.CREATION_TIME)
             if (prop != null) {
                 createTimestamp =
                     try {
@@ -179,7 +173,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             }
 
             // {NS:} upload_time
-            prop = propSet[EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.UPLOAD_TIME)
             if (prop != null) {
                 uploadTimestamp =
                     try {
@@ -225,31 +219,31 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             }
 
             // OC permissions property <oc:permissions>
-            prop = propSet[EXTENDED_PROPERTY_NAME_PERMISSIONS, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.NAME_PERMISSIONS)
             if (prop != null && prop.value != null) {
                 permissions = prop.value.toString()
             }
 
             // OC remote id property <oc:id>
-            prop = propSet[EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.NAME_REMOTE_ID)
             if (prop != null) {
                 remoteId = prop.value.toString()
             }
 
             // OC remote id property <oc:fileid>
-            prop = propSet[EXTENDED_PROPERTY_NAME_LOCAL_ID, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.NAME_LOCAL_ID)
             if (prop != null) {
                 localId = (prop.value as String).toLong()
             }
 
             // OC size property <oc:size>
-            prop = propSet[EXTENDED_PROPERTY_NAME_SIZE, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.NAME_SIZE)
             if (prop != null) {
                 size = (prop.value as String).toLong()
             }
 
             // OC favorite property <oc:favorite>
-            prop = propSet[EXTENDED_PROPERTY_FAVORITE, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.FAVORITE)
             isFavorite =
                 if (prop != null) {
                     val favoriteValue = prop.value as String
@@ -259,7 +253,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // NC encrypted property <nc:is-encrypted>
-            prop = propSet[EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.IS_ENCRYPTED)
             isEncrypted =
                 if (prop != null) {
                     val encryptedValue = prop.value as String
@@ -269,7 +263,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // NC mount-type property <nc:mount-type>
-            prop = propSet[EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.MOUNT_TYPE)
             mountType =
                 if (prop != null) {
                     when (prop.value) {
@@ -290,7 +284,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // OC owner-id property <oc:owner-id>
-            prop = propSet[EXTENDED_PROPERTY_OWNER_ID, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.OWNER_ID)
             ownerId =
                 if (prop != null) {
                     prop.value as String
@@ -299,7 +293,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // OC owner-display-name property <oc:owner-display-name>
-            prop = propSet[EXTENDED_PROPERTY_OWNER_DISPLAY_NAME, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.OWNER_DISPLAY_NAME)
             ownerDisplayName =
                 if (prop != null) {
                     prop.value as String
@@ -308,7 +302,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // OC unread comments property <oc-comments-unread>
-            prop = propSet[EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.UNREAD_COMMENTS)
             unreadCommentsCount =
                 if (prop != null) {
                     Integer.valueOf(prop.value.toString())
@@ -317,7 +311,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // NC has preview property <nc-has-preview>
-            prop = propSet[EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.HAS_PREVIEW)
             isHasPreview =
                 if (prop != null) {
                     java.lang.Boolean.valueOf(prop.value.toString())
@@ -326,32 +320,32 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // NC trashbin-original-location <nc:trashbin-original-location>
-            prop = propSet[TRASHBIN_ORIGINAL_LOCATION, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.TRASHBIN_ORIGINAL_LOCATION)
             if (prop != null) {
                 trashbinOriginalLocation = prop.value.toString()
             }
 
             // NC trashbin-filename <nc:trashbin-filename>
-            prop = propSet[TRASHBIN_FILENAME, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.TRASHBIN_FILENAME)
             if (prop != null) {
                 trashbinFilename = prop.value.toString()
             }
 
             // NC trashbin-deletion-time <nc:trashbin-deletion-time>
-            prop = propSet[TRASHBIN_DELETION_TIME, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.TRASHBIN_DELETION_TIME)
             if (prop != null) {
                 trashbinDeletionTimestamp = (prop.value as String).toLong()
             }
 
             // NC note property <nc:note>
-            prop = propSet[EXTENDED_PROPERTY_NOTE, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.NOTE)
             if (prop != null && prop.value != null) {
                 note = prop.value.toString()
             }
 
             // NC rich-workspace property <nc:rich-workspace>
             // can be null if rich-workspace is disabled for this user
-            prop = propSet[EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.RICH_WORKSPACE)
             richWorkspace =
                 if (prop != null) {
                     if (prop.value != null) {
@@ -364,14 +358,13 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
 
             // NC sharees property <nc-sharees>
-            prop = propSet[EXTENDED_PROPERTY_SHAREES, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.SHAREES)
             if (prop != null && prop.value != null) {
                 if (prop.value is ArrayList<*>) {
                     val list = prop.value as ArrayList<*>
-                    val tempList: MutableList<ShareeUser?> = ArrayList()
-                    for (i in list.indices) {
-                        val element = list[i] as Element
-                        val user = createShareeUser(element)
+                    val tempList: MutableList<ShareeUser> = ArrayList()
+                    for (element in list) {
+                        val user = createShareeUser(element as Element)
                         if (user != null) {
                             tempList.add(user)
                         }
@@ -387,7 +380,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
             }
 
-            prop = propSet[EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.SYSTEM_TAGS)
             if (prop != null && prop.value != null) {
                 if (prop.value is ArrayList<*>) {
                     val list = prop.value as ArrayList<*>
@@ -409,10 +402,10 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             }
 
             // NC metadata size property <nc:file-metadata-size>
-            prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.METADATA_SIZE)
             imageDimension =
                 if (prop == null) {
-                    prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+                    prop = getDavProp(propSet, ExtendedProperties.METADATA_SIZE)
                     gson.fromDavProperty<ImageDimension>(prop)
                 } else {
                     val xmlData = prop.value as? ArrayList<*>
@@ -422,16 +415,16 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     if (width != null && height != null) {
                         ImageDimension(width, height)
                     } else {
-                        prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+                        prop = getDavProp(propSet, ExtendedProperties.METADATA_SIZE)
                         gson.fromDavProperty<ImageDimension>(prop)
                     }
                 }
 
             // NC metadata gps property <nc:file-metadata-gps>
-            prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.METADATA_PHOTOS_GPS)
             geoLocation =
                 if (prop == null) {
-                    prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+                    prop = getDavProp(propSet, ExtendedProperties.METADATA_GPS)
                     gson.fromDavProperty<GeoLocation>(prop)
                 } else {
                     val xmlData = prop.value as? ArrayList<*>
@@ -441,19 +434,19 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     if (latitude != null && longitude != null) {
                         GeoLocation(latitude, longitude)
                     } else {
-                        prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+                        prop = getDavProp(propSet, ExtendedProperties.METADATA_GPS)
                         gson.fromDavProperty<GeoLocation>(prop)
                     }
                 }
 
             // NC metadata live photo property: <nc:metadata-files-live-photo/>
-            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.METADATA_LIVE_PHOTO)
             if (prop != null && prop.value != null) {
                 livePhoto = prop.value.toString()
             }
 
             // NC has hidden property <nc:hidden>
-            prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
+            prop = getDavProp(propSet, ExtendedProperties.HIDDEN)
             hidden =
                 if (prop != null) {
                     java.lang.Boolean.valueOf(prop.value.toString())
@@ -461,25 +454,22 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     false
                 }
 
-            parseLockProperties(ncNamespace, propSet)
+            parseLockProperties(propSet)
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
         }
     }
 
-    private fun parseLockProperties(
-        ncNamespace: Namespace,
-        propSet: DavPropertySet
-    ) {
+    private fun parseLockProperties(propSet: DavPropertySet) {
         // file locking
-        var prop: DavProperty<*>? = propSet[EXTENDED_PROPERTY_LOCK, ncNamespace]
+        var prop = getDavProp(propSet, ExtendedProperties.LOCK)
         isLocked =
             if (prop != null && prop.value != null) {
                 "1" == prop.value as String
             } else {
                 false
             }
-        prop = propSet[EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace]
+        prop = getDavProp(propSet, ExtendedProperties.LOCK_OWNER_TYPE)
         lockOwnerType =
             if (prop != null && prop.value != null) {
                 val value: Int = (prop.value as String).toInt()
@@ -487,35 +477,16 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             } else {
                 null
             }
-        lockOwnerId = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace)
-        lockOwnerDisplayName =
-            parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace)
-        lockOwnerEditor = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace)
-        lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace)
-        lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace)
-        lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace)
+        lockOwnerId = parseStringProp(getDavProp(propSet, ExtendedProperties.LOCK_OWNER))
+        lockOwnerDisplayName = parseStringProp(getDavProp(propSet, ExtendedProperties.LOCK_OWNER_DISPLAY_NAME))
+        lockOwnerEditor = parseStringProp(getDavProp(propSet, ExtendedProperties.LOCK_OWNER_EDITOR))
+        lockTimestamp = parseStringProp(getDavProp(propSet, ExtendedProperties.LOCK_TIME))?.toLong() ?: 0L
+        lockTimeout = parseStringProp(getDavProp(propSet, ExtendedProperties.LOCK_TIMEOUT))?.toLong() ?: 0L
+        lockToken = parseStringProp(getDavProp(propSet, ExtendedProperties.LOCK_TOKEN))
     }
 
-    private fun parseStringProp(
-        propSet: DavPropertySet,
-        propName: String,
-        namespace: Namespace
-    ): String? {
-        val prop = propSet[propName, namespace]
-        return if (prop != null && prop.value != null) {
-            prop.value as String
-        } else {
-            null
-        }
-    }
-
-    private fun parseLongProp(
-        propSet: DavPropertySet,
-        propName: String,
-        namespace: Namespace
-    ): Long {
-        val stringValue = parseStringProp(propSet, propName, namespace)
-        return stringValue?.toLong() ?: 0L
+    private fun parseStringProp(prop: DavProperty<*>?): String? {
+        return prop?.value as String?
     }
 
     private fun createShareeUser(element: Element): ShareeUser? {
@@ -535,7 +506,11 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     }
 
     private fun extractDisplayName(element: Element): String {
-        val displayName = element.getElementsByTagNameNS(NAMESPACE_NC, SHAREES_DISPLAY_NAME).item(0)
+        val displayName =
+            element.getElementsByTagNameNS(
+                ExtendedProperties.SHAREES_DISPLAY_NAME.namespace,
+                ExtendedProperties.SHAREES_DISPLAY_NAME.value
+            ).item(0)
         return if (displayName != null && displayName.firstChild != null) {
             displayName.firstChild.nodeValue
         } else {
@@ -544,7 +519,11 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     }
 
     private fun extractUserId(element: Element): String {
-        val userId = element.getElementsByTagNameNS(NAMESPACE_NC, SHAREES_ID).item(0)
+        val userId =
+            element.getElementsByTagNameNS(
+                ExtendedProperties.SHAREES_ID.namespace,
+                ExtendedProperties.SHAREES_ID.value
+            ).item(0)
         return if (userId != null && userId.firstChild != null) {
             userId.firstChild.nodeValue
         } else {
@@ -553,7 +532,11 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     }
 
     private fun extractShareType(element: Element): ShareType {
-        val shareType = element.getElementsByTagNameNS(NAMESPACE_NC, SHAREES_SHARE_TYPE).item(0)
+        val shareType =
+            element.getElementsByTagNameNS(
+                ExtendedProperties.SHAREES_SHARE_TYPE.namespace,
+                ExtendedProperties.SHAREES_SHARE_TYPE.value
+            ).item(0)
         if (shareType != null && shareType.firstChild != null) {
             val value = shareType.firstChild.nodeValue.toInt()
             return ShareType.fromValue(value)
@@ -566,7 +549,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     }
 
     val isDirectory: Boolean
-        get() = "DIR" == contentType
+        get() = DIR_TYPE == contentType
 
     private fun resetData() {
         permissions = null
@@ -585,54 +568,24 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         isHasPreview = false
     }
 
+    /**
+     * Return dav property for given extended property via propSet.
+     *
+     * remove - only intended as a transitional aid
+     */
+    private fun getDavProp(
+        propSet: DavPropertySet,
+        extendedProperty: ExtendedProperties
+    ): DavProperty<*>? {
+        return propSet[extendedProperty.value, Namespace.getNamespace(extendedProperty.namespace)]
+    }
+
     companion object {
         private val TAG = WebdavEntry::class.java.simpleName
-        const val NAMESPACE_OC = "http://owncloud.org/ns"
-        const val NAMESPACE_NC = "http://nextcloud.org/ns"
-        const val EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions"
-        const val EXTENDED_PROPERTY_NAME_LOCAL_ID = "fileid"
-        const val EXTENDED_PROPERTY_NAME_REMOTE_ID = "id"
-        const val EXTENDED_PROPERTY_NAME_SIZE = "size"
-        const val EXTENDED_PROPERTY_FAVORITE = "favorite"
-        const val EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted"
-        const val EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type"
-        const val EXTENDED_PROPERTY_OWNER_ID = "owner-id"
-        const val EXTENDED_PROPERTY_OWNER_DISPLAY_NAME = "owner-display-name"
-        const val EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread"
-        const val EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview"
-        const val EXTENDED_PROPERTY_NOTE = "note"
-        const val EXTENDED_PROPERTY_SHAREES = "sharees"
-        const val EXTENDED_PROPERTY_RICH_WORKSPACE = "rich-workspace"
-        const val EXTENDED_PROPERTY_CREATION_TIME = "creation_time"
-        const val EXTENDED_PROPERTY_UPLOAD_TIME = "upload_time"
-        const val EXTENDED_PROPERTY_LOCK = "lock"
-        const val EXTENDED_PROPERTY_LOCK_OWNER_TYPE = "lock-owner-type"
-        const val EXTENDED_PROPERTY_LOCK_OWNER = "lock-owner"
-        const val EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME = "lock-owner-displayname"
-        const val EXTENDED_PROPERTY_LOCK_OWNER_EDITOR = "lock-owner-editor"
-        const val EXTENDED_PROPERTY_LOCK_TIME = "lock-time"
-        const val EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout"
-        const val EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token"
-        const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
-
-        // v27
-        const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
-        const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
-
-        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
-        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
-
-        const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
-        const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"
-        const val TRASHBIN_FILENAME = "trashbin-filename"
-        const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
-        const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
-        const val SHAREES_DISPLAY_NAME = "display-name"
-        const val SHAREES_ID = "id"
-        const val SHAREES_SHARE_TYPE = "type"
-        const val PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes"
-        const val PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes"
         private const val IS_ENCRYPTED = "1"
         private const val CODE_PROP_NOT_FOUND = 404
+        const val PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes"
+        const val PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes"
+        const val DIR_TYPE = "DIR"
     }
 }

@@ -7,6 +7,7 @@
  */
 package com.owncloud.android.lib.resources.trashbin;
 
+import com.nextcloud.extensions.ArrayExtensionsKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -55,9 +56,11 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation<List<Tras
 
         try {
             String baseUri = client.getDavUri() + "/trashbin/" + client.getUserId() + "/trash";
-            DavPropertyNameSet propSet = WebdavUtils.getTrashbinPropSet();
+            DavPropertyNameSet propSet = ArrayExtensionsKt.toLegacyPropset(
+                WebdavUtils.PROPERTYSETS.INSTANCE.getTRASHBIN()
+            );
                 
-            query = new PropFindMethod(baseUri + WebdavUtils.encodePath(remotePath), propSet, DavConstants.DEPTH_1);
+            query = new PropFindMethod(baseUri + WebdavUtils.INSTANCE.encodePath(remotePath), propSet, DavConstants.DEPTH_1);
             int status = client.executeMethod(query);
 
             // check and process response

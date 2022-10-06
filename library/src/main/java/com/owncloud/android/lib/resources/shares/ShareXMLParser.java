@@ -346,7 +346,7 @@ public class ShareXMLParser {
 				case NODE_EXPIRATION:
 					String expirationValue = readNode(parser, NODE_EXPIRATION);
                     if (expirationValue.length() > 0) {
-						Date date = WebdavUtils.parseResponseDate(expirationValue);
+						Date date = WebdavUtils.INSTANCE.parseResponseDate(expirationValue);
 						if (date != null) {
 							share.setExpirationDate(date.getTime());
 						}

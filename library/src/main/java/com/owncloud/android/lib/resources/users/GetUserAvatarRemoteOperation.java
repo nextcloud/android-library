@@ -153,7 +153,7 @@ public class GetUserAvatarRemoteOperation extends RemoteOperation {
 
     private RemoteOperationResult createResult(GetMethod get, byte[] avatarData, String mimeType) throws IOException {
         // find out etag
-        String etag = WebdavUtils.getEtagFromResponse(get);
+        String etag = WebdavUtils.INSTANCE.getEtagFromResponse(get);
         if (etag.length() == 0) {
             Log_OC.w(TAG, "Could not read Etag from avatar");
         }

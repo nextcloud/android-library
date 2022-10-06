@@ -21,7 +21,7 @@ class ReadTrashbinFolderRemoteOperationIT : AbstractIT() {
 
         val sut = ReadTrashbinFolderRemoteOperation("/")
 
-        assertEquals(0, sut.execute(client).resultData.size)
+        assertEquals(0, sut.execute(client).resultData?.size)
 
         val fileName = "trashbinFile.txt"
         val filePath = createFile(fileName)
@@ -41,13 +41,13 @@ class ReadTrashbinFolderRemoteOperationIT : AbstractIT() {
         // delete file
         assertTrue(
             RemoveFileRemoteOperation(remotePath)
-                .execute(client)
+                .execute(nextcloudClient)
                 .isSuccess
         )
 
         val result = sut.execute(client)
 
-        assertEquals(1, result.resultData.size)
-        assertEquals(fileName, result.resultData[0].fileName)
+        assertEquals(1, result.resultData?.size)
+        assertEquals(fileName, result.resultData?.get(0)?.fileName)
     }
 }

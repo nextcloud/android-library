@@ -36,7 +36,7 @@ class CreateShareRemoteOperationIT : AbstractIT() {
             CreateFolderRemoteOperation(
                 "/share/",
                 true
-            ).execute(client).isSuccess
+            ).execute(nextcloudClient).isSuccess
         )
 
         // share folder to user "admin"
@@ -54,8 +54,8 @@ class CreateShareRemoteOperationIT : AbstractIT() {
 
         junit.framework.Assert.assertTrue(sut.isSuccess)
 
-        val share = sut.resultData[0]
+        val share = sut.resultData?.get(0)
 
-        assertEquals(note, share.note)
+        assertEquals(note, share?.note)
     }
 }

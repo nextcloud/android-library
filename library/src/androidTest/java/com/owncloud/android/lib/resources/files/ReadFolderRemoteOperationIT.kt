@@ -9,12 +9,12 @@ package com.owncloud.android.lib.resources.files
 
 import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.tags.CreateTagRemoteOperation
 import com.owncloud.android.lib.resources.tags.GetTagsRemoteOperation
 import com.owncloud.android.lib.resources.tags.PutTagRemoteOperation
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -27,7 +27,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
     fun readRemoteFolderWithContent() {
         val remotePath = "/test/"
 
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
         // create file
         val filePath = createFile("text")
@@ -36,65 +36,80 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        var result = ReadFolderRemoteOperation(remotePath).execute(client)
+        var result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertEquals(2, result.data.size)
+        assertEquals(2, result.resultData?.size)
 
         // tag testing only on NC27+
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
         // Folder
-        var remoteFolder = result.data[0] as RemoteFile
-        assertEquals(remotePath, remoteFolder.remotePath)
-        assertEquals(0, remoteFolder.tags?.size)
+        var remoteFolder = result.resultData?.get(0)
+        assertEquals(remotePath, remoteFolder?.remotePath)
+        assertEquals(0, remoteFolder?.tags?.size)
 
         // File
-        var remoteFile = result.data[1] as RemoteFile
-        assertEquals(remotePath + "1.txt", remoteFile.remotePath)
-        assertEquals(0, remoteFile.tags?.size)
+        var remoteFile = result.resultData?.get(1)
+        assertNotNull(remoteFile)
+        assertEquals(remotePath + "1.txt", remoteFile?.remotePath)
+        assertEquals(0, remoteFile?.tags?.size)
 
         // create tag
-        val tag1 = "a" + RandomStringGenerator.make(TAG_LENGTH)
-        val tag2 = "b" + RandomStringGenerator.make(TAG_LENGTH)
-        assertTrue(CreateTagRemoteOperation(tag1).execute(nextcloudClient).isSuccess)
-        assertTrue(CreateTagRemoteOperation(tag2).execute(nextcloudClient).isSuccess)
+        val tag1name = RandomStringGenerator.make(TAG_LENGTH)
+        val tag2name = RandomStringGenerator.make(TAG_LENGTH)
+        assertTrue(CreateTagRemoteOperation(tag1name).execute(nextcloudClient).isSuccess)
+        assertTrue(CreateTagRemoteOperation(tag2name).execute(nextcloudClient).isSuccess)
 
         // list tags
-        val tags = GetTagsRemoteOperation().execute(client).resultData
+        val tags = GetTagsRemoteOperation().execute(nextcloudClient).resultData
+        assertNotNull(tags)
+
+        // extract and check tags
+        val tag1 =
+            tags?.firstOrNull { tag ->
+                tag.name == tag1name
+            }
+        assertNotNull(tag1)
+
+        val tag2 =
+            tags?.firstOrNull { tag ->
+                tag.name == tag2name
+            }
+        assertNotNull(tag2)
 
         // add tag
         assertTrue(
             PutTagRemoteOperation(
-                tags[0].id,
-                remoteFile.localId
+                tag1!!.id,
+                remoteFile!!.localId
             ).execute(nextcloudClient).isSuccess
         )
+
         assertTrue(
             PutTagRemoteOperation(
-                tags[1].id,
+                tag2!!.id,
                 remoteFile.localId
             ).execute(nextcloudClient).isSuccess
         )
 
         // check again
-        result = ReadFolderRemoteOperation(remotePath).execute(client)
+        result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertEquals(2, result.data.size)
+        assertEquals(2, result.resultData?.size)
 
         // Folder
-        remoteFolder = result.data[0] as RemoteFile
-        assertEquals(remotePath, remoteFolder.remotePath)
-        assertEquals(0, remoteFolder.tags?.size)
+        remoteFolder = result.resultData?.get(0)
+        assertEquals(remotePath, remoteFolder?.remotePath)
+        assertEquals(0, remoteFolder?.tags?.size)
 
         // File
-        remoteFile = result.data[1] as RemoteFile
-        assertEquals(remotePath + "1.txt", remoteFile.remotePath)
-        assertEquals(2, remoteFile.tags?.size)
+        remoteFile = result.resultData?.get(1)
+        assertEquals(remotePath + "1.txt", remoteFile?.remotePath)
+        assertEquals(2, remoteFile?.tags?.size)
 
-        remoteFile.tags?.sort()
-        assertEquals(tag1, remoteFile.tags?.get(0))
-        assertEquals(tag2, remoteFile.tags?.get(1))
+        // check that tags are set correctly
+        assertTrue(remoteFile?.tags?.contentEquals(arrayOf(tag1name, tag2name)) == true)
     }
 }

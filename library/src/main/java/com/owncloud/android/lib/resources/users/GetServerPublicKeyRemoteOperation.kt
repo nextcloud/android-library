@@ -38,7 +38,7 @@ class GetServerPublicKeyRemoteOperation : RemoteOperation<String>() {
                 val serverKey = respJSON.getJSONObject("ocs").getJSONObject("data").getString("public-key")
 
                 result = RemoteOperationResult(true, getMethod)
-                result.setResultData(serverKey)
+                result.resultData = serverKey
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }

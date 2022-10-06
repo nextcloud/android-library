@@ -31,7 +31,7 @@ class StatusIT : AbstractIT() {
         assertTrue("GetStatusRemoteOperation failed: " + result.logMessage, result.isSuccess)
 
         val status = result.resultData
-        assertTrue(status.message.isNullOrBlank())
+        assertTrue(status?.message.isNullOrBlank())
     }
 
     @Test
@@ -40,7 +40,7 @@ class StatusIT : AbstractIT() {
         val result0 = SetStatusRemoteOperation(StatusType.ONLINE).execute(nextcloudClient)
         assertTrue("SetStatusRemoteOperation failed: " + result0.logMessage, result0.isSuccess)
 
-        for (statusType in StatusType.values()) {
+        for (statusType in StatusType.entries) {
             val result1 = GetStatusRemoteOperation().run(nextcloudClient)
             assertTrue("GetStatusRemoteOperation failed: " + result1.logMessage, result1.isSuccess)
 
@@ -51,7 +51,7 @@ class StatusIT : AbstractIT() {
             assertTrue("GetStatusRemoteOperation failed: " + result3.logMessage, result3.isSuccess)
 
             val status = result3.resultData
-            assertEquals(statusType, status.status)
+            assertEquals(statusType, status?.status)
         }
 
         val result2 = SetStatusRemoteOperation(StatusType.AWAY).run(nextcloudClient)
@@ -69,7 +69,7 @@ class StatusIT : AbstractIT() {
         )
 
         val statusesList = result.resultData
-        assertTrue(statusesList.isNotEmpty())
+        assertTrue(statusesList?.isNotEmpty() == true)
     }
 
     @Test
@@ -94,12 +94,12 @@ class StatusIT : AbstractIT() {
             result.isSuccess
         )
 
-        val statusesList: ArrayList<PredefinedStatus> = result.resultData
-        val newCustomStatusMessage = statusesList[2]
+        val statusesList = result.resultData
+        val newCustomStatusMessage = statusesList?.get(2)
         val clearAt = System.currentTimeMillis() / SECOND_IN_MILLIS + HOUR_IN_MINUTES
 
         result =
-            SetPredefinedCustomStatusMessageRemoteOperation(newCustomStatusMessage.id, clearAt)
+            SetPredefinedCustomStatusMessageRemoteOperation(newCustomStatusMessage?.id, clearAt)
                 .execute(nextcloudClient)
         assertTrue(
             "SetPredefinedCustomStatusMessageRemoteOperation failed: " + result.logMessage,
@@ -111,7 +111,7 @@ class StatusIT : AbstractIT() {
         assertTrue("GetStatusRemoteOperation failed: " + newResult.logMessage, newResult.isSuccess)
 
         val status = newResult.resultData
-        assertEquals(newCustomStatusMessage.message, status.message)
+        assertEquals(newCustomStatusMessage?.message, status?.message)
     }
 
     @Test
@@ -136,8 +136,8 @@ class StatusIT : AbstractIT() {
         assertTrue("GetStatusRemoteOperation failed: " + resultGet.logMessage, resultGet.isSuccess)
 
         val status = resultGet.resultData
-        assertEquals(message, status.message)
-        assertEquals(statusIcon, status.icon)
-        assertEquals(clearAt, status.clearAt)
+        assertEquals(message, status?.message)
+        assertEquals(statusIcon, status?.icon)
+        assertEquals(clearAt, status?.clearAt)
     }
 }

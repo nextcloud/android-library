@@ -10,7 +10,6 @@ package com.owncloud.android.lib.resources.files
 import android.os.Build
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import junit.framework.TestCase.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -53,12 +52,13 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         assertTrue(uploadResult.isSuccess)
 
         // ReadFileRemoteOperation
-        var result = ReadFileRemoteOperation(remotePath).execute(client)
+        val result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        var remoteFile = result.data[0] as RemoteFile
+        var remoteFile = result.resultData
+        assertNotNull(remoteFile)
 
-        assertEquals(remotePath, remoteFile.remotePath)
+        assertEquals(remotePath, remoteFile!!.remotePath)
         assertEquals(creationTimestamp, remoteFile.creationTimestamp)
         assertEquals(uploadResult.resultData, remoteFile.etag)
         assertTrue(
@@ -67,12 +67,13 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         )
 
         // ReadFolderRemoteOperation
-        result = ReadFolderRemoteOperation(remotePath).execute(client)
-        assertTrue(result.isSuccess)
+        val resultFolder = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
+        assertTrue(resultFolder.isSuccess)
 
-        remoteFile = result.data[0] as RemoteFile
+        remoteFile = resultFolder.resultData?.get(0)
+        assertNotNull(remoteFile)
 
-        assertEquals(remotePath, remoteFile.remotePath)
+        assertEquals(remotePath, remoteFile!!.remotePath)
         assertEquals(creationTimestamp, remoteFile.creationTimestamp)
         assertTrue(
             uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
