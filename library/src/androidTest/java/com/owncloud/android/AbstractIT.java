@@ -108,6 +108,7 @@ public abstract class AbstractIT {
         String userId = loginName; // for test same as userId
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
+        nextcloudClient.setUserId(userId);
 
         waitForServer(client, url);
         testConnection();

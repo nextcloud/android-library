@@ -436,11 +436,14 @@ public abstract class RemoteOperation<T> implements Runnable {
 
     /**
      * Returns the current client instance to access the remote server.
-     * 
-     * @return      Current client instance to access the remote server.
+     *
+     * @return Current client instance to access the remote server.
      */
     public final OwnCloudClient getClient() {
         return mClient;
     }
 
+    public final NextcloudClient getClientNew() {
+        return clientNew;
+    }
 }

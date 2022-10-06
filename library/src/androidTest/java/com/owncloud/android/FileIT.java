@@ -44,6 +44,7 @@ public class FileIT extends AbstractIT {
 
         // verify folder
         assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(path).execute(client).isSuccess());

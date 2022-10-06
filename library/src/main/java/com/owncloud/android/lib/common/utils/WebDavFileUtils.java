@@ -7,14 +7,32 @@
  */
 package com.owncloud.android.lib.common.utils;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import android.net.Uri;
+
+import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerDisplayName;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
+import com.owncloud.android.lib.resources.files.webdav.NCEtag;
+import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
+import com.owncloud.android.lib.resources.files.webdav.NCMountType;
+import com.owncloud.android.lib.resources.files.webdav.NCPermissions;
+import com.owncloud.android.lib.resources.files.webdav.NCRichWorkspace;
+import com.owncloud.android.lib.resources.files.webdav.NCSharee;
 
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.Response;
+import at.bitfire.dav4jvm.property.GetContentType;
+import at.bitfire.dav4jvm.property.GetLastModified;
+import at.bitfire.dav4jvm.property.ResourceType;
 
 /**
  * WebDav helper.
@@ -24,14 +42,13 @@ public class WebDavFileUtils {
     /**
      * Read the data retrieved from the server about the contents of the target folder
      *
-     * @param remoteData Full response got from the server with the data of the target
-     *                   folder and its direct children.
-     * @param client     Client instance to the remote server where the data were
-     *                   retrieved.
+     * @param remoteData  Full response got from the server with the data of the target
+     *                    folder and its direct children.
+     * @param filesDavUri uri to files webdav uri
      * @return content of the target folder
      */
     public ArrayList<RemoteFile> readData(MultiStatus remoteData,
-                                          OwnCloudClient client,
+                                          Uri filesDavUri,
                                           boolean isReadFolderOperation,
                                           boolean isSearchOperation) {
         ArrayList<RemoteFile> mFolderAndFiles = new ArrayList<>();
@@ -41,7 +58,7 @@ public class WebDavFileUtils {
 
         if (isReadFolderOperation) {
             we = new WebdavEntry(remoteData.getResponses()[0],
-                                 client.getFilesDavUri().getEncodedPath());
+                    filesDavUri.getEncodedPath());
             mFolderAndFiles.add(new RemoteFile(we));
         } else {
             start = 0;
@@ -52,11 +69,86 @@ public class WebDavFileUtils {
         MultiStatusResponse[] responses = remoteData.getResponses();
         for (int i = start; i < responses.length; i++) {
             /// new OCFile instance with the data from the server
-            we = new WebdavEntry(responses[i], client.getFilesDavUri().getEncodedPath());
+            we = new WebdavEntry(responses[i], filesDavUri.getEncodedPath());
             remoteFile = new RemoteFile(we);
             mFolderAndFiles.add(remoteFile);
         }
 
         return mFolderAndFiles;
+    }
+
+    public ArrayList<RemoteFile> readData(List<Response> responses, Uri filesDavUri) {
+        ArrayList<RemoteFile> list = new ArrayList<>();
+
+        for (Response response : responses) {
+            list.add(parseResponse(response, filesDavUri));
+        }
+
+        return list;
+    }
+
+    public RemoteFile parseResponse(Response response, Uri filesDavUri) {
+        RemoteFile remoteFile = new RemoteFile();
+        String path = response.getHref().toString().split(filesDavUri.getEncodedPath(), 2)[1].replace("//", "/");
+
+        for (Property property : response.getProperties()) {
+            if (property instanceof NCEtag) {
+                remoteFile.setEtag(((NCEtag) property).getEtag());
+            }
+
+            if (property instanceof NCFavorite) {
+                remoteFile.setFavorite(((NCFavorite) property).isOcFavorite());
+            }
+
+            if (property instanceof GetLastModified) {
+                remoteFile.setModifiedTimestamp(((GetLastModified) property).getLastModified());
+            }
+
+            if (property instanceof GetContentType) {
+                remoteFile.setMimeType(((GetContentType) property).getType().toString());
+            }
+
+            if (property instanceof ResourceType) {
+                if (((ResourceType) property).getTypes().contains(ResourceType.Companion.getCOLLECTION())) {
+                    remoteFile.setMimeType(WebdavEntry.DIR_TYPE);
+                }
+            }
+
+            if (property instanceof NCPermissions) {
+                remoteFile.setPermissions(((NCPermissions) property).getPermissions());
+            }
+
+            if (property instanceof OCId) {
+                remoteFile.setRemoteId(((OCId) property).getOcId());
+            }
+
+            if (property instanceof OCSize) {
+                remoteFile.setSize(((OCSize) property).getOcSize());
+            }
+
+            if (property instanceof NCMountType) {
+                remoteFile.setMountType(((NCMountType) property).getType());
+            }
+
+            if (property instanceof OCOwnerId) {
+                remoteFile.setOwnerId(((OCOwnerId) property).getOwnerId());
+            }
+
+            if (property instanceof OCOwnerDisplayName) {
+                remoteFile.setOwnerDisplayName(((OCOwnerDisplayName) property).getString());
+            }
+
+            if (property instanceof NCRichWorkspace) {
+                remoteFile.setRichWorkspace(((NCRichWorkspace) property).getRichWorkspace());
+            }
+
+            if (property instanceof NCSharee) {
+                remoteFile.setSharees(((NCSharee) property).getSharees());
+            }
+        }
+
+        remoteFile.setRemotePath(path);
+
+        return remoteFile;
     }
 }
