@@ -9,10 +9,13 @@ package com.owncloud.android.lib.resources.files;
 
 import android.net.Uri;
 
+import com.nextcloud.common.NextcloudAuthenticator;
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.client.methods.PropPatchMethod;
@@ -22,6 +25,15 @@ import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import at.bitfire.dav4jvm.DavResource;
+import at.bitfire.dav4jvm.Property;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 
 /**
  * Favorite or unfavorite a file.
@@ -69,11 +81,48 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
             }
         } catch (IOException e) {
             result = new RemoteOperationResult(e);
-        }  finally {
+        } finally {
             if (propPatchMethod != null) {
                 propPatchMethod.releaseConnection();  // let the connection available for other methods
             }
         }
+
+        return result;
+    }
+
+    @Override
+    public RemoteOperationResult run(NextcloudClient client) {
+        RemoteOperationResult<Boolean> result;
+
+        List<Property.Name> removeProperties = new ArrayList<>();
+        Map<Property.Name, String> newProperties = new HashMap<>();
+
+        // disable redirect
+        OkHttpClient disabledRedirectClient = client.getClient()
+                .newBuilder()
+                .followRedirects(false)
+                .authenticator(new NextcloudAuthenticator(client.getCredentials(), "Authorization"))
+                .build();
+
+        if (makeItFavorited) {
+            newProperties.put(NCFavorite.NAME, "1");
+        } else {
+            removeProperties.add(NCFavorite.NAME);
+        }
+
+        String webDavUrl = client.getDavUri().toString();
+        String encodedPath = (client.getUserId() + Uri.encode(filePath)).replace("%2F", "/");
+        String fullFilePath = webDavUrl + "/files/" + encodedPath;
+
+        boolean resultCode = false;
+
+        new DavResource(disabledRedirectClient,
+                HttpUrl.get(fullFilePath))
+                .proppatch(newProperties, removeProperties, (response, hrefRelation) -> {
+                    //resultCode = response.isSuccess();
+                });
+
+        result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OK);
 
         return result;
     }

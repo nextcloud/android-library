@@ -12,14 +12,15 @@ package com.owncloud.android.lib.resources.status
 /**
  * Contains data of the Capabilities for an account, from the Capabilities API
  */
-class OCCapability {
+class OCCapability(
+    var versionMayor: Int = 0,
+    var versionMinor: Int = 0,
+    var versionMicro: Int = 0
+) {
     var id: Long = 0
     var accountName: String? = ""
 
     // Server version
-    var versionMayor = 0
-    var versionMinor = 0
-    var versionMicro = 0
     var versionString: String? = ""
     var versionEdition: String? = null
 

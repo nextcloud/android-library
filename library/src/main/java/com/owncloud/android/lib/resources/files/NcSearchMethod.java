@@ -7,6 +7,10 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED;
+import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_NC;
+import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
+
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
@@ -25,10 +29,6 @@ import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED;
-import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_NC;
-import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
 
 public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
@@ -66,6 +66,10 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
 
         setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
         setRequestBody(createQuery(searchInfo.getQuery()));
+    }
+
+    public Document getDocumentQuery(SearchInfo searchInfo) {
+        return createQuery(searchInfo.getQuery());
     }
 
     private Document createQuery(String searchQuery) {

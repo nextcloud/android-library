@@ -1,21 +1,44 @@
-/*
- * Nextcloud Android Library
+/* ownCloud Android Library is available under MIT license
+ *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2012 Bartek Przybylski
  *
- * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2023 Alper Ozturk <alper_ozturk@proton.me>
- * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
- * SPDX-FileCopyrightText: 2018-2022 Tobias Kaminsky <tobias@kaminsky.me>
- * SPDX-FileCopyrightText: 2014-2015 ownCloud Inc.
- * SPDX-FileCopyrightText: 2015 masensio <masensio@solidgear.es>
- * SPDX-FileCopyrightText: 2014-2015 David A. Velasco <dvelasco@solidgear.es>
- * SPDX-FileCopyrightText: 2012 2012 Bartosz Przybylski <bart.p.pl@gmail.com>
- * SPDX-License-Identifier: MIT
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ *   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ *   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *   THE SOFTWARE.
+ *
  */
+
 package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
 
 import androidx.annotation.Nullable;
+
+import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerDisplayName;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
+import com.owncloud.android.lib.resources.files.webdav.NCEtag;
+import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
+import com.owncloud.android.lib.resources.files.webdav.NCMountType;
+import com.owncloud.android.lib.resources.files.webdav.NCPermissions;
+import com.owncloud.android.lib.resources.files.webdav.NCRichWorkspace;
+import com.owncloud.android.lib.resources.files.webdav.NCSharee;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
@@ -25,8 +48,21 @@ import org.apache.jackrabbit.webdav.xml.Namespace;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.PropertyRegistry;
+import at.bitfire.dav4jvm.property.CreationDate;
+import at.bitfire.dav4jvm.property.DisplayName;
+import at.bitfire.dav4jvm.property.GetContentLength;
+import at.bitfire.dav4jvm.property.GetContentType;
+import at.bitfire.dav4jvm.property.GetETag;
+import at.bitfire.dav4jvm.property.GetLastModified;
+import at.bitfire.dav4jvm.property.ResourceType;
 
 public class WebdavUtils {
     private static final SimpleDateFormat DATETIME_FORMATS[] = {
@@ -59,23 +95,24 @@ public class WebdavUtils {
     }
 
     /**
-     * Encodes a path according to URI RFC 2396. 
-     * 
+     * Encodes a path according to URI RFC 2396.
+     * <p>
      * If the received path doesn't start with "/", the method adds it.
-     * 
-     * @param remoteFilePath    Path
-     * @return                  Encoded path according to RFC 2396, always starting with "/"
+     *
+     * @param remoteFilePath Path
+     * @return Encoded path according to RFC 2396, always starting with "/"
      */
     public static String encodePath(String remoteFilePath) {
         String encodedPath = Uri.encode(remoteFilePath, "/");
-        if (!encodedPath.startsWith("/"))
+        if (!encodedPath.startsWith("/")) {
             encodedPath = "/" + encodedPath;
+        }
         return encodedPath;
     }
 
     /**
-     * Builds a DavPropertyNameSet with all prop
-     * For using instead of DavConstants.PROPFIND_ALL_PROP
+     * Builds a DavPropertyNameSet with all prop For using instead of DavConstants.PROPFIND_ALL_PROP
+     *
      * @return
      */
     public static DavPropertyNameSet getAllPropSet() {
@@ -124,14 +161,59 @@ public class WebdavUtils {
         return propSet;
     }
 
+    public static Property.Name[] getAllPropertiesList() {
+        List<Property.Name> list = new ArrayList<>();
+
+        list.add(CreationDate.NAME);
+        list.add(NCFavorite.NAME);
+        list.add(NCEtag.NAME);
+        list.add(GetLastModified.NAME);
+        list.add(GetContentType.NAME);
+        list.add(ResourceType.NAME);
+        list.add(NCPermissions.NAME);
+        list.add(OCId.NAME);
+        list.add(OCSize.NAME);
+        list.add(NCMountType.NAME);
+        list.add(OCOwnerId.NAME);
+        list.add(OCOwnerDisplayName.NAME);
+        list.add(NCRichWorkspace.NAME);
+
+        list.add(DisplayName.NAME);
+        list.add(GetContentType.NAME);
+        list.add(GetContentLength.NAME);
+        list.add(GetContentType.NAME);
+        list.add(GetContentLength.NAME);
+        list.add(GetLastModified.NAME);
+        list.add(CreationDate.NAME);
+        list.add(GetETag.NAME);
+        list.add(ResourceType.NAME);
+        list.add(NCSharee.NAME);
+
+//        list.add(NCPermission.NAME);
+//        list.add(OCId.NAME);
+//        list.add(OCSize.NAME);
+//        list.add(OCFavorite.NAME);
+//        list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_ID));
+//        list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_DISPLAY_NAME));
+//        list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
+//
+//        list.add(NCEncrypted.NAME);
+//        list.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_MOUNT_TYPE));
+//        list.add(NCPreview.NAME);
+//        list.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
+
+        return list.toArray(new Property.Name[0]);
+    }
+
     /**
      * Builds a DavPropertyNameSet with properties for files
+     *
      * @return
      */
     public static DavPropertyNameSet getFilePropSet() {
         Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
-        
+
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
@@ -171,6 +253,7 @@ public class WebdavUtils {
 
     /**
      * Builds a DavPropertyNameSet with properties for trashbin
+     *
      * @return
      */
     public static DavPropertyNameSet getTrashbinPropSet() {
@@ -189,6 +272,7 @@ public class WebdavUtils {
 
     /**
      * Builds a DavPropertyNameSet with properties for versions
+     *
      * @return
      */
     public static DavPropertyNameSet getFileVersionPropSet() {
@@ -217,7 +301,6 @@ public class WebdavUtils {
     }
 
     /**
-     *
      * @param rawEtag
      * @return
      */
@@ -236,7 +319,6 @@ public class WebdavUtils {
 
 
     /**
-     *
      * @param method
      * @return
      */
@@ -258,4 +340,19 @@ public class WebdavUtils {
         return result;
     }
 
+    public static void registerCustomFactories() {
+        List<PropertyFactory> list = new ArrayList<>();
+        list.add(new NCFavorite.Factory());
+        list.add(new NCEtag.Factory());
+        list.add(new NCPermissions.Factory());
+        list.add(new OCId.Factory());
+        list.add(new OCSize.Factory());
+        list.add(new NCMountType.Factory());
+        list.add(new OCOwnerId.Factory());
+        list.add(new OCOwnerDisplayName.Factory());
+        list.add(new NCRichWorkspace.Factory());
+        list.add(new NCSharee.Factory());
+
+        PropertyRegistry.INSTANCE.register(list);
+    }
 }
