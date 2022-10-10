@@ -43,12 +43,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * gets external links provided by 'external' app
  */
 
-public class ExternalLinksOperation extends RemoteOperation {
+public class ExternalLinksOperation extends RemoteOperation<List<ExternalLink>> {
 
     private static final String TAG = ExternalLinksOperation.class.getSimpleName();
 
@@ -68,17 +69,17 @@ public class ExternalLinksOperation extends RemoteOperation {
 
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+    protected RemoteOperationResult<List<ExternalLink>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<ExternalLink>> result;
+        int status;
         GetMethod get = null;
         String ocsUrl = client.getBaseUri() + OCS_ROUTE_EXTERNAL_LINKS;
 
         try {
             // check capabilities
-            RemoteOperation getCapabilities = new GetCapabilitiesRemoteOperation();
-            RemoteOperationResult capabilitiesResult = getCapabilities.execute(client);
-            OCCapability capability = (OCCapability) capabilitiesResult.getData().get(0);
+            RemoteOperationResult<OCCapability> capabilitiesResult = new GetCapabilitiesRemoteOperation()
+                    .execute(client);
+            OCCapability capability = capabilitiesResult.getResultData();
 
             if (capability.getExternalLinks().isTrue()) {
 
@@ -94,7 +95,7 @@ public class ExternalLinksOperation extends RemoteOperation {
                     // parse
                     JSONArray links = new JSONObject(response).getJSONObject(NODE_OCS).getJSONArray(NODE_DATA);
 
-                    ArrayList<Object> resultLinks = new ArrayList<>();
+                    ArrayList<ExternalLink> resultLinks = new ArrayList<>();
 
                     for (int i = 0; i < links.length(); i++) {
                         JSONObject link = links.getJSONObject(i);
@@ -123,7 +124,6 @@ public class ExternalLinksOperation extends RemoteOperation {
                                     break;
                             }
 
-
                             String name = link.getString(NODE_NAME);
                             String url = link.getString(NODE_URL);
 
@@ -137,11 +137,11 @@ public class ExternalLinksOperation extends RemoteOperation {
                         }
                     }
 
-                    result = new RemoteOperationResult(true, status, get.getResponseHeaders());
-                    result.setData(resultLinks);
+                    result = new RemoteOperationResult<>(true, status, get.getResponseHeaders());
+                    result.setResultData(resultLinks);
 
                 } else {
-                    result = new RemoteOperationResult(false, status, get.getResponseHeaders());
+                    result = new RemoteOperationResult<>(false, status, get.getResponseHeaders());
                     String response = get.getResponseBodyAsString();
                     Log_OC.e(TAG, "Failed response while getting external links ");
                     if (response != null) {
@@ -151,12 +151,12 @@ public class ExternalLinksOperation extends RemoteOperation {
                     }
                 }
             } else {
-                result = new RemoteOperationResult(RemoteOperationResult.ResultCode.NOT_AVAILABLE);
+                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.NOT_AVAILABLE);
                 Log_OC.d(TAG, "External links disabled");
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting external links ", e);
         } finally {
             if (get != null) {

@@ -36,14 +36,12 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 
 /**
  * Remote operation performing the fetch of the public key for an user
  */
 
-public class GetPublicKeyOperation extends RemoteOperation {
+public class GetPublicKeyOperation extends RemoteOperation<String> {
 
     private static final String TAG = GetPublicKeyOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
@@ -56,14 +54,14 @@ public class GetPublicKeyOperation extends RemoteOperation {
     private static final String NODE_PUBLIC_KEYS = "public-keys";
 
     private static final String JSON_FORMAT = "?format=json";
-    
+
     /**
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
         GetMethod getMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<String> result;
 
         try {
             // remote request
@@ -80,16 +78,14 @@ public class GetPublicKeyOperation extends RemoteOperation {
                 String key = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA)
                         .getJSONObject(NODE_PUBLIC_KEYS).get(client.getUserId());
 
-                result = new RemoteOperationResult(true, getMethod);
-                ArrayList<Object> keys = new ArrayList<>();
-                keys.add(key);
-                result.setData(keys);
+                result = new RemoteOperationResult<>(true, getMethod);
+                result.setResultData(key);
             } else {
-                result = new RemoteOperationResult(false, getMethod);
+                result = new RemoteOperationResult<>(false, getMethod);
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Fetching of public key failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (getMethod != null)

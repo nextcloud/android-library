@@ -43,7 +43,7 @@ import org.json.JSONException;
 
 import java.lang.reflect.Type;
 
-public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation {
+public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation<PushResponse> {
     // OCS Route
     private static final String OCS_ROUTE =
             "/ocs/v2.php/apps/notifications/api/v2/push?format=json";
@@ -60,9 +60,9 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     private static final String PROXY_SERVER = "proxyServer";
     private static final String INVALID_SESSION_TOKEN = "INVALID_SESSION_TOKEN";
 
-    private String pushTokenHash;
-    private String devicePublicKey;
-    private String proxyServer;
+    private final String pushTokenHash;
+    private final String devicePublicKey;
+    private final String proxyServer;
 
     public RegisterAccountDeviceForNotificationsOperation(String pushTokenHash,
                                                           String devicePublicKey,
@@ -73,8 +73,8 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<PushResponse> run(OwnCloudClient client) {
+        RemoteOperationResult<PushResponse> result;
         int status;
         PushResponse pushResponse;
         Utf8PostMethod post = null;
@@ -92,21 +92,22 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
             String response = post.getResponseBodyAsString();
 
             if (isSuccess(status)) {
-                result = new RemoteOperationResult(true, status, post.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
 
                 // Parse the response
                 pushResponse = parseResult(response);
-                result.setPushResponseData(pushResponse);
+                result.setResultData(pushResponse);
             } else {
                 if (isInvalidSessionToken(response)) {
-                    result = new RemoteOperationResult(RemoteOperationResult.ResultCode.ACCOUNT_USES_STANDARD_PASSWORD);
+                    result =
+                            new RemoteOperationResult<>(RemoteOperationResult.ResultCode.ACCOUNT_USES_STANDARD_PASSWORD);
                 } else {
-                    result = new RemoteOperationResult(false, status, post.getResponseHeaders());
+                    result = new RemoteOperationResult<>(false, status, post.getResponseHeaders());
                 }
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while registering device for notifications", e);
         } finally {
             if (post != null) {

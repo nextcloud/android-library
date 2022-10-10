@@ -61,7 +61,7 @@ import java.util.List;
  * accessible via the activities endpoint at {@value OCS_ROUTE_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/activity/blob/master/docs/endpoint-v2.md"}.
  */
-public class GetActivitiesRemoteOperation extends RemoteOperation {
+public class GetActivitiesRemoteOperation extends RemoteOperation<ActivitiesResponse> {
 
     private static final String TAG = GetActivitiesRemoteOperation.class.getSimpleName();
 
@@ -94,8 +94,8 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
-        RemoteOperationResult result;
+    public RemoteOperationResult<ActivitiesResponse> run(NextcloudClient client) {
+        RemoteOperationResult<ActivitiesResponse> result;
         int status;
         GetMethod get = null;
         ArrayList<Activity> activities;
@@ -139,22 +139,19 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                 }
 
                 Log_OC.d(TAG, "Successful response: " + response);
-                result = new RemoteOperationResult(true, get);
+                result = new RemoteOperationResult<>(true, get);
                 // Parse the response
                 activities = parseResult(response);
 
-                ArrayList<Object> data = new ArrayList<>();
-                data.add(activities);
-                data.add(lastGiven);
-                result.setData(data);
+                result.setResultData(new ActivitiesResponse(lastGiven, activities));
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 Log_OC.e(TAG, "Failed response while getting user activities");
                 Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
             }
         } catch (Exception e) {
             Log_OC.e(TAG, "Error getting user activities", e);
-            return new RemoteOperationResult(e);
+            return new RemoteOperationResult<>(e);
         } finally {
             if (get != null) {
                 get.releaseConnection();
@@ -163,15 +160,15 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
         return result;
     }
-    
+
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<ActivitiesResponse> run(OwnCloudClient client) {
+        RemoteOperationResult<ActivitiesResponse> result;
         int status;
         org.apache.commons.httpclient.methods.GetMethod get = null;
         ArrayList<Activity> activities;
         String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
-        
+
         // add filter for fileId, if available
         if (!fileId.isEmpty()) {
             url = url + "/filter";
@@ -211,7 +208,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
             if (isSuccess(status)) {
                 Log_OC.d(TAG, "Successful response: " + response);
-                result = new RemoteOperationResult(true, status, get.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, get.getResponseHeaders());
                 // Parse the response
                 if (response == null) {
                     activities = new ArrayList<>();
@@ -219,12 +216,9 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                     activities = parseResult(response);
                 }
 
-                ArrayList<Object> data = new ArrayList<>();
-                data.add(activities);
-                data.add(lastGiven);
-                result.setData(data);
+                result.setResultData(new ActivitiesResponse(lastGiven, activities));
             } else {
-                result = new RemoteOperationResult(false, status, get.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, status, get.getResponseHeaders());
                 Log_OC.e(TAG, "Failed response while getting user activities ");
                 if (response != null) {
                     Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
@@ -233,7 +227,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                 }
             }
         } catch (IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting remote activities", e);
         } finally {
             if (get != null) {

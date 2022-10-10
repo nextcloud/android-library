@@ -65,8 +65,8 @@ public class RegisterAccountDeviceForProxyOperation {
         this.userAgent = userAgent;
     }
 
-    public RemoteOperationResult run() {
-        RemoteOperationResult result;
+    public RemoteOperationResult<Void> run() {
+        RemoteOperationResult<Void> result;
         int status;
         Utf8PostMethod post = null;
 
@@ -83,14 +83,14 @@ public class RegisterAccountDeviceForProxyOperation {
             String response = post.getResponseBodyAsString();
 
             if(isSuccess(status)) {
-                result = new RemoteOperationResult(true, status, post.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
             } else {
-                result = new RemoteOperationResult(false, status, post.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, status, post.getResponseHeaders());
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while registering device for notifications", e);
 
         } finally {

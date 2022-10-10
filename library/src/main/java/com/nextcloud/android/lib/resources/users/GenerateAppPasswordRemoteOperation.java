@@ -41,7 +41,7 @@ import org.json.JSONObject;
  */
 
 
-public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
+public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation<String> {
     private static final String TAG = GenerateAppPasswordRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
@@ -53,8 +53,8 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_APPPASSWORD = "apppassword";
 
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
         GetMethod getMethod = null;
 
         try {
@@ -71,14 +71,14 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
                 JSONObject respJSON = new JSONObject(response);
                 String password = respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).getString(NODE_APPPASSWORD);
 
-                result = new RemoteOperationResult(true, getMethod);
-                result.setSingleData(password);
+                result = new RemoteOperationResult<>(true, getMethod);
+                result.setResultData(password);
             } else {
-                result = new RemoteOperationResult(false, getMethod);
+                result = new RemoteOperationResult<>(false, getMethod);
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Generate app password failed: " + result.getLogMessage(),
                     result.getException());
         } finally {

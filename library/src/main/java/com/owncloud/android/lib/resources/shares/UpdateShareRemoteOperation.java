@@ -48,10 +48,10 @@ import java.util.Locale;
 
 /**
  * Updates parameters of an existing Share resource, known its remote ID.
- * 
+ * <p>
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-public class UpdateShareRemoteOperation extends RemoteOperation {
+public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 
@@ -69,7 +69,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     /**
      * Identifier of the share to update
      */
-    private long remoteId;
+    private final long remoteId;
 
     /**
      * Password to set for the public link

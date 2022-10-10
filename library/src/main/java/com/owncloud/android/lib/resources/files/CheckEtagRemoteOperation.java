@@ -40,19 +40,17 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
-import java.util.ArrayList;
-
 /**
  * Check if file is up to date, by checking only eTag
  */
-public class CheckEtagRemoteOperation extends RemoteOperation {
+public class CheckEtagRemoteOperation extends RemoteOperation<String> {
 
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String TAG = CheckEtagRemoteOperation.class.getSimpleName();
 
-    private String path;
-    private String expectedEtag;
+    private final String path;
+    private final String expectedEtag;
 
     public CheckEtagRemoteOperation(String path, String expectedEtag) {
         this.path = path;
@@ -61,9 +59,9 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
 
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
         PropFindMethod propfind = null;
-        
+
         try {
             DavPropertyNameSet propSet = new DavPropertyNameSet();
             propSet.add(DavPropertyName.GETETAG);
@@ -80,20 +78,17 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
                         .get(DavPropertyName.GETETAG).getValue());
 
                 if (etag.equals(expectedEtag)) {
-                    return new RemoteOperationResult(ResultCode.ETAG_UNCHANGED);
+                    return new RemoteOperationResult<>(ResultCode.ETAG_UNCHANGED);
                 } else {
-                    RemoteOperationResult result = new RemoteOperationResult(ResultCode.ETAG_CHANGED);
-
-                    ArrayList<Object> list = new ArrayList<>();
-                    list.add(etag);
-                    result.setData(list);
+                    RemoteOperationResult<String> result = new RemoteOperationResult<>(ResultCode.ETAG_CHANGED);
+                    result.setResultData(etag);
 
                     return result;
                 }
             }
             
             if (status == HttpStatus.SC_NOT_FOUND) {
-                return new RemoteOperationResult(ResultCode.FILE_NOT_FOUND);
+                return new RemoteOperationResult<>(ResultCode.FILE_NOT_FOUND);
             }
         } catch (Exception e) {
             Log_OC.e(TAG, "Error while retrieving eTag");
@@ -103,6 +98,6 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             }
         }
 
-        return new RemoteOperationResult(ResultCode.ETAG_CHANGED);
+        return new RemoteOperationResult<>(ResultCode.ETAG_CHANGED);
     }
 }

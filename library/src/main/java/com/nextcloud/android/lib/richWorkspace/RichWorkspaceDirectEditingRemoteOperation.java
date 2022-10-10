@@ -45,7 +45,7 @@ import java.util.Map;
  * Get direct editing url for rich workspace
  */
 
-public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
+public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation<String> {
     private static final String TAG = RichWorkspaceDirectEditingRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
@@ -53,14 +53,14 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
     private static final String JSON_FORMAT = "?format=json";
     private static final String PATH = "path";
 
-    private String path;
+    private final String path;
 
     public RichWorkspaceDirectEditingRemoteOperation(String path) {
         this.path = path;
     }
 
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
         Utf8PostMethod postMethod = null;
 
         try {
@@ -84,14 +84,14 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
                 JSONObject respJSON = new JSONObject(response);
                 String url = (String) respJSON.getJSONObject("ocs").getJSONObject("data").get("url");
 
-                result = new RemoteOperationResult(true, postMethod);
-                result.setSingleData(url);
+                result = new RemoteOperationResult<>(true, postMethod);
+                result.setResultData(url);
             } else {
-                result = new RemoteOperationResult(false, postMethod);
+                result = new RemoteOperationResult<>(false, postMethod);
                 client.exhaustResponse(postMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Get edit url for rich workspace failed: " + result.getLogMessage(),
                     result.getException());
         } finally {

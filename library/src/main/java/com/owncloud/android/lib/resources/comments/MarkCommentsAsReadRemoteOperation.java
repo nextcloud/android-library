@@ -44,18 +44,18 @@ import java.io.IOException;
 /**
  * Mark all comments for a file as read
  */
-public class MarkCommentsAsReadRemoteOperation extends RemoteOperation {
+public class MarkCommentsAsReadRemoteOperation extends RemoteOperation<Void> {
     private static final String COMMENTS_URL = "/comments/files/";
 
-    private String fileId;
+    private final String fileId;
 
     public MarkCommentsAsReadRemoteOperation(String fileId) {
         this.fileId = fileId;
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<Void> run(OwnCloudClient client) {
+        RemoteOperationResult<Void> result;
         PropPatchMethod propPatchMethod = null;
 
         DavPropertySet newProps = new DavPropertySet();
@@ -75,13 +75,13 @@ public class MarkCommentsAsReadRemoteOperation extends RemoteOperation {
                     status == HttpStatus.SC_MULTI_STATUS;
 
             if (isSuccess) {
-                result = new RemoteOperationResult(true, status, propPatchMethod.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, propPatchMethod.getResponseHeaders());
             } else {
                 client.exhaustResponse(propPatchMethod.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, status, propPatchMethod.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, status, propPatchMethod.getResponseHeaders());
             }
         } catch (IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (propPatchMethod != null) {
                 propPatchMethod.releaseConnection();
