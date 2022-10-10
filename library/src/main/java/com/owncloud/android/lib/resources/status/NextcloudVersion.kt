@@ -26,11 +26,16 @@ class NextcloudVersion : OwnCloudVersion {
     companion object {
         @JvmField
         val nextcloud_21 = NextcloudVersion(0x15000000) // 21.0
+
         @JvmField
         val nextcloud_22 = NextcloudVersion(0x16000000) // 22.0
         val nextcloud_23 = NextcloudVersion(0x17000000) // 23.0
+
         @JvmField
         val nextcloud_24 = NextcloudVersion(0x18000000) // 24.0
+
+        @JvmField
+        val nextcloud_25 = NextcloudVersion(0x19000000) // 25.0
     }
 
     constructor(string: String) : super(string)
