@@ -25,6 +25,7 @@ package com.nextcloud.android.lib.resources.dashboard
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation
+import com.owncloud.android.lib.resources.shares.OCShare
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
@@ -50,7 +51,7 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
                 client.userId,
                 false,
                 "",
-                31
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER
             ).execute(client2)
                 .isSuccess
         )
