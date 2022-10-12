@@ -79,6 +79,7 @@ services:
       - su www-data -c "git clone -b master https://github.com/nextcloud/password_policy/  /var/www/html/apps/password_policy/"
       - su www-data -c "php /var/www/html/occ app:enable password_policy"
       - su www-data -c "git clone -b master https://github.com/nextcloud/external/  /var/www/html/apps/external/"
+      - su www-data -c "cd /var/www/html/apps/external; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable external"
       - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
       - su www-data -c "git clone -b master https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
