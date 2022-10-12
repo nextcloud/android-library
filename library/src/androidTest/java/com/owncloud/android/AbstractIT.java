@@ -81,6 +81,7 @@ public abstract class AbstractIT {
     public static final int MILLI_TO_SECOND = 1000;
 
     public static OwnCloudClient client;
+    public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
     protected static Context context;
     protected static Uri url;
@@ -106,6 +107,14 @@ public abstract class AbstractIT {
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         client.setUserId(loginName); // for test same as userId
+
+        // second user to test internal sharing
+        String loginName2 = arguments.getString("TEST_SERVER_USERNAME2");
+        String password2 = arguments.getString("TEST_SERVER_PASSWORD2");
+
+        client2 = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
+        client2.setCredentials(new OwnCloudBasicCredentials(loginName2, password2));
+        client2.setUserId(loginName2); // for test same as userId
 
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/1.0.0");
 

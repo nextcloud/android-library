@@ -55,8 +55,6 @@ public class GetPublicKeyOperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_PUBLIC_KEYS = "public-keys";
 
-    private static final String JSON_FORMAT = "?format=json";
-    
     /**
      * @param client Client object
      */

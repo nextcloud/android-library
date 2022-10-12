@@ -50,7 +50,6 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String DIRECT_ENDPOINT = "/ocs/v2.php/apps/text/workspace/direct";
-    private static final String JSON_FORMAT = "?format=json";
     private static final String PATH = "path";
 
     private String path;

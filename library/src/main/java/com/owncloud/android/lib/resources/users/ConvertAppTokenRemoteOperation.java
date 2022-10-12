@@ -49,8 +49,6 @@ public class ConvertAppTokenRemoteOperation extends OCSRemoteOperation<String> {
     private static final String TAG = ConvertAppTokenRemoteOperation.class.getSimpleName();
     private static final String URL = "/ocs/v2.php/core/getapppassword";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     @Override
     public RemoteOperationResult<String> run(NextcloudClient client) {
         GetMethod method = null;

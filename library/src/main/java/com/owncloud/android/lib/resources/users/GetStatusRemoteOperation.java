@@ -44,7 +44,6 @@ public class GetStatusRemoteOperation extends OCSRemoteOperation<Status> {
 
     private static final String TAG = GetStatusRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status";
-    private static final String JSON_FORMAT = "?format=json";
 
     /**
      * @param client Client object

@@ -29,6 +29,7 @@ package com.nextcloud.common
 
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -39,9 +40,10 @@ import java.io.IOException
 /**
  * Common base class for all new OkHttpMethods
  */
+@Suppress("TooManyFunctions")
 abstract class OkHttpMethodBase(
     var uri: String,
-    val useOcsApiRequestHeader: Boolean
+    private val useOcsApiRequestHeader: Boolean
 ) {
     companion object {
         const val UNKNOWN_STATUS_CODE: Int = -1
@@ -59,8 +61,10 @@ abstract class OkHttpMethodBase(
         requestHeaders["http.protocol.single-cookie-header"] = "true"
     }
 
-    fun buildQueryParameter(): HttpUrl {
-        val httpBuilder = uri.toHttpUrlOrNull()?.newBuilder() ?: throw IllegalStateException("Error")
+    @Throws(IllegalStateException::class)
+    private fun buildQueryParameter(): HttpUrl {
+        val httpBuilder =
+            uri.toHttpUrlOrNull()?.newBuilder() ?: throw IllegalStateException("Error")
 
         queryMap.forEach { (k, v) -> httpBuilder.addQueryParameter(k, v) }
 
@@ -170,7 +174,7 @@ abstract class OkHttpMethodBase(
         try {
             response = client.client.newCall(request).execute()
         } catch (ex: IOException) {
-            System.out.println(ex.message)
+            Log_OC.e(this, ex.message, ex)
         }
 
         return response?.code ?: UNKNOWN_STATUS_CODE

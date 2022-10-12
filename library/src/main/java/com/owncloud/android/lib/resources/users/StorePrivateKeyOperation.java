@@ -56,8 +56,6 @@ public class StorePrivateKeyOperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_PRIVATE_KEY = "private-key";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     private String privateKey;
 
     /**

@@ -56,8 +56,6 @@ public class SendCSROperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_PUBLIC_KEY = "public-key";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     private String csr;
 
     /**

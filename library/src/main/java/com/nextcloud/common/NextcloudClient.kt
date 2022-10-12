@@ -109,7 +109,7 @@ class NextcloudClient private constructor(
         }
     }
 
-    @Throws(Exception::class)
+    @Throws(IOException::class)
     fun execute(method: OkHttpMethodBase): Int {
         return method.execute(this)
     }

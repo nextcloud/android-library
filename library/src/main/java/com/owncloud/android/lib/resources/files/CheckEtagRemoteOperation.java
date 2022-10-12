@@ -35,11 +35,13 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCo
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -91,11 +93,11 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
                     return result;
                 }
             }
-            
+
             if (status == HttpStatus.SC_NOT_FOUND) {
                 return new RemoteOperationResult(ResultCode.FILE_NOT_FOUND);
             }
-        } catch (Exception e) {
+        } catch (DavException | IOException e) {
             Log_OC.e(TAG, "Error while retrieving eTag");
         } finally {
             if (propfind != null) {

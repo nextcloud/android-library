@@ -3,8 +3,8 @@
  * Nextcloud Android client application
  *
  * @author Tobias Kaminsky
- * Copyright (C) 2020 Tobias Kaminsky
- * Copyright (C) 2020 Nextcloud GmbH
+ * Copyright (C) 2022 Tobias Kaminsky
+ * Copyright (C) 2022 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,24 +20,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.owncloud.android.lib.resources.status
+package com.nextcloud.android.lib.resources.dashboard
 
-class NextcloudVersion : OwnCloudVersion {
-    companion object {
-        @JvmField
-        val nextcloud_21 = NextcloudVersion(0x15000000) // 21.0
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-        @JvmField
-        val nextcloud_22 = NextcloudVersion(0x16000000) // 22.0
-        val nextcloud_23 = NextcloudVersion(0x17000000) // 23.0
-
-        @JvmField
-        val nextcloud_24 = NextcloudVersion(0x18000000) // 24.0
-
-        @JvmField
-        val nextcloud_25 = NextcloudVersion(0x19000000) // 25.0
-    }
-
-    constructor(string: String) : super(string)
-    constructor(version: Int) : super(version)
-}
+@Parcelize
+data class DashboardWidget(
+    val id: String,
+    val title: String,
+    val order: Int,
+    @SerializedName("icon_url") val iconUrl: String,
+    @SerializedName("item_icons_round") val roundIcons: Boolean,
+    val buttons: List<DashboardButton>?
+) : Parcelable

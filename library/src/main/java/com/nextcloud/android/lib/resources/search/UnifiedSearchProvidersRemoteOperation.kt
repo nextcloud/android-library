@@ -41,7 +41,6 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
     companion object {
         private val TAG = UnifiedSearchProvidersRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers"
-        private const val JSON_FORMAT = "?format=json"
     }
 
     override fun run(client: NextcloudClient): RemoteOperationResult<SearchProviders> {

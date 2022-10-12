@@ -221,7 +221,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     Log_OC.e(TAG, "*** status code: " + status);
                 }
             }
-        } catch (Exception e) {
+        } catch (JSONException | IOException e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Exception while getting capabilities", e);
 

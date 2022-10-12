@@ -46,8 +46,6 @@ public class DirectEditingCreateFileRemoteOperation extends RemoteOperation<Stri
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String DIRECT_ENDPOINT = "/ocs/v2.php/apps/files/api/v1/directEditing/create";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     private final String path;
     private final String editor;
     private final String creator;

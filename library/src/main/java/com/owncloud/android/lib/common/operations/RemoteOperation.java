@@ -73,6 +73,7 @@ public abstract class RemoteOperation<T> implements Runnable {
     public static final String JSON_ENCODED = "application/json";
     protected static final String E2E_TOKEN = "e2e-token";
     protected static final String REMOTE_WIPE_TOKEN = "token";
+    protected static final String JSON_FORMAT = "?format=json";
 
     /** ownCloud account in the remote ownCloud server to operate */
     private Account mAccount = null;

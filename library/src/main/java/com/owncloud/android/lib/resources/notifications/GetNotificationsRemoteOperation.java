@@ -56,7 +56,7 @@ public class GetNotificationsRemoteOperation extends RemoteOperation {
 
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
-            "/ocs/v2.php/apps/notifications/api/v2/notifications?format=json";
+            "/ocs/v2.php/apps/notifications/api/v2/notifications" + JSON_FORMAT;
 
     private static final String TAG = GetNotificationsRemoteOperation.class.getSimpleName();
 

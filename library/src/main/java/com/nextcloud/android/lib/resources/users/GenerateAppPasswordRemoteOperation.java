@@ -46,7 +46,6 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String DIRECT_ENDPOINT = "/ocs/v2.php/core/getapppassword";
-    private static final String JSON_FORMAT = "?format=json";
 
     // JSON node names
     private static final String NODE_OCS = "ocs";

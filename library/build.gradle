@@ -131,6 +131,8 @@ android {
         testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
         testInstrumentationRunnerArgument "TEST_SERVER_USERNAME", "${NC_TEST_SERVER_USERNAME}"
         testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
+        testInstrumentationRunnerArgument "TEST_SERVER_USERNAME2", "${NC_TEST_SERVER_USERNAME2}"
+        testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD2", "${NC_TEST_SERVER_PASSWORD2}"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
 
         multiDexEnabled true

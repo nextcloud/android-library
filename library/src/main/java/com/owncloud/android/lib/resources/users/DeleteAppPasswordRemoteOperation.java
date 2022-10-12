@@ -45,8 +45,6 @@ public class DeleteAppPasswordRemoteOperation extends RemoteOperation {
     private static final String TAG = DeleteAppPasswordRemoteOperation.class.getSimpleName();
     private static final String URL = "/ocs/v2.php/core/apppassword";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     @Override
     public RemoteOperationResult run(NextcloudClient client) {
         DeleteMethod deleteMethod = null;

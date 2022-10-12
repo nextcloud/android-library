@@ -50,8 +50,6 @@ public class GetPrivateKeyOperation extends OCSRemoteOperation<PrivateKey> {
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String PUBLIC_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/private-key";
 
-    private static final String JSON_FORMAT = "?format=json";
-
     /**
      * @param client Client object
      */

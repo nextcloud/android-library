@@ -46,7 +46,7 @@ import java.lang.reflect.Type;
 public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation {
     // OCS Route
     private static final String OCS_ROUTE =
-            "/ocs/v2.php/apps/notifications/api/v2/push?format=json";
+            "/ocs/v2.php/apps/notifications/api/v2/push" + JSON_FORMAT;
 
     private static final String TAG = RegisterAccountDeviceForNotificationsOperation.class.getSimpleName();
 
