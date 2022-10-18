@@ -59,6 +59,7 @@ services:
   - name: server-master
     image: ghcr.io/nextcloud/continuous-integration-server:latest
     commands:
+      - apt-get update && apt-get install -y composer
       - /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
