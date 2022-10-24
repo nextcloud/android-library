@@ -40,6 +40,8 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
+import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
+import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
@@ -178,6 +180,48 @@ public class SearchRemoteOperationIT extends AbstractIT {
         assertEquals(1, result.getResultData().size());
         RemoteFile remoteFile = result.getResultData().get(0);
         assertEquals(path, remoteFile.getRemotePath());
+    }
+
+    @Test
+    public void favoriteFiles() throws IOException {
+        // share a file by second user to test user
+        String sharedFile = createFile("sharedFavoriteImage.jpg");
+        String sharedRemotePath = "/sharedFavoriteImage.jpg";
+        assertTrue(new UploadFileRemoteOperation(sharedFile, sharedRemotePath, "image/jpg", RANDOM_MTIME)
+                .execute(client2).isSuccess());
+
+        // share
+        assertTrue(new CreateShareRemoteOperation(sharedRemotePath,
+                ShareType.USER,
+                client.getUserId(),
+                false,
+                "",
+                31).execute(client2)
+                .isSuccess()
+        );
+
+        // test user: favorite it
+        assertTrue(new ToggleFavoriteRemoteOperation(true, sharedRemotePath).execute(client).isSuccess());
+
+        String filePath = createFile("favoriteImage.jpg");
+        String remotePath = "/favoriteImage.jpg";
+        assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", RANDOM_MTIME)
+                .execute(client).isSuccess());
+
+        assertTrue(new ToggleFavoriteRemoteOperation(true, remotePath).execute(client).isSuccess());
+
+        SearchRemoteOperation sut = new SearchRemoteOperation("",
+                SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
+                false,
+                capability);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+
+        // test
+        assertTrue(result.isSuccess());
+        assertEquals(2, result.getResultData().size());
+
+        assertEquals(remotePath, result.getResultData().get(0).getRemotePath());
+        assertEquals(sharedRemotePath, result.getResultData().get(1).getRemotePath());
     }
 
     /**
