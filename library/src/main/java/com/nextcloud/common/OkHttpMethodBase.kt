@@ -174,7 +174,7 @@ abstract class OkHttpMethodBase(
         try {
             response = client.client.newCall(request).execute()
         } catch (ex: IOException) {
-            Log_OC.e(this, ex.message, ex)
+            Log_OC.e(this, "Error executing method", ex)
         }
 
         return response?.code ?: UNKNOWN_STATUS_CODE
