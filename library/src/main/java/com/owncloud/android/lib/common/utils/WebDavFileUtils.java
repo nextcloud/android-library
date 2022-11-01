@@ -33,6 +33,7 @@ import at.bitfire.dav4jvm.Response;
 import at.bitfire.dav4jvm.property.GetContentType;
 import at.bitfire.dav4jvm.property.GetLastModified;
 import at.bitfire.dav4jvm.property.ResourceType;
+import okhttp3.MediaType;
 
 /**
  * WebDav helper.
@@ -105,7 +106,13 @@ public class WebDavFileUtils {
             }
 
             if (property instanceof GetContentType) {
-                remoteFile.setMimeType(((GetContentType) property).getType().toString());
+                MediaType type = ((GetContentType) property).getType();
+
+                if (type != null) {
+                    remoteFile.setMimeType(type.toString());
+                } else {
+                    remoteFile.setMimeType("");
+                }
             }
 
             if (property instanceof ResourceType) {
