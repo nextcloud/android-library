@@ -64,7 +64,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     protected String localPath;
     protected String remotePath;
     protected String mimeType;
-    private String lastModificationTimestamp;
+    protected String lastModificationTimestamp;
     protected Long creationTimestamp = null;
     protected boolean disableRetries = false;
     PutMethod putMethod = null;
