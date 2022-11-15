@@ -28,6 +28,20 @@ class NextcloudUriDelegateIT {
         Assert.assertEquals("Wrong URL", expected, actual)
     }
 
+    @Test
+    fun testFilesDavUri_emptyPath() {
+        val expected = "$EXPECTED_FILES_DAV/"
+        val actual = sut.getFilesDavUri("")
+        Assert.assertEquals("Wrong URL", expected, actual)
+    }
+
+    @Test
+    fun testFilesDavUri_rootPath() {
+        val expected = "$EXPECTED_FILES_DAV/"
+        val actual = sut.getFilesDavUri("/")
+        Assert.assertEquals("Wrong URL", expected, actual)
+    }
+
     companion object {
         private const val USERID = "user"
         private const val BASEURL = "http://test.localhost"
