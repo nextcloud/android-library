@@ -81,11 +81,12 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
     	Uri serverUri = Uri.parse(getString(R.string.server_base_url));
     	mClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, this, true);
     	mClient.setCredentials(
-    			OwnCloudCredentialsFactory.newBasicCredentials(
-    					getString(R.string.username), 
-    					getString(R.string.password)
+				OwnCloudCredentialsFactory.newBasicCredentials(
+						getString(R.string.username),
+						getString(R.string.password)
 				)
 		);
+		mClient.setUserId(getString(R.string.username));
     	
     	mFilesAdapter = new FilesArrayAdapter(this, R.layout.file_in_list);
     	((ListView)findViewById(R.id.list_view)).setAdapter(mFilesAdapter);
