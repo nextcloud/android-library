@@ -207,7 +207,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             String originUri = uploadFolderUri + "/.file";
 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
-            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(file.lastModified() / 1000));
+            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp);
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
