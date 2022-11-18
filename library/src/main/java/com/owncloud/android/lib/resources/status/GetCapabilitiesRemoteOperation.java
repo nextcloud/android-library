@@ -560,11 +560,17 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                         capability.setEndToEndEncryption(CapabilityBooleanType.FALSE);
                     }
 
-                    if (respEndToEndEncryption.getBoolean(PROPERTY_KEYS_EXIST)) {
-                        capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.TRUE);
+                    if (respEndToEndEncryption.has(PROPERTY_KEYS_EXIST)) {
+                        final boolean keysExist = respEndToEndEncryption.getBoolean(PROPERTY_KEYS_EXIST);
+                        if (keysExist) {
+                            capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.FALSE);
+                        }
                     } else {
-                        capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.FALSE);
+                        capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.UNKNOWN);
                     }
+
 
                     Log_OC.d(TAG, "*** Added " + NODE_END_TO_END_ENCRYPTION);
                 }
