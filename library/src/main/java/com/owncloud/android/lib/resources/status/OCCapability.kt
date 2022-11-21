@@ -86,6 +86,7 @@ class OCCapability {
     var fullNextSearchFiles: CapabilityBooleanType? = null
 
     var endToEndEncryption = CapabilityBooleanType.UNKNOWN
+    var endToEndEncryptionKeysExist = CapabilityBooleanType.UNKNOWN
 
     // Richdocuments
     var richDocuments = CapabilityBooleanType.UNKNOWN

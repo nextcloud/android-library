@@ -159,6 +159,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_USER_STATUS_ENABLED = "enabled";
     private static final String NODE_USER_STATUS_SUPPORTS_EMOJI = "supports_emoji";
 
+    // end to end encryption
+    private static final String PROPERTY_KEYS_EXIST = "keys-exist";
+
 
     private OCCapability currentCapability = null;
 
@@ -556,6 +559,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     } else {
                         capability.setEndToEndEncryption(CapabilityBooleanType.FALSE);
                     }
+
+                    if (respEndToEndEncryption.has(PROPERTY_KEYS_EXIST)) {
+                        final boolean keysExist = respEndToEndEncryption.getBoolean(PROPERTY_KEYS_EXIST);
+                        if (keysExist) {
+                            capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.TRUE);
+                        } else {
+                            capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.FALSE);
+                        }
+                    } else {
+                        capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.UNKNOWN);
+                    }
+
+
                     Log_OC.d(TAG, "*** Added " + NODE_END_TO_END_ENCRYPTION);
                 }
 
