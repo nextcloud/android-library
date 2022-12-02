@@ -75,7 +75,7 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
 
         assertNotNull(firstResult)
         assertEquals(remotePath, firstResult?.remotePath())
-        assertEquals(fileId, firstResult?.fileId())
+        assertEquals(fileId.toString(), firstResult?.fileId())
     }
 
     @Test
