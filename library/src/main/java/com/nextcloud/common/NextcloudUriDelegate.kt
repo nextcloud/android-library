@@ -65,7 +65,7 @@ class NextcloudUriDelegate(baseUri: Uri, var userId: String?) : NextcloudUriProv
         return "$filesDavUri${WebdavUtils.encodePath(path)}"
     }
 
-    override fun getCommentsUri(fileId: String): String {
+    override fun getCommentsUri(fileId: Long): String {
         return "$davUri/comments/files/$fileId"
     }
 }

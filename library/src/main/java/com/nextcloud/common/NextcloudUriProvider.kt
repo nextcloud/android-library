@@ -39,5 +39,5 @@ interface NextcloudUriProvider {
     val davUri: Uri
 
     fun getFilesDavUri(path: String): String
-    fun getCommentsUri(fileId: String): String
+    fun getCommentsUri(fileId: Long): String
 }

@@ -328,7 +328,7 @@ public class OwnCloudClient extends HttpClient {
         return nextcloudUriDelegate.getDavUri();
     }
 
-    public String getCommentsUri(String fileId) {
+    public String getCommentsUri(long fileId) {
         return nextcloudUriDelegate.getCommentsUri(fileId);
     }
 
