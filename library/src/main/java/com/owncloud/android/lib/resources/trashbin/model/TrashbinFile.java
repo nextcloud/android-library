@@ -27,13 +27,14 @@ package com.owncloud.android.lib.resources.trashbin.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.files.model.ServerFileInterface;
 
 import java.io.Serializable;
 
-import androidx.annotation.VisibleForTesting;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -61,6 +62,14 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     private String originalLocation;
     private long deletionTimestamp;
 
+    /**
+     * For trashbin this is the same as remoteId
+     */
+    @Override
+    public long getLocalId() {
+        return Long.parseLong(getRemoteId());
+    }
+
     @Override
     public boolean isFolder() {
         return DIRECTORY.equals(mimeType);
@@ -71,8 +80,28 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     }
 
     @Override
-    public String getImageKey() {
-        return remoteId;
+    public long getFileLength() {
+        return fileLength;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public String getRemotePath() {
+        return remotePath;
+    }
+
+    @Override
+    public String getRemoteId() {
+        return String.valueOf(remoteId);
     }
 
     @Override
