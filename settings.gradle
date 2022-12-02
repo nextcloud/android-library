@@ -1,2 +1,7 @@
 include ':library'
 include ':sample_client'
+includeBuild('../android-library') {
+    dependencySubstitution {
+        substitute module('com.github.nextcloud:android-library') using project(':library')
+    }
+}
