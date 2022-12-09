@@ -231,15 +231,15 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testRecentlyModifiedSearch() throws IOException {
         long now = System.currentTimeMillis() / MILLI_TO_SECOND;
         String filePath = createFile("image");
-        assertTrue(new UploadFileRemoteOperation(filePath, "/image.jpg", "image/jpg", String.valueOf(now - 50))
+        assertTrue(new UploadFileRemoteOperation(filePath, "/image.jpg", "image/jpg", now - 50)
                 .execute(client).isSuccess());
 
         String videoPath = createFile("video");
-        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", String.valueOf(now - 10))
+        assertTrue(new UploadFileRemoteOperation(videoPath, "/video.mp4", "video/mpeg", now - 10)
                 .execute(client).isSuccess());
 
         String pdfPath = createFile("pdf");
-        assertTrue(new UploadFileRemoteOperation(pdfPath, "/pdf.pdf", "application/pdf", String.valueOf(now - 30))
+        assertTrue(new UploadFileRemoteOperation(pdfPath, "/pdf.pdf", "application/pdf", now - 30)
                 .execute(client).isSuccess());
 
         String oldPath = createFile("pdf");
@@ -295,11 +295,12 @@ public class SearchRemoteOperationIT extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath,
+            assertTrue(new UploadFileRemoteOperation(
+                    filePath,
                     remotePath,
                     "image/jpg",
-                    String.valueOf(100000 + i * 10000))
-                    .execute(client).isSuccess());
+                    100000 + i * 10000
+            ).execute(client).isSuccess());
         }
 
         // get all
@@ -329,8 +330,8 @@ public class SearchRemoteOperationIT extends AbstractIT {
                     filePath,
                     remotePath,
                     "image/jpg",
-                    String.valueOf(1464818400 + i))
-                    .execute(client).isSuccess());
+                    1464818400 + i
+            ).execute(client).isSuccess());
         }
 
         SearchRemoteOperation sut = new SearchRemoteOperation("image/%",
@@ -361,8 +362,8 @@ public class SearchRemoteOperationIT extends AbstractIT {
                     filePath,
                     remotePath,
                     "image/jpg",
-                    String.valueOf(randomUnixTimestamp + i))
-                    .execute(client).isSuccess());
+                    randomUnixTimestamp + i
+            ).execute(client).isSuccess());
         }
 
         SearchRemoteOperation sut = new SearchRemoteOperation("image/%",
@@ -388,11 +389,12 @@ public class SearchRemoteOperationIT extends AbstractIT {
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
-            assertTrue(new UploadFileRemoteOperation(filePath,
+            assertTrue(new UploadFileRemoteOperation(
+                    filePath,
                     remotePath,
                     "image/jpg",
-                    String.valueOf(100000 + i * 10000))
-                    .execute(client).isSuccess());
+                    100000 + i * 10000
+            ).execute(client).isSuccess());
         }
 
         // get all

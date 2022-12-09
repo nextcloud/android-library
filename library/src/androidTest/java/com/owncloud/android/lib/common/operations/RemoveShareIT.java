@@ -50,11 +50,12 @@ public class RemoveShareIT extends AbstractIT {
     @Test
     public void testRemoveShare() throws IOException {
         File textFile = getFile(ASSETS__TEXT_FILE_NAME);
-        assertTrue(new UploadFileRemoteOperation(textFile.getAbsolutePath(),
+        assertTrue(new UploadFileRemoteOperation(
+                textFile.getAbsolutePath(),
                 FILE_TO_UNSHARE,
                 "txt/plain",
-                String.valueOf(System.currentTimeMillis() / MILLI_TO_SECOND))
-                .execute(client).isSuccess());
+                System.currentTimeMillis() / MILLI_TO_SECOND
+        ).execute(client).isSuccess());
 
         RemoteOperationResult<List<OCShare>> result = new CreateShareRemoteOperation(FILE_TO_UNSHARE,
                 ShareType.PUBLIC_LINK,

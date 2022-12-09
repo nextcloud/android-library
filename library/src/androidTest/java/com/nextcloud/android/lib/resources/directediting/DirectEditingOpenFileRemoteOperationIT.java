@@ -47,8 +47,12 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/text.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "1464818400")
-                .execute(client).isSuccess());
+        TestCase.assertTrue(new UploadFileRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                1464818400
+        ).execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
@@ -66,8 +70,12 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/äää.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "1464818400")
-                .execute(client).isSuccess());
+        TestCase.assertTrue(new UploadFileRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                1464818400
+        ).execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
@@ -85,8 +93,12 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         // create file
         String filePath = createFile("text");
         String remotePath = "/あ.md";
-        TestCase.assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "text/markdown", "1464818400")
-                .execute(client).isSuccess());
+        TestCase.assertTrue(new UploadFileRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                1464818400
+        ).execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
