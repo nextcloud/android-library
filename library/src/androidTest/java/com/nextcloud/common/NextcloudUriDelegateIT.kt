@@ -1,7 +1,7 @@
 package com.nextcloud.common
 
 import android.net.Uri
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -18,28 +18,28 @@ class NextcloudUriDelegateIT {
     fun testFilesDavUriLeadingSlashInPath() {
         val expected = "$EXPECTED_FILES_DAV/path/to/file.txt"
         val actual = sut.getFilesDavUri("/path/to/file.txt")
-        Assert.assertEquals("Wrong URL", expected, actual)
+        assertEquals("Wrong URL", expected, actual)
     }
 
     @Test
     fun testFilesDavUriLoLeadingSlashInPath() {
         val expected = "$EXPECTED_FILES_DAV/path/to/file.txt"
         val actual = sut.getFilesDavUri("path/to/file.txt")
-        Assert.assertEquals("Wrong URL", expected, actual)
+        assertEquals("Wrong URL", expected, actual)
     }
 
     @Test
     fun testFilesDavUriEmptyPath() {
         val expected = "$EXPECTED_FILES_DAV/"
         val actual = sut.getFilesDavUri("")
-        Assert.assertEquals("Wrong URL", expected, actual)
+        assertEquals("Wrong URL", expected, actual)
     }
 
     @Test
     fun testFilesDavUriRootPath() {
         val expected = "$EXPECTED_FILES_DAV/"
         val actual = sut.getFilesDavUri("/")
-        Assert.assertEquals("Wrong URL", expected, actual)
+        assertEquals("Wrong URL", expected, actual)
     }
 
     companion object {

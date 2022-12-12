@@ -26,9 +26,11 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.lib.common.operations.ExceptionParser;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -55,8 +57,8 @@ public class ExceptionParserIT {
         InputStream is = new ByteArrayInputStream(virusException.getBytes());
         ExceptionParser xmlParser = new ExceptionParser(is);
 
-        Assert.assertTrue(xmlParser.isVirusException());
-        Assert.assertFalse(xmlParser.isInvalidCharacterException());
+        assertTrue(xmlParser.isVirusException());
+        assertFalse(xmlParser.isInvalidCharacterException());
     }
 
     @Test
@@ -70,8 +72,8 @@ public class ExceptionParserIT {
         InputStream is = new ByteArrayInputStream(virusException.getBytes());
         ExceptionParser xmlParser = new ExceptionParser(is);
 
-        Assert.assertTrue(xmlParser.isInvalidCharacterException());
-        Assert.assertFalse(xmlParser.isVirusException());
+        assertTrue(xmlParser.isInvalidCharacterException());
+        assertFalse(xmlParser.isVirusException());
     }
 
     @Test
@@ -85,8 +87,8 @@ public class ExceptionParserIT {
         InputStream is = new ByteArrayInputStream(virusException.getBytes());
         ExceptionParser xmlParser = new ExceptionParser(is);
 
-        Assert.assertTrue(xmlParser.isInvalidCharacterException());
-        Assert.assertFalse(xmlParser.isVirusException());
+        assertTrue(xmlParser.isInvalidCharacterException());
+        assertFalse(xmlParser.isVirusException());
     }
 
     @Test
@@ -96,8 +98,8 @@ public class ExceptionParserIT {
         InputStream is = new ByteArrayInputStream(emptyString.getBytes());
         ExceptionParser xmlParser = new ExceptionParser(is);
 
-        Assert.assertFalse(xmlParser.isVirusException());
-        Assert.assertFalse(xmlParser.isInvalidCharacterException());
+        assertFalse(xmlParser.isVirusException());
+        assertFalse(xmlParser.isInvalidCharacterException());
     }
 
     @Test
@@ -107,7 +109,7 @@ public class ExceptionParserIT {
         InputStream is = new ByteArrayInputStream(emptyString.getBytes());
         ExceptionParser xmlParser = new ExceptionParser(is);
 
-        Assert.assertFalse(xmlParser.isVirusException());
-        Assert.assertFalse(xmlParser.isInvalidCharacterException());
+        assertFalse(xmlParser.isVirusException());
+        assertFalse(xmlParser.isInvalidCharacterException());
     }
 }

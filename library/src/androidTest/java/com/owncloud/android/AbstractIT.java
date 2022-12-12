@@ -27,6 +27,8 @@
 package com.owncloud.android;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import android.content.Context;
 import android.net.Uri;
@@ -53,7 +55,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 
@@ -140,7 +141,7 @@ public abstract class AbstractIT {
             }
 
             if (i == 3) {
-                Assert.fail("Server not ready!");
+                fail("Server not ready!");
             }
 
         } catch (IOException e) {
@@ -171,7 +172,7 @@ public abstract class AbstractIT {
                 NetworkUtils.addCertToKnownServersStore(certificate, context);
                 Thread.sleep(1000);
 
-                Assert.assertEquals(certificate,
+                assertEquals(certificate,
                         NetworkUtils.getKnownServersStore(context)
                                 .getCertificate(Integer.toString(certificate.hashCode()))
                 );
@@ -253,7 +254,7 @@ public abstract class AbstractIT {
 
             if (!"/".equals(remoteFile.getRemotePath())) {
                 if (remoteFile.isEncrypted()) {
-                    Assert.assertTrue(new ToggleEncryptionRemoteOperation(
+                    assertTrue(new ToggleEncryptionRemoteOperation(
                             remoteFile.getLocalId(),
                             remoteFile.getRemotePath(),
                             false)

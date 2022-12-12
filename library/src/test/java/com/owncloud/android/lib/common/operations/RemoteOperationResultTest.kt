@@ -28,7 +28,8 @@
 package com.owncloud.android.lib.common.operations
 
 import org.apache.commons.httpclient.Header
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RemoteOperationResultTest {
@@ -61,15 +62,15 @@ class RemoteOperationResultTest {
             )
         )
 
-        Assert.assertTrue(
+        assertTrue(
             "Missing bearer auth header",
             sut.authenticateHeaders.any { it == BEARER_HEADER.value }
         )
-        Assert.assertTrue(
+        assertTrue(
             "Missing basic auth header",
             sut.authenticateHeaders.any { it == BASIC_HEADER.value }
         )
-        Assert.assertEquals(
+        assertEquals(
             "Wrong location header",
             null,
             sut.redirectedLocation
@@ -84,16 +85,16 @@ class RemoteOperationResultTest {
             )
         )
 
-        Assert.assertEquals(
+        assertEquals(
             "Wrong auth headers length",
             1,
             sut.authenticateHeaders.size
         )
-        Assert.assertTrue(
+        assertTrue(
             "Missing bearer auth header",
             sut.authenticateHeaders.any { it == BEARER_HEADER.value }
         )
-        Assert.assertEquals(
+        assertEquals(
             "Wrong location header",
             null,
             sut.redirectedLocation
@@ -108,12 +109,12 @@ class RemoteOperationResultTest {
             )
         )
 
-        Assert.assertEquals(
+        assertEquals(
             "Wrong auth headers length",
             0,
             sut.authenticateHeaders.size
         )
-        Assert.assertEquals(
+        assertEquals(
             "Wrong location header",
             LOCATION_HEADER.value,
             sut.redirectedLocation

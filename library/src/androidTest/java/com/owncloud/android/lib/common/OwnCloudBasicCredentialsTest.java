@@ -1,10 +1,12 @@
 package com.owncloud.android.lib.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +41,7 @@ public class OwnCloudBasicCredentialsTest {
         };
 
         for (OwnCloudBasicCredentials modified : differentCredentials) {
-            Assert.assertNotEquals(original, modified);
+            assertNotEquals(original, modified);
         }
     }
 
@@ -57,7 +59,7 @@ public class OwnCloudBasicCredentialsTest {
                 true
         );
 
-        Assert.assertEquals(original, identical);
+        assertEquals(original, identical);
     }
 
     @Test
@@ -74,6 +76,6 @@ public class OwnCloudBasicCredentialsTest {
 
         OwnCloudBasicCredentials copy = intent.getParcelableExtra("credentials");
 
-        Assert.assertEquals(original, copy);
+        assertEquals(original, copy);
     }
 }

@@ -24,7 +24,8 @@ package com.owncloud.android
 
 import com.nextcloud.common.PlainClient
 import com.nextcloud.operations.GetMethod
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import java.net.HttpURLConnection
 
@@ -36,7 +37,7 @@ class PlainClientIT : AbstractIT() {
 
         val status = getMethod.execute(sut)
 
-        Assert.assertEquals(HttpURLConnection.HTTP_NO_CONTENT, status)
+        assertEquals(HttpURLConnection.HTTP_NO_CONTENT, status)
     }
 
     @Test
@@ -46,6 +47,6 @@ class PlainClientIT : AbstractIT() {
 
         val status = getMethod.execute(sut)
 
-        Assert.assertNotEquals(HttpURLConnection.HTTP_NO_CONTENT, status)
+        assertNotEquals(HttpURLConnection.HTTP_NO_CONTENT, status)
     }
 }
