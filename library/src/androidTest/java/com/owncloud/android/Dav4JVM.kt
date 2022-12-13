@@ -108,6 +108,7 @@ class Dav4JVM : AbstractIT() {
         // register custom property
         WebdavUtils.registerCustomFactories()
 
+        // TODO use DavResource().propfind in ReadFileRemoteOperation/ReadFolderRemoteOperation
         DavResource(client, httpUrl)
             .propfind(
                 DavConstants.DEPTH_1,
