@@ -22,7 +22,7 @@ repositories {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     lintOptions {
         abortOnError false
@@ -33,12 +33,20 @@ android {
     }
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 }
 
 dependencies {
     implementation project(path: ':library')
-    implementation "commons-httpclient:commons-httpclient:3.1@jar" // remove after entire switch to lib v2
+    implementation "commons-httpclient:commons-httpclient:3.1@jar"
+    // remove after entire switch to lib v2
     implementation "org.jacoco:org.jacoco.agent:$jacoco_version:runtime"
+    implementation 'androidx.test:monitor:1.6.0'
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:monitor:1.6.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test:runner:1.5.1'
 }
