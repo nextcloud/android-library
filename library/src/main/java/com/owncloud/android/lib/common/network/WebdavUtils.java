@@ -119,6 +119,7 @@ public class WebdavUtils {
         Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
         DavPropertyNameSet propSet = new DavPropertyNameSet();
+
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
         propSet.add(DavPropertyName.RESOURCETYPE);
@@ -164,43 +165,37 @@ public class WebdavUtils {
     public static Property.Name[] getAllPropertiesList() {
         List<Property.Name> list = new ArrayList<>();
 
-        list.add(CreationDate.NAME);
-        list.add(NCFavorite.NAME);
-        list.add(NCEtag.NAME);
-        list.add(GetLastModified.NAME);
+        list.add(DisplayName.NAME);
         list.add(GetContentType.NAME);
         list.add(ResourceType.NAME);
+        list.add(GetContentLength.NAME);
+        list.add(GetLastModified.NAME);
+        list.add(CreationDate.NAME);
+        list.add(GetETag.NAME); // list.add(NCEtag.NAME);
         list.add(NCPermissions.NAME);
-        list.add(OCId.NAME);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
         list.add(OCSize.NAME);
+        list.add(NCFavorite.NAME);
+//      list.add(NCEncrypted.NAME);   
         list.add(NCMountType.NAME);
         list.add(OCOwnerId.NAME);
         list.add(OCOwnerDisplayName.NAME);
-        list.add(NCRichWorkspace.NAME);
-
-        list.add(DisplayName.NAME);
-        list.add(GetContentType.NAME);
-        list.add(GetContentLength.NAME);
-        list.add(GetContentType.NAME);
-        list.add(GetContentLength.NAME);
-        list.add(GetLastModified.NAME);
-        list.add(CreationDate.NAME);
-        list.add(GetETag.NAME);
-        list.add(ResourceType.NAME);
+//      list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
+//      list.add(NCPreview.NAME);
+//      list.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
         list.add(NCSharee.NAME);
-
-//        list.add(NCPermission.NAME);
-//        list.add(OCId.NAME);
-//        list.add(OCSize.NAME);
-//        list.add(OCFavorite.NAME);
-//        list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_ID));
-//        list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_DISPLAY_NAME));
-//        list.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
-//
-//        list.add(NCEncrypted.NAME);
-//        list.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_MOUNT_TYPE));
-//        list.add(NCPreview.NAME);
-//        list.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
+        list.add(NCRichWorkspace.NAME);
+        list.add(CreationDate.NAME);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
+//      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
+        list.add(OCId.NAME); // what about this?
 
         return list.toArray(new Property.Name[0]);
     }
@@ -213,8 +208,8 @@ public class WebdavUtils {
     public static DavPropertyNameSet getFilePropSet() {
         Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
-
         DavPropertyNameSet propSet = new DavPropertyNameSet();
+
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
         propSet.add(DavPropertyName.RESOURCETYPE);
