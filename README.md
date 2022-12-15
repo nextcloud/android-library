@@ -36,7 +36,9 @@ repositories {
 }
 dependencies {
     ...
-    compile 'com.github.nextcloud:android-library:-SNAPSHOT'
+    implementation("com.github.nextcloud:android-library:$androidLibraryVersion") {
+        exclude group: 'org.ogce', module: 'xpp3' // unused in Android and brings wrong Junit version
+    }
 ```
 
 ### As a git submodule

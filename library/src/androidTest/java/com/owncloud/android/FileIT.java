@@ -26,6 +26,10 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -37,15 +41,14 @@ import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
 import com.owncloud.android.lib.resources.shares.OCShare;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.shares.ShareeUser;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
+import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests related to file operations
@@ -169,14 +172,21 @@ public class FileIT extends AbstractIT {
 
         ShareeUser sharee = new ShareeUser("users", "", ShareType.GROUP);
 
+        // only on NC26+
+        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).getSingleData();
+        if (ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
+            sharee.setDisplayName("users");
+        }
+
         // share folder
         assertTrue(new CreateShareRemoteOperation(path,
-                                                  ShareType.GROUP,
-                                                  "users",
-                                                  false,
-                                                  "",
-                                                  OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                ShareType.GROUP,
+                "users",
+                false,
+                "",
+                OCShare.NO_PERMISSION)
+                .execute(client).isSuccess());
 
         // verify
         RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
