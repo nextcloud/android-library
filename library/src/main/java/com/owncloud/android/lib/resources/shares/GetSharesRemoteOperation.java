@@ -26,6 +26,8 @@
 
 package com.owncloud.android.lib.resources.shares;
 
+import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -63,6 +65,7 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
         // Get the response
         try {
             get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            get.setQueryString(INCLUDE_TAGS);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             if (sharedWithMe) {
