@@ -56,6 +56,7 @@ class ToggleFileLockRemoteOperationIT : AbstractIT() {
         val filePath: String = createFile("text")
         val remotePath = "/text.md"
         assertTrue(
+            @Suppress("Detekt.MagicNumber")
             UploadFileRemoteOperation(filePath, remotePath, "text/markdown", 1464818400)
                 .execute(client).isSuccess
         )
