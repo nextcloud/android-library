@@ -124,6 +124,7 @@ class NextcloudClient private constructor(
     }
 
     @Throws(IOException::class)
+    @Suppress("NestedBlockDepth")
     fun followRedirection(method: OkHttpMethodBase): RedirectionPath {
         var redirectionsCount = 0
         var status = method.getStatusCode()
@@ -133,10 +134,9 @@ class NextcloudClient private constructor(
             status == HttpStatus.SC_MOVED_TEMPORARILY ||
             status == HttpStatus.SC_TEMPORARY_REDIRECT
         while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT && statusIsRedirection) {
-            var location = method.getResponseHeader("Location")
-            if (location == null) {
-                location = method.getResponseHeader("location")
-            }
+            val location = method.getResponseHeader("Location")
+                ?: method.getResponseHeader("location")
+
             if (location != null) {
                 Log_OC.d(TAG, "Location to redirect: $location")
                 result.addLocation(location)
@@ -145,10 +145,7 @@ class NextcloudClient private constructor(
                 method.releaseConnection()
                 method.uri = location
                 var destination = method.getRequestHeader("Destination")
-
-                if (destination == null) {
-                    destination = method.getRequestHeader("destination")
-                }
+                    ?: method.getRequestHeader("destination")
 
                 if (destination != null) {
                     val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
@@ -164,12 +161,14 @@ class NextcloudClient private constructor(
                         method.addRequestHeader("Destination", destination)
                     }
                 }
+
                 status = method.execute(this)
                 result.addStatus(status)
                 redirectionsCount++
             } else {
                 Log_OC.d(TAG, "No location to redirect!")
                 status = HttpStatus.SC_NOT_FOUND
+                result.addStatus(status)
             }
         }
         return result

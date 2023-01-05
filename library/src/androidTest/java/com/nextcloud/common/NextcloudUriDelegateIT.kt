@@ -15,28 +15,28 @@ class NextcloudUriDelegateIT {
     }
 
     @Test
-    fun testFilesDavUri_leadingSlashInPath() {
+    fun testFilesDavUriLeadingSlashInPath() {
         val expected = "$EXPECTED_FILES_DAV/path/to/file.txt"
         val actual = sut.getFilesDavUri("/path/to/file.txt")
         Assert.assertEquals("Wrong URL", expected, actual)
     }
 
     @Test
-    fun testFilesDavUri_noLeadingSlashInPath() {
+    fun testFilesDavUriLoLeadingSlashInPath() {
         val expected = "$EXPECTED_FILES_DAV/path/to/file.txt"
         val actual = sut.getFilesDavUri("path/to/file.txt")
         Assert.assertEquals("Wrong URL", expected, actual)
     }
 
     @Test
-    fun testFilesDavUri_emptyPath() {
+    fun testFilesDavUriEmptyPath() {
         val expected = "$EXPECTED_FILES_DAV/"
         val actual = sut.getFilesDavUri("")
         Assert.assertEquals("Wrong URL", expected, actual)
     }
 
     @Test
-    fun testFilesDavUri_rootPath() {
+    fun testFilesDavUriRootPath() {
         val expected = "$EXPECTED_FILES_DAV/"
         val actual = sut.getFilesDavUri("/")
         Assert.assertEquals("Wrong URL", expected, actual)

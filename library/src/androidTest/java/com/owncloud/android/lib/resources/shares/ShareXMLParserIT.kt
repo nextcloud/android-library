@@ -30,6 +30,7 @@ import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import org.junit.Test
 
+@Suppress("LargeClass", "LongMethod")
 class ShareXMLParserIT {
     @Test
     fun testOCShareResponse() {
