@@ -133,10 +133,9 @@ class NextcloudClient private constructor(
             status == HttpStatus.SC_MOVED_TEMPORARILY ||
             status == HttpStatus.SC_TEMPORARY_REDIRECT
         while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT && statusIsRedirection) {
-            var location = method.getResponseHeader("Location")
-            if (location == null) {
-                location = method.getResponseHeader("location")
-            }
+            val location = method.getResponseHeader("Location")
+                ?: method.getResponseHeader("location")
+
             if (location != null) {
                 Log_OC.d(TAG, "Location to redirect: $location")
                 result.addLocation(location)
@@ -144,35 +143,40 @@ class NextcloudClient private constructor(
                 // due to it will be set a different url
                 method.releaseConnection()
                 method.uri = location
-                var destination = method.getRequestHeader("Destination")
-
-                if (destination == null) {
-                    destination = method.getRequestHeader("destination")
-                }
+                val destination = method.getRequestHeader("Destination")
+                    ?: method.getRequestHeader("destination")
 
                 if (destination != null) {
-                    val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
-                    val redirectionBase = location.substring(0, suffixIndex)
-                    val destinationStr = destination
-                    val destinationPath = destinationStr.substring(baseUri.toString().length)
-                    val redirectedDestination = redirectionBase + destinationPath
-                    destination = redirectedDestination
-
-                    if (method.getRequestHeader("Destination").isNullOrEmpty()) {
-                        method.addRequestHeader("destination", destination)
-                    } else {
-                        method.addRequestHeader("Destination", destination)
-                    }
+                    setRedirectedDestinationHeader(method, location, destination)
                 }
+
                 status = method.execute(this)
                 result.addStatus(status)
                 redirectionsCount++
             } else {
                 Log_OC.d(TAG, "No location to redirect!")
                 status = HttpStatus.SC_NOT_FOUND
+                result.addStatus(status)
             }
         }
         return result
+    }
+
+    private fun setRedirectedDestinationHeader(
+        method: OkHttpMethodBase,
+        location: String,
+        destination: String
+    ) {
+        val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
+        val redirectionBase = location.substring(0, suffixIndex)
+        val destinationPath = destination.substring(baseUri.toString().length)
+        val redirectedDestination = redirectionBase + destinationPath
+
+        if (method.getRequestHeader("Destination").isNullOrEmpty()) {
+            method.addRequestHeader("destination", redirectedDestination)
+        } else {
+            method.addRequestHeader("Destination", redirectedDestination)
+        }
     }
 
     fun getUserIdEncoded(): String {

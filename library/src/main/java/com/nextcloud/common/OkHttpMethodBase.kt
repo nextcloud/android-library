@@ -124,8 +124,8 @@ abstract class OkHttpMethodBase(
         return response?.header(name)
     }
 
-    fun getRequestHeader(name: String): String {
-        return request?.header(name) ?: ""
+    fun getRequestHeader(name: String): String? {
+        return request?.header(name)
     }
 
     /**
