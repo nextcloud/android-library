@@ -124,7 +124,6 @@ class NextcloudClient private constructor(
     }
 
     @Throws(IOException::class)
-    @Suppress("NestedBlockDepth")
     fun followRedirection(method: OkHttpMethodBase): RedirectionPath {
         var redirectionsCount = 0
         var status = method.getStatusCode()
@@ -144,22 +143,11 @@ class NextcloudClient private constructor(
                 // due to it will be set a different url
                 method.releaseConnection()
                 method.uri = location
-                var destination = method.getRequestHeader("Destination")
+                val destination = method.getRequestHeader("Destination")
                     ?: method.getRequestHeader("destination")
 
                 if (destination != null) {
-                    val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
-                    val redirectionBase = location.substring(0, suffixIndex)
-                    val destinationStr = destination
-                    val destinationPath = destinationStr.substring(baseUri.toString().length)
-                    val redirectedDestination = redirectionBase + destinationPath
-                    destination = redirectedDestination
-
-                    if (method.getRequestHeader("Destination").isNullOrEmpty()) {
-                        method.addRequestHeader("destination", destination)
-                    } else {
-                        method.addRequestHeader("Destination", destination)
-                    }
+                    setRedirectedDestinationHeader(method, location, destination)
                 }
 
                 status = method.execute(this)
@@ -172,6 +160,23 @@ class NextcloudClient private constructor(
             }
         }
         return result
+    }
+
+    private fun setRedirectedDestinationHeader(
+        method: OkHttpMethodBase,
+        location: String,
+        destination: String
+    ) {
+        val suffixIndex = location.lastIndexOf(AccountUtils.WEBDAV_PATH_9_0)
+        val redirectionBase = location.substring(0, suffixIndex)
+        val destinationPath = destination.substring(baseUri.toString().length)
+        val redirectedDestination = redirectionBase + destinationPath
+
+        if (method.getRequestHeader("Destination").isNullOrEmpty()) {
+            method.addRequestHeader("destination", redirectedDestination)
+        } else {
+            method.addRequestHeader("Destination", redirectedDestination)
+        }
     }
 
     fun getUserIdEncoded(): String {
