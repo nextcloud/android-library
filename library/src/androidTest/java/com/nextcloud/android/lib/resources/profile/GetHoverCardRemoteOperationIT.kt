@@ -34,7 +34,6 @@ import org.junit.Assert
 import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
-import java.util.ArrayList
 
 class GetHoverCardRemoteOperationIT : AbstractIT() {
     @Before
@@ -48,9 +47,9 @@ class GetHoverCardRemoteOperationIT : AbstractIT() {
 
     @Test
     fun testHoverCard() {
-        val result = GetHoverCardRemoteOperation(nextcloudClient.userId)
+        val result = GetHoverCardRemoteOperation(nextcloudClient.userId + "123")
             .execute(nextcloudClient)
-        Assert.assertTrue(result.isSuccess)
+        Assert.assertTrue(result.logMessage, result.isSuccess)
         val hoverCard = result.resultData
         Assert.assertEquals(nextcloudClient.userId, hoverCard?.userId)
     }
