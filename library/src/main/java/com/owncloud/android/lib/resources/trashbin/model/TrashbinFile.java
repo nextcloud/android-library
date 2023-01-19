@@ -27,13 +27,14 @@ package com.owncloud.android.lib.resources.trashbin.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.files.model.ServerFileInterface;
 
 import java.io.Serializable;
 
-import androidx.annotation.VisibleForTesting;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,8 +66,8 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
      * For trashbin this is the same as remoteId
      */
     @Override
-    public String getLocalId() {
-        return getRemoteId();
+    public long getLocalId() {
+        return Long.parseLong(getRemoteId());
     }
 
     @Override
@@ -79,13 +80,38 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
     }
 
     @Override
+    public long getFileLength() {
+        return fileLength;
+    }
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public String getRemotePath() {
+        return remotePath;
+    }
+
+    @Override
+    public String getRemoteId() {
+        return String.valueOf(remoteId);
+    }
+
+    @Override
     public boolean isFavorite() {
         return false;
     }
 
     public TrashbinFile(WebdavEntry we, String userId) {
         String path = we.decodedPath();
-        
+
         if (path == null || path.length() <= 0 || !path.startsWith(FileUtils.PATH_SEPARATOR)) {
             throw new IllegalArgumentException("Trying to create a TrashbinFile with a non valid remote path: " + path);
         }

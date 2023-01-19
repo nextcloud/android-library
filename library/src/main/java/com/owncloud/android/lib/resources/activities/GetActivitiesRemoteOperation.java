@@ -75,16 +75,16 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
     private int lastGiven = -1;
     
-    private String fileId = "";
+    private long fileId = -1;
 
     public GetActivitiesRemoteOperation() {
     }
 
-    public GetActivitiesRemoteOperation(String fileId) {
+    public GetActivitiesRemoteOperation(long fileId) {
         this.fileId = fileId;
     }
-    
-    public GetActivitiesRemoteOperation(String fileId, int lastGiven) {
+
+    public GetActivitiesRemoteOperation(long fileId, int lastGiven) {
         this.fileId = fileId;
         this.lastGiven = lastGiven;
     }
@@ -102,7 +102,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
 
         // add filter for fileId, if available
-        if (!fileId.isEmpty()) {
+        if (fileId > 0) {
             url = url + "/filter";
         }
 
@@ -119,10 +119,10 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                 parameters.put("since", String.valueOf(lastGiven));
             }
 
-            if (!fileId.isEmpty()) {
+            if (fileId > 0) {
                 parameters.put("sort", "desc");
                 parameters.put("object_type", "files");
-                parameters.put("object_id", fileId);
+                parameters.put("object_id", String.valueOf(fileId));
             }
 
             get.setQueryString(parameters);
@@ -173,7 +173,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
         
         // add filter for fileId, if available
-        if (!fileId.isEmpty()) {
+        if (fileId > 0) {
             url = url + "/filter";
         }
         
@@ -191,10 +191,10 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
                 parameters.add(new NameValuePair("since", String.valueOf(lastGiven)));
             }
 
-            if (!fileId.isEmpty()) {
+            if (fileId > 0) {
                 parameters.add(new NameValuePair("sort", "desc"));
                 parameters.add(new NameValuePair("object_type", "files"));
-                parameters.add(new NameValuePair("object_id", fileId));
+                parameters.add(new NameValuePair("object_id", String.valueOf(fileId)));
             }
 
             get.setQueryString(parameters.toArray(new NameValuePair[]{}));

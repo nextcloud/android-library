@@ -27,8 +27,6 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import androidx.annotation.NonNull;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -53,7 +51,7 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
 
     private static final String TAG = ReadFileVersionsRemoteOperation.class.getSimpleName();
 
-    private String fileId;
+    private final long localId;
     private ArrayList<Object> versions;
 
     /**
@@ -61,8 +59,8 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
      *
      * @param fileId FileId of the file.
      */
-    public ReadFileVersionsRemoteOperation(@NonNull String fileId) {
-        this.fileId = fileId;
+    public ReadFileVersionsRemoteOperation(long fileId) {
+        this.localId = fileId;
     }
 
     /**
@@ -76,7 +74,7 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
         PropFindMethod query = null;
 
         try {
-            String uri = client.getDavUri() + "/versions/" + client.getUserId() + "/versions/" + fileId;
+            String uri = client.getDavUri() + "/versions/" + client.getUserId() + "/versions/" + localId;
             DavPropertyNameSet propSet = WebdavUtils.getFileVersionPropSet();
 
             query = new PropFindMethod(uri, propSet, DavConstants.DEPTH_1);
@@ -109,16 +107,16 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
 
             if (result == null) {
                 result = new RemoteOperationResult(new Exception("unknown error"));
-                Log_OC.e(TAG, "Synchronized file with id " + fileId + ": failed");
+                Log_OC.e(TAG, "Synchronized file with id " + localId + ": failed");
             } else {
                 if (result.isSuccess()) {
-                    Log_OC.i(TAG, "Synchronized file with id " + fileId + ": " + result.getLogMessage());
+                    Log_OC.i(TAG, "Synchronized file with id " + localId + ": " + result.getLogMessage());
                 } else {
                     if (result.isException()) {
-                        Log_OC.e(TAG, "Synchronized with id " + fileId + ": " + result.getLogMessage(),
-                                result.getException());
+                        Log_OC.e(TAG, "Synchronized with id " + localId + ": " + result.getLogMessage(),
+                                 result.getException());
                     } else {
-                        Log_OC.w(TAG, "Synchronized with id " + fileId + ": " + result.getLogMessage());
+                        Log_OC.w(TAG, "Synchronized with id " + localId + ": " + result.getLogMessage());
                     }
                 }
             }
@@ -141,7 +139,7 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
 
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
-            versions.add(new FileVersion(fileId, new WebdavEntry(remoteData.getResponses()[i], splitElement)));
+            versions.add(new FileVersion(localId, new WebdavEntry(remoteData.getResponses()[i], splitElement)));
         }
     }
 }

@@ -55,12 +55,12 @@ public class GetMetadataRemoteOperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_META_DATA = "meta-data";
 
-    private String fileId;
+    private final long fileId;
 
     /**
      * Constructor
      */
-    public GetMetadataRemoteOperation(String fileId) {
+    public GetMetadataRemoteOperation(long fileId) {
         this.fileId = fileId;
     }
 

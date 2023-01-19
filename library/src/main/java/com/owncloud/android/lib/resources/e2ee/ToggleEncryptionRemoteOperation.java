@@ -49,14 +49,14 @@ public class ToggleEncryptionRemoteOperation extends RemoteOperation {
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String ENCRYPTED_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/encrypted/";
 
-    private String localId;
-    private String remotePath;
-    private boolean encryption;
+    private final long localId;
+    private final String remotePath;
+    private final boolean encryption;
 
     /**
      * Constructor
      */
-    public ToggleEncryptionRemoteOperation(String localId, String remotePath, boolean encryption) {
+    public ToggleEncryptionRemoteOperation(long localId, String remotePath, boolean encryption) {
         this.localId = localId;
         this.remotePath = remotePath;
         this.encryption = encryption;

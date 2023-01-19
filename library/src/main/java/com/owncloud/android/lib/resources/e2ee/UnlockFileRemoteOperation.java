@@ -45,13 +45,13 @@ public class UnlockFileRemoteOperation extends RemoteOperation {
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
 
-    private String localId;
-    private String token;
+    private final long localId;
+    private final String token;
 
     /**
      * Constructor
      */
-    public UnlockFileRemoteOperation(String localId, String token) {
+    public UnlockFileRemoteOperation(long localId, String token) {
         this.localId = localId;
         this.token = token;
     }

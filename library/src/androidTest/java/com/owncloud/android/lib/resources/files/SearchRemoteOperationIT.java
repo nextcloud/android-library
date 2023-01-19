@@ -81,7 +81,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         assertTrue(readFile.isSuccess());
 
         RemoteFile remoteFile = ((RemoteFile) readFile.getSingleData());
-        SearchRemoteOperation sut = new SearchRemoteOperation(remoteFile.getLocalId(),
+        SearchRemoteOperation sut = new SearchRemoteOperation(String.valueOf(remoteFile.getLocalId()),
                 SearchRemoteOperation.SearchType.FILE_ID_SEARCH,
                 false,
                 capability);

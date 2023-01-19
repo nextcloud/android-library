@@ -56,13 +56,13 @@ public class StoreMetadataRemoteOperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_META_DATA = "meta-data";
 
-    private String fileId;
-    private String encryptedMetadataJson;
+    private final long fileId;
+    private final String encryptedMetadataJson;
 
     /**
      * Constructor
      */
-    public StoreMetadataRemoteOperation(String fileId, String encryptedMetadataJson) {
+    public StoreMetadataRemoteOperation(long fileId, String encryptedMetadataJson) {
         this.fileId = fileId;
         this.encryptedMetadataJson = encryptedMetadataJson;
     }

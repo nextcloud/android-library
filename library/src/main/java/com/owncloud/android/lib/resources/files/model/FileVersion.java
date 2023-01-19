@@ -51,7 +51,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     @Getter @Setter private String mimeType;
     @Getter @Setter private long fileLength;
     @Getter @Setter private long modifiedTimestamp;
-    @Getter private String remoteId;
+    @Getter private long localId;
 
     @Override
     public boolean isFavorite() {
@@ -64,6 +64,11 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     }
 
     @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
     public String getRemotePath() {
         return "";
     }
@@ -72,20 +77,33 @@ public class FileVersion implements Parcelable, ServerFileInterface {
      * For file version this is the same as remoteId
      */
     @Override
-    public String getLocalId() {
-        return getRemoteId();
+    public long getLocalId() {
+        return localId;
+    }
+
+    /**
+     * For file version this is the same as remoteId
+     */
+    @Override
+    public String getRemoteId() {
+        return String.valueOf(localId);
     }
 
     public boolean isFolder() {
         return DIRECTORY.equals(mimeType);
     }
 
+    @Override
+    public long getFileLength() {
+        return 0;
+    }
+
     public boolean isHidden() {
         return getFileName().startsWith(".");
     }
 
-    public FileVersion(String fileId, WebdavEntry we) {
-        remoteId = fileId;
+    public FileVersion(long fileId, WebdavEntry we) {
+        localId = fileId;
         setMimeType(we.getContentType());
 
         if (isFolder()) {

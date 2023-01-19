@@ -54,10 +54,11 @@ public class WebdavEntry {
 
     private static final String TAG = WebdavEntry.class.getSimpleName();
 
-	public static final String NAMESPACE_OC = "http://owncloud.org/ns";
-	public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
-	public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
-	public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
+    public static final String NAMESPACE_OC = "http://owncloud.org/ns";
+    public static final String NAMESPACE_NC = "http://nextcloud.org/ns";
+    public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
+    public static final String EXTENDED_PROPERTY_NAME_LOCAL_ID = "fileid";
+    public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
     public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
     public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
     public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
@@ -100,8 +101,12 @@ public class WebdavEntry {
     @Getter private String contentType;
     @Getter private String eTag;
     @Getter private String permissions;
-    @Getter private String remoteId;
-    @Getter private String trashbinOriginalLocation;
+    @Getter
+    private String remoteId;
+    @Getter
+    private long localId;
+    @Getter
+    private String trashbinOriginalLocation;
     @Getter private String trashbinFilename;
     @Getter private long trashbinDeletionTimestamp;
     @Getter @Setter private boolean favorite;
@@ -280,6 +285,12 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
             if (prop != null) {
                 remoteId = prop.getValue().toString();
+            }
+
+            // OC remote id property <oc:fileid>
+            prop = propSet.get(EXTENDED_PROPERTY_NAME_LOCAL_ID, ocNamespace);
+            if (prop != null) {
+                localId = Long.parseLong((String) prop.getValue());
             }
 
             // OC size property <oc:size>
@@ -531,6 +542,7 @@ public class WebdavEntry {
     private void resetData() {
         name = uri = contentType = permissions = null;
         remoteId = null;
+        localId = -1;
         contentLength = createTimestamp = modifiedTimestamp = 0;
         size = 0;
         quotaUsedBytes = null;

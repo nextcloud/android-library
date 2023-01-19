@@ -47,9 +47,9 @@ import java.io.IOException;
 public class MarkCommentsAsReadRemoteOperation extends RemoteOperation {
     private static final String COMMENTS_URL = "/comments/files/";
 
-    private String fileId;
+    private final long fileId;
 
-    public MarkCommentsAsReadRemoteOperation(String fileId) {
+    public MarkCommentsAsReadRemoteOperation(long fileId) {
         this.fileId = fileId;
     }
 
