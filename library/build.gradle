@@ -107,7 +107,7 @@ tasks.withType(SpotBugsTask){task ->
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     buildTypes {
         debug {
