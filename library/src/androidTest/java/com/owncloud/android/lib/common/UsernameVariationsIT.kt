@@ -29,7 +29,7 @@ package com.owncloud.android.lib.common
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.ExistenceCheckRemoteOperation
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -53,6 +53,6 @@ class UsernameVariationsIT(private val username: String) : AbstractIT() {
         ocClient.userId = username // for test same as userId
 
         val existenceCheck = ExistenceCheckRemoteOperation("/", false).execute(ocClient)
-        Assert.assertTrue(existenceCheck.isSuccess)
+        assertTrue(existenceCheck.isSuccess)
     }
 }

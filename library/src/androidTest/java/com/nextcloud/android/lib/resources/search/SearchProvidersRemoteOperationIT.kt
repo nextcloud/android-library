@@ -26,8 +26,9 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.OCCapability
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
-import org.junit.Assert
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -47,8 +48,8 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
 
         assertTrue(providers.eTag.isNotBlank())
         assertTrue(providers.providers.isNotEmpty())
-        Assert.assertNotNull(providers.providers.find { it.name == "Files" })
-        Assert.assertNull(providers.providers.find { it.name == "RandomSearchProvider" })
+        assertNotNull(providers.providers.find { it.name == "Files" })
+        assertNull(providers.providers.find { it.name == "RandomSearchProvider" })
     }
 
     @Test

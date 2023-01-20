@@ -113,10 +113,10 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 //                "",
 //                OCShare.DEFAULT_PERMISSION)
 //                .execute(client);
-//        Assert.assertTrue(circleResult.getLogMessage(), circleResult.isSuccess());
+//        assertTrue(circleResult.getLogMessage(), circleResult.isSuccess());
 
         // share folder to mail
-//        Assert.assertTrue(new CreateShareRemoteOperation("/shareViaMail/",
+//        assertTrue(new CreateShareRemoteOperation("/shareViaMail/",
 //                ShareType.EMAIL,
 //                "testUser@testcloudserver.com",
 //                false,

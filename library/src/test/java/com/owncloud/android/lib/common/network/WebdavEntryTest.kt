@@ -23,7 +23,8 @@ package com.owncloud.android.lib.common.network
 import com.owncloud.android.lib.resources.files.model.FileLockType
 import org.apache.jackrabbit.webdav.MultiStatus
 import org.apache.jackrabbit.webdav.xml.DomUtil
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.w3c.dom.Element
 import java.io.ByteArrayInputStream
@@ -93,14 +94,14 @@ class WebdavEntryTest {
     @Test
     fun testParseLockProps() {
         val entry = WebdavEntry(getMultiStatus().responses[0], "/remote.php/dav/files/test/")
-        Assert.assertTrue("Entry not locked", entry.isLocked)
-        Assert.assertEquals("Wrong lock type", FileLockType.MANUAL, entry.lockOwnerType)
-        Assert.assertEquals("Wrong lock owner", "test", entry.lockOwnerId)
-        Assert.assertEquals("Wrong lock owner display name", "test", entry.lockOwnerDisplayName)
-        Assert.assertEquals("Wrong lock owner editor", null, entry.lockOwnerEditor)
-        Assert.assertEquals("Wrong lock timestamp", 1650637795, entry.lockTimestamp)
-        Assert.assertEquals("Wrong lock timeout", 1800, entry.lockTimeout)
-        Assert.assertEquals("Wrong lock token", null, entry.lockToken)
-        Assert.assertEquals("Wrong encryption state", false, entry.isEncrypted)
+        assertTrue("Entry not locked", entry.isLocked)
+        assertEquals("Wrong lock type", FileLockType.MANUAL, entry.lockOwnerType)
+        assertEquals("Wrong lock owner", "test", entry.lockOwnerId)
+        assertEquals("Wrong lock owner display name", "test", entry.lockOwnerDisplayName)
+        assertEquals("Wrong lock owner editor", null, entry.lockOwnerEditor)
+        assertEquals("Wrong lock timestamp", 1650637795, entry.lockTimestamp)
+        assertEquals("Wrong lock timeout", 1800, entry.lockTimeout)
+        assertEquals("Wrong lock token", null, entry.lockToken)
+        assertEquals("Wrong encryption state", false, entry.isEncrypted)
     }
 }

@@ -27,10 +27,9 @@ import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OCCapability
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UpdateShareRemoteOperationIT : AbstractIT() {
@@ -60,7 +59,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     }
 
     private fun testUpdateNote(note: String) {
-        Assert.assertTrue(CreateFolderRemoteOperation("/note/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/note/", true).execute(client).isSuccess)
 
         // share folder to user "admin"
         val createOperationResult = CreateShareRemoteOperation(
@@ -96,7 +95,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     @Test
     fun updateLabel() {
         val label = "test & test"
-        Assert.assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
 
         // share folder via public link
         val createOperationResult = CreateShareRemoteOperation(
@@ -132,7 +131,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     @Suppress("MaxLineLength")
     fun invalidPassword() {
         val folder = "/invalidPassword/"
-        Assert.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
 
         // share folder via public link
         val createOperationResult = CreateShareRemoteOperation(
@@ -155,7 +154,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertFalse(result.isSuccess)
 
         val capabilityResult = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
-        Assert.assertTrue(capabilityResult.isSuccess)
+        assertTrue(capabilityResult.isSuccess)
         val capability = capabilityResult.singleData as OCCapability
 
         when {
@@ -179,7 +178,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     @Test
     fun validPassword() {
         val folder = "/validPassword/"
-        Assert.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
 
         // share folder via public link
         val createOperationResult = CreateShareRemoteOperation(

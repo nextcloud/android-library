@@ -7,7 +7,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import junit.framework.TestCase
 import okhttp3.Dns
-import org.junit.Assert
 import org.junit.Test
 import java.net.InetAddress
 
@@ -39,9 +38,9 @@ class DNSCacheTest : TestCase() {
     }
 
     private fun compareLookupLists(expected: List<InetAddress>, actual: List<InetAddress>) {
-        Assert.assertEquals("Wrong address list size", expected.size, actual.size)
+        assertEquals("Wrong address list size", expected.size, actual.size)
         for (i in expected.indices) {
-            Assert.assertEquals("Wrong address at position $i", expected[i], actual[i])
+            assertEquals("Wrong address at position $i", expected[i], actual[i])
         }
     }
 
@@ -78,16 +77,16 @@ class DNSCacheTest : TestCase() {
 
         // on first lookup ipv6 should be preferred
         compareLookupLists(listOf(TEST_IPV6, TEST_IPV4), DNSCache.lookup(TEST_HOST))
-        Assert.assertEquals(true, DNSCache.isIPV6First(TEST_HOST))
+        assertEquals(true, DNSCache.isIPV6First(TEST_HOST))
 
         // set ipv4 preference
         DNSCache.setIPVersionPreference(TEST_HOST, true)
-        Assert.assertEquals(false, DNSCache.isIPV6First(TEST_HOST))
+        assertEquals(false, DNSCache.isIPV6First(TEST_HOST))
         compareLookupLists(listOf(TEST_IPV4, TEST_IPV6), DNSCache.lookup(TEST_HOST))
 
         // set ipv6 again
         DNSCache.setIPVersionPreference(TEST_HOST, false)
-        Assert.assertEquals(true, DNSCache.isIPV6First(TEST_HOST))
+        assertEquals(true, DNSCache.isIPV6First(TEST_HOST))
         compareLookupLists(listOf(TEST_IPV6, TEST_IPV4), DNSCache.lookup(TEST_HOST))
     }
 

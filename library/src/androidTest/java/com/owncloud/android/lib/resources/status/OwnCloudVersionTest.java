@@ -1,10 +1,12 @@
 package com.owncloud.android.lib.resources.status;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+
 import android.os.Parcel;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,7 +24,7 @@ public class OwnCloudVersionTest {
         parcel.setDataPosition(0);
         OwnCloudVersion retrieved = parcel.readParcelable(OwnCloudVersion.class.getClassLoader());
 
-        Assert.assertNotSame(original, retrieved);
-        Assert.assertEquals(original, retrieved);
+        assertNotSame(original, retrieved);
+        assertEquals(original, retrieved);
     }
 }

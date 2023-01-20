@@ -1,6 +1,8 @@
 package com.owncloud.android.lib.resources.files;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import java.io.File;
@@ -31,8 +33,8 @@ public class FileUtilsTest {
 
             System.out.println(md5sum);
 
-            Assert.assertEquals(32, md5sum.length());
-            Assert.assertTrue(md5sum, pattern.matcher(md5sum).matches());
+            assertEquals(32, md5sum.length());
+            assertTrue(md5sum, pattern.matcher(md5sum).matches());
         }
     }
 }
