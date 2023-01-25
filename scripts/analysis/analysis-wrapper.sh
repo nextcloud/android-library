@@ -8,7 +8,7 @@
 #6: DRONE_BUILD_NUMBER
 #7: PULL_REQUEST_NUMBER
 
-stableBranch="master"
+stableBranch="stable-2.14"
 repository="library"
 
 ruby scripts/analysis/findbugs-up.rb $1 $2 $3
