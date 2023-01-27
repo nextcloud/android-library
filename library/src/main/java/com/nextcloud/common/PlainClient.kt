@@ -30,6 +30,7 @@ package com.nextcloud.common
 
 import android.content.Context
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
+import com.owncloud.android.lib.common.network.AdvancedX509KeyManager
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
 import okhttp3.CookieJar
@@ -50,10 +51,11 @@ class PlainClient(context: Context) {
 
         private fun createDefaultClient(context: Context): OkHttpClient {
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
+            val keyManager = AdvancedX509KeyManager(context)
 
             val sslContext = NetworkUtils.getSSLContext()
 
-            sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
+            sslContext.init(arrayOf(keyManager), arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
             return OkHttpClient.Builder()
