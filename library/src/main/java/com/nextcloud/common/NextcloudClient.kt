@@ -36,6 +36,7 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_CONNECTION_
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.accounts.AccountUtils
+import com.owncloud.android.lib.common.network.AdvancedX509KeyManager
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
 import com.owncloud.android.lib.common.network.RedirectionPath
@@ -79,10 +80,11 @@ class NextcloudClient private constructor(
 
         private fun createDefaultClient(context: Context): OkHttpClient {
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
+            val keyManager = AdvancedX509KeyManager(context)
 
             val sslContext = NetworkUtils.getSSLContext()
 
-            sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
+            sslContext.init(arrayOf(keyManager), arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
             var proxy: Proxy? = null
