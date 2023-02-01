@@ -23,6 +23,9 @@ package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
+import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -49,7 +52,15 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         var sutResult = ReadFileVersionsRemoteOperation(remoteFile.localId).execute(client)
 
         assertTrue(sutResult.isSuccess)
-        assertEquals(0, sutResult.data.size)
+
+        var versionCount = 0
+        val ocCapability = GetCapabilitiesRemoteOperation()
+            .execute(nextcloudClient).singleData as OCCapability
+        if (ocCapability.version.isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
+            // with NC26+ we always have a starting version
+            versionCount++
+        }
+        assertEquals(versionCount, sutResult.data.size)
 
         // modify file to have a version
         FileWriter(txtFile).apply {
@@ -73,6 +84,8 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         sutResult = ReadFileVersionsRemoteOperation(remoteFile.localId).execute(client)
 
         assertTrue(sutResult.isSuccess)
-        assertEquals(1, sutResult.data.size)
+
+        versionCount++
+        assertEquals(versionCount, sutResult.data.size)
     }
 }
