@@ -10,7 +10,6 @@ buildscript {
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath "org.jacoco:org.jacoco.report:$jacoco_version"
         classpath "org.jacoco:org.jacoco.agent:$jacoco_version"
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:11.0.0"
     }
 }
 
