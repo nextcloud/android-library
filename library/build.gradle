@@ -67,7 +67,7 @@ dependencies {
 
     // dependencies for tests
     testImplementation "junit:junit:$junit_version"
-    testImplementation 'org.mockito:mockito-core:5.0.0'
+    testImplementation 'org.mockito:mockito-core:5.1.1'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
 
     // dependencies for instrumented tests
