@@ -57,7 +57,7 @@ steps:
 
 services:
   - name: server-master
-    image: ghcr.io/nextcloud/continuous-integration-server:latest
+    image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     commands:
       - apt-get update && apt-get install -y composer
       - /usr/local/bin/initnc.sh
@@ -154,7 +154,7 @@ steps:
 
 services:
   - name: server-stable
-    image: ghcr.io/nextcloud/continuous-integration-server:latest
+    image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
       SERVER_VERSION: stable24
     commands:
