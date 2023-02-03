@@ -48,6 +48,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
@@ -57,7 +59,8 @@ import javax.net.ssl.TrustManager
 class NextcloudClient private constructor(
     val delegate: NextcloudUriDelegate,
     var credentials: String,
-    val client: OkHttpClient
+    val client: OkHttpClient,
+    val context: Context
 ) : NextcloudUriProvider by delegate {
     var followRedirects = true
 
@@ -65,8 +68,9 @@ class NextcloudClient private constructor(
         baseUri: Uri,
         userId: String,
         credentials: String,
-        client: OkHttpClient
-    ) : this(NextcloudUriDelegate(baseUri, userId), credentials, client)
+        client: OkHttpClient,
+        context: Context
+    ) : this(NextcloudUriDelegate(baseUri, userId), credentials, client, context)
 
     var userId: String
         get() = delegate.userId!!
@@ -118,25 +122,48 @@ class NextcloudClient private constructor(
         userId: String,
         credentials: String,
         context: Context
-    ) : this(baseUri, userId, credentials, createDefaultClient(context))
+    ) : this(baseUri, userId, credentials, createDefaultClient(context), context)
 
     @Suppress("TooGenericExceptionCaught")
     fun <T> execute(remoteOperation: RemoteOperation<T>): RemoteOperationResult<T> {
-        return try {
+        val result = try {
             remoteOperation.run(this)
         } catch (ex: Exception) {
             RemoteOperationResult(ex)
         }
+        if (result.httpCode == 400) {
+            Log_OC.e(TAG, "Received http status 400 for ${remoteOperation.client.hostConfiguration.hostURL} " +
+                "-> removing client certificate")
+            AdvancedX509KeyManager(context).removeKeys(
+                remoteOperation.client.hostConfiguration.host,
+                remoteOperation.client.hostConfiguration.port
+            )
+        }
+        return result
     }
 
     @Throws(IOException::class)
     fun execute(method: OkHttpMethodBase): Int {
-        return method.execute(this)
+        val httpStatus = method.execute(this)
+        if (httpStatus == 400) {
+            Log_OC.e(TAG, "Received http status 400 for ${method.uri} -> removing client certificate")
+            try {
+                val url = URL(method.uri)
+                AdvancedX509KeyManager(context).removeKeys(url.host, url.port)
+            } catch (_: MalformedURLException) {
+                AdvancedX509KeyManager(context).removeAllKeys()
+            }
+        }
+        return httpStatus
     }
 
     internal fun execute(request: Request): ResponseOrError {
         return try {
             val response = client.newCall(request).execute()
+            if (response.code == 400) {
+                Log_OC.e(TAG, "Received http status 400 for ${request.url.host} -> removing client certificate")
+                AdvancedX509KeyManager(context).removeKeys(request.url.host, request.url.port)
+            }
             ResponseOrError(response)
         } catch (ex: IOException) {
             ResponseOrError(ex)
