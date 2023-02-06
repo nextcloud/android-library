@@ -3,7 +3,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 buildscript {
     ext {
         junit_version = '4.13.2'
-        lombokVersion = "1.18.24"
+        lombokVersion = "1.18.26"
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.1'
