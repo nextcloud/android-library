@@ -25,12 +25,14 @@
 
 package com.owncloud.android.lib.common;
 
+import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.nextcloud.common.DNSCache;
 import com.nextcloud.common.NextcloudUriDelegate;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.common.network.AdvancedX509KeyManager;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -72,15 +74,18 @@ public class OwnCloudClient extends HttpClient {
     private OwnCloudCredentials credentials = null;
     private int mInstanceNumber;
 
+    private final Context context;
+
     /**
      * Constructor
      */
-    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr) {
+    public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr, Context context) {
         super(connectionMgr);
 
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
+        this.context = context;
         nextcloudUriDelegate = new NextcloudUriDelegate(baseUri);
 
         mInstanceNumber = sInstanceCounter++;
@@ -156,7 +161,13 @@ public class OwnCloudClient extends HttpClient {
             if (connectionTimeout >= 0) {
                 getHttpConnectionManager().getParams().setConnectionTimeout(connectionTimeout);
             }
-            return executeMethod(method);
+            int httpStatus = executeMethod(method);
+            if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
+                String hostname = method.getURI().getHost();
+                Log_OC.e(TAG, "Received http status 400 for " + hostname + " -> removing client certificate");
+                new AdvancedX509KeyManager(context).removeKeys(hostname, method.getURI().getPort());
+            }
+            return httpStatus;
         } finally {
             getParams().setSoTimeout(oldSoTimeout);
             getHttpConnectionManager().getParams().setConnectionTimeout(oldConnectionTimeout);
@@ -191,6 +202,9 @@ public class OwnCloudClient extends HttpClient {
 
             if (status >= 500 && status < 600 && DNSCache.isIPV6First(hostname)) {
                 return retryMethodWithIPv4(method, hostname);
+            } else if (status == HttpStatus.SC_BAD_REQUEST) {
+                Log_OC.e(TAG, "Received http status 400 for " + hostname + " -> removing client certificate");
+                new AdvancedX509KeyManager(context).removeKeys(hostname, method.getURI().getPort());
             }
 
             if (followRedirects) {

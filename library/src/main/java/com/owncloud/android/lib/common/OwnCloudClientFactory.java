@@ -151,7 +151,7 @@ public class OwnCloudClientFactory {
             Log_OC.e(TAG, "The local server truststore could not be read. Default SSL management" +
                     " in the system will be used for HTTPS connections", e);
         }
-        OwnCloudClient client = new OwnCloudClient(uri, NetworkUtils.getMultiThreadedConnManager());
+        OwnCloudClient client = new OwnCloudClient(uri, NetworkUtils.getMultiThreadedConnManager(), context);
         client.setDefaultTimeouts(DEFAULT_DATA_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
         client.setFollowRedirects(followRedirects);
 
