@@ -106,7 +106,7 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
    final private static SparseArray<AKMDecision> openDecisions = new SparseArray<>();
 
    /**
-    * Initialize InteractiveKeyManager
+    * Initialize AdvancedX509KeyManager
     * @param context application context (instance of Activity, Application, or Service)
     */
    public AdvancedX509KeyManager(@NonNull Context context) {
@@ -127,11 +127,11 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
       } else if (context instanceof Activity) {
          app = ((Activity) context).getApplication();
       } else {
-         throw new ClassCastException("InteractiveKeyManager context must be either Activity, Application, or Service!");
+         throw new ClassCastException("AdvancedX509KeyManager context must be either Activity, Application, or Service!");
       }
       // Initialize settings
-      Log_OC.d(TAG, "init(): Loading SharedPreferences named " + context.getPackageName() + "." + "InteractiveKeyManager");
-      sharedPreferences = context.getSharedPreferences(context.getPackageName() + "." + "InteractiveKeyManager",
+      Log_OC.d(TAG, "init(): Loading SharedPreferences named " + context.getPackageName() + "." + "AdvancedX509KeyManager");
+      sharedPreferences = context.getSharedPreferences(context.getPackageName() + "." + "AdvancedX509KeyManager",
               Context.MODE_PRIVATE);
       Log_OC.d(TAG, "init(): keychain aliases = " + Arrays.toString(
               sharedPreferences.getStringSet(KEYCHAIN_ALIASES, new HashSet<>()).toArray()));
