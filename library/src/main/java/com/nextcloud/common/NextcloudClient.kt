@@ -131,7 +131,7 @@ class NextcloudClient private constructor(
         } catch (ex: Exception) {
             RemoteOperationResult(ex)
         }
-        if (result.httpCode == 400) {
+        if (result.httpCode == HttpStatus.SC_BAD_REQUEST) {
             Log_OC.e(TAG, "Received http status 400 for ${remoteOperation.client.hostConfiguration.hostURL} " +
                 "-> removing client certificate")
             AdvancedX509KeyManager(context).removeKeys(
@@ -145,7 +145,7 @@ class NextcloudClient private constructor(
     @Throws(IOException::class)
     fun execute(method: OkHttpMethodBase): Int {
         val httpStatus = method.execute(this)
-        if (httpStatus == 400) {
+        if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
             Log_OC.e(TAG, "Received http status 400 for ${method.uri} -> removing client certificate")
             try {
                 val url = URL(method.uri)
@@ -160,7 +160,7 @@ class NextcloudClient private constructor(
     internal fun execute(request: Request): ResponseOrError {
         return try {
             val response = client.newCall(request).execute()
-            if (response.code == 400) {
+            if (response.code == HttpStatus.SC_BAD_REQUEST) {
                 Log_OC.e(TAG, "Received http status 400 for ${request.url.host} -> removing client certificate")
                 AdvancedX509KeyManager(context).removeKeys(request.url.host, request.url.port)
             }
