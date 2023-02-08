@@ -35,6 +35,7 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.notifications.models.Notification
 import okhttp3.FormBody
 import org.apache.commons.httpclient.HttpStatus
+import java.io.IOException
 
 /**
  * Provides the remote notifications from the server handling the following data structure accessible via the
@@ -67,7 +68,7 @@ class CreateNotificationRemoteOperation(private val userId: String, private val 
                 Log_OC.e(TAG, "Failed response while getting user notifications ")
                 Log_OC.e(TAG, "*** status code: $status ; response message: $response")
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             result = RemoteOperationResult(e)
             Log_OC.e(TAG, "Exception while getting remote notifications", e)
         } finally {

@@ -38,6 +38,7 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.notifications.models.Notification
 import org.apache.commons.httpclient.HttpStatus
 import org.json.JSONException
+import java.io.IOException
 
 /**
  * Provides the remote notifications from the server handling the following data structure accessible via the
@@ -67,7 +68,7 @@ class GetNotificationRemoteOperation(private val id: Int) : RemoteOperation<Noti
                 Log_OC.e(TAG, "Failed response while getting user notifications ")
                 Log_OC.e(TAG, "*** status code: $status ; response message: $response")
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             result = RemoteOperationResult(e)
             Log_OC.e(TAG, "Exception while getting remote notifications", e)
         } finally {
@@ -78,8 +79,7 @@ class GetNotificationRemoteOperation(private val id: Int) : RemoteOperation<Noti
 
     @Throws(JSONException::class)
     private fun parseResult(response: String): Notification {
-        val jsonParser = JsonParser()
-        val jo = jsonParser.parse(response) as JsonObject
+        val jo = JsonParser.parseString(response) as JsonObject
         val jsonDataObject = jo.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA)
         val gson = Gson()
         val type = object : TypeToken<Notification>() {}.type

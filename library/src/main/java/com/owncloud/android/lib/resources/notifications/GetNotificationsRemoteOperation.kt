@@ -39,6 +39,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.notifications.models.Notification
 import org.apache.commons.httpclient.HttpStatus
+import java.io.IOException
 
 /**
  * Provides the remote notifications from the server handling the following data structure
@@ -70,7 +71,7 @@ class GetNotificationsRemoteOperation : RemoteOperation<List<Notification>>() {
                 Log_OC.e(TAG, "Failed response while getting user notifications ")
                 Log_OC.e(TAG, "*** status code: $status ; response message: $response")
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             result = RemoteOperationResult(e)
             Log_OC.e(TAG, "Exception while getting remote notifications", e)
         } finally {
@@ -80,8 +81,7 @@ class GetNotificationsRemoteOperation : RemoteOperation<List<Notification>>() {
     }
 
     private fun parseResult(response: String): List<Notification> {
-        val jsonParser = JsonParser()
-        val jo = jsonParser.parse(response) as JsonObject
+        val jo = JsonParser.parseString(response) as JsonObject
         val jsonDataArray = jo.getAsJsonObject(NODE_OCS).getAsJsonArray(NODE_DATA)
         val gson = Gson()
         val listType = object : TypeToken<List<Notification?>?>() {}.type
@@ -95,7 +95,7 @@ class GetNotificationsRemoteOperation : RemoteOperation<List<Notification>>() {
     companion object {
         // OCS Route
         private const val OCS_ROUTE_LIST_V12_AND_UP =
-            "/ocs/v2.php/apps/notifications/api/v2/notifications" + JSON_FORMAT
+            "/ocs/v2.php/apps/notifications/api/v2/notifications$JSON_FORMAT"
         private val TAG = GetNotificationsRemoteOperation::class.java.simpleName
 
         // JSON Node names

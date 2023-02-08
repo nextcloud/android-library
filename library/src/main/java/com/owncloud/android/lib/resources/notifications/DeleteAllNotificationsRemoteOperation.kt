@@ -14,7 +14,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 /**
- * Delete all notification, specified at {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
+ * Delete all notification, specified at
+ * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
 class DeleteAllNotificationsRemoteOperation : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
@@ -36,7 +37,7 @@ class DeleteAllNotificationsRemoteOperation : RemoteOperation<Void>() {
                 Log_OC.e(this, "Failed response while deleting user notifications ")
                 Log_OC.e(this, "*** status code: $status ;response message: $response")
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             result = RemoteOperationResult(e)
             Log_OC.e(this, "Exception while getting remote notifications", e)
         } finally {
