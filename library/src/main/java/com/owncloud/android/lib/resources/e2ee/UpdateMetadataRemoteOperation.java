@@ -91,8 +91,8 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
             putParams[1] = new NameValuePair(FORMAT, "json");
             putMethod.setQueryString(putParams);
 
-            StringRequestEntity data = new StringRequestEntity("metaData="+encryptedMetadataJson, 
-                    "application/json", "UTF-8");
+            StringRequestEntity data = new StringRequestEntity("metaData=" + encryptedMetadataJson,
+                                                               "application/json", "UTF-8");
             putMethod.setRequestEntity(data);
 
             int status = client.executeMethod(putMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
@@ -116,10 +116,11 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Storing of metadata for folder " + fileId + " failed: " + result.getLogMessage(),
-                    result.getException());
+                     result.getException());
         } finally {
-            if (putMethod != null)
+            if (putMethod != null) {
                 putMethod.releaseConnection();
+            }
         }
         return result;
     }

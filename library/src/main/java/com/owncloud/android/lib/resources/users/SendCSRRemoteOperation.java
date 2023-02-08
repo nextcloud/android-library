@@ -27,27 +27,27 @@
 
 package com.owncloud.android.lib.resources.users;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.PostMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.Utf8PostMethod;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.net.HttpURLConnection;
+
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 
 /**
  * Remote operation performing the storage of the public key for an user
  */
 
-public class SendCSROperation extends RemoteOperation {
+public class SendCSRRemoteOperation extends RemoteOperation<String> {
 
-    private static final String TAG = SendCSROperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
+    private static final String TAG = SendCSRRemoteOperation.class.getSimpleName();
     private static final String PUBLIC_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/public-key";
     private static final String CSR = "csr";
 
@@ -56,12 +56,12 @@ public class SendCSROperation extends RemoteOperation {
     private static final String NODE_DATA = "data";
     private static final String NODE_PUBLIC_KEY = "public-key";
 
-    private String csr;
+    private final String csr;
 
     /**
      * Constructor
      */
-    public SendCSROperation(String csr) {
+    public SendCSRRemoteOperation(String csr) {
         this.csr = csr;
     }
 
@@ -69,40 +69,44 @@ public class SendCSROperation extends RemoteOperation {
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        Utf8PostMethod postMethod = null;
-        RemoteOperationResult result;
+    public RemoteOperationResult<String> run(NextcloudClient client) {
+        PostMethod postMethod = null;
+        RemoteOperationResult<String> result;
 
         try {
             // remote request
-            postMethod = new Utf8PostMethod(client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT);
-            postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            postMethod.setParameter(CSR, csr);
+            RequestBody body = new FormBody
+                    .Builder()
+                    .add(CSR, csr)
+                    .build();
 
-            int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            postMethod = new PostMethod(
+                    client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT,
+                    true,
+                    body);
 
-            if (status == HttpStatus.SC_OK) {
+            int status = client.execute(postMethod);
+
+            if (status == HttpURLConnection.HTTP_OK) {
                 String response = postMethod.getResponseBodyAsString();
 
                 // Parse the response
                 JSONObject respJSON = new JSONObject(response);
                 String key = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).get(NODE_PUBLIC_KEY);
 
-                result = new RemoteOperationResult(true, postMethod);
-                ArrayList<Object> keys = new ArrayList<>();
-                keys.add(key);
-                result.setData(keys);
+                result = new RemoteOperationResult<>(true, postMethod);
+                result.setResultData(key);
             } else {
-                result = new RemoteOperationResult(false, postMethod);
-                client.exhaustResponse(postMethod.getResponseBodyAsStream());
+                result = new RemoteOperationResult<>(false, postMethod);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Fetching of signing CSR failed: " + result.getLogMessage(), result.getException());
         } finally {
-            if (postMethod != null)
+            if (postMethod != null) {
                 postMethod.releaseConnection();
+            }
         }
         return result;
     }

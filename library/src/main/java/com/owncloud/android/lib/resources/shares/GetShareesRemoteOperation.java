@@ -62,7 +62,7 @@ import java.util.ArrayList;
  * Status codes:
  *    100 - successful
  */
-public class GetShareesRemoteOperation extends RemoteOperation {
+public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObject>> {
 
     private static final String TAG = GetShareesRemoteOperation.class.getSimpleName();
 
@@ -120,12 +120,12 @@ public class GetShareesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<ArrayList<JSONObject>> run(OwnCloudClient client) {
+        RemoteOperationResult<ArrayList<JSONObject>> result;
         int status;
         GetMethod get = null;
 
-        try{
+        try {
             Uri requestUri = client.getBaseUri();
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(OCS_ROUTE);
@@ -203,7 +203,7 @@ public class GetShareesRemoteOperation extends RemoteOperation {
                         respPartialCircles
                 };
 
-                ArrayList<Object> data = new ArrayList<>();
+                ArrayList<JSONObject> data = new ArrayList<>();
                 for (JSONArray jsonResult : jsonResults) {
                     for (int j = 0; j < jsonResult.length(); j++) {
                         JSONObject jsonObject = jsonResult.getJSONObject(j);
@@ -213,13 +213,13 @@ public class GetShareesRemoteOperation extends RemoteOperation {
                 }
 
                 // Result
-                result = new RemoteOperationResult(true, get);
-                result.setData(data);
+                result = new RemoteOperationResult<>(true, get);
+                result.setResultData(data);
 
                 Log_OC.d(TAG, "*** Get Users or groups completed");
 
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting users/groups from the server");
 
@@ -231,7 +231,7 @@ public class GetShareesRemoteOperation extends RemoteOperation {
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting users/groups", e);
 
         } finally {
