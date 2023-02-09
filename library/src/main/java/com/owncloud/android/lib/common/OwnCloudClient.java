@@ -170,9 +170,9 @@ public class OwnCloudClient extends HttpClient {
             }
             int httpStatus = executeMethod(method);
             if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
-                String hostname = method.getURI().getHost();
-                Log_OC.e(TAG, "Received http status 400 for " + hostname + " -> removing client certificate");
-                new AdvancedX509KeyManager(context).removeKeys(hostname, method.getURI().getPort());
+                URI uri = method.getURI();
+                Log_OC.e(TAG, "Received http status 400 for " + uri + " -> removing client certificate");
+                new AdvancedX509KeyManager(context).removeKeys(uri);
             }
             return httpStatus;
         } finally {
@@ -210,8 +210,9 @@ public class OwnCloudClient extends HttpClient {
             if (status >= 500 && status < 600 && DNSCache.isIPV6First(hostname)) {
                 return retryMethodWithIPv4(method, hostname);
             } else if (status == HttpStatus.SC_BAD_REQUEST) {
-                Log_OC.e(TAG, "Received http status 400 for " + hostname + " -> removing client certificate");
-                new AdvancedX509KeyManager(context).removeKeys(hostname, method.getURI().getPort());
+                URI uri = method.getURI();
+                Log_OC.e(TAG, "Received http status 400 for " + uri + " -> removing client certificate");
+                new AdvancedX509KeyManager(context).removeKeys(uri);
             }
 
             if (followRedirects) {

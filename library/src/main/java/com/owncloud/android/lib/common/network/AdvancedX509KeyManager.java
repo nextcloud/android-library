@@ -44,10 +44,15 @@ import android.webkit.ClientCertRequest;
 import com.owncloud.android.lib.R;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.URIException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.Principal;
@@ -68,6 +73,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import okhttp3.HttpUrl;
 
 import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKMAlias.Type.KEYCHAIN;
 
@@ -177,12 +183,80 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
    }
 
    /**
+    * Remove KeyChain aliases for connections to given host URL
+    *
+    * @param url  URL for which the alias shall be removed.
+    */
+   public void removeKeys(String url) {
+      try {
+         removeKeys(new URL(url));
+      } catch(MalformedURLException e) {
+         Log_OC.e(TAG, "Tried to remove keys for malformed URL " + url, e);
+      }
+   }
+
+   /**
+    * Remove KeyChain aliases for connections to given host URL
+    *
+    * @param url  URL for which the alias shall be removed.
+    */
+   public void removeKeys(HttpUrl url) {
+      removeKeys(url.url());
+   }
+
+   /**
+    * Remove KeyChain aliases for connections to given host URI
+    *
+    * @param uri  URI for which the alias shall be removed.
+    */
+   public void removeKeys(org.apache.commons.httpclient.URI uri) {
+      try {
+         removeKeys(uri.getURI());
+      } catch (URIException e) {
+         Log_OC.e(TAG, "Tried to remove keys for a malformed URI", e);
+      }
+   }
+
+   /**
+    * Remove KeyChain aliases for connections to given host Uri
+    *
+    * @param uri  Uri for which the alias shall be removed.
+    */
+   public void removeKeys(Uri uri) {
+      removeKeys(uri.toString());
+   }
+
+   /**
+    * Remove KeyChain aliases for connections to given host URI
+    *
+    * @param uri  URI for which the alias shall be removed.
+    */
+   public void removeKeys(URI uri) {
+      try {
+         removeKeys(uri.toURL());
+      } catch (MalformedURLException e) {
+         Log_OC.e(TAG, "Tried to remove keys for a malformed URL", e);
+      }
+   }
+
+   /**
+    * Remove KeyChain aliases for connections to given host URL
+    *
+    * @param url  URL for which the alias shall be removed.
+    */
+    public void removeKeys(URL url) {
+      int port = url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
+      removeKeys(url.getHost(), port);
+   }
+
+   /**
     * Remove KeyChain aliases for connections to hostname:port
+    *
     * @param hostname hostname for which the alias shall be used; null for any
     * @param port port for which the alias shall be used (only if hostname is not null); null for any
     */
    @SuppressWarnings("unused")
-   public void removeKeys(String hostname, Integer port) {
+   private void removeKeys(String hostname, Integer port) {
       try {
          removeKeyChain(new AKMAlias(KEYCHAIN, null, hostname, port));
       } catch (IllegalArgumentException e) {
