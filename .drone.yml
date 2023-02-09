@@ -99,7 +99,7 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
-      - su www-data -c "git clone --depth 1 https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
+      - su www-data -c "git clone --depth 1 -b master https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate 'test' 'test message'"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
