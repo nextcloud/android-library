@@ -132,12 +132,9 @@ class NextcloudClient private constructor(
             RemoteOperationResult(ex)
         }
         if (result.httpCode == HttpStatus.SC_BAD_REQUEST) {
-            Log_OC.e(TAG, "Received http status 400 for ${remoteOperation.client.hostConfiguration.hostURL} " +
-                "-> removing client certificate")
-            AdvancedX509KeyManager(context).removeKeys(
-                remoteOperation.client.hostConfiguration.host,
-                remoteOperation.client.hostConfiguration.port
-            )
+            val url = remoteOperation.client.hostConfiguration.hostURL
+            Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
+            AdvancedX509KeyManager(context).removeKeys(url)
         }
         return result
     }
@@ -146,13 +143,9 @@ class NextcloudClient private constructor(
     fun execute(method: OkHttpMethodBase): Int {
         val httpStatus = method.execute(this)
         if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
-            Log_OC.e(TAG, "Received http status 400 for ${method.uri} -> removing client certificate")
-            try {
-                val url = URL(method.uri)
-                AdvancedX509KeyManager(context).removeKeys(url.host, url.port)
-            } catch (_: MalformedURLException) {
-                AdvancedX509KeyManager(context).removeAllKeys()
-            }
+            val uri = method.uri
+            Log_OC.e(TAG, "Received http status 400 for $uri -> removing client certificate")
+            AdvancedX509KeyManager(context).removeKeys(uri)
         }
         return httpStatus
     }
@@ -161,8 +154,9 @@ class NextcloudClient private constructor(
         return try {
             val response = client.newCall(request).execute()
             if (response.code == HttpStatus.SC_BAD_REQUEST) {
-                Log_OC.e(TAG, "Received http status 400 for ${request.url.host} -> removing client certificate")
-                AdvancedX509KeyManager(context).removeKeys(request.url.host, request.url.port)
+                val url = request.url
+                Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
+                AdvancedX509KeyManager(context).removeKeys(url)
             }
             ResponseOrError(response)
         } catch (ex: IOException) {
