@@ -71,10 +71,13 @@ import javax.net.ssl.X509KeyManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import okhttp3.HttpUrl;
 
+import static android.Manifest.permission.POST_NOTIFICATIONS;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKMAlias.Type.KEYCHAIN;
 
 /**
@@ -555,7 +558,11 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
               .setAutoCancel(true)
               .build();
 
-      notificationManager.notify(NOTIFICATION_ID + decisionId, notification);
+      if (ActivityCompat.checkSelfPermission(context, POST_NOTIFICATIONS) == PERMISSION_GRANTED) {
+         notificationManager.notify(NOTIFICATION_ID + decisionId, notification);
+      } else {
+         Log_OC.w(TAG, "Cannot send notification due to missing permission.");
+      }
    }
 
    /**
