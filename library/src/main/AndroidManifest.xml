@@ -39,6 +39,9 @@
         android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- used by AdvancedX509KeyManager to ask user via a notification to select a
+         TLS client certificate when context is not able to start an Activity. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:usesCleartextTraffic="true"
