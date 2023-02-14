@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
  *   @author Álvaro Brey
- *   Copyright (C) 2022 Álvaro Brey
- *   Copyright (C) 2022 Nextcloud GmbH
+ *   Copyright (C) 2023 Álvaro Brey
+ *   Copyright (C) 2023 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,22 @@
 
 package com.owncloud.android.lib.resources.files
 
+import java.io.IOException
+
 class CreateLocalFileException(val path: String, cause: Throwable) : Exception(cause) {
 
     override val message: String = "File could not be created"
+
+    /**
+     * Checks if the path associated to the exception contains invalid characters.
+     * There is no better way to check this, as `Paths` is not available in API < 26, and since this lib has a very low
+     * minSdk, that can't even be worked around with an `if` block.
+     */
+    fun isCausedByInvalidPath(): Boolean {
+        return cause is IOException && (path.isEmpty() || INVALID_CHARS.any { path.contains(it) })
+    }
+
+    companion object {
+        private const val INVALID_CHARS = "\\:*?\"<>|"
+    }
 }
