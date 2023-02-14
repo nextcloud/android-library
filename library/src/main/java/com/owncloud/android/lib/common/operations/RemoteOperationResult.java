@@ -304,7 +304,11 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         } else if (e instanceof FileNotFoundException) {
             mCode = ResultCode.LOCAL_FILE_NOT_FOUND;
         } else if (e instanceof CreateLocalFileException) {
-            mCode = ResultCode.CANNOT_CREATE_FILE;
+            if (((CreateLocalFileException) e).isCausedByInvalidPath()) {
+                mCode = ResultCode.INVALID_LOCAL_FILE_NAME;
+            } else {
+                mCode = ResultCode.CANNOT_CREATE_FILE;
+            }
         } else {
             mCode = ResultCode.UNKNOWN_ERROR;
         }
