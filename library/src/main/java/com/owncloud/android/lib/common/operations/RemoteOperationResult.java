@@ -34,6 +34,7 @@ import com.nextcloud.common.OkHttpMethodBase;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.resources.files.CreateLocalFileException;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
 import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
@@ -302,6 +303,12 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             }
         } else if (e instanceof FileNotFoundException) {
             mCode = ResultCode.LOCAL_FILE_NOT_FOUND;
+        } else if (e instanceof CreateLocalFileException) {
+            if (((CreateLocalFileException) e).isCausedByInvalidPath()) {
+                mCode = ResultCode.INVALID_LOCAL_FILE_NAME;
+            } else {
+                mCode = ResultCode.CANNOT_CREATE_FILE;
+            }
         } else {
             mCode = ResultCode.UNKNOWN_ERROR;
         }
