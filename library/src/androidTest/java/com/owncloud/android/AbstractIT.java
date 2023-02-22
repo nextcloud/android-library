@@ -79,7 +79,7 @@ public abstract class AbstractIT {
     public RetryTestRule retryTestRule = new RetryTestRule();
 
     private static final int BUFFER_SIZE = 1024;
-    public static final String RANDOM_MTIME = "1464818400";
+    public static final long RANDOM_MTIME = 1464818400L;
     public static final int MILLI_TO_SECOND = 1000;
 
     public static OwnCloudClient client;

@@ -18,6 +18,11 @@ else
     cd library/build/reports/tests/testDebugUnitTest
 fi
 
+if [ $? -ne 0 ]; then
+  echo "No reports folder available! Perhaps compilation failed."
+  exit 1
+fi
+
 find . -type d -exec curl -u $USER:$PASS -X MKCOL $URL/$REMOTE_FOLDER/$(echo {} | sed s#\./##) \;
 find . -type f -exec curl -u $USER:$PASS -X PUT $URL/$REMOTE_FOLDER/$(echo {} | sed s#\./##) --upload-file {} \;
 

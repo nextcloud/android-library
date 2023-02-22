@@ -57,34 +57,36 @@ public class CreateShareIT extends AbstractIT {
         mFullPath2NonExistentFile = NON_EXISTENT_FILE;
 
         File textFile = getFile(ASSETS__TEXT_FILE_NAME);
-        RemoteOperationResult result = new UploadFileRemoteOperation(textFile.getAbsolutePath(),
-                                                                     mFullPath2FileToShare,
-                                                                     "txt/plain",
-                                                                     String.valueOf(System.currentTimeMillis() / MILLI_TO_SECOND))
-                .execute(client);
+        RemoteOperationResult result = new UploadFileRemoteOperation(
+                textFile.getAbsolutePath(),
+                mFullPath2FileToShare,
+                "txt/plain",
+                System.currentTimeMillis() / MILLI_TO_SECOND
+        ).execute(client);
 
         assertTrue("Error uploading file " + textFile + ": " + result, result.isSuccess());
     }
 
     @Test
     public void testCreatePublicShareSuccessful() {
-        RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.PUBLIC_LINK,
-                                                                      "",
-                                                                      false,
-                                                                      "",
-                                                                      1).execute(client);
+        RemoteOperationResult result = new CreateShareRemoteOperation(
+                mFullPath2FileToShare,
+                ShareType.PUBLIC_LINK,
+                "",
+                false,
+                "",
+                1).execute(client);
         assertTrue(result.isSuccess());
     }
 
     @Test
     public void testCreatePublicShareFailure() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2NonExistentFile,
-                                                                      ShareType.PUBLIC_LINK,
-                                                                      "",
-                                                                      false,
-                                                                      "",
-                                                                      1).execute(client);
+                ShareType.PUBLIC_LINK,
+                "",
+                false,
+                "",
+                1).execute(client);
 
         assertFalse(result.isSuccess());
         assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
@@ -96,11 +98,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreatePrivateShareWithUserSuccessful() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.USER,
-                                                                      "admin",
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                31).execute(client);
         assertTrue(result.isSuccess());
     }
 
@@ -110,11 +112,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreatePrivateShareWithUserNotExists() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.USER,
-                                                                      "no_exist",
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.USER,
+                "no_exist",
+                false,
+                "",
+                31).execute(client);
         assertFalse(result.isSuccess());
 
         // TODO 404 is File not found, but actually it is "user not found"
@@ -127,11 +129,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreatePrivateShareWithFileNotExists() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2NonExistentFile,
-                                                                      ShareType.USER,
-                                                                      "admin",
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                31).execute(client);
         assertFalse(result.isSuccess());
         assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
     }
@@ -142,11 +144,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreatePrivateShareWithGroupSuccessful() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.GROUP,
-                                                                      "admin",
-                                                                      false,
-                                                                      "",
-                                                                      1).execute(client);
+                ShareType.GROUP,
+                "admin",
+                false,
+                "",
+                1).execute(client);
         assertTrue(result.isSuccess());
     }
 
@@ -156,11 +158,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreatePrivateShareWithNonExistingGroupSharee() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.GROUP,
-                                                                      "no_exist",
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.GROUP,
+                "no_exist",
+                false,
+                "",
+                31).execute(client);
         assertFalse(result.isSuccess());
 
         // TODO 404 is File not found, but actually it is "user not found"
@@ -173,11 +175,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreatePrivateShareWithNonExistingFile() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2NonExistentFile,
-                                                                      ShareType.GROUP,
-                                                                      "admin",
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.GROUP,
+                "admin",
+                false,
+                "",
+                31).execute(client);
         assertFalse(result.isSuccess());
         assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
     }
@@ -202,15 +204,15 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreateFederatedShareWithNonExistingSharee() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.FEDERATED,
-                                                                      "no_exist@" + serverUri2,
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.FEDERATED,
+                "no_exist@" + serverUri2,
+                false,
+                "",
+                31).execute(client);
 
         assertFalse("sharee doesn't exist in an existing remote server", result.isSuccess());
         assertEquals("sharee doesn't exist in an existing remote server, forbidden",
-                     RemoteOperationResult.ResultCode.SHARE_FORBIDDEN, result.getCode());
+                RemoteOperationResult.ResultCode.SHARE_FORBIDDEN, result.getCode());
     }
 
     /**
@@ -219,11 +221,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreateFederatedShareWithNonExistingRemoteServer() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2FileToShare,
-                                                                      ShareType.FEDERATED,
-                                                                      "no_exist",
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.FEDERATED,
+                "no_exist",
+                false,
+                "",
+                31).execute(client);
         assertFalse(result.isSuccess());
         // TODO expected:<SHARE_WRONG_PARAMETER> but was:<SHARE_FORBIDDEN>
         assertEquals("remote server doesn't exist", ResultCode.SHARE_FORBIDDEN, result.getCode());
@@ -235,11 +237,11 @@ public class CreateShareIT extends AbstractIT {
     @Test
     public void testCreateFederatedShareWithNonExistingFile() {
         RemoteOperationResult result = new CreateShareRemoteOperation(mFullPath2NonExistentFile,
-                                                                      ShareType.FEDERATED,
-                                                                      "admin@" + serverUri2,
-                                                                      false,
-                                                                      "",
-                                                                      31).execute(client);
+                ShareType.FEDERATED,
+                "admin@" + serverUri2,
+                false,
+                "",
+                31).execute(client);
 
         assertFalse("file doesn't exist", result.isSuccess());
         assertEquals("file doesn't exist", ResultCode.FILE_NOT_FOUND, result.getCode());

@@ -26,6 +26,10 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import android.util.Log;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -41,10 +45,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Class to test CopyRemoteFileOperation
@@ -188,7 +188,12 @@ public class CopyFileIT extends AbstractIT {
         File txtFile = getFile(ASSETS__TEXT_FILE_NAME);
 
         for (String filePath : FILES_IN_FIXTURE) {
-            result = new UploadFileRemoteOperation(txtFile.getAbsolutePath(), filePath, "txt/plain", String.valueOf(System.currentTimeMillis() / 1000)).execute(client);
+            result = new UploadFileRemoteOperation(
+                    txtFile.getAbsolutePath(),
+                    filePath,
+                    "txt/plain",
+                    System.currentTimeMillis() / 1000
+            ).execute(client);
 
             assertTrue("Error uploading file " + filePath + ": " + result, result.isSuccess());
         }
@@ -243,13 +248,13 @@ public class CopyFileIT extends AbstractIT {
 
         // copy & rename folder, different location
         copyOperation = new CopyFileRemoteOperation(SRC_PATH_TO_FULL_FOLDER_2, TARGET_PATH_TO_FULL_FOLDER_2_RENAMED,
-                                                    false);
+                false);
         result = copyOperation.execute(client);
         assertTrue("copy & rename folder, different location", result.isSuccess());
 
         // copy & rename folder, same location (rename folder)
         copyOperation = new CopyFileRemoteOperation(SRC_PATH_TO_FULL_FOLDER_3, SRC_PATH_TO_FULL_FOLDER_3_RENAMED,
-                                                    false);
+                false);
         result = copyOperation.execute(client);
         assertTrue("copy & rename folder, same location (rename folder)", result.isSuccess());
 
@@ -260,7 +265,7 @@ public class CopyFileIT extends AbstractIT {
 
         // copy overwriting
         copyOperation = new CopyFileRemoteOperation(SRC_PATH_TO_FULL_FOLDER_4,
-                                                    TARGET_PATH_TO_ALREADY_EXISTENT_EMPTY_FOLDER_4, true);
+                TARGET_PATH_TO_ALREADY_EXISTENT_EMPTY_FOLDER_4, true);
         result = copyOperation.execute(client);
         assertTrue("copy overwriting", result.isSuccess());
 
@@ -269,13 +274,13 @@ public class CopyFileIT extends AbstractIT {
 
         // file to copy does not exist
         copyOperation = new CopyFileRemoteOperation(SRC_PATH_TO_NON_EXISTENT_FILE, TARGET_PATH_TO_NON_EXISTENT_FILE,
-                                                    false);
+                false);
         result = copyOperation.execute(client);
         assertSame("file to copy does not exist", result.getCode(), ResultCode.FILE_NOT_FOUND);
 
         // folder to copy into does no exist
         copyOperation = new CopyFileRemoteOperation(SRC_PATH_TO_FILE_5, TARGET_PATH_TO_FILE_5_INTO_NON_EXISTENT_FOLDER,
-                                                    false);
+                false);
         result = copyOperation.execute(client);
         assertEquals("folder to copy into does no exist", result.getHttpCode(), HttpStatus.SC_CONFLICT);
 

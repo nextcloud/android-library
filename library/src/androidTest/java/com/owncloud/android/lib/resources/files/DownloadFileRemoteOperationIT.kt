@@ -38,7 +38,8 @@ class DownloadFileRemoteOperationIT : AbstractIT() {
         val filePath = createFile("download")
         val remotePath = "/download.jpg"
         assertTrue(
-            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", "1464818400")
+            @Suppress("Detekt.MagicNumber")
+            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", 1464818400)
                 .execute(client).isSuccess
         )
 

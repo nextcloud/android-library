@@ -64,10 +64,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     protected String localPath;
     protected String remotePath;
     protected String mimeType;
-    /**
-     * Must be in seconds, according to UNIX time
-     */
-    protected String lastModificationTimestamp;
+    protected long lastModificationTimestamp; // must be in seconds, according to UNIX time
     protected Long creationTimestamp = null;
     protected boolean disableRetries = false;
     PutMethod putMethod = null;
@@ -89,7 +86,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     String lastModificationTimestamp) {
+                                     long lastModificationTimestamp) {
         this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null);
     }
 
@@ -97,7 +94,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     String lastModificationTimestamp,
+                                     long lastModificationTimestamp,
                                      Long creationTimestamp,
                                      boolean disableRetries) {
         this(localPath,
@@ -113,25 +110,18 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     public UploadFileRemoteOperation(String localPath,
                                      String remotePath,
                                      String mimeType,
-                                     String lastModificationTimestamp) {
+                                     long lastModificationTimestamp) {
         this(localPath, remotePath, mimeType, lastModificationTimestamp, true);
     }
 
     public UploadFileRemoteOperation(String localPath,
                                      String remotePath,
                                      String mimeType,
-                                     String lastModificationTimestamp,
+                                     long lastModificationTimestamp,
                                      boolean disableRetries) {
         this.localPath = localPath;
         this.remotePath = remotePath;
         this.mimeType = mimeType;
-
-        if (lastModificationTimestamp == null) {
-            throw new AssertionError("LastModificationTimestamp may NOT be null!");
-        }
-
-        // TODO check for max value of lastModificationTimestamp
-
         this.lastModificationTimestamp = lastModificationTimestamp;
         this.disableRetries = disableRetries;
     }
@@ -140,7 +130,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     String lastModificationTimestamp,
+                                     long lastModificationTimestamp,
                                      String token) {
         this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null, token, true);
     }
@@ -149,7 +139,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     String lastModificationTimestamp,
+                                     long lastModificationTimestamp,
                                      Long creationTimestamp,
                                      String token,
                                      boolean disableRetries) {
@@ -226,7 +216,10 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                 putMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + requiredEtag + "\"");
             }
             putMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
-            putMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp);
+            putMethod.addRequestHeader(
+                    OC_X_OC_MTIME_HEADER,
+                    String.valueOf(lastModificationTimestamp)
+            );
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
