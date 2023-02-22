@@ -60,6 +60,7 @@ import org.junit.Rule;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStoreException;
@@ -215,6 +216,38 @@ public abstract class AbstractIT {
         return file.getAbsolutePath();
     }
 
+    public String createFile(String name, int iteration) throws IOException {
+        File tempDir = context.getExternalCacheDir();
+
+        if (tempDir == null) {
+            throw new IOException("Temp dir is null");
+        }
+
+        if (!tempDir.exists()) {
+            if (!tempDir.mkdirs()) {
+                throw new IOException("Cannot create temp dir: " + tempDir.getAbsolutePath());
+            }
+        }
+
+        File file = new File(tempDir + File.separator + name);
+
+        if (!file.exists() && !file.createNewFile()) {
+            throw new IOException("Cannot create file: " + file.getAbsolutePath());
+        }
+
+        assertTrue(file.exists());
+
+        FileWriter writer = new FileWriter(file);
+
+        for (int i = 0; i < iteration; i++) {
+            writer.write("123123123123123123123123123\n");
+        }
+        writer.flush();
+        writer.close();
+
+        return file.getAbsolutePath();
+    }
+
     /**
      * Extracts file from AssetManager to cache folder.
      *
@@ -277,5 +310,21 @@ public abstract class AbstractIT {
         FileUtils.copyInputStreamToFile(inputStream, temp);
 
         return temp;
+    }
+
+    protected void shortSleep() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void longSleep() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
