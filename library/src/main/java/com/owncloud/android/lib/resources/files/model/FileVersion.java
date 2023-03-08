@@ -64,21 +64,8 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     }
 
     @Override
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    @Override
     public String getRemotePath() {
         return "";
-    }
-
-    /**
-     * For file version this is the same as remoteId
-     */
-    @Override
-    public long getLocalId() {
-        return localId;
     }
 
     /**
@@ -91,11 +78,6 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     public boolean isFolder() {
         return DIRECTORY.equals(mimeType);
-    }
-
-    @Override
-    public long getFileLength() {
-        return 0;
     }
 
     public boolean isHidden() {
