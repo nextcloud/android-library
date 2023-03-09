@@ -119,7 +119,7 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param context application context (instance of Activity, Application, or Service)
     */
    public AdvancedX509KeyManager(@NonNull Context context) {
-      this.context = context;
+      this.context = context.getApplicationContext();
       init();
    }
 
