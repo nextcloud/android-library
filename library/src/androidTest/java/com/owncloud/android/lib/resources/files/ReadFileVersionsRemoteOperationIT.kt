@@ -22,7 +22,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
     fun listVersions() {
         val txtFile = getFile(ASSETS__TEXT_FILE_NAME)
         val filePath = "/test.md"
-        val mimetype = "txt/plain"
+        val mimetype = "text/markdown"
 
         var uploadResult =
             UploadFileRemoteOperation(
