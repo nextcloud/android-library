@@ -30,8 +30,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import lombok.Getter;
-
 public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable {
     public static final OwnCloudVersion nextcloud_16 = new OwnCloudVersion(0x10000000); // 16.0
     public static final OwnCloudVersion nextcloud_17 = new OwnCloudVersion(0x11000000); // 17.0
@@ -46,7 +44,7 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
     // for version AA.BB.CC.DD
     // ie version 2.0.3 will be stored as 0x02000300
     private int version;
-    @Getter private boolean versionValid;
+    private boolean versionValid;
 
     protected OwnCloudVersion(int version) {
         this.version = version;
@@ -183,5 +181,9 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
         result = result * PRIME + this.version;
         result = result * PRIME + (this.versionValid ? 79 : 97);
         return result;
+    }
+
+    public boolean isVersionValid() {
+        return this.versionValid;
     }
 }
