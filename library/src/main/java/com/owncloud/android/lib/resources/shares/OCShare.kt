@@ -40,18 +40,34 @@ class OCShare : Parcelable, Serializable {
     var fileSource: Long = 0
     var itemSource: Long = 0
     var shareType: ShareType? = null
-    private var shareWith: String? = null
-    private var path: String? = null
+    var shareWith: String? = null
+        private set
+    var path: String? = null
+        private set
     var permissions = 0
     var sharedDate: Long = 0
     var expirationDate: Long = 0
-    private var token: String? = null
-    private var sharedWithDisplayName: String? = null
+    var token: String? = null
+        private set
+    var sharedWithDisplayName: String? = null
+        private set
     var isFolder = false
     var userId: String? = null
     var remoteId: Long = 0
-    private var shareLink: String? = null
-    private var isPasswordProtected = false
+    var shareLink: String? = null
+        private set
+    private var _passwordProtected = false
+    var isPasswordProtected: Boolean
+        get() {
+            return if (ShareType.PUBLIC_LINK == shareType) {
+                shareWith!!.isNotEmpty()
+            } else {
+                _passwordProtected
+            }
+        }
+        set(value) {
+            _passwordProtected = value
+        }
     var note: String? = null
         private set
     var isHideFileDownload = false
@@ -123,14 +139,6 @@ class OCShare : Parcelable, Serializable {
         this.shareLink = shareLink ?: ""
     }
 
-    fun isPasswordProtected(): Boolean {
-        return if (ShareType.PUBLIC_LINK == shareType) {
-            shareWith!!.isNotEmpty()
-        } else {
-            isPasswordProtected
-        }
-    }
-
     fun setNote(note: String) {
         this.note = note
     }
@@ -199,30 +207,6 @@ class OCShare : Parcelable, Serializable {
         dest.writeInt(if (isHasPreview) 1 else 0)
         dest.writeString(mimetype)
         dest.writeString(ownerDisplayName)
-    }
-
-    fun getShareWith(): String? {
-        return shareWith
-    }
-
-    fun getPath(): String? {
-        return path
-    }
-
-    fun getToken(): String? {
-        return token
-    }
-
-    fun getSharedWithDisplayName(): String? {
-        return sharedWithDisplayName
-    }
-
-    fun getShareLink(): String? {
-        return shareLink
-    }
-
-    fun setPasswordProtected(isPasswordProtected: Boolean) {
-        this.isPasswordProtected = isPasswordProtected
     }
 
     companion object {
