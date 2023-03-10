@@ -3,7 +3,6 @@ import com.github.spotbugs.snom.SpotBugsTask
 buildscript {
     ext {
         junit_version = '4.13.2'
-        lombokVersion = "1.18.26"
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
@@ -54,10 +53,6 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     implementation 'androidx.annotation:annotation:1.6.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1u2'
-
-    //noinspection AnnotationProcessorOnCompilePath
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
-    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
