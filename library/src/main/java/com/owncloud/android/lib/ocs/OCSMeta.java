@@ -29,14 +29,11 @@ package com.owncloud.android.lib.ocs;
 
 import com.google.gson.annotations.SerializedName;
 
-import lombok.Getter;
-
 /**
  * A meta class which is a part of OCS response from server
  *
  * @author Bartosz Przybylski
  */
-@Getter
 public class OCSMeta {
     @SerializedName("status")
     public String status;
@@ -44,5 +41,17 @@ public class OCSMeta {
     public int statusCode;
     @SerializedName("message")
     public String message;
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public int getStatusCode() {
+        return this.statusCode;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
     // TODO(bp): add paging information
 }

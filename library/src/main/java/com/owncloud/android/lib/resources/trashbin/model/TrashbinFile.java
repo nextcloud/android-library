@@ -35,16 +35,11 @@ import com.owncloud.android.lib.resources.files.model.ServerFileInterface;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Contains the data of a Trashbin File from a WebDavEntry.
  *
  * @author Tobias Kaminsky
  */
-@Getter
-@Setter
 public class TrashbinFile implements Parcelable, Serializable, ServerFileInterface {
     /**
      * Generated - should be refreshed every time the class changes!!
@@ -191,5 +186,49 @@ public class TrashbinFile implements Parcelable, Serializable, ServerFileInterfa
         dest.writeString(mimeType);
         dest.writeLong(fileLength);
         dest.writeString(remoteId);
+    }
+
+    public String getFullRemotePath() {
+        return this.fullRemotePath;
+    }
+
+    public String getOriginalLocation() {
+        return this.originalLocation;
+    }
+
+    public long getDeletionTimestamp() {
+        return this.deletionTimestamp;
+    }
+
+    public void setFullRemotePath(String fullRemotePath) {
+        this.fullRemotePath = fullRemotePath;
+    }
+
+    public void setRemotePath(String remotePath) {
+        this.remotePath = remotePath;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public void setFileLength(long fileLength) {
+        this.fileLength = fileLength;
+    }
+
+    public void setRemoteId(String remoteId) {
+        this.remoteId = remoteId;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setOriginalLocation(String originalLocation) {
+        this.originalLocation = originalLocation;
+    }
+
+    public void setDeletionTimestamp(long deletionTimestamp) {
+        this.deletionTimestamp = deletionTimestamp;
     }
 }
