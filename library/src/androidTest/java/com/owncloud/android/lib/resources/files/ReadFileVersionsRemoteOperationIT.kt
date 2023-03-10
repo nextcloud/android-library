@@ -36,11 +36,12 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
     fun listVersions() {
         val txtFile = getFile(ASSETS__TEXT_FILE_NAME)
         val filePath = "/test.md"
+        val mimetype = "txt/plain"
 
         var uploadResult = UploadFileRemoteOperation(
             txtFile.absolutePath,
             filePath,
-            "txt/plain",
+            mimetype,
             System.currentTimeMillis() / MILLI_TO_SECOND
         )
             .execute(client)
@@ -60,7 +61,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
             // with NC26+ we always have a starting version
             versionCount++
         }
-        assertEquals(versionCount, sutResult.data.size)
+        assertEquals(versionCount, sutResult.resultData.size)
 
         // modify file to have a version
         FileWriter(txtFile).apply {
@@ -72,7 +73,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         uploadResult = UploadFileRemoteOperation(
             txtFile.absolutePath,
             filePath,
-            "txt/plain",
+            mimetype,
             System.currentTimeMillis() / MILLI_TO_SECOND
         )
             .execute(client)
@@ -86,6 +87,11 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         assertTrue(sutResult.isSuccess)
 
         versionCount++
-        assertEquals(versionCount, sutResult.data.size)
+        val versions = sutResult.resultData
+        assertEquals(versionCount, versions.size)
+        versions[0].apply {
+            assertTrue(fileLength > 0)
+            assertEquals(mimetype, mimeType)
+        }
     }
 }
