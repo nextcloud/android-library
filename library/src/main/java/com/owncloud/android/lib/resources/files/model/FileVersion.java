@@ -32,10 +32,6 @@ import android.os.Parcelable;
 
 import com.owncloud.android.lib.common.network.WebdavEntry;
 
-import lombok.Getter;
-import lombok.Setter;
-
-
 /**
  * Contains the data of a versioned file from a WebDavEntry.
  */
@@ -48,10 +44,10 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     public static final String DIRECTORY = "DIR";
 
-    @Getter @Setter private String mimeType;
-    @Getter @Setter private long fileLength;
-    @Getter @Setter private long modifiedTimestamp;
-    @Getter private long localId;
+    private String mimeType;
+    private long fileLength;
+    private long modifiedTimestamp;
+    private long localId;
 
     @Override
     public boolean isFavorite() {
@@ -64,8 +60,21 @@ public class FileVersion implements Parcelable, ServerFileInterface {
     }
 
     @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
     public String getRemotePath() {
         return "";
+    }
+
+    /**
+     * For file version this is the same as remoteId
+     */
+    @Override
+    public long getLocalId() {
+        return localId;
     }
 
     /**
@@ -78,6 +87,27 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     public boolean isFolder() {
         return DIRECTORY.equals(mimeType);
+    }
+
+    @Override
+    public long getFileLength() {
+        return 0;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public void setFileLength(long fileLength) {
+        this.fileLength = fileLength;
+    }
+
+    public long getModifiedTimestamp() {
+        return modifiedTimestamp;
+    }
+
+    public void setModifiedTimestamp(long modifiedTimestamp) {
+        this.modifiedTimestamp = modifiedTimestamp;
     }
 
     public boolean isHidden() {
