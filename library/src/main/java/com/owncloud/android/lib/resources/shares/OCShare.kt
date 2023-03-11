@@ -41,35 +41,40 @@ class OCShare : Parcelable, Serializable {
     var itemSource: Long = 0
     var shareType: ShareType? = null
     var shareWith: String? = null
-        private set
+        set(value) {
+            field = value ?: ""
+        }
     var path: String? = null
-        private set
+        set(value) {
+            field = value ?: ""
+        }
     var permissions = 0
     var sharedDate: Long = 0
     var expirationDate: Long = 0
     var token: String? = null
-        private set
+        set(value) {
+            field = value ?: ""
+        }
     var sharedWithDisplayName: String? = null
-        private set
+        set(value) {
+            field = value ?: ""
+        }
     var isFolder = false
     var userId: String? = null
     var remoteId: Long = 0
     var shareLink: String? = null
-        private set
-    private var _passwordProtected = false
-    var isPasswordProtected: Boolean
+        set(value) {
+            field = value ?: ""
+        }
+    var isPasswordProtected: Boolean = false
         get() {
             return if (ShareType.PUBLIC_LINK == shareType) {
                 shareWith!!.isNotEmpty()
             } else {
-                _passwordProtected
+                field
             }
         }
-        set(value) {
-            _passwordProtected = value
-        }
     var note: String? = null
-        private set
     var isHideFileDownload = false
     var label: String? = null
     var isHasPreview = false
@@ -116,31 +121,6 @@ class OCShare : Parcelable, Serializable {
         isHasPreview = false
         mimetype = ""
         ownerDisplayName = ""
-    }
-
-    // custom Getters and Setters
-    fun setShareWith(shareWith: String?) {
-        this.shareWith = shareWith ?: ""
-    }
-
-    fun setPath(path: String?) {
-        this.path = path ?: ""
-    }
-
-    fun setToken(token: String?) {
-        this.token = token ?: ""
-    }
-
-    fun setSharedWithDisplayName(sharedWithDisplayName: String?) {
-        this.sharedWithDisplayName = sharedWithDisplayName ?: ""
-    }
-
-    fun setShareLink(shareLink: String?) {
-        this.shareLink = shareLink ?: ""
-    }
-
-    fun setNote(note: String) {
-        this.note = note
     }
 
     /**
@@ -221,6 +201,7 @@ class OCShare : Parcelable, Serializable {
         const val CREATE_PERMISSION_FLAG = 4
         const val DELETE_PERMISSION_FLAG = 8
         const val SHARE_PERMISSION_FLAG = 16
+
         const val MAXIMUM_PERMISSIONS_FOR_FILE = READ_PERMISSION_FLAG +
             UPDATE_PERMISSION_FLAG +
             SHARE_PERMISSION_FLAG
