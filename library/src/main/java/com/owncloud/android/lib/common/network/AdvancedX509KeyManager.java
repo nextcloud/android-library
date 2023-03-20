@@ -638,20 +638,54 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
       }
    }
 
+   /**
+    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityCreated}.
+    *
+    * This method gets called when a new {@link Activity} gets created. However, we are only interested in resumed and
+    * paused Activities to determine the current foreground Activity.
+    *
+    * @param activity The newly created Activity.
+    * @param savedInstanceState This value can be null.
+    */
    @Override
    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
 
+   /**
+    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityStarted}.
+    *
+    * This method gets called when an {@link Activity} gets started. However, we are only interested in resumed and
+    * paused Activities to determine the current foreground Activity.
+    *
+    * @param activity The started Activity.
+    */
    @Override
    public void onActivityStarted(Activity activity) {}
 
    private int resumes = 0;
 
+   /**
+    * Remember the current foreground Activity.
+    *
+    * This method gets called when an {@link Activity} gets resumed. We use this to remember the Activity
+    * currently being in the foreground.
+    *
+    * @param activity The resumed Activity
+    */
    @Override
    public void onActivityResumed(Activity activity) {
       ++resumes;
       foregroundAct = activity;
    }
 
+   /**
+    * Keep track of paused Activities.
+    *
+    * This method gets called when an {@link Activity} gets paused. We use this to keep track of paused Activities
+    * to find the point when there are no more Activities in the "resumed" state. Then we forget the last foreground
+    * Activity.
+    *
+    * @param activity The resumed Activity
+    */
    @Override
    public void onActivityPaused(Activity activity) {
       --resumes;
@@ -663,12 +697,36 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
       }
    }
 
+   /**
+    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityStopped}.
+    *
+    * This method gets called when an {@link Activity} gets stopped. However, we are only interested in resumed and
+    * paused Activities to determine the current foreground Activity.
+    *
+    * @param activity The stopped Activity.
+    */
    @Override
    public void onActivityStopped(Activity activity) {}
 
+   /**
+    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivitySaveInstanceState}.
+    *
+    * This method gets called when an {@link Activity} saves its state. However, we are only interested in resumed and
+    * paused Activities to determine the current foreground Activity.
+    *
+    * @param activity The Activity saving its state.
+    */
    @Override
    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
 
+   /**
+    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityDestroyed(Activity)}.
+    *
+    * This method gets called when an {@link Activity} gets destroyed. However, we are only interested in resumed and
+    * paused Activities to determine the current foreground Activity.
+    *
+    * @param activity The destroyed Activity.
+    */
    @Override
    public void onActivityDestroyed(Activity activity) {}
 
