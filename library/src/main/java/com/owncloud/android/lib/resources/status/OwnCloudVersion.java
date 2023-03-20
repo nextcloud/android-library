@@ -181,7 +181,6 @@ public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable 
         final int PRIME = 59;
         int result = 1;
         result = result * PRIME + this.version;
-        result = result * PRIME + (this.versionValid ? 79 : 97);
-        return result;
+        return result * PRIME + (this.versionValid ? 79 : 97);
     }
 }

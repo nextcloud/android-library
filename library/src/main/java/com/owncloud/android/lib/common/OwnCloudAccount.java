@@ -227,7 +227,6 @@ public class OwnCloudAccount implements Parcelable {
         final Object $name = this.getName();
         result = result * PRIME + ($name == null ? 43 : $name.hashCode());
         final Object $savedAccount = this.getSavedAccount();
-        result = result * PRIME + ($savedAccount == null ? 43 : $savedAccount.hashCode());
-        return result;
+        return result * PRIME + ($savedAccount == null ? 43 : $savedAccount.hashCode());
     }
 }

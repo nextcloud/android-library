@@ -77,7 +77,7 @@ public class ShareToRemoteOperationResultParser {
             List<OCShare> shares = shareXmlParser.parseXMLResponse(is);
 
             if (shareXmlParser.isSuccess()) {
-                if ((shares != null && shares.size() > 0) || !oneOrMoreSharesRequired) {
+                if ((shares != null && !shares.isEmpty()) || !oneOrMoreSharesRequired) {
                     result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OK);
                     if (shares != null) {
                         for (OCShare share : shares) {

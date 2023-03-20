@@ -140,7 +140,6 @@ public class OwnCloudBasicCredentials implements OwnCloudCredentials {
         result = result * PRIME + ($username == null ? 43 : $username.hashCode());
         final Object $authToken = this.getAuthToken();
         result = result * PRIME + ($authToken == null ? 43 : $authToken.hashCode());
-        result = result * PRIME + (this.mAuthenticationPreemptive ? 79 : 97);
-        return result;
+        return result * PRIME + (this.mAuthenticationPreemptive ? 79 : 97);
     }
 }
