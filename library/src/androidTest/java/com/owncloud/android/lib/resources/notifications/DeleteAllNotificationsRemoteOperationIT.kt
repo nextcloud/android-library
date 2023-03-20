@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
  *   @author Tobias Kaminsky
- *   Copyright (C) 2020 Tobias Kaminsky
- *   Copyright (C) 2020 Nextcloud GmbH
+ *   Copyright (C) 2022 Tobias Kaminsky
+ *   Copyright (C) 2022 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -25,21 +25,33 @@
  *
  */
 
-package com.nextcloud.operations
+package com.owncloud.android.lib.resources.notifications
 
-import com.nextcloud.common.OkHttpMethodBase
-import okhttp3.Request
-import okhttp3.RequestBody
+import com.owncloud.android.AbstractIT
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
-/**
- * HTTP PUT method that uses OkHttp with new NextcloudClient
- */
-class PutMethod(
-    uri: String,
-    useOcsApiRequestHeader: Boolean,
-    val body: RequestBody?
-) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
-    override fun applyType(temp: Request.Builder) {
-        body?.let { temp.put(it) }
+class DeleteAllNotificationsRemoteOperationIT : AbstractIT() {
+    @Test
+    fun testDeleteAllNotification() {
+        // create one notification
+        assertTrue(
+            nextcloudClientAdmin.execute(
+                CreateNotificationRemoteOperation(
+                    nextcloudClient.userId,
+                    "test"
+                )
+            ).isSuccess
+        )
+
+        var result = nextcloudClient.execute(GetNotificationsRemoteOperation())
+        assertTrue(result.isSuccess)
+        assertTrue(result.resultData.isNotEmpty())
+
+        assertTrue(nextcloudClient.execute(DeleteAllNotificationsRemoteOperation()).isSuccess)
+
+        result = nextcloudClient.execute(GetNotificationsRemoteOperation())
+        assertTrue(result.isSuccess)
+        assertTrue(result.resultData.isEmpty())
     }
 }

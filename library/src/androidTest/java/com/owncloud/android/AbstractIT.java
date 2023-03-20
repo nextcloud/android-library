@@ -85,6 +85,7 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
+    protected static NextcloudClient nextcloudClientAdmin;
     protected static Context context;
     protected static Uri url;
 
@@ -123,6 +124,12 @@ public abstract class AbstractIT {
         String userId = loginName; // for test same as userId
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
+
+        nextcloudClientAdmin = new NextcloudClient(
+                url,
+                "admin",
+                Credentials.basic("admin", "admin"),
+                context);
 
         waitForServer(client, url);
         testConnection();

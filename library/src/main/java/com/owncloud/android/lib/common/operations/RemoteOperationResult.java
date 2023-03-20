@@ -557,16 +557,6 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         mPushResponse = pushResponseData;
     }
 
-    /**
-     * @deprecated use getResultData() instead
-     */
-    public List<Notification> getNotificationData() {
-        if (!mSuccess) {
-            throw new RuntimeException("Accessing result data after operation failed!");
-        }
-        return mNotificationData;
-    }
-
 
     public boolean isSuccess() {
         return mSuccess;
