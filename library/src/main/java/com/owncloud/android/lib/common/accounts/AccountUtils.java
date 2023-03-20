@@ -132,8 +132,6 @@ public class AccountUtils {
      */
     public static OwnCloudCredentials getCredentialsForAccount(Context context, Account account)
             throws OperationCanceledException, AuthenticatorException, IOException {
-
-        OwnCloudCredentials credentials;
         AccountManager am = AccountManager.get(context);
 
         String username = AccountUtils.getUsernameForAccount(account);
@@ -141,9 +139,7 @@ public class AccountUtils {
         String password = am.blockingGetAuthToken(account, AccountTypeUtils.getAuthTokenTypePass(account.type),
                 false);
 
-        credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
-
-        return credentials;
+        return OwnCloudCredentialsFactory.newBasicCredentials(username, password);
     }
 
 
