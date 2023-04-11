@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
  *   @author Tobias Kaminsky
- *   Copyright (C) 2020 Tobias Kaminsky
- *   Copyright (C) 2020 Nextcloud GmbH
+ *   Copyright (C) 2023 Tobias Kaminsky
+ *   Copyright (C) 2023 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -25,23 +25,33 @@
  *
  */
 
-package com.nextcloud.operations
+package com.owncloud.android.lib.resources.tags
 
-import com.nextcloud.common.OkHttpMethodBase
-import okhttp3.Request
-import okhttp3.RequestBody
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.operations.PostMethod
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import okhttp3.FormBody
+import org.apache.commons.httpclient.HttpStatus
 
-/**
- * HTTP PUT method that uses OkHttp with new NextcloudClient
- */
-class PutMethod(
-    uri: String,
-    useOcsApiRequestHeader: Boolean,
-    val body: RequestBody? = null
-) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
-    override fun applyType(temp: Request.Builder) {
-        body?.let {
-            temp.put(it)
+class CreateTagRemoteOperation(val name: String) : RemoteOperation<Void>() {
+    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+        val body = FormBody.Builder()
+            .add("name", name)
+            .build()
+
+        val postMethod = PostMethod(client.baseUri.toString() + TAG_URL, true, body)
+
+        val status = postMethod.execute(client)
+
+        return if (status == HttpStatus.SC_CREATED) {
+            RemoteOperationResult<Void>(true, postMethod)
+        } else {
+            RemoteOperationResult<Void>(false, postMethod)
         }
+    }
+
+    companion object {
+        const val TAG_URL = "/remote.php/dav/systemtags/"
     }
 }

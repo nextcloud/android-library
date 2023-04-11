@@ -78,6 +78,7 @@ public class RemoteFile implements Parcelable, Serializable {
     private String lockOwnerEditor;
     private long lockTimeout;
     private String lockToken;
+    private String[] tags;
 
     public RemoteFile() {
         resetData();
@@ -128,6 +129,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setLockTimestamp(we.getLockTimestamp());
         setLockTimeout(we.getLockTimeout());
         setLockToken(we.getLockToken());
+        setTags(we.getTags());
     }
 
     /**
@@ -157,6 +159,7 @@ public class RemoteFile implements Parcelable, Serializable {
         lockTimestamp = 0;
         lockTimeout = 0;
         lockToken = null;
+        tags = new String[]{};
     }
 
     /**

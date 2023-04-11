@@ -125,6 +125,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
+        propSet.add(WebdavEntry.PROPERTY_TAGS, ncNamespace);
 
         return propSet;
     }
@@ -163,6 +164,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace);
+        propSet.add(WebdavEntry.PROPERTY_TAGS, ncNamespace);
 
         return propSet;
     }

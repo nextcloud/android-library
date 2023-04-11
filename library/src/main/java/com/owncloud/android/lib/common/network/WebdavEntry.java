@@ -90,6 +90,7 @@ public class WebdavEntry {
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
+    public static final String PROPERTY_TAGS = "tags";
 
     private static final String IS_ENCRYPTED = "1";
 
@@ -144,6 +145,8 @@ public class WebdavEntry {
     private long lockTimeout;
     @Getter
     private String lockToken = null;
+    @Getter
+    private String[] tags = new String[0];
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -428,6 +431,33 @@ public class WebdavEntry {
 
                     if (user != null) {
                         sharees = new ShareeUser[]{user};
+                    }
+                }
+            }
+
+            // NC tags property <nc:tags>
+            prop = propSet.get(PROPERTY_TAGS, ncNamespace);
+            if (prop != null && prop.getValue() != null) {
+                if (prop.getValue() instanceof ArrayList) {
+                    ArrayList list = (ArrayList) prop.getValue();
+
+                    List<String> tempList = new ArrayList<>();
+
+                    for (int i = 0; i < list.size(); i++) {
+                        Element element = (Element) list.get(i);
+
+                        tempList.add(element.getFirstChild().getTextContent());
+                    }
+
+                    tags = tempList.toArray(new String[0]);
+
+                } else {
+                    // single item or empty
+                    Element element = (Element) prop.getValue();
+                    String value = element.getFirstChild().getTextContent();
+
+                    if (value != null) {
+                        tags = new String[]{value};
                     }
                 }
             }

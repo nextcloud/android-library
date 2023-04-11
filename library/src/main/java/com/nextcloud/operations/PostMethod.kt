@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
  *   @author Tobias Kaminsky
- *   Copyright (C) 2020 Tobias Kaminsky
- *   Copyright (C) 2020 Nextcloud GmbH
+ *   Copyright (C) 2023 Tobias Kaminsky
+ *   Copyright (C) 2023 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -32,16 +32,14 @@ import okhttp3.Request
 import okhttp3.RequestBody
 
 /**
- * HTTP PUT method that uses OkHttp with new NextcloudClient
+ * HTTP POST method that uses OkHttp with new NextcloudClient
  */
-class PutMethod(
+class PostMethod(
     uri: String,
     useOcsApiRequestHeader: Boolean,
-    val body: RequestBody? = null
+    val body: RequestBody
 ) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
     override fun applyType(temp: Request.Builder) {
-        body?.let {
-            temp.put(it)
-        }
+        temp.post(body)
     }
 }

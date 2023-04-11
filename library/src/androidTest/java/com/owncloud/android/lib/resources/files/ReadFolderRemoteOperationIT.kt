@@ -23,6 +23,9 @@ package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.tags.CreateTagRemoteOperation
+import com.owncloud.android.lib.resources.tags.GetTagsRemoteOperation
+import com.owncloud.android.lib.resources.tags.PutTagRemoteOperation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -41,11 +44,48 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        val result = ReadFolderRemoteOperation(remotePath).execute(client)
+        var result = ReadFolderRemoteOperation(remotePath).execute(client)
 
         assertTrue(result.isSuccess)
         assertEquals(2, result.data.size)
-        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
-        assertEquals(remotePath + "1.txt", (result.data[1] as RemoteFile).remotePath)
+
+        // Folder
+        var remoteFolder = result.data[0] as RemoteFile
+        assertEquals(remotePath, remoteFolder.remotePath)
+        assertEquals(0, remoteFolder.tags.size)
+
+        // File
+        var remoteFile = result.data[1] as RemoteFile
+        assertEquals(remotePath + "1.txt", remoteFile.remotePath)
+        assertEquals(0, remoteFile.tags.size)
+
+        // create tag, ignore if it already exists
+        CreateTagRemoteOperation("Test Tag 1").execute(nextcloudClient)
+        CreateTagRemoteOperation("Test Tag 2").execute(nextcloudClient)
+
+        // list tags
+        val tags = GetTagsRemoteOperation().execute(client).resultData
+
+        // add tag
+        PutTagRemoteOperation(tags[0].id, remoteFile.localId).execute(nextcloudClient)
+        PutTagRemoteOperation(tags[1].id, remoteFile.localId).execute(nextcloudClient)
+
+        // check again
+        result = ReadFolderRemoteOperation(remotePath).execute(client)
+
+        assertTrue(result.isSuccess)
+        assertEquals(2, result.data.size)
+
+        // Folder
+        remoteFolder = result.data[0] as RemoteFile
+        assertEquals(remotePath, remoteFolder.remotePath)
+        assertEquals(0, remoteFolder.tags.size)
+
+        // File
+        remoteFile = result.data[1] as RemoteFile
+        assertEquals(remotePath + "1.txt", remoteFile.remotePath)
+        assertEquals(2, remoteFile.tags.size)
+        assertEquals("Test Tag 1", remoteFile.tags[0])
+        assertEquals("Test Tag 2", remoteFile.tags[1])
     }
 }
