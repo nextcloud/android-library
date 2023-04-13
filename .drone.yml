@@ -85,7 +85,7 @@ services:
       - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
       - su www-data -c "git clone -b main https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
       - su www-data -c "php /var/www/html/occ app:enable -f files_lock"
-      - su www-data -c "git clone -b main https://github.com/nextcloud/groupfolders.git /var/www/html/apps/groupfolders/"
+      - su www-data -c "git clone -b non-admin-api https://github.com/nextcloud/groupfolders.git /var/www/html/apps/groupfolders/"
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
