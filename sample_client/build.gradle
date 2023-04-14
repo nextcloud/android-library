@@ -36,6 +36,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    namespace 'com.owncloud.android.lib.sampleclient'
 }
 
 dependencies {

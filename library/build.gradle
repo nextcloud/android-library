@@ -141,6 +141,7 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    namespace 'com.owncloud.android.lib'
 }
 
 tasks.register("combinedTestReport", JacocoReport) {
