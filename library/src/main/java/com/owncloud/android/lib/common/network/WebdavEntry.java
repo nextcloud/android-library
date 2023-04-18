@@ -80,6 +80,7 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_LOCK_TIME = "lock-time";
     public static final String EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout";
     public static final String EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token";
+    public static final String EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags";
 
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
@@ -90,7 +91,6 @@ public class WebdavEntry {
 
     public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
-    public static final String PROPERTY_TAGS = "tags";
 
     private static final String IS_ENCRYPTED = "1";
 
@@ -436,7 +436,7 @@ public class WebdavEntry {
             }
 
             // NC tags property <nc:tags>
-            prop = propSet.get(PROPERTY_TAGS, ncNamespace);
+            prop = propSet.get(EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace);
             if (prop != null && prop.getValue() != null) {
                 if (prop.getValue() instanceof ArrayList) {
                     ArrayList list = (ArrayList) prop.getValue();
