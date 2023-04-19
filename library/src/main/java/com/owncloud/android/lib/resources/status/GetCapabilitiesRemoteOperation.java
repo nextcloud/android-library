@@ -159,6 +159,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_USER_STATUS_ENABLED = "enabled";
     private static final String NODE_USER_STATUS_SUPPORTS_EMOJI = "supports_emoji";
 
+    // groupfolders
+    private static final String NODE_GROUPFOLDERS = "groupfolders";
+    private static final String NODE_HAS_GROUPFOLDERS = "hasGroupFolders";
+
     // end to end encryption
     private static final String PROPERTY_KEYS_EXIST = "keys-exist";
 
@@ -655,6 +659,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                 } else {
                     capability.setUserStatus(CapabilityBooleanType.FALSE);
                     capability.setUserStatusSupportsEmoji(CapabilityBooleanType.FALSE);
+                }
+
+                // groupfolders
+                if (respCapabilities.has(NODE_GROUPFOLDERS)) {
+                    JSONObject groupfoldersCapability = respCapabilities.getJSONObject(NODE_GROUPFOLDERS);
+
+                    if (groupfoldersCapability.getBoolean(NODE_HAS_GROUPFOLDERS)) {
+                        capability.setGroupfolders(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setGroupfolders(CapabilityBooleanType.FALSE);
+                    }
+                } else {
+                    capability.setGroupfolders(CapabilityBooleanType.FALSE);
                 }
             }
 

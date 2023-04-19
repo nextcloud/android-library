@@ -26,6 +26,12 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
@@ -34,12 +40,6 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Class to test GetRemoteCapabilitiesOperation
@@ -56,7 +56,7 @@ public class GetCapabilitiesIT extends AbstractIT {
         assertTrue(result.getData() != null && result.getData().size() == 1);
 
         OCCapability capability = (OCCapability) result.getData().get(0);
-        checkCapability(capability);
+        checkCapability(capability, client.getUserId());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class GetCapabilitiesIT extends AbstractIT {
             assertEquals(capability.getEtag(), sameCapability.getEtag());
         }
 
-        checkCapability(capability);
+        checkCapability(capability, client.getUserId());
     }
 
     /**
@@ -94,7 +94,7 @@ public class GetCapabilitiesIT extends AbstractIT {
         assertTrue(result.getData() != null && result.getData().size() == 1);
 
         OCCapability capability = (OCCapability) result.getData().get(0);
-        checkCapability(capability);
+        checkCapability(capability, client.getUserId());
     }
 
     @Test
@@ -118,10 +118,10 @@ public class GetCapabilitiesIT extends AbstractIT {
             assertEquals(capability.getEtag(), sameCapability.getEtag());
         }
 
-        checkCapability(capability);
+        checkCapability(capability, nextcloudClient.getUserId());
     }
 
-    private void checkCapability(OCCapability capability) {
+    private void checkCapability(OCCapability capability, String userId) {
         assertTrue(capability.getActivity().isTrue());
         assertTrue(capability.getFilesSharingApiEnabled().isTrue());
         assertTrue(capability.getFilesVersioning().isTrue());
@@ -144,6 +144,17 @@ public class GetCapabilitiesIT extends AbstractIT {
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_24)) {
             // files_lock app needs to be installed in server for this to work
             assertNotNull(capability.getFilesLockingVersion());
+        }
+
+        // groupfolder
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
+            if (userId.equals("test")) {
+                capability.getGroupfolders().isTrue();
+            } else {
+                capability.getGroupfolders().isFalse();
+            }
+        } else {
+            capability.getGroupfolders().isFalse();
         }
     }
 }
