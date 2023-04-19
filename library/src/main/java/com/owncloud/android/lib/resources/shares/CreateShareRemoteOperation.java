@@ -125,6 +125,17 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
         this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, note);
     }
 
+    public CreateShareRemoteOperation(
+            String remoteFilePath,
+            ShareType shareType,
+            String shareWith,
+            boolean publicUpload,
+            String password,
+            int permissions,
+            boolean getShareDetails) {
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, getShareDetails, "");
+    }
+
     public boolean isGettingShareDetails() {
         return getShareDetails;
     }
