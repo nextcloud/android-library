@@ -53,6 +53,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Locale;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class OwnCloudClient extends HttpClient {
 
     private static final String TAG = OwnCloudClient.class.getSimpleName();
@@ -390,6 +392,7 @@ public class OwnCloudClient extends HttpClient {
 
     }
 
+    @SuppressFBWarnings(value = "SBSC_USE_STRINGBUFFER_CONCATENATION", justification = "replaced by NextcloudClient")
     public String getCookiesString() {
         Cookie[] cookies = getState().getCookies();
         String cookiesString = "";

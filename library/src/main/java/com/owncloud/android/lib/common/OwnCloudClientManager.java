@@ -40,6 +40,7 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -293,14 +294,14 @@ public class OwnCloudClientManager {
             Log_OC.d(TAG, "Saving sessions... ");
         }
 
-        Iterator<String> accountNames = mClientsWithKnownUsername.keySet().iterator();
-        String accountName;
+        Iterator<Map.Entry<String, OwnCloudClient>> accountNames = mClientsWithKnownUsername.entrySet().iterator();
+        Map.Entry<String, OwnCloudClient> entry;
         Account account;
         while (accountNames.hasNext()) {
-            accountName = accountNames.next();
-            account = new Account(accountName, accountType);
+            entry = accountNames.next();
+            account = new Account(entry.getKey(), accountType);
             AccountUtils.saveClient(
-                    mClientsWithKnownUsername.get(accountName),
+                    entry.getValue(),
                     account,
                     context);
         }

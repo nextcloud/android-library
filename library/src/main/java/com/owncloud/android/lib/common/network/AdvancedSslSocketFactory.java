@@ -264,7 +264,7 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
                         previousCause = cause;
                         cause = cause.getCause();
                     }
-                    if (cause != null && cause instanceof CertificateCombinedException) {
+                    if (cause instanceof CertificateCombinedException) {
                         failInHandshake = (CertificateCombinedException) cause;
                     }
                 }
