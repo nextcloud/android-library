@@ -146,6 +146,7 @@ public class WebdavEntry {
     @Getter
     private String lockToken = null;
     @Getter
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     private String[] tags = new String[0];
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
@@ -439,13 +440,11 @@ public class WebdavEntry {
             prop = propSet.get(EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace);
             if (prop != null && prop.getValue() != null) {
                 if (prop.getValue() instanceof ArrayList) {
-                    ArrayList list = (ArrayList) prop.getValue();
+                    ArrayList<Element> list = (ArrayList<Element>) prop.getValue();
 
-                    List<String> tempList = new ArrayList<>();
+                    List<String> tempList = new ArrayList<>(list.size());
 
-                    for (int i = 0; i < list.size(); i++) {
-                        Element element = (Element) list.get(i);
-
+                    for (Element element : list) {
                         tempList.add(element.getFirstChild().getTextContent());
                     }
 

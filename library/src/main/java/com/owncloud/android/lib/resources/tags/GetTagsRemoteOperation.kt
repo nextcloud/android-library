@@ -36,7 +36,7 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 import org.apache.jackrabbit.webdav.property.DavPropertyName
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
 
-class GetTagsRemoteOperation() : RemoteOperation<List<Tag>>() {
+class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
     @Deprecated("Deprecated in Java")
     override fun run(client: OwnCloudClient): RemoteOperationResult<List<Tag>> {
         val propertyId = DavPropertyName.create(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID)
