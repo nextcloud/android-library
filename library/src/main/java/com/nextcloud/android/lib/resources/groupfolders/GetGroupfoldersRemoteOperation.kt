@@ -46,7 +46,10 @@ class GetGroupfoldersRemoteOperation :
         var getMethod: GetMethod? = null
         try {
             getMethod =
-                GetMethod(client.baseUri.toString() + GROUPFOLDERS_ENDPOINT + JSON_FORMAT, true)
+                GetMethod(
+                    client.baseUri.toString() + GROUPFOLDERS_ENDPOINT + JSON_FORMAT + APPLICABLE,
+                    true
+                )
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
                 val map = getServerResponse(
@@ -75,5 +78,6 @@ class GetGroupfoldersRemoteOperation :
     companion object {
         private val TAG = GetGroupfoldersRemoteOperation::class.java.simpleName
         private const val GROUPFOLDERS_ENDPOINT = "/index.php/apps/groupfolders/folders"
+        private const val APPLICABLE = "&applicable=1"
     }
 }
