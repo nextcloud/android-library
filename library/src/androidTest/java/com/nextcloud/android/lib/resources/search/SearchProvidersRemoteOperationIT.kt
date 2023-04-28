@@ -37,9 +37,7 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
     @Test
     fun getSearchProviders() {
         // only on NC20+
-        val ocCapability = GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient).singleData as OCCapability
-        assumeTrue(ocCapability.version.isNewerOrEqual(OwnCloudVersion.nextcloud_20))
+        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
 
         val result = nextcloudClient.execute(UnifiedSearchProvidersRemoteOperation())
         assertTrue(result.isSuccess)

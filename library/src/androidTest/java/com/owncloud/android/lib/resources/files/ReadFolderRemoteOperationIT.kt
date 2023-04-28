@@ -23,6 +23,7 @@ package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.tags.CreateTagRemoteOperation
 import com.owncloud.android.lib.resources.tags.GetTagsRemoteOperation
 import com.owncloud.android.lib.resources.tags.PutTagRemoteOperation
@@ -48,6 +49,9 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
 
         assertTrue(result.isSuccess)
         assertEquals(2, result.data.size)
+
+        // tag testing only on NC27+
+        testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
         // Folder
         var remoteFolder = result.data[0] as RemoteFile

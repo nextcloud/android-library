@@ -234,9 +234,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void favorites() {
         // only on NC25+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
-        assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
+        testOnlyOnServer(NextcloudVersion.nextcloud_25);
 
         // share folder to user "admin"
         assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
@@ -279,9 +277,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void noFavorite() {
         // only on NC25+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
-        assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
+        testOnlyOnServer(NextcloudVersion.nextcloud_25);
 
         assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
 
