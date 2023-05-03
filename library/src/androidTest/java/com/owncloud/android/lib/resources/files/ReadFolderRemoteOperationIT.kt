@@ -69,8 +69,8 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertEquals(0, remoteFile.tags.size)
 
         // create tag
-        val tag1 = RandomStringGenerator.make(TAG_LENGTH)
-        val tag2 = RandomStringGenerator.make(TAG_LENGTH)
+        val tag1 = "a" + RandomStringGenerator.make(TAG_LENGTH)
+        val tag2 = "b" + RandomStringGenerator.make(TAG_LENGTH)
         assertTrue(CreateTagRemoteOperation(tag1).execute(nextcloudClient).isSuccess)
         assertTrue(CreateTagRemoteOperation(tag2).execute(nextcloudClient).isSuccess)
 
@@ -106,6 +106,8 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         remoteFile = result.data[1] as RemoteFile
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
         assertEquals(2, remoteFile.tags.size)
+
+        remoteFile.tags.sort()
         assertEquals(tag1, remoteFile.tags[0])
         assertEquals(tag2, remoteFile.tags[1])
     }
