@@ -22,12 +22,9 @@
 package com.owncloud.android.lib.resources.users
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
-import com.owncloud.android.lib.resources.status.OCCapability
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -39,11 +36,7 @@ class StatusIT : AbstractIT() {
 
     @Before
     fun before() {
-        val result = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
-        assertTrue(result.isSuccess)
-        val ocCapability = result.singleData as OCCapability
-
-        assumeTrue(ocCapability.version.isNewerOrEqual(OwnCloudVersion.nextcloud_20))
+        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
     }
 
     @Test

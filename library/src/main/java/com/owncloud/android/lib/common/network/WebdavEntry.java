@@ -80,6 +80,7 @@ public class WebdavEntry {
     public static final String EXTENDED_PROPERTY_LOCK_TIME = "lock-time";
     public static final String EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout";
     public static final String EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token";
+    public static final String EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags";
 
     public static final String TRASHBIN_FILENAME = "trashbin-filename";
     public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
@@ -144,6 +145,9 @@ public class WebdavEntry {
     private long lockTimeout;
     @Getter
     private String lockToken = null;
+    @Getter
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    private String[] tags = new String[0];
 
     public enum MountType {INTERNAL, EXTERNAL, GROUP}
 
@@ -428,6 +432,31 @@ public class WebdavEntry {
 
                     if (user != null) {
                         sharees = new ShareeUser[]{user};
+                    }
+                }
+            }
+
+            // NC tags property <nc:system-tags>
+            prop = propSet.get(EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace);
+            if (prop != null && prop.getValue() != null) {
+                if (prop.getValue() instanceof ArrayList) {
+                    ArrayList<Element> list = (ArrayList<Element>) prop.getValue();
+
+                    List<String> tempList = new ArrayList<>(list.size());
+
+                    for (Element element : list) {
+                        tempList.add(element.getFirstChild().getTextContent());
+                    }
+
+                    tags = tempList.toArray(new String[0]);
+
+                } else {
+                    // single item or empty
+                    Element element = (Element) prop.getValue();
+                    String value = element.getFirstChild().getTextContent();
+
+                    if (value != null) {
+                        tags = new String[]{value};
                     }
                 }
             }

@@ -23,21 +23,16 @@
 package com.nextcloud.android.lib.resources.dashboard
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
-import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Assume
 import org.junit.Test
 
 class DashboardListWidgetsRemoteOperationIT : AbstractIT() {
     @Test
     fun list() {
         // only on NC25+
-        val ocCapability = GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient).singleData as OCCapability
-        Assume.assumeTrue(ocCapability.version.isNewerOrEqual(NextcloudVersion.nextcloud_25))
+        testOnlyOnServer(NextcloudVersion.nextcloud_25)
 
         val result = DashboardListWidgetsRemoteOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)

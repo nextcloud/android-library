@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
  *   @author Tobias Kaminsky
- *   Copyright (C) 2020 Tobias Kaminsky
- *   Copyright (C) 2020 Nextcloud GmbH
+ *   Copyright (C) 2023 Tobias Kaminsky
+ *   Copyright (C) 2023 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -25,23 +25,34 @@
  *
  */
 
-package com.nextcloud.operations
+package com.owncloud.android.lib.resources.tags
 
-import com.nextcloud.common.OkHttpMethodBase
-import okhttp3.Request
-import okhttp3.RequestBody
+import com.nextcloud.test.RandomStringGenerator
+import com.owncloud.android.AbstractIT
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
+import org.junit.Test
 
-/**
- * HTTP PUT method that uses OkHttp with new NextcloudClient
- */
-class PutMethod(
-    uri: String,
-    useOcsApiRequestHeader: Boolean,
-    val body: RequestBody? = null
-) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
-    override fun applyType(temp: Request.Builder) {
-        body?.let {
-            temp.put(it)
-        }
+class GetTagsRemoteOperationIT : AbstractIT() {
+    companion object {
+        const val TAG_LENGTH = 10
+    }
+
+    @Test
+    fun list() {
+        var sut = GetTagsRemoteOperation().execute(client)
+        assertTrue(sut.isSuccess)
+
+        val count = sut.resultData.size
+
+        assertTrue(
+            CreateTagRemoteOperation(RandomStringGenerator.make(TAG_LENGTH))
+                .execute(nextcloudClient)
+                .isSuccess
+        )
+
+        sut = GetTagsRemoteOperation().execute(client)
+        assertTrue(sut.isSuccess)
+        assertEquals(count + 1, sut.resultData.size)
     }
 }

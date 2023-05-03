@@ -33,6 +33,7 @@ import com.owncloud.android.lib.resources.shares.ShareeUser;
 
 import java.io.Serializable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -78,6 +79,8 @@ public class RemoteFile implements Parcelable, Serializable {
     private String lockOwnerEditor;
     private long lockTimeout;
     private String lockToken;
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    private String[] tags;
 
     public RemoteFile() {
         resetData();
@@ -128,6 +131,7 @@ public class RemoteFile implements Parcelable, Serializable {
         setLockTimestamp(we.getLockTimestamp());
         setLockTimeout(we.getLockTimeout());
         setLockToken(we.getLockToken());
+        setTags(we.getTags());
     }
 
     /**
@@ -157,6 +161,7 @@ public class RemoteFile implements Parcelable, Serializable {
         lockTimestamp = 0;
         lockTimeout = 0;
         lockToken = null;
+        tags = new String[]{};
     }
 
     /**

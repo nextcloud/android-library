@@ -26,7 +26,6 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assume.assumeTrue;
 
 import android.text.TextUtils;
 
@@ -36,8 +35,6 @@ import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
-import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
@@ -46,11 +43,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
     @Test
     public void uploadAndModify() {
         // tests only for NC19+
-        OCCapability capability = (OCCapability) new GetCapabilitiesRemoteOperation(null)
-                .execute(client)
-                .getSingleData();
-
-        assumeTrue(capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_20));
+        testOnlyOnServer(OwnCloudVersion.nextcloud_20);
 
         // E2E server app checks for official NC client with >=3.13.0, 
         // and blocks all other clients, e.g. 3rd party apps using this lib
