@@ -147,7 +147,7 @@ public class GetCapabilitiesIT extends AbstractIT {
         }
 
         // groupfolder
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_27)) {
             if (userId.equals("test")) {
                 capability.getGroupfolders().isTrue();
             } else {
