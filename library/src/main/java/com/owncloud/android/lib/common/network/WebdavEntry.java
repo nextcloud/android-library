@@ -436,7 +436,7 @@ public class WebdavEntry {
                 }
             }
 
-            // NC tags property <nc:tags>
+            // NC tags property <nc:system-tags>
             prop = propSet.get(EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace);
             if (prop != null && prop.getValue() != null) {
                 if (prop.getValue() instanceof ArrayList) {

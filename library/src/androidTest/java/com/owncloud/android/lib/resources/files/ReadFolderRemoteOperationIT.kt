@@ -78,8 +78,18 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         val tags = GetTagsRemoteOperation().execute(client).resultData
 
         // add tag
-        PutTagRemoteOperation(tags[0].id, remoteFile.localId).execute(nextcloudClient)
-        PutTagRemoteOperation(tags[1].id, remoteFile.localId).execute(nextcloudClient)
+        assertTrue(
+            PutTagRemoteOperation(
+                tags[0].id,
+                remoteFile.localId
+            ).execute(nextcloudClient).isSuccess
+        )
+        assertTrue(
+            PutTagRemoteOperation(
+                tags[1].id,
+                remoteFile.localId
+            ).execute(nextcloudClient).isSuccess
+        )
 
         // check again
         result = ReadFolderRemoteOperation(remotePath).execute(client)

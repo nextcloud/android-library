@@ -31,11 +31,18 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PutMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import okhttp3.RequestBody
+import okhttp3.internal.EMPTY_REQUEST
 import org.apache.commons.httpclient.HttpStatus
 
 class PutTagRemoteOperation(val id: String, val fileId: Long) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        val putMethod = PutMethod(client.baseUri.toString() + TAG_URL + fileId + "/" + id, true)
+        val empty: RequestBody = EMPTY_REQUEST
+        val putMethod = PutMethod(
+            client.baseUri.toString() + TAG_URL + fileId + "/" + id,
+            true,
+            empty
+        )
 
         val status = putMethod.execute(client)
 
