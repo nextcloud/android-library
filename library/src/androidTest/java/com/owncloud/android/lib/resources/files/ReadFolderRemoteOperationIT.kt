@@ -21,6 +21,7 @@
  */
 package com.owncloud.android.lib.resources.files
 
+import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion
@@ -32,6 +33,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ReadFolderRemoteOperationIT : AbstractIT() {
+    companion object {
+        const val TAG_LENGTH = 10
+    }
+
     @Test
     fun readRemoteFolderWithContent() {
         val remotePath = "/test/"
@@ -63,9 +68,11 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
         assertEquals(0, remoteFile.tags.size)
 
-        // create tag, ignore if it already exists
-        CreateTagRemoteOperation("Test Tag 1").execute(nextcloudClient)
-        CreateTagRemoteOperation("Test Tag 2").execute(nextcloudClient)
+        // create tag
+        val tag1 = RandomStringGenerator.make(TAG_LENGTH)
+        val tag2 = RandomStringGenerator.make(TAG_LENGTH)
+        assertTrue(CreateTagRemoteOperation(tag1).execute(nextcloudClient).isSuccess)
+        assertTrue(CreateTagRemoteOperation(tag2).execute(nextcloudClient).isSuccess)
 
         // list tags
         val tags = GetTagsRemoteOperation().execute(client).resultData
@@ -89,7 +96,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         remoteFile = result.data[1] as RemoteFile
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
         assertEquals(2, remoteFile.tags.size)
-        assertEquals("Test Tag 1", remoteFile.tags[0])
-        assertEquals("Test Tag 2", remoteFile.tags[1])
+        assertEquals(tag1, remoteFile.tags[0])
+        assertEquals(tag2, remoteFile.tags[1])
     }
 }

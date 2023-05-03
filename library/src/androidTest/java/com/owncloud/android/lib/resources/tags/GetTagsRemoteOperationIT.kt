@@ -27,36 +27,32 @@
 
 package com.owncloud.android.lib.resources.tags
 
-import com.google.gson.Gson
-import com.nextcloud.common.NextcloudClient
-import com.nextcloud.operations.PostMethod
-import com.owncloud.android.lib.common.operations.RemoteOperation
-import com.owncloud.android.lib.common.operations.RemoteOperationResult
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import org.apache.commons.httpclient.HttpStatus
+import com.nextcloud.test.RandomStringGenerator
+import com.owncloud.android.AbstractIT
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
+import org.junit.Test
 
-class CreateTagRemoteOperation(val name: String) : RemoteOperation<Void>() {
-    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        val map = HashMap<String, String>()
-        map["name"] = name
-
-        val json = Gson().toJson(map)
-
-        val request = RequestBody.create("application/json".toMediaTypeOrNull(), json)
-
-        val postMethod = PostMethod(client.baseUri.toString() + TAG_URL, true, request)
-
-        val status = postMethod.execute(client)
-
-        return if (status == HttpStatus.SC_CREATED) {
-            RemoteOperationResult<Void>(true, postMethod)
-        } else {
-            RemoteOperationResult<Void>(false, postMethod)
-        }
+class GetTagsRemoteOperationIT : AbstractIT() {
+    companion object {
+        const val TAG_LENGTH = 10
     }
 
-    companion object {
-        const val TAG_URL = "/remote.php/dav/systemtags/"
+    @Test
+    fun list() {
+        var sut = GetTagsRemoteOperation().execute(client)
+        assertTrue(sut.isSuccess)
+
+        val count = sut.resultData.size
+
+        assertTrue(
+            CreateTagRemoteOperation(RandomStringGenerator.make(TAG_LENGTH))
+                .execute(nextcloudClient)
+                .isSuccess
+        )
+
+        sut = GetTagsRemoteOperation().execute(client)
+        assertTrue(sut.isSuccess)
+        assertEquals(count + 1, sut.resultData.size)
     }
 }
