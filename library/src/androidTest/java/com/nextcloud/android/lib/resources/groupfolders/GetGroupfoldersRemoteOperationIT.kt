@@ -37,7 +37,7 @@ import org.junit.Test
 class GetGroupfoldersRemoteOperationIT : AbstractIT() {
     @Test
     fun getGroupfolders() {
-        val capability = GetCapabilitiesRemoteOperation().execute(client).resultData as OCCapability
+        val capability = GetCapabilitiesRemoteOperation().execute(client).singleData as OCCapability
 
         assumeTrue(capability.groupfolders.isTrue)
 
