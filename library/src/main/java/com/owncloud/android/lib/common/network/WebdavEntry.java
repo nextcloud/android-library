@@ -354,7 +354,7 @@ public class WebdavEntry {
             // OC unread comments property <oc-comments-unread>
             prop = propSet.get(EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace);
             if (prop != null) {
-                unreadCommentsCount = Integer.valueOf(prop.getValue().toString());
+                unreadCommentsCount = Integer.parseInt(prop.getValue().toString());
             } else {
                 unreadCommentsCount = 0;
             }
@@ -362,7 +362,7 @@ public class WebdavEntry {
             // NC has preview property <nc-has-preview>
             prop = propSet.get(EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace);
             if (prop != null) {
-                hasPreview = Boolean.valueOf(prop.getValue().toString());
+                hasPreview = Boolean.parseBoolean(prop.getValue().toString());
             } else {
                 hasPreview = true;
             }
@@ -504,7 +504,7 @@ public class WebdavEntry {
         }
     }
 
-    private Long parseLongProp(final DavPropertySet propSet, final String propName, final Namespace namespace) {
+    private long parseLongProp(final DavPropertySet propSet, final String propName, final Namespace namespace) {
         final String stringValue = parseStringProp(propSet, propName, namespace);
         if (stringValue != null) {
             return Long.parseLong(stringValue);

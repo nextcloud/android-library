@@ -29,6 +29,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class FileUtils {
 
     private static final String TAG = FileUtils.class.getSimpleName();
@@ -53,6 +55,10 @@ public class FileUtils {
         return !fileName.contains(PATH_SEPARATOR);
     }
 
+    @SuppressFBWarnings("WEAK_MESSAGE_DIGEST_MD5")
+    /*
+     * ATTENTION: Do not use this for security critical purpose!
+     */
     public static String md5Sum(File file) throws NoSuchAlgorithmException {
         String temp = file.getName() + file.lastModified() + file.length();
 

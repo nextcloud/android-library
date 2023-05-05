@@ -123,10 +123,10 @@ public class AdvancedX509TrustManager implements X509TrustManager {
                     previousCause = cause;
                     cause = cause.getCause();
                 }
-                if (cause != null && cause instanceof CertPathValidatorException) {
-                	result.setCertPathValidatorException((CertPathValidatorException)cause);
+                if (cause instanceof CertPathValidatorException) {
+                    result.setCertPathValidatorException((CertPathValidatorException) cause);
                 } else {
-                	result.setOtherCertificateException(c);
+                    result.setOtherCertificateException(c);
                 }
         	}
         	
