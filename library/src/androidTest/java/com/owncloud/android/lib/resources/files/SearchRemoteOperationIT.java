@@ -127,7 +127,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(10, result.getResultData().size());
+        assertEquals(11, result.getResultData().size());
     }
 
     @Test
@@ -463,7 +463,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
+        assertEquals(2, result.getResultData().size());
         assertEquals("/folder/", result.getResultData().get(0).getRemotePath());
     }
 
