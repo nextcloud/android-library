@@ -107,11 +107,18 @@ class OCCapability {
     var userStatus = CapabilityBooleanType.UNKNOWN
     var userStatusSupportsEmoji = CapabilityBooleanType.UNKNOWN
 
+    // Groupfolders
+    var groupfolders = CapabilityBooleanType.UNKNOWN
+
     // Etag for capabilities
     var etag: String? = ""
 
     val version: OwnCloudVersion
-        get() = OwnCloudVersion(listOf(versionMayor, versionMinor, versionMicro).joinToString(VERSION_DOT))
+        get() = OwnCloudVersion(
+            listOf(versionMayor, versionMinor, versionMicro).joinToString(
+                VERSION_DOT
+            )
+        )
 
     companion object {
         private const val VERSION_DOT = "."

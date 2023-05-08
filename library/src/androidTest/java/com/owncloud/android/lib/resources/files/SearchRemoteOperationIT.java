@@ -127,7 +127,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(10, result.getResultData().size());
+        assertEquals(11, result.getResultData().size());
     }
 
     @Test
@@ -253,7 +253,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(3, result.getResultData().size());
+        assertEquals(4, result.getResultData().size());
 
         assertEquals("/video.mp4", result.getResultData().get(0).getRemotePath());
         assertEquals("/pdf.pdf", result.getResultData().get(1).getRemotePath());
@@ -457,13 +457,13 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertTrue(result.getResultData().isEmpty());
+        assertEquals(1, result.getResultData().size());
 
         assertTrue(new CreateFolderRemoteOperation("/folder/", false).execute(client).isSuccess());
 
         result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
+        assertEquals(2, result.getResultData().size());
         assertEquals("/folder/", result.getResultData().get(0).getRemotePath());
     }
 

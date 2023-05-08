@@ -44,6 +44,7 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.network.NetworkUtils;
+import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation;
@@ -289,7 +290,8 @@ public abstract class AbstractIT {
         for (Object object : result.getData()) {
             RemoteFile remoteFile = (RemoteFile) object;
 
-            if (!"/".equals(remoteFile.getRemotePath())) {
+            if (!"/".equals(remoteFile.getRemotePath()) &&
+                    remoteFile.getMountType() != WebdavEntry.MountType.GROUP) {
                 if (remoteFile.isEncrypted()) {
                     assertTrue(new ToggleEncryptionRemoteOperation(
                             remoteFile.getLocalId(),
