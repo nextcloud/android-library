@@ -61,12 +61,12 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         // Folder
         var remoteFolder = result.data[0] as RemoteFile
         assertEquals(remotePath, remoteFolder.remotePath)
-        assertEquals(0, remoteFolder.tags.size)
+        assertEquals(0, remoteFolder.tags?.size)
 
         // File
         var remoteFile = result.data[1] as RemoteFile
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
-        assertEquals(0, remoteFile.tags.size)
+        assertEquals(0, remoteFile.tags?.size)
 
         // create tag
         val tag1 = "a" + RandomStringGenerator.make(TAG_LENGTH)
@@ -100,15 +100,15 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         // Folder
         remoteFolder = result.data[0] as RemoteFile
         assertEquals(remotePath, remoteFolder.remotePath)
-        assertEquals(0, remoteFolder.tags.size)
+        assertEquals(0, remoteFolder.tags?.size)
 
         // File
         remoteFile = result.data[1] as RemoteFile
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
-        assertEquals(2, remoteFile.tags.size)
+        assertEquals(2, remoteFile.tags?.size)
 
-        remoteFile.tags.sort()
-        assertEquals(tag1, remoteFile.tags[0])
-        assertEquals(tag2, remoteFile.tags[1])
+        remoteFile.tags?.sort()
+        assertEquals(tag1, remoteFile.tags?.get(0))
+        assertEquals(tag2, remoteFile.tags?.get(1))
     }
 }
