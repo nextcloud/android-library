@@ -28,9 +28,9 @@
 package com.owncloud.android.lib.resources.tags
 
 import com.owncloud.android.lib.common.OwnCloudClient
-import com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID
-import com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC
-import com.owncloud.android.lib.common.network.WebdavEntry.SHAREES_DISPLAY_NAME
+import com.owncloud.android.lib.common.network.WebdavEntry.Companion.EXTENDED_PROPERTY_NAME_REMOTE_ID
+import com.owncloud.android.lib.common.network.WebdavEntry.Companion.NAMESPACE_OC
+import com.owncloud.android.lib.common.network.WebdavEntry.Companion.SHAREES_DISPLAY_NAME
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import org.apache.commons.httpclient.HttpStatus
