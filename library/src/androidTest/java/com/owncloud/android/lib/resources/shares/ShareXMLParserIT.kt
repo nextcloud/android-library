@@ -93,7 +93,7 @@ class ShareXMLParserIT {
         val shares = sut.parse(xml)
 
         assertEquals(1, shares.resultData.size)
-        assertTrue(shares.resultData.get(0).isFavorite())
+        assertTrue(shares.resultData[0].isFavorite)
     }
 
     @Test
@@ -7395,6 +7395,6 @@ class ShareXMLParserIT {
         val shares = sut.parse(xml)
 
         assertEquals(201, shares.resultData.size)
-        assertEquals(21, shares.resultData.count { ocShare -> ocShare.isFavorite() })
+        assertEquals(21, shares.resultData.count { ocShare -> ocShare.isFavorite })
     }
 }
