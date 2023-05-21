@@ -114,6 +114,9 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
    private static int decisionId = 0;
    final private static SparseArray<AKMDecision> openDecisions = new SparseArray<>();
 
+   // counter of currently resumed Activities
+   private int resumes = 0;
+
    /**
     * Initialize AdvancedX509KeyManager
     * @param context application context (instance of Activity, Application, or Service)
@@ -660,8 +663,6 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     */
    @Override
    public void onActivityStarted(Activity activity) {}
-
-   private int resumes = 0;
 
    /**
     * Remember the current foreground Activity.
