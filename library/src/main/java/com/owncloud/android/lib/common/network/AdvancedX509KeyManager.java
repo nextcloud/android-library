@@ -876,7 +876,8 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
          }
          if (hostname != null && filter.hostname != null && !filter.hostname.equals(hostname)) {
             // Resolve hostname fields to ip addresses
-            InetAddress address = null, filterAddress = null;
+            InetAddress address = null;
+            InetAddress filterAddress = null;
             try {
                address = InetAddress.getByName(hostname);
             } catch (UnknownHostException e) {
