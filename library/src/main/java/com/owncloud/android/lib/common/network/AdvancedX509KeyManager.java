@@ -651,7 +651,9 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param savedInstanceState This value can be null.
     */
    @Override
-   public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
+   public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+      // we are only interested in resuming Activities to find the current foreground Activity
+   }
 
    /**
     * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityStarted}.
@@ -662,7 +664,9 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param activity The started Activity.
     */
    @Override
-   public void onActivityStarted(Activity activity) {}
+   public void onActivityStarted(Activity activity) {
+      // we are only interested in resuming Activities to find the current foreground Activity
+   }
 
    /**
     * Remember the current foreground Activity.
@@ -707,7 +711,9 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param activity The stopped Activity.
     */
    @Override
-   public void onActivityStopped(Activity activity) {}
+   public void onActivityStopped(Activity activity) {
+      // we are only interested in resuming Activities to find the current foreground Activity
+   }
 
    /**
     * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivitySaveInstanceState}.
@@ -718,7 +724,9 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param activity The Activity saving its state.
     */
    @Override
-   public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+   public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+      // we are only interested in resuming Activities to find the current foreground Activity
+   }
 
    /**
     * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityDestroyed(Activity)}.
@@ -729,7 +737,9 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param activity The destroyed Activity.
     */
    @Override
-   public void onActivityDestroyed(Activity activity) {}
+   public void onActivityDestroyed(Activity activity) {
+      // we are only interested in resuming Activities to find the current foreground Activity
+   }
 
    /**
     * Returns the top-most entry of the activity stack.
