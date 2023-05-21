@@ -877,18 +877,8 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
          }
          if (hostname != null && filter.hostname != null && !filter.hostname.equals(hostname)) {
             // Resolve hostname fields to ip addresses
-            InetAddress address = null;
-            InetAddress filterAddress = null;
-            try {
-               address = InetAddress.getByName(hostname);
-            } catch (UnknownHostException e) {
-               Log_OC.w(TAG, "matches: error resolving " + hostname);
-            }
-            try {
-               filterAddress = InetAddress.getByName(filter.hostname);
-            } catch (UnknownHostException e) {
-               Log_OC.w(TAG, "matches: error resolving " + filter.hostname);
-            }
+            InetAddress address = getInetAddressByName(hostname);
+            InetAddress filterAddress = getInetAddressByName(filter.hostname);
             // If resolution succeeded, compare addresses, otherwise host names
             if ((address == null || !address.equals(filterAddress))) {
                Log_OC.d(TAG, "matches: alias " + this + " (address=" + address + ") does not match hostname " +
@@ -901,6 +891,22 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
             return false;
          }
          return true;
+      }
+
+      /**
+       * Try to get the address of a host according to the given hostname.
+       *
+       * @param hostname The hostname to get the address for.
+       * @return The InetAddress instance for the hostname or null if host is unkown.
+       */
+      private InetAddress getInetAddressByName(String hostname) {
+         InetAddress address = null;
+         try {
+            address = InetAddress.getByName(hostname);
+         } catch (UnknownHostException e) {
+            Log_OC.w(TAG, "matches: error resolving " + hostname);
+         }
+         return address;
       }
    }
 
