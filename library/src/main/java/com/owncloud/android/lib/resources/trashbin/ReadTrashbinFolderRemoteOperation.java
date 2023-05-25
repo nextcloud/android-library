@@ -42,17 +42,18 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Remote operation performing the read of remote trashbin folder on Nextcloud server.
  */
 
-public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
+public class ReadTrashbinFolderRemoteOperation extends RemoteOperation<List<TrashbinFile>> {
 
     private static final String TAG = ReadTrashbinFolderRemoteOperation.class.getSimpleName();
     
-    private String remotePath;
-    private ArrayList<Object> folderAndFiles;
+    private final String remotePath;
+    private ArrayList<TrashbinFile> folderAndFiles;
     
     /**
      * Constructor
@@ -69,8 +70,8 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    public RemoteOperationResult<List<TrashbinFile>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<TrashbinFile>> result = null;
         PropFindMethod query = null;
 
         try {
@@ -89,24 +90,24 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation {
                 readData(dataInServer, client);
 
                 // Result of the operation
-                result = new RemoteOperationResult(true, query);
+                result = new RemoteOperationResult<>(true, query);
                 // Add data to the result
                 if (result.isSuccess()) {
-                    result.setData(folderAndFiles);
+                    result.setResultData(folderAndFiles);
                 }
             } else {
                 // synchronization failed
                 client.exhaustResponse(query.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, query);
+                result = new RemoteOperationResult<>(false, query);
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (query != null)
                 query.releaseConnection();  // let the connection available for other methods
 
             if (result == null) {
-                result = new RemoteOperationResult(new Exception("unknown error"));
+                result = new RemoteOperationResult<>(new Exception("unknown error"));
                 Log_OC.e(TAG, "Synchronized " + remotePath + ": failed");
             } else {
                 if (result.isSuccess()) {

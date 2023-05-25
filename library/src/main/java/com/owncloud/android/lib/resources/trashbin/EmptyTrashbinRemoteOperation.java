@@ -29,12 +29,12 @@ package com.owncloud.android.lib.resources.trashbin;
 
 import android.util.Log;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.DeleteMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 
 import java.io.IOException;
 
@@ -42,11 +42,9 @@ import java.io.IOException;
 /**
  * Empty trashbin.
  */
-public class EmptyTrashbinRemoteOperation extends RemoteOperation {
+public class EmptyTrashbinRemoteOperation extends RemoteOperation<Boolean> {
 
     private static final String TAG = EmptyTrashbinRemoteOperation.class.getSimpleName();
-    private static final int RESTORE_READ_TIMEOUT = 30000;
-    private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
     /**
      * Performs the operation.
@@ -54,19 +52,19 @@ public class EmptyTrashbinRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote Nextcloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    public RemoteOperationResult<Boolean> run(NextcloudClient client) {
 
         DeleteMethod delete = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<Boolean> result;
         try {
-            delete = new DeleteMethod(client.getDavUri() + "/trashbin/" + client.getUserId() + "/trash");
-            int status = client.executeMethod(delete, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
+            delete = new DeleteMethod(
+                    client.getDavUri() + "/trashbin/" + client.getUserId() + "/trash",
+                    true);
+            int status = client.execute(delete);
 
-            result = new RemoteOperationResult(isSuccess(status), delete);
-
-            client.exhaustResponse(delete.getResponseBodyAsStream());
+            result = new RemoteOperationResult<>(isSuccess(status), delete);
         } catch (IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log.e(TAG, "Empty trashbin failed: " + result.getLogMessage(), e);
         } finally {
             if (delete != null) {
