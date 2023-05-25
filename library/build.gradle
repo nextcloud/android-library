@@ -54,7 +54,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.6.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1u2'
 
-    implementation "androidx.core:core-ktx:1.10.0"
+    implementation "androidx.core:core-ktx:1.10.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
