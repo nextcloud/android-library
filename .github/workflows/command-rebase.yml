@@ -9,8 +9,8 @@ on:
   issue_comment:
     types: created
 
-permissions:	
-  contents: read	
+permissions:
+  contents: read
 
 jobs:
   rebase:
@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Add reaction on start
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@ca08ebd5dc95aa0cd97021e9708fcd6b87138c9b # v3.0.1
         with:
           token: ${{ secrets.COMMAND_BOT_PAT }}
           repository: ${{ github.event.repository.full_name }}
@@ -37,12 +37,12 @@ jobs:
           token: ${{ secrets.COMMAND_BOT_PAT }}
 
       - name: Automatic Rebase
-        uses: cirrus-actions/rebase@1.8
+        uses: cirrus-actions/rebase@b87d48154a87a85666003575337e27b8cd65f691 # 1.8
         env:
           GITHUB_TOKEN: ${{ secrets.COMMAND_BOT_PAT }}
 
       - name: Add reaction on failure
-        uses: peter-evans/create-or-update-comment@v3
+        uses: peter-evans/create-or-update-comment@ca08ebd5dc95aa0cd97021e9708fcd6b87138c9b # v3.0.1
         if: failure()
         with:
           token: ${{ secrets.COMMAND_BOT_PAT }}
