@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509KeyManager;
 
 import androidx.annotation.NonNull;
@@ -93,7 +94,10 @@ import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKM
  *
  * @author Elv1zz, elv1zz.git@gmail.com
  */
-public class AdvancedX509KeyManager implements X509KeyManager, Application.ActivityLifecycleCallbacks {
+public class AdvancedX509KeyManager
+        extends X509ExtendedKeyManager
+        implements X509KeyManager, Application.ActivityLifecycleCallbacks
+{
    private final static String TAG = AdvancedX509KeyManager.class.getCanonicalName();
    private static final String NOTIFICATION_CHANNEL_ID = TAG + ".notifications";
 
@@ -122,6 +126,7 @@ public class AdvancedX509KeyManager implements X509KeyManager, Application.Activ
     * @param context application context (instance of Activity, Application, or Service)
     */
    public AdvancedX509KeyManager(@NonNull Context context) {
+      super();
       this.context = context.getApplicationContext();
       init();
    }
