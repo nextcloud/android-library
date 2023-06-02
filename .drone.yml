@@ -161,7 +161,7 @@ services:
   - name: server-stable
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
-      SERVER_VERSION: stable24
+      SERVER_VERSION: stable26
     commands:
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
