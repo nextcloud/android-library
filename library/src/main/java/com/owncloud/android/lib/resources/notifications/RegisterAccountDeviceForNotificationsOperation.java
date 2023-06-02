@@ -39,11 +39,10 @@ import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
-import org.json.JSONException;
 
 import java.lang.reflect.Type;
 
-public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation {
+public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation<PushResponse> {
     // OCS Route
     private static final String OCS_ROUTE =
             "/ocs/v2.php/apps/notifications/api/v2/push" + JSON_FORMAT;
@@ -60,9 +59,9 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     private static final String PROXY_SERVER = "proxyServer";
     private static final String INVALID_SESSION_TOKEN = "INVALID_SESSION_TOKEN";
 
-    private String pushTokenHash;
-    private String devicePublicKey;
-    private String proxyServer;
+    private final String pushTokenHash;
+    private final String devicePublicKey;
+    private final String proxyServer;
 
     public RegisterAccountDeviceForNotificationsOperation(String pushTokenHash,
                                                           String devicePublicKey,
@@ -73,10 +72,9 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<PushResponse> run(OwnCloudClient client) {
+        RemoteOperationResult<PushResponse> result;
         int status;
-        PushResponse pushResponse;
         Utf8PostMethod post = null;
 
         try {
@@ -85,28 +83,28 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
             post.setParameter(PUSH_TOKEN_HASH, pushTokenHash);
             post.setParameter(DEVICE_PUBLIC_KEY, devicePublicKey);
             post.setParameter(PROXY_SERVER, proxyServer);
-                                
+
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             status = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
             if (isSuccess(status)) {
-                result = new RemoteOperationResult(true, status, post.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, post.getResponseHeaders());
                 Log_OC.d(TAG, "Successful response: " + response);
 
                 // Parse the response
-                pushResponse = parseResult(response);
-                result.setPushResponseData(pushResponse);
+                PushResponse pushResponse = parseResult(response);
+                result.setResultData(pushResponse);
             } else {
                 if (isInvalidSessionToken(response)) {
-                    result = new RemoteOperationResult(RemoteOperationResult.ResultCode.ACCOUNT_USES_STANDARD_PASSWORD);
+                    result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.ACCOUNT_USES_STANDARD_PASSWORD);
                 } else {
-                    result = new RemoteOperationResult(false, status, post.getResponseHeaders());
+                    result = new RemoteOperationResult<>(false, status, post.getResponseHeaders());
                 }
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while registering device for notifications", e);
         } finally {
             if (post != null) {
@@ -116,20 +114,19 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
         return result;
     }
 
-    private PushResponse parseResult(String response) throws JSONException {
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jo = (JsonObject)jsonParser.parse(response);
+    private PushResponse parseResult(String response) {
+        JsonObject jo = (JsonObject) JsonParser.parseString(response);
         JsonObject jsonDataObject = jo.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA);
 
         Gson gson = new Gson();
-        Type pushResponseType = new TypeToken<PushResponse>(){}.getType();
+        Type pushResponseType = new TypeToken<PushResponse>() {
+        }.getType();
 
         return gson.fromJson(jsonDataObject, pushResponseType);
     }
 
     private boolean isInvalidSessionToken(String response) {
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = (JsonObject)jsonParser.parse(response);
+        JsonObject jsonObject = (JsonObject) JsonParser.parseString(response);
         String message = jsonObject.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA).get(MESSAGE).getAsString();
 
         return INVALID_SESSION_TOKEN.equals(message);

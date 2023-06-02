@@ -35,8 +35,6 @@ import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundExce
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.CreateLocalFileException;
-import com.owncloud.android.lib.resources.notifications.models.Notification;
-import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
@@ -58,7 +56,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 import javax.net.ssl.SSLException;
@@ -156,8 +153,6 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     private ArrayList<Object> mData;
     private T resultData;
-    private List<Notification> mNotificationData;
-    private PushResponse mPushResponse;
 
     /**
      * Public constructor from result code.
@@ -532,41 +527,6 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         }
         return mData.get(0);
     }
-
-    /**
-     * @deprecated use getResultData() instead
-     */
-    public void setNotificationData(List<Notification> notifications) {
-        mNotificationData = notifications;
-    }
-
-    /**
-     * @deprecated use getResultData() instead
-     */
-    public PushResponse getPushResponseData() {
-        if (!mSuccess) {
-            throw new RuntimeException("Accessing result data after operation failed!");
-        }
-        return mPushResponse;
-    }
-
-    /**
-     * @deprecated use getResultData() instead
-     */
-    public void setPushResponseData(PushResponse pushResponseData) {
-        mPushResponse = pushResponseData;
-    }
-
-    /**
-     * @deprecated use getResultData() instead
-     */
-    public List<Notification> getNotificationData() {
-        if (!mSuccess) {
-            throw new RuntimeException("Accessing result data after operation failed!");
-        }
-        return mNotificationData;
-    }
-
 
     public boolean isSuccess() {
         return mSuccess;

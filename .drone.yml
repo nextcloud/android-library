@@ -90,6 +90,9 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
+      - su www-data -c "git clone https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
+      - su www-data -c "php /var/www/html/occ app:enable -f notifications"
+      - su www-data -c "php /var/www/html/occ notification:generate test -d test"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -191,6 +194,9 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
+      - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
+      - su www-data -c "php /var/www/html/occ app:enable -f notifications"
+      - su www-data -c "php /var/www/html/occ notification:generate test test"
       - /usr/local/bin/run.sh
 
 trigger:

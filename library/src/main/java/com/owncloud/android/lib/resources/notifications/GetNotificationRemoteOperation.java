@@ -39,11 +39,8 @@ import com.owncloud.android.lib.resources.notifications.models.Notification;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.json.JSONException;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -52,7 +49,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
-public class GetNotificationRemoteOperation extends RemoteOperation {
+public class GetNotificationRemoteOperation extends RemoteOperation<Notification> {
 
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =
@@ -70,14 +67,13 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
 
     @SuppressFBWarnings("HTTP_PARAMETER_POLLUTION")
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<Notification> run(OwnCloudClient client) {
+        RemoteOperationResult<Notification> result;
         int status;
         GetMethod get = null;
-        List<Notification> notifications = new ArrayList<>();
         String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP + id + JSON_FORMAT;
 
-        // get the notifications
+        // get the notification
         try {
             get = new GetMethod(url);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
@@ -86,14 +82,14 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
             String response = get.getResponseBodyAsString();
 
             if (isSuccess(status)) {
-                result = new RemoteOperationResult(true, status, get.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, get.getResponseHeaders());
                 Log_OC.d(this, "Successful response: " + response);
 
                 // Parse the response
-                notifications.add(parseResult(response));
-                result.setNotificationData(notifications);
+                Notification notification = parseResult(response);
+                result.setResultData(notification);
             } else {
-                result = new RemoteOperationResult(false, status, get.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, status, get.getResponseHeaders());
                 Log_OC.e(this, "Failed response while getting user notifications ");
                 if (response != null) {
                     Log_OC.e(this, "*** status code: " + status + " ; response message: " + response);
@@ -102,7 +98,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
                 }
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(this, "Exception while getting remote notifications", e);
         } finally {
             if (get != null) {
@@ -113,9 +109,8 @@ public class GetNotificationRemoteOperation extends RemoteOperation {
         return result;
     }
 
-    private Notification parseResult(String response) throws JSONException {
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jo = (JsonObject) jsonParser.parse(response);
+    private Notification parseResult(String response) {
+        JsonObject jo = (JsonObject) JsonParser.parseString(response);
         JsonObject jsonDataObject = jo.getAsJsonObject(NODE_OCS).getAsJsonObject(NODE_DATA);
 
         Gson gson = new Gson();
