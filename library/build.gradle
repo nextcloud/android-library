@@ -5,8 +5,7 @@ buildscript {
         junit_version = '4.13.2'
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0'
-        classpath 'com.hiya:jacoco-android:0.2'
+        classpath 'com.android.tools.build:gradle:8.0.2'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.0"
@@ -23,7 +22,7 @@ plugins {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.hiya.jacoco-android'
+apply from: "$rootProject.projectDir/jacoco.gradle"
 apply plugin: "com.github.spotbugs"
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: 'maven-publish' // needed for JitPack.io
@@ -134,8 +133,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+	
+    kotlinOptions {
+        jvmTarget = '17'
     }
 
     testOptions {
@@ -149,9 +152,9 @@ tasks.register("combinedTestReport", JacocoReport) {
     jacocoClasspath = configurations['jacocoAnt']
 
     reports {
-        xml.enabled true
-        html.enabled true
-        csv.enabled false
+        csv.required = Boolean.FALSE
+        xml.required = Boolean.TRUE
+        html.required = Boolean.TRUE
     }
 
     additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
