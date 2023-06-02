@@ -40,12 +40,14 @@ class ReadTrashbinFolderRemoteOperationIT : AbstractIT() {
         val fileName = "trashbinFile.txt"
         val filePath = createFile(fileName)
         val remotePath = "/$fileName"
+
+        @Suppress("Detekt.MagicNumber")
         assertTrue(
             UploadFileRemoteOperation(
                 filePath,
                 remotePath,
                 "image/jpg",
-                "1464818400"
+                1464818400
             )
                 .execute(client).isSuccess
         )
