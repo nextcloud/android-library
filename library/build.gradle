@@ -75,7 +75,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
-    androidTestImplementation 'commons-io:commons-io:2.12.0'
+    androidTestImplementation 'commons-io:commons-io:2.13.0'
 }
 
 spotbugs {
