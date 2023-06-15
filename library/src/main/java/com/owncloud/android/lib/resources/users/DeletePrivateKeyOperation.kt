@@ -27,7 +27,7 @@
 package com.owncloud.android.lib.resources.users
 
 import com.owncloud.android.lib.common.OwnCloudClient
-import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import org.apache.commons.httpclient.HttpStatus
@@ -37,7 +37,7 @@ import java.io.IOException
 /**
  * Remote operation performing to delete the private key for an user
  */
-class DeletePrivateKeyOperation : RemoteOperation<Void>() {
+class DeletePrivateKeyOperation : LegacyRemoteOperation<Void>() {
     /**
      * @param client Client object
      */

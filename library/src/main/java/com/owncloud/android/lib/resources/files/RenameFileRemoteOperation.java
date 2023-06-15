@@ -25,7 +25,7 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -41,7 +41,7 @@ import java.io.File;
  * @author David A. Velasco
  * @author masensio
  */
-public class RenameFileRemoteOperation extends RemoteOperation {
+public class RenameFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = RenameFileRemoteOperation.class.getSimpleName();
 

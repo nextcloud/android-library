@@ -30,7 +30,7 @@ package com.owncloud.android.lib.resources.shares;
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -62,7 +62,7 @@ import java.util.ArrayList;
  * Status codes:
  *    100 - successful
  */
-public class GetShareesRemoteOperation extends RemoteOperation {
+public class GetShareesRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = GetShareesRemoteOperation.class.getSimpleName();
 

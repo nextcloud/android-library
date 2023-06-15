@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.e2ee;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 /**
  * Lock a file
  */
-public class LockFileRemoteOperation extends RemoteOperation {
+public class LockFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = LockFileRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;

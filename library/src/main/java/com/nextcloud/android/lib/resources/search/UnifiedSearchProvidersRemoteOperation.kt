@@ -30,14 +30,14 @@ import com.owncloud.android.lib.common.SearchProviders
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
-import com.owncloud.android.lib.resources.OCSRemoteOperation
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation
 import org.apache.commons.httpclient.HttpStatus
 
 /**
  * Get all search providers for unified search
  */
 @Suppress("TooGenericExceptionCaught")
-class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders>() {
+class UnifiedSearchProvidersRemoteOperation : OCSNextcloudRemoteOperation<SearchProviders>() {
     companion object {
         private val TAG = UnifiedSearchProvidersRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers"

@@ -29,7 +29,7 @@ import android.content.Context;
 import com.owncloud.android.lib.common.OwnCloudAnonymousCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.RedirectionPath;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -41,7 +41,7 @@ import org.apache.commons.httpclient.methods.HeadMethod;
  * 
  * @author David A. Velasco
  */
-public class ExistenceCheckRemoteOperation extends RemoteOperation {
+public class ExistenceCheckRemoteOperation extends LegacyRemoteOperation {
     
     /** Maximum time to wait for a response from the server in MILLISECONDs.  */
     public static final int TIMEOUT = 50000;

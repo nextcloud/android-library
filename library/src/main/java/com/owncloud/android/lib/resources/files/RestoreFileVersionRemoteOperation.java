@@ -31,7 +31,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.model.FileVersion;
 
@@ -44,7 +44,7 @@ import java.io.IOException;
 /**
  * Restore a {@link FileVersion}.
  */
-public class RestoreFileVersionRemoteOperation extends RemoteOperation {
+public class RestoreFileVersionRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = RestoreFileVersionRemoteOperation.class.getSimpleName();
     private static final int RESTORE_READ_TIMEOUT = 30000;

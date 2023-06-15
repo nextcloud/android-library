@@ -29,7 +29,7 @@ import android.net.Uri;
 import android.util.Pair;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-public class UpdateShareRemoteOperation extends RemoteOperation {
+public class UpdateShareRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 

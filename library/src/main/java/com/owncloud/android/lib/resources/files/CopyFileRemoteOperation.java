@@ -27,7 +27,7 @@ package com.owncloud.android.lib.resources.files;
 import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 
@@ -48,7 +48,7 @@ import java.io.IOException;
  *
  * @author David A. Velasco
  */
-public class CopyFileRemoteOperation extends RemoteOperation {
+public class CopyFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = CopyFileRemoteOperation.class.getSimpleName();
 

@@ -29,7 +29,7 @@ package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 /**
  * Check if file is up to date, by checking only eTag
  */
-public class CheckEtagRemoteOperation extends RemoteOperation {
+public class CheckEtagRemoteOperation extends LegacyRemoteOperation {
 
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;

@@ -26,7 +26,7 @@ package com.owncloud.android.lib.resources.files;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
@@ -46,7 +46,7 @@ import java.util.ArrayList;
  * @author masensio
  */
 
-public class ReadFileRemoteOperation extends RemoteOperation {
+public class ReadFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = ReadFileRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;

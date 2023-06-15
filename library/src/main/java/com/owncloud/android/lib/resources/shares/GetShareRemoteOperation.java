@@ -29,7 +29,7 @@ import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 import static com.owncloud.android.lib.resources.shares.ShareUtils.SHARING_API_PATH;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -42,7 +42,7 @@ import java.util.List;
  * Get the data about a Share resource, known its remote ID.
  */
 
-public class GetShareRemoteOperation extends RemoteOperation<List<OCShare>> {
+public class GetShareRemoteOperation extends LegacyRemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 

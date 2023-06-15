@@ -31,7 +31,7 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * Comment file
  */
-public class CommentFileRemoteOperation extends RemoteOperation {
+public class CommentFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = CommentFileRemoteOperation.class.getSimpleName();
     private static final int POST_READ_TIMEOUT = 30000;

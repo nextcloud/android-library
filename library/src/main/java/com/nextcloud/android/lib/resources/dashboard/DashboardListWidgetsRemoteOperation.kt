@@ -27,11 +27,11 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.ocs.ServerResponse
-import com.owncloud.android.lib.resources.OCSRemoteOperation
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
 
-class DashboardListWidgetsRemoteOperation : OCSRemoteOperation<Map<String, DashboardWidget>>() {
+class DashboardListWidgetsRemoteOperation : OCSNextcloudRemoteOperation<Map<String, DashboardWidget>>() {
 
     override fun run(client: NextcloudClient): RemoteOperationResult<Map<String, DashboardWidget>> {
         lateinit var result: RemoteOperationResult<Map<String, DashboardWidget>>

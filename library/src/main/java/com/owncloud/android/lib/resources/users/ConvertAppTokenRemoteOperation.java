@@ -33,7 +33,7 @@ import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
@@ -44,7 +44,7 @@ import org.apache.commons.httpclient.HttpStatus;
  * If the client is authenticating with a real password an app password will be generated and returned.
  */
 
-public class ConvertAppTokenRemoteOperation extends OCSRemoteOperation<String> {
+public class ConvertAppTokenRemoteOperation extends OCSNextcloudRemoteOperation<String> {
 
     private static final String TAG = ConvertAppTokenRemoteOperation.class.getSimpleName();
     private static final String URL = "/ocs/v2.php/core/getapppassword";

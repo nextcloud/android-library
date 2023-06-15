@@ -29,7 +29,7 @@ import com.owncloud.android.lib.common.SearchResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
-import com.owncloud.android.lib.resources.OCSRemoteOperation
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation
 import org.apache.commons.httpclient.HttpStatus
 import java.net.URLEncoder
 
@@ -43,7 +43,7 @@ class UnifiedSearchRemoteOperation(
     val cursor: Int? = null,
     val limit: Int = 5
 ) :
-    OCSRemoteOperation<SearchResult>() {
+    OCSNextcloudRemoteOperation<SearchResult>() {
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"

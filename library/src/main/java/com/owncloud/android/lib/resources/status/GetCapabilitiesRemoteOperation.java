@@ -30,12 +30,10 @@ import android.text.TextUtils;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.GetMethod;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +47,7 @@ import java.util.ArrayList;
  *
  * Save in Result.getData in a OCCapability object
  */
-public class GetCapabilitiesRemoteOperation extends RemoteOperation {
+public class GetCapabilitiesRemoteOperation extends NextcloudRemoteOperation<OCCapability> {
 
     private static final String TAG = GetCapabilitiesRemoteOperation.class.getSimpleName();
 
@@ -177,8 +175,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
-        RemoteOperationResult result;
+    public RemoteOperationResult<OCCapability> run(NextcloudClient client) {
+        RemoteOperationResult<OCCapability> result;
         int status;
         GetMethod get = null;
 
@@ -200,7 +198,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
             if (isNotModified(status)) {
                 Log_OC.d(TAG, "Capabilities not modified");
 
-                result = new RemoteOperationResult(true, get);
+                result = new RemoteOperationResult<>(true, get);
                 result.setSingleData(currentCapability);
 
                 Log_OC.d(TAG, "*** Get Capabilities completed ");
@@ -216,85 +214,16 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                 }
 
                 // Result
-                result = new RemoteOperationResult(true, get);
-                result.setSingleData(capability);
+                result = new RemoteOperationResult<>(true, get);
+                result.setResultData(capability);
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
-                if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
-                } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
-                }
+                Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
             }
         } catch (JSONException | IOException e) {
-            result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Exception while getting capabilities", e);
-
-        } finally {
-            if (get != null) {
-                get.releaseConnection();
-            }
-        }
-        return result;
-    }
-
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
-        int status;
-        org.apache.commons.httpclient.methods.GetMethod get = null;
-
-        try {
-            Uri requestUri = client.getBaseUri();
-            Uri.Builder uriBuilder = requestUri.buildUpon();
-            uriBuilder.appendEncodedPath(OCS_ROUTE);    // avoid starting "/" in this method
-            uriBuilder.appendQueryParameter(PARAM_FORMAT, VALUE_FORMAT);
-
-            // Get Method
-            get = new org.apache.commons.httpclient.methods.GetMethod(uriBuilder.build().toString());
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            if (null != currentCapability && !"".equals(currentCapability.getEtag())) {
-                get.addRequestHeader(OCS_ETAG_HEADER, currentCapability.getEtag());
-            }
-
-            status = client.executeMethod(get);
-
-            if (isNotModified(status)) {
-                Log_OC.d(TAG, "Capabilities not modified");
-
-                result = new RemoteOperationResult(true, get);
-                result.setSingleData(currentCapability);
-
-                Log_OC.d(TAG, "*** Get Capabilities completed ");
-            } else if (isSuccess(status)) {
-                String response = get.getResponseBodyAsString();
-                Log_OC.d(TAG, "Successful response: " + response);
-
-                OCCapability capability = parseResponse(response);
-
-                Header etag = get.getResponseHeader("ETag");
-                if (etag != null) {
-                    capability.setEtag(etag.getValue());
-                }
-
-                // Result
-                result = new RemoteOperationResult(true, get);
-                result.setSingleData(capability);
-            } else {
-                result = new RemoteOperationResult(false, get);
-                String response = get.getResponseBodyAsString();
-                Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
-                if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
-                } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
-                }
-            }
-        } catch (JSONException | IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting capabilities", e);
 
         } finally {

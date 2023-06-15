@@ -27,7 +27,7 @@
 package com.owncloud.android.lib.resources.shares;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -38,7 +38,7 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
  * Remove a share
  */
 
-public class RemoveShareRemoteOperation extends RemoteOperation {
+public class RemoveShareRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = RemoveShareRemoteOperation.class.getSimpleName();
 

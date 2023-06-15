@@ -37,7 +37,7 @@ import com.owncloud.android.lib.common.accounts.AccountUtils
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
 import com.owncloud.android.lib.common.network.RedirectionPath
-import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.CookieJar
@@ -101,7 +101,7 @@ class NextcloudClient private constructor(
     ) : this(baseUri, userId, credentials, createDefaultClient(context))
 
     @Suppress("TooGenericExceptionCaught")
-    fun <T> execute(remoteOperation: RemoteOperation<T>): RemoteOperationResult<T> {
+    fun <T> execute(remoteOperation: NextcloudRemoteOperation<T>): RemoteOperationResult<T> {
         return try {
             remoteOperation.run(this)
         } catch (ex: Exception) {

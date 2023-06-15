@@ -31,7 +31,7 @@ import android.net.Uri;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -46,7 +46,7 @@ import java.io.IOException;
 /**
  * Favorite or unfavorite a file.
  */
-public class ToggleFavoriteRemoteOperation extends RemoteOperation {
+public class ToggleFavoriteRemoteOperation extends LegacyRemoteOperation {
     private boolean makeItFavorited;
     private String filePath;
 

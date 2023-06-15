@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.users;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -40,7 +40,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
  * Remote operation performing to delete the public key for an user
  */
 
-public class DeletePublicKeyOperation extends RemoteOperation {
+public class DeletePublicKeyOperation extends LegacyRemoteOperation {
 
     private static final String TAG = DeletePublicKeyOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;

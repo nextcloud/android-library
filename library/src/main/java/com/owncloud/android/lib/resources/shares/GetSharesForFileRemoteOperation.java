@@ -27,7 +27,7 @@
 package com.owncloud.android.lib.resources.shares;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -40,7 +40,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * The input is the full path of the desired file.
  * The output is a list of everyone who has the file shared with them.
  */
-public class GetSharesForFileRemoteOperation extends RemoteOperation {
+public class GetSharesForFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = GetSharesForFileRemoteOperation.class.getSimpleName();
 

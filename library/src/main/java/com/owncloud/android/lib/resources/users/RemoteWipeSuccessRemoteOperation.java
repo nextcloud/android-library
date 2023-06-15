@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.users;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -40,7 +40,7 @@ import org.apache.commons.httpclient.methods.Utf8PostMethod;
  * Remote operation notifying server for successful wipe
  */
 
-public class RemoteWipeSuccessRemoteOperation extends RemoteOperation {
+public class RemoteWipeSuccessRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = RemoteWipeSuccessRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;

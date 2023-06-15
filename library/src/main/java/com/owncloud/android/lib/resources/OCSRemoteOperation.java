@@ -32,7 +32,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.nextcloud.common.OkHttpMethodBase;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 
 import org.apache.commons.httpclient.HttpMethodBase;
 
@@ -43,7 +43,7 @@ import java.io.IOException;
  *
  * @author Bartosz Przybylski
  */
-public abstract class OCSRemoteOperation<T> extends RemoteOperation<T> {
+public abstract class OCSRemoteOperation<T> extends LegacyRemoteOperation<T> {
 
     @Deprecated
     public <T> T getServerResponse(HttpMethodBase method, TypeToken<T> type) throws IOException {

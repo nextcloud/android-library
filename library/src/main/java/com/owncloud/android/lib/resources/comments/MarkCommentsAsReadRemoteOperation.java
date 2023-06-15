@@ -29,7 +29,7 @@ package com.owncloud.android.lib.resources.comments;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -44,7 +44,7 @@ import java.io.IOException;
 /**
  * Mark all comments for a file as read
  */
-public class MarkCommentsAsReadRemoteOperation extends RemoteOperation {
+public class MarkCommentsAsReadRemoteOperation extends LegacyRemoteOperation {
     private static final String COMMENTS_URL = "/comments/files/";
 
     private final long fileId;
