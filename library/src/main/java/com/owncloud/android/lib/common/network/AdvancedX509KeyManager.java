@@ -23,19 +23,15 @@ THE SOFTWARE.
  */
 package com.owncloud.android.lib.common.network;
 
-import android.app.Activity;
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.security.KeyChain;
 import android.security.KeyChainException;
 import android.util.SparseArray;
@@ -96,7 +92,7 @@ import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKM
  */
 public class AdvancedX509KeyManager
         extends X509ExtendedKeyManager
-        implements X509KeyManager, Application.ActivityLifecycleCallbacks
+        implements X509KeyManager
 {
    private final static String TAG = AdvancedX509KeyManager.class.getCanonicalName();
    private static final String NOTIFICATION_CHANNEL_ID = TAG + ".notifications";
@@ -111,15 +107,11 @@ public class AdvancedX509KeyManager
    private SharedPreferences sharedPreferences;
 
    final private Context context;
-   private Activity foregroundAct;
 
    private final static int NOTIFICATION_ID = 23120;
 
    private static int decisionId = 0;
    final private static SparseArray<AKMDecision> openDecisions = new SparseArray<>();
-
-   // counter of currently resumed Activities
-   private int resumes = 0;
 
    /**
     * Initialize AdvancedX509KeyManager
@@ -135,26 +127,16 @@ public class AdvancedX509KeyManager
     * Perform initialization of global variables (except context) and load settings
     */
    private void init() {
-      // Determine application from context
-      Application app;
-      if (context instanceof Application) {
-         app = (Application) context;
-      } else if (context instanceof Service) {
-         app = ((Service) context).getApplication();
-      } else if (context instanceof Activity) {
-         app = ((Activity) context).getApplication();
-      } else {
-         throw new ClassCastException("AdvancedX509KeyManager context must be either Activity, Application, or Service!");
+      if (context == null) {
+         throw new IllegalStateException("AdvancedX509KeyManager context is null, which is not allowed!");
       }
+
       // Initialize settings
       Log_OC.d(TAG, "init(): Loading SharedPreferences named " + context.getPackageName() + "." + "AdvancedX509KeyManager");
       sharedPreferences = context.getSharedPreferences(context.getPackageName() + "." + "AdvancedX509KeyManager",
               Context.MODE_PRIVATE);
       Log_OC.d(TAG, "init(): keychain aliases = " + Arrays.toString(
               sharedPreferences.getStringSet(KEYCHAIN_ALIASES, new HashSet<>()).toArray()));
-
-      // Register callbacks to determine current activity
-      app.registerActivityLifecycleCallbacks(this);
    }
 
    /**
@@ -596,7 +578,7 @@ public class AdvancedX509KeyManager
       // we try to directly start the activity and fall back to making a notification
       // e.g. when the app is in the background and we cannot just start a new activity
       try {
-         getTopMostContext().startActivity(ni);
+         context.startActivity(ni);
       } catch (Exception e) {
          Log_OC.d(TAG, "interactClientCert: startActivity(SelectClientCertificateHelperActivity)", e);
          startActivityNotification(ni, id, context.getString(R.string.notification_message_select_client_cert, hostname, port));
@@ -644,115 +626,6 @@ public class AdvancedX509KeyManager
          decision.port = port;
          decision.notify();
       }
-   }
-
-   /**
-    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityCreated}.
-    *
-    * This method gets called when a new {@link Activity} gets created. However, we are only interested in resumed and
-    * paused Activities to determine the current foreground Activity.
-    *
-    * @param activity The newly created Activity.
-    * @param savedInstanceState This value can be null.
-    */
-   @Override
-   public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-      // we are only interested in resuming Activities to find the current foreground Activity
-   }
-
-   /**
-    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityStarted}.
-    *
-    * This method gets called when an {@link Activity} gets started. However, we are only interested in resumed and
-    * paused Activities to determine the current foreground Activity.
-    *
-    * @param activity The started Activity.
-    */
-   @Override
-   public void onActivityStarted(Activity activity) {
-      // we are only interested in resuming Activities to find the current foreground Activity
-   }
-
-   /**
-    * Remember the current foreground Activity.
-    *
-    * This method gets called when an {@link Activity} gets resumed. We use this to remember the Activity
-    * currently being in the foreground.
-    *
-    * @param activity The resumed Activity
-    */
-   @Override
-   public void onActivityResumed(Activity activity) {
-      ++resumes;
-      foregroundAct = activity;
-   }
-
-   /**
-    * Keep track of paused Activities.
-    *
-    * This method gets called when an {@link Activity} gets paused. We use this to keep track of paused Activities
-    * to find the point when there are no more Activities in the "resumed" state. Then we forget the last foreground
-    * Activity.
-    *
-    * @param activity The resumed Activity
-    */
-   @Override
-   public void onActivityPaused(Activity activity) {
-      --resumes;
-      // it might happen that the previously active Activity enters "paused" state
-      // AFTER the new Activity entered "resumed" state. in that case we would forget
-      // our Activity by mistake. therefore we try to keep track of resumes and pauses.
-      if (resumes == 0) {
-         foregroundAct = null;
-      }
-   }
-
-   /**
-    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityStopped}.
-    *
-    * This method gets called when an {@link Activity} gets stopped. However, we are only interested in resumed and
-    * paused Activities to determine the current foreground Activity.
-    *
-    * @param activity The stopped Activity.
-    */
-   @Override
-   public void onActivityStopped(Activity activity) {
-      // we are only interested in resuming Activities to find the current foreground Activity
-   }
-
-   /**
-    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivitySaveInstanceState}.
-    *
-    * This method gets called when an {@link Activity} saves its state. However, we are only interested in resumed and
-    * paused Activities to determine the current foreground Activity.
-    *
-    * @param activity The Activity saving its state.
-    */
-   @Override
-   public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-      // we are only interested in resuming Activities to find the current foreground Activity
-   }
-
-   /**
-    * Empty implementation of {@link Application.ActivityLifecycleCallbacks#onActivityDestroyed(Activity)}.
-    *
-    * This method gets called when an {@link Activity} gets destroyed. However, we are only interested in resumed and
-    * paused Activities to determine the current foreground Activity.
-    *
-    * @param activity The destroyed Activity.
-    */
-   @Override
-   public void onActivityDestroyed(Activity activity) {
-      // we are only interested in resuming Activities to find the current foreground Activity
-   }
-
-   /**
-    * Returns the top-most entry of the activity stack.
-    *
-    * @return the context of the currently bound UI or the master context if none is bound
-    */
-   private Context getTopMostContext() {
-      return (foregroundAct != null) ? foregroundAct : context;
    }
 
    static class AKMDecision {
