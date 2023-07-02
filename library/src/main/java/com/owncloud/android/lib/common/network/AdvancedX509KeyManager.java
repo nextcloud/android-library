@@ -80,11 +80,11 @@ import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKM
 /**
  * AdvancedX509KeyManager is an implementation of X509KeyManager that handles key management,
  * as well as user interaction to select an TLS client certificate, and also persist the selection.
- *
+ * <p>
  * AdvancedX509KeyManager is based on
  * <a href="https://github.com/stephanritscher/InteractiveKeyManager">InteractiveKeyManager</a>
  * created by Stephan Ritscher.
- *
+ * <p>
  * It was stripped down to reduce it to the most relevant parts and to directly include it
  * in nextcloud's android-library. (Removed features were file-based key stores and toast messages.)
  *
@@ -370,18 +370,19 @@ public class AdvancedX509KeyManager
             AKMDecision decision = interactClientCert(hostname, port);
             String alias;
             switch (decision.state) {
-               case AKMDecision.DECISION_KEYCHAIN: // Add keychain alias for connection
+               case AKMDecision.DECISION_KEYCHAIN -> { // Add keychain alias for connection
                   alias = addKeyChain(decision.param, decision.hostname, decision.port);
                   Log_OC.d(TAG, "chooseAlias(keyTypes=" + Arrays.toString(keyTypes) + ", issuers=" +
                           Arrays.toString(issuers) + ", hostname=" + hostname + ", port=" + port + "): Use alias " +
                           alias);
                   return alias;
-               case AKMDecision.DECISION_ABORT:
+               }
+               case AKMDecision.DECISION_ABORT -> {
                   Log_OC.w(TAG, "chooseAlias(keyTypes=" + Arrays.toString(keyTypes) + ", issuers=" +
                           Arrays.toString(issuers) + ", hostname=" + hostname + ", port=" + port + ") - no alias selected");
                   return null;
-               default:
-                  throw new IllegalArgumentException("Unknown decision state " + decision.state);
+               }
+               default -> throw new IllegalArgumentException("Unknown decision state " + decision.state);
             }
          }
       }
@@ -739,10 +740,9 @@ public class AdvancedX509KeyManager
 
       @Override
       public boolean equals(Object object) {
-         if (!(object instanceof AKMAlias)) {
+         if (!(object instanceof AKMAlias other)) {
             return false;
          }
-         AKMAlias other = (AKMAlias) object;
          return Objects.equals(type, other.type) &&
                  Objects.equals(alias, other.alias) &&
                  Objects.equals(hostname, other.hostname) &&
