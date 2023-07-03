@@ -94,7 +94,7 @@ public class AdvancedX509KeyManager
         extends X509ExtendedKeyManager
         implements X509KeyManager
 {
-   private final static String TAG = AdvancedX509KeyManager.class.getCanonicalName();
+   private final static String TAG = AdvancedX509KeyManager.class.getName();
    private static final String NOTIFICATION_CHANNEL_ID = TAG + ".notifications";
 
    private final static String DECISION_INTENT = TAG + ".DECISION";
