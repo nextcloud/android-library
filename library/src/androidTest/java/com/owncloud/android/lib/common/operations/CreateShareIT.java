@@ -28,18 +28,25 @@ package com.owncloud.android.lib.common.operations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
+import com.owncloud.android.lib.resources.download_limit.GetShareDownloadLimitOperation;
+import com.owncloud.android.lib.resources.download_limit.UpdateShareDownloadLimitRemoteOperation;
+import com.owncloud.android.lib.resources.download_limit.model.DownloadLimitResponse;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
+import com.owncloud.android.lib.resources.shares.OCShare;
 import com.owncloud.android.lib.resources.shares.ShareType;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Test create share
@@ -245,5 +252,37 @@ public class CreateShareIT extends AbstractIT {
 
         assertFalse("file doesn't exist", result.isSuccess());
         assertEquals("file doesn't exist", ResultCode.FILE_NOT_FOUND, result.getCode());
+    }
+
+    @Test
+    public void testCreatePublicShareWithDownloadLimit() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_25);
+
+        int downloadLimit = 5;
+        CreateShareRemoteOperation operation = new CreateShareRemoteOperation(
+                mFullPath2FileToShare,
+                ShareType.PUBLIC_LINK,
+                "",
+                false,
+                "",
+                1);
+        operation.setGetShareDetails(true);
+        RemoteOperationResult<List<OCShare>> result = operation.execute(client);
+        assertTrue(result.isSuccess());
+        String shareToken = result.getResultData().get(0).getToken();
+        assertNotNull(shareToken);
+
+        assertTrue(new UpdateShareDownloadLimitRemoteOperation(shareToken, downloadLimit)
+                .execute(client)
+                .isSuccess()
+        );
+
+        RemoteOperationResult<DownloadLimitResponse> limitOperation =
+                new GetShareDownloadLimitOperation(shareToken)
+                        .execute(client);
+
+        assertTrue(limitOperation.isSuccess());
+        assertEquals(downloadLimit, limitOperation.getResultData().getLimit());
+        assertEquals(0, limitOperation.getResultData().getCount());
     }
 }

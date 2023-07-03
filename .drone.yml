@@ -99,6 +99,8 @@ services:
       - su www-data -c "git clone https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
+      - su www-data -c "git clone https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/"
+      - su www-data -c "php /var/www/html/occ app:enable -f files_downloadlimit"
       - /usr/local/bin/run.sh
 
 trigger:
