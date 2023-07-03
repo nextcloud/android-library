@@ -37,7 +37,7 @@ import androidx.annotation.Nullable;
 
 public class SelectClientCertificateHelperActivity extends Activity implements KeyChainAliasCallback {
 
-    private static final String TAG = SelectClientCertificateHelperActivity.class.getCanonicalName();
+    private static final String TAG = SelectClientCertificateHelperActivity.class.getName();
 
     private static final int REQ_CODE_INSTALL_CERTS = 1;
 
