@@ -755,15 +755,9 @@ public class AdvancedX509KeyManager
        * Exception: both hostname fields are resolved to an ip address before comparing if possible.
        */
       public boolean matches(@NonNull AKMAlias filter) {
-         if (filter.type != null && !filter.type.equals(type)) {
-            Log_OC.d(TAG, "matches: alias " + this + " does not match type " + filter.type);
-            return false;
-         }
-         if (filter.alias != null && !filter.alias.equals(alias)) {
-            Log_OC.d(TAG, "matches: alias " + this + " does not match original alias " + filter.alias);
-            return false;
-         }
-         if (hostname != null && filter.hostname != null && !filter.hostname.equals(hostname)) {
+         boolean matches = isNullOrEqual(filter.type, type, "matches: alias " + this + " does not match type " + filter.type);
+         matches &= isNullOrEqual(filter.alias, alias, "matches: alias " + this + " does not match original alias " + filter.alias);
+         if (matches && hostname != null && filter.hostname != null && !filter.hostname.equals(hostname)) {
             // Resolve hostname fields to ip addresses
             InetAddress address = getInetAddressByName(hostname);
             InetAddress filterAddress = getInetAddressByName(filter.hostname);
@@ -771,11 +765,16 @@ public class AdvancedX509KeyManager
             if ((address == null || !address.equals(filterAddress))) {
                Log_OC.d(TAG, "matches: alias " + this + " (address=" + address + ") does not match hostname " +
                        filter.hostname + " (address=" + filterAddress + ")");
-               return false;
+               matches = false;
             }
          }
-         if (port != null && filter.port != null && !filter.port.equals(port)) {
-            Log_OC.d(TAG, "matches: alias " + this + " does not match port " + filter.port);
+         matches &= isNullOrEqual(filter.port, port, "matches: alias " + this + " does not match port " + filter.port);
+         return matches;
+      }
+
+      private boolean isNullOrEqual(Object a, Object b, String message) {
+         if (a != null && !a.equals(b)) {
+            Log_OC.d(TAG, message);
             return false;
          }
          return true;
