@@ -1,3 +1,4 @@
+---
 kind: pipeline
 type: docker
 name: test-master
@@ -199,3 +200,6 @@ trigger:
   event:
     - push
     - pull_request
+---
+kind: signature
+hmac: df5b90bfeed78f2e84e9ac05a5a92318b2ff5eb0d32019d3bbbe8e3556af05b7
