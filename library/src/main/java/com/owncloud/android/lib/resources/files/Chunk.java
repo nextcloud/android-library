@@ -28,24 +28,20 @@
 package com.owncloud.android.lib.resources.files;
 
 public class Chunk {
-    public long start; // including
-    public long end; // including
+    protected int id;
+    protected long start;
+    protected long length;
 
-    public Chunk(long start, long end) {
+    public Chunk(int id, long start, long length) {
+        this.id = id;
         this.start = start;
-        this.end = end;
+        this.length = length;
     }
-
-    public long length() {
-        return end - start + 1;
-    }
-
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Chunk) {
-            Chunk otherChunk = (Chunk) obj;
-            return this.start == otherChunk.start && this.end == otherChunk.end;
+        if (obj instanceof Chunk otherChunk) {
+            return this.id == otherChunk.id && this.start == otherChunk.start && this.length == otherChunk.length;
         } else {
             return false;
         }
@@ -53,6 +49,6 @@ public class Chunk {
 
     @Override
     public int hashCode() {
-        return Long.valueOf(start).hashCode() * Long.valueOf(end).hashCode();
+        return Long.valueOf(start).hashCode() * Long.valueOf(length).hashCode();
     }
 }
