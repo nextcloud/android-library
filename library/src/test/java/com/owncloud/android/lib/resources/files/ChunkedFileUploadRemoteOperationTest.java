@@ -27,18 +27,15 @@
 
 package com.owncloud.android.lib.resources.files;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.when;
 
 public class ChunkedFileUploadRemoteOperationTest {
 
@@ -46,103 +43,6 @@ public class ChunkedFileUploadRemoteOperationTest {
 
     @Mock
     File file;
-
-    @Test
-    public void testUploadWithoutExistingChunks() {
-        long length = 2 * chunkSize;
-
-        List<Chunk> existingChunks = new ArrayList<>();
-
-        List<Chunk> expectedMissingChunks = new ArrayList<>();
-        expectedMissingChunks.add(new Chunk(0, 1023));
-        expectedMissingChunks.add(new Chunk(1024, 2047));
-        expectedMissingChunks.add(new Chunk(2048, 2048));
-
-        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
-    }
-
-    @Test
-    public void testUploadWithoutExistingChunksBig() {
-        long length = 4 * chunkSize;
-
-        List<Chunk> existingChunks = new ArrayList<>();
-
-        List<Chunk> expectedMissingChunks = new ArrayList<>();
-        expectedMissingChunks.add(new Chunk(0, 1023));
-        expectedMissingChunks.add(new Chunk(1024, 2047));
-        expectedMissingChunks.add(new Chunk(2048, 3071));
-        expectedMissingChunks.add(new Chunk(3072, 4095));
-        expectedMissingChunks.add(new Chunk(4096, 4096));
-
-        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
-    }
-
-    @Test
-    public void testUploadWithoutExistingChunksSmallChunks() {
-        long chunkSize = 512;
-        long length = 4 * chunkSize;
-
-        List<Chunk> existingChunks = new ArrayList<>();
-
-        List<Chunk> expectedMissingChunks = new ArrayList<>();
-        expectedMissingChunks.add(new Chunk(0, 511));
-        expectedMissingChunks.add(new Chunk(512, 1023));
-        expectedMissingChunks.add(new Chunk(1024, 1535));
-        expectedMissingChunks.add(new Chunk(1536, 2047));
-        expectedMissingChunks.add(new Chunk(2048, 2048));
-
-        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
-    }
-
-    @Test
-    public void testChunksSmallSizeMissingChunks() {
-        long chunkSize = 512;
-        long length = 4 * chunkSize;
-
-        List<Chunk> existingChunks = new ArrayList<>();
-        existingChunks.add(new Chunk(50, 89));
-        existingChunks.add(new Chunk(551, 580));
-
-        List<Chunk> expectedMissingChunks = new ArrayList<>();
-        expectedMissingChunks.add(new Chunk(0, 49));
-        expectedMissingChunks.add(new Chunk(90, 550));
-        expectedMissingChunks.add(new Chunk(581, 1092));
-        expectedMissingChunks.add(new Chunk(1093, 1604));
-        expectedMissingChunks.add(new Chunk(1605, 2048));
-
-        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
-    }
-
-    @Test
-    public void testUploadChunksMissingChunks() {
-        long length = 2 * chunkSize;
-
-        List<Chunk> existingChunks = new ArrayList<>();
-        existingChunks.add(new Chunk(0, 1023));
-        existingChunks.add(new Chunk(1028, 1100));
-
-        List<Chunk> expectedMissingChunks = new ArrayList<>();
-        expectedMissingChunks.add(new Chunk(1024, 1027));
-        expectedMissingChunks.add(new Chunk(1101, 2048));
-
-        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
-    }
-
-    @Test
-    public void testUploadChunksMissingChunks2() {
-        long length = 2 * chunkSize;
-
-        List<Chunk> existingChunks = new ArrayList<>();
-        existingChunks.add(new Chunk(50, 1023));
-        existingChunks.add(new Chunk(1028, 1100));
-
-        List<Chunk> expectedMissingChunks = new ArrayList<>();
-        expectedMissingChunks.add(new Chunk(0, 49));
-        expectedMissingChunks.add(new Chunk(1024, 1027));
-        expectedMissingChunks.add(new Chunk(1101, 2048));
-
-        assertTrue(test(existingChunks, expectedMissingChunks, chunkSize, length));
-    }
 
     @Test
     public void testAssembleTimeout() {
@@ -194,41 +94,20 @@ public class ChunkedFileUploadRemoteOperationTest {
 
     @Test
     public void testChunks() {
-        Chunk chunk1 = new Chunk(0, 5);
-        Chunk chunk2 = new Chunk(0, 5);
-        Chunk differentStart = new Chunk(1, 5);
-        Chunk differentEnd = new Chunk(0, 6);
-        Chunk differentAll = new Chunk(1, 6);
+        Chunk chunk1 = new Chunk(0, 0, 5);
+        Chunk chunk2 = new Chunk(0, 0, 5);
+        Chunk differentStart = new Chunk(0, 1, 5);
+        Chunk differentEnd = new Chunk(0, 0,6);
+        Chunk differentAll = new Chunk(1, 1, 1);
+        Chunk differentId = new Chunk(1, 0, 5);
 
         assertEquals(chunk1, chunk2);
         assertNotEquals(chunk1, null);
-        assertNotEquals(chunk1, "Test");
         assertNotEquals(chunk1, differentStart);
         assertNotEquals(chunk1, differentEnd);
         assertNotEquals(chunk1, differentAll);
+        assertNotEquals(chunk1, differentId);
 
         assertEquals(chunk1.hashCode(), chunk2.hashCode());
-    }
-
-    private boolean test(List<Chunk> existingChunks,
-                         List<Chunk> expectedMissingChunks,
-                         long chunkSize,
-                         long length) {
-        ChunkedFileUploadRemoteOperation sut = new ChunkedFileUploadRemoteOperation(null,
-                null,
-                null,
-                null,
-                System.currentTimeMillis() / 1000,
-                false);
-
-        List<Chunk> missingChunks = sut.checkMissingChunks(existingChunks, length, chunkSize);
-
-        assertEquals(expectedMissingChunks.size(), missingChunks.size());
-
-        for (Chunk expectedMissingChunk : expectedMissingChunks) {
-            assertTrue(missingChunks.contains(expectedMissingChunk));
-        }
-
-        return true;
     }
 }
