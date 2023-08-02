@@ -32,42 +32,22 @@ import org.junit.Test
 
 class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
     @Test
-    fun upload() {
-        // create file
-        val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
-        val remotePath = "/bigFile.md"
+    fun upload_wifi() {
+        val sut = genLargeUpload(true)
+        val uploadResult = sut.execute(client)
+        assertTrue(uploadResult.isSuccess)
+    }
 
-        val sut = ChunkedFileUploadRemoteOperation(
-            filePath,
-            remotePath,
-            "text/markdown",
-            "",
-            RANDOM_MTIME,
-            System.currentTimeMillis() / MILLI_TO_SECOND,
-            true,
-            true
-        )
-
+    @Test
+    fun upload_mobile() {
+        val sut = genLargeUpload(false)
         val uploadResult = sut.execute(client)
         assertTrue(uploadResult.isSuccess)
     }
 
     @Test
     fun cancel() {
-        // create file
-        val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
-        val remotePath = "/cancelFile.md"
-
-        val sut = ChunkedFileUploadRemoteOperation(
-            filePath,
-            remotePath,
-            "text/markdown",
-            "",
-            RANDOM_MTIME,
-            System.currentTimeMillis() / MILLI_TO_SECOND,
-            false,
-            true
-        )
+        val sut = genLargeUpload(false)
 
         var uploadResult: RemoteOperationResult<String>? = null
         Thread {
@@ -88,6 +68,23 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         assertNotNull(uploadResult)
         TestCase.assertFalse(uploadResult?.isSuccess == true)
         TestCase.assertSame(ResultCode.CANCELLED, uploadResult?.code)
+    }
+
+    private fun genLargeUpload(onWifiConnection: Boolean): ChunkedFileUploadRemoteOperation {
+        // create file
+        val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
+        val remotePath = "/bigFile.md"
+
+        return ChunkedFileUploadRemoteOperation(
+            filePath,
+            remotePath,
+            "text/markdown",
+            "",
+            RANDOM_MTIME,
+            System.currentTimeMillis() / MILLI_TO_SECOND,
+            onWifiConnection,
+            true
+        )
     }
 
     companion object {
