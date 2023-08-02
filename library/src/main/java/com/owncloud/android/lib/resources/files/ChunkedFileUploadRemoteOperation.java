@@ -57,16 +57,14 @@ import androidx.annotation.VisibleForTesting;
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
 
-    public static final long CHUNK_SIZE_MOBILE = 1024000;
-    public static final long CHUNK_SIZE_WIFI = 10240000;
+    public static final long CHUNK_SIZE_MOBILE = 10240000;
+    public static final long CHUNK_SIZE_WIFI = 40960000;
     public static final String DESTINATION_HEADER = "Destination";
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
-    private final boolean onWifiConnection;
-
     public final int ASSEMBLE_TIME_MIN = 30 * 1000; // 30s
     public final int ASSEMBLE_TIME_MAX = 30 * 60 * 1000; // 30min
     public final int ASSEMBLE_TIME_PER_GB = 3 * 60 * 1000; // 3 min
-
+    private final boolean onWifiConnection;
     private String uploadFolderUri;
     private String destinationUri;
 
@@ -88,14 +86,14 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             boolean onWifiConnection,
                                             boolean disableRetries) {
         this(storagePath,
-                remotePath,
-                mimeType,
-                requiredEtag,
-                lastModificationTimestamp,
-                onWifiConnection,
-                null,
-                creationTimestamp,
-                disableRetries);
+             remotePath,
+             mimeType,
+             requiredEtag,
+             lastModificationTimestamp,
+             onWifiConnection,
+             null,
+             creationTimestamp,
+             disableRetries);
     }
 
     public ChunkedFileUploadRemoteOperation(String storagePath,
@@ -106,14 +104,14 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             boolean onWifiConnection,
                                             String token) {
         this(storagePath,
-                remotePath,
-                mimeType,
-                requiredEtag,
-                lastModificationTimestamp,
-                onWifiConnection,
-                token,
-                null,
-                true);
+             remotePath,
+             mimeType,
+             requiredEtag,
+             lastModificationTimestamp,
+             onWifiConnection,
+             token,
+             null,
+             true);
     }
 
     public ChunkedFileUploadRemoteOperation(String storagePath,
@@ -126,21 +124,21 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                                             Long creationTimestamp,
                                             boolean disableRetries) {
         super(storagePath,
-                remotePath,
-                mimeType,
-                requiredEtag,
-                lastModificationTimestamp,
-                creationTimestamp,
-                token,
-                disableRetries);
+              remotePath,
+              mimeType,
+              requiredEtag,
+              lastModificationTimestamp,
+              creationTimestamp,
+              token,
+              disableRetries);
         this.onWifiConnection = onWifiConnection;
     }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
-        DefaultHttpMethodRetryHandler oldRetryHandler = (DefaultHttpMethodRetryHandler) 
-                client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
+        DefaultHttpMethodRetryHandler oldRetryHandler =
+                (DefaultHttpMethodRetryHandler) client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
         File file = new File(localPath);
         MoveMethod moveMethod = null;
         try {
@@ -184,24 +182,27 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             // determine chunks already on server
             // chunks are assumed to be uploaded linearly, starting at 0B
             WebdavEntry we;
-            long lastByte = 0;
+            long nextByte = 0;
             int lastId = 0;
             for (MultiStatusResponse response : dataInServer.getResponses()) {
                 we = new WebdavEntry(response, Objects.requireNonNull(client.getUploadUri().getPath()));
 
                 if (!we.isDirectory() && (Objects.requireNonNull(we.getName()).length() == 6) &&
                         TextUtils.isDigitsOnly(we.getName())) {
+                    // is part of upload
                     int id = Integer.parseInt(we.getName());
                     if (id > lastId) {
                         lastId = id;
                     }
-                    lastByte += we.getContentLength();
+                    nextByte += we.getContentLength();
                 }
             }
 
-            while (lastByte < file.length()) {
-                long length = lastByte + chunkSize > file.length() - 1 ? file.length() - lastByte - 1 : chunkSize;
-                Chunk chunk = new Chunk(++lastId, lastByte + 1, length);
+            // iteratively upload remaining chunks
+            while (nextByte + 1 < file.length()) {
+                // determine size of next chunk
+                long length = nextByte + chunkSize > file.length() ? file.length() - nextByte : chunkSize;
+                Chunk chunk = new Chunk(++lastId, nextByte, length);
 
                 RemoteOperationResult chunkResult = uploadChunk(client, chunk);
                 if (!chunkResult.isSuccess()) {
@@ -212,17 +213,14 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                     return new RemoteOperationResult(new OperationCancelledException());
                 }
 
-                lastByte += chunkSize;
+                nextByte += length;
             }
 
             // assemble
             String originUri = uploadFolderUri + "/.file";
 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
-            moveMethod.addRequestHeader(
-                    OC_X_OC_MTIME_HEADER,
-                    String.valueOf(lastModificationTimestamp)
-            );
+            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
@@ -274,7 +272,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             raf = new RandomAccessFile(file, "r");
             channel = raf.getChannel();
             entity = new ChunkFromFileChannelRequestEntity(channel, mimeType, chunk.start, chunk.length, file);
-            
+
             synchronized (dataTransferListeners) {
                 ((ProgressiveDataTransfer) entity).addDataTransferProgressListeners(dataTransferListeners);
             }
@@ -302,12 +300,13 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                      "Upload of " + localPath + " to " + remotePath + ", chunk id: " + chunk.id + " from " +
                              chunk.start + " size: " + chunk.length + ", HTTP result status " + status);
         } finally {
-            if (channel != null)
+            if (channel != null) {
                 try {
                     channel.close();
                 } catch (IOException e) {
                     Log_OC.e(TAG, "Error closing file channel!", e);
                 }
+            }
             if (raf != null) {
                 try {
                     raf.close();
@@ -315,8 +314,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                     Log_OC.e(TAG, "Error closing file access!", e);
                 }
             }
-            if (putMethod != null)
+            if (putMethod != null) {
                 putMethod.releaseConnection(); // let the connection available for other methods
+            }
         }
         return result;
     }
