@@ -60,6 +60,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     public static final long CHUNK_SIZE_MOBILE = 10240000;
     public static final long CHUNK_SIZE_WIFI = 40960000;
     public static final String DESTINATION_HEADER = "Destination";
+    public static final int CHUNK_NAME_LENGTH = 6;
     private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
     public final int ASSEMBLE_TIME_MIN = 30 * 1000; // 30s
     public final int ASSEMBLE_TIME_MAX = 30 * 60 * 1000; // 30min
@@ -134,6 +135,16 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         this.onWifiConnection = onWifiConnection;
     }
 
+    protected static Chunk calcNextChunk(long fileSize, int chunkId, long startByte, long chunkSize) {
+        if (chunkId < 0 || String.valueOf(chunkId).length() > CHUNK_NAME_LENGTH) {
+            throw new IllegalArgumentException(
+                    "chunkId must not exceed length specified in CHUNK_NAME_LENGTH (" + CHUNK_NAME_LENGTH + ")");
+        }
+
+        long length = startByte + chunkSize > fileSize ? fileSize - startByte : chunkSize;
+        return new Chunk(chunkId, startByte, length);
+    }
+
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
@@ -181,13 +192,13 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             // determine chunks already on server
             // chunks are assumed to be uploaded linearly, starting at 0B
-            WebdavEntry we;
             long nextByte = 0;
             int lastId = 0;
             for (MultiStatusResponse response : dataInServer.getResponses()) {
-                we = new WebdavEntry(response, Objects.requireNonNull(client.getUploadUri().getPath()));
+                WebdavEntry we = new WebdavEntry(response, Objects.requireNonNull(client.getUploadUri().getPath()));
 
-                if (!we.isDirectory() && (Objects.requireNonNull(we.getName()).length() == 6) &&
+                // filter out any objects not matching expected chunk name
+                if (!we.isDirectory() && (Objects.requireNonNull(we.getName()).length() == CHUNK_NAME_LENGTH) &&
                         TextUtils.isDigitsOnly(we.getName())) {
                     // is part of upload
                     int id = Integer.parseInt(we.getName());
@@ -201,8 +212,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             // iteratively upload remaining chunks
             while (nextByte + 1 < file.length()) {
                 // determine size of next chunk
-                long length = nextByte + chunkSize > file.length() ? file.length() - nextByte : chunkSize;
-                Chunk chunk = new Chunk(++lastId, nextByte, length);
+                Chunk chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize);
 
                 RemoteOperationResult chunkResult = uploadChunk(client, chunk);
                 if (!chunkResult.isSuccess()) {
@@ -213,7 +223,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                     return new RemoteOperationResult(new OperationCancelledException());
                 }
 
-                nextByte += length;
+                nextByte += chunk.length;
             }
 
             // assemble
@@ -277,7 +287,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 ((ProgressiveDataTransfer) entity).addDataTransferProgressListeners(dataTransferListeners);
             }
 
-            String chunkUri = uploadFolderUri + "/" + String.format(Locale.ROOT, "%06d", chunk.id);
+            // pad chunk name to 6 digits
+            String chunkUri =
+                    uploadFolderUri + "/" + String.format(Locale.ROOT, "%0" + CHUNK_NAME_LENGTH + "d", chunk.id);
 
             if (putMethod != null) {
                 putMethod.releaseConnection(); // let the connection available for other methods
