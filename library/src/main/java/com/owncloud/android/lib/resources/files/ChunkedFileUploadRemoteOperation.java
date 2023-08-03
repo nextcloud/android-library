@@ -196,12 +196,13 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             int lastId = 0;
             for (MultiStatusResponse response : dataInServer.getResponses()) {
                 WebdavEntry we = new WebdavEntry(response, Objects.requireNonNull(client.getUploadUri().getPath()));
+                String name = we.getName();
 
                 // filter out any objects not matching expected chunk name
-                if (!we.isDirectory() && (Objects.requireNonNull(we.getName()).length() == CHUNK_NAME_LENGTH) &&
-                        TextUtils.isDigitsOnly(we.getName())) {
+                if (!we.isDirectory() && name != null && (name.length() == CHUNK_NAME_LENGTH) &&
+                        TextUtils.isDigitsOnly(name)) {
                     // is part of upload
-                    int id = Integer.parseInt(we.getName());
+                    int id = Integer.parseInt(name);
                     if (id > lastId) {
                         lastId = id;
                     }

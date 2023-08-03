@@ -88,7 +88,7 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
     }
 
     companion object {
-        val BIG_FILE_ITERATION = 500000
-        val MAX_TRIES = 30
+        const val BIG_FILE_ITERATION = 1000000
+        const val MAX_TRIES = 30
     }
 }
