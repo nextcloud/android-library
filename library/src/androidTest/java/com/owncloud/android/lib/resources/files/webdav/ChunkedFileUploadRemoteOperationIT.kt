@@ -29,7 +29,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCo
 import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation
 import junit.framework.TestCase
 import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertTrue
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 import org.junit.Test
 import java.io.File
@@ -39,14 +38,14 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
     fun upload_wifi() {
         val sut = genLargeUpload(true)
         val uploadResult = sut.execute(client)
-        assertTrue(uploadResult.isSuccess)
+        assert(uploadResult.isSuccess)
     }
 
     @Test
     fun upload_mobile() {
         val sut = genLargeUpload(false)
         val uploadResult = sut.execute(client)
-        assertTrue(uploadResult.isSuccess)
+        assert(uploadResult.isSuccess)
     }
 
     @Test

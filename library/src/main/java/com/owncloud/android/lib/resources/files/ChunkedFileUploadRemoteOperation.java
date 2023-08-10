@@ -148,8 +148,8 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
-        DefaultHttpMethodRetryHandler oldRetryHandler =
-                (DefaultHttpMethodRetryHandler) client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
+        DefaultHttpMethodRetryHandler oldRetryHandler = (DefaultHttpMethodRetryHandler) client.getParams()
+                .getParameter(HttpMethodParams.RETRY_HANDLER);
         File file = new File(localPath);
         MoveMethod moveMethod = null;
         try {
@@ -179,8 +179,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             client.executeMethod(createFolder, 30000, 5000);
 
             // list chunks
-            PropFindMethod listChunks =
-                    new PropFindMethod(uploadFolderUri, WebdavUtils.getChunksPropSet(), DavConstants.DEPTH_1);
+            PropFindMethod listChunks = new PropFindMethod(uploadFolderUri,
+                                                           WebdavUtils.getChunksPropSet(),
+                                                           DavConstants.DEPTH_1);
 
             client.executeMethod(listChunks);
 
@@ -199,7 +200,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 String name = we.getName();
 
                 // filter out any objects not matching expected chunk name
-                if (!we.isDirectory() && name != null && (name.length() == CHUNK_NAME_LENGTH) &&
+                if (!we.isDirectory() && name != null && (name.length() <= CHUNK_NAME_LENGTH) &&
                         TextUtils.isDigitsOnly(name)) {
                     // is part of upload
                     int id = Integer.parseInt(name);
@@ -224,7 +225,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                     return new RemoteOperationResult(new OperationCancelledException());
                 }
 
-                nextByte += chunk.length;
+                nextByte += chunk.getLength();
             }
 
             // assemble
@@ -282,7 +283,11 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         try {
             raf = new RandomAccessFile(file, "r");
             channel = raf.getChannel();
-            entity = new ChunkFromFileChannelRequestEntity(channel, mimeType, chunk.start, chunk.length, file);
+            entity = new ChunkFromFileChannelRequestEntity(channel,
+                                                           mimeType,
+                                                           chunk.getStart(),
+                                                           chunk.getLength(),
+                                                           file);
 
             synchronized (dataTransferListeners) {
                 ((ProgressiveDataTransfer) entity).addDataTransferProgressListeners(dataTransferListeners);
@@ -290,7 +295,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             // pad chunk name to 6 digits
             String chunkUri =
-                    uploadFolderUri + "/" + String.format(Locale.ROOT, "%0" + CHUNK_NAME_LENGTH + "d", chunk.id);
+                    uploadFolderUri + "/" + String.format(Locale.ROOT, "%0" + CHUNK_NAME_LENGTH + "d", chunk.getId());
 
             if (putMethod != null) {
                 putMethod.releaseConnection(); // let the connection available for other methods
@@ -310,8 +315,8 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             client.exhaustResponse(putMethod.getResponseBodyAsStream());
             Log_OC.d(TAG,
-                     "Upload of " + localPath + " to " + remotePath + ", chunk id: " + chunk.id + " from " +
-                             chunk.start + " size: " + chunk.length + ", HTTP result status " + status);
+                     "Upload of " + localPath + " to " + remotePath + ", chunk id: " + chunk.getId() + " from " +
+                             chunk.getStart() + " size: " + chunk.getLength() + ", HTTP result status " + status);
         } finally {
             if (channel != null) {
                 try {
