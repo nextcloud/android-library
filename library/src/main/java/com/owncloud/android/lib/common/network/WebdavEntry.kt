@@ -24,9 +24,12 @@
 package com.owncloud.android.lib.common.network
 
 import android.net.Uri
+import com.google.gson.Gson
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.FileLockType
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
+import com.owncloud.android.lib.resources.files.model.GeoLocation
+import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
 import org.apache.jackrabbit.webdav.MultiStatusResponse
@@ -96,6 +99,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var lockToken: String? = null
         private set
     var tags = arrayOfNulls<String>(0)
+    var imageDimension: ImageDimension? = null
+    var geoLocation: GeoLocation? = null
 
     enum class MountType {
         INTERNAL, EXTERNAL, GROUP
@@ -395,6 +400,18 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
             }
 
+            // NC metadata size property <nc:file-metadata-size>
+            prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+            if (prop != null && prop.value != null) {
+                imageDimension = Gson().fromJson(prop.value.toString(), ImageDimension::class.java)
+            }
+
+            // NC metadata gps property <nc:file-metadata-gps>
+            prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+            if (prop != null && prop.value != null) {
+                geoLocation = Gson().fromJson(prop.value.toString(), GeoLocation::class.java)
+            }
+
             parseLockProperties(ncNamespace, propSet)
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
@@ -542,6 +559,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout"
         const val EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token"
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
+        const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
+        const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
