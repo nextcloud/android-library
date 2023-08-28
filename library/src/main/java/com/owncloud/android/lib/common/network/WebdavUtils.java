@@ -211,6 +211,7 @@ public class WebdavUtils {
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.GETCONTENTTYPE);
         propSet.add(DavPropertyName.RESOURCETYPE);
+        propSet.add(DavPropertyName.GETCONTENTLENGTH);
 
         return propSet;
     }
