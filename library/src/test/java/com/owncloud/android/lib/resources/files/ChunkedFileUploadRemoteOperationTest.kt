@@ -45,7 +45,12 @@ class ChunkedFileUploadRemoteOperationTest {
     fun testAssembleTimeout() {
         MockitoAnnotations.openMocks(this)
         val sut = ChunkedFileUploadRemoteOperation(
-            null, null, null, null, System.currentTimeMillis() / 1000, false
+            null,
+            null,
+            null,
+            null,
+            System.currentTimeMillis() / 1000,
+            false
         )
 
         // 0b
@@ -131,7 +136,10 @@ class ChunkedFileUploadRemoteOperationTest {
         // segment first half with CHUNK_SIZE_WIFI
         while (nextByte + 1 < length / 2) {
             val chunk = ChunkedFileUploadRemoteOperation.calcNextChunk(
-                length, ++id, nextByte, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI
+                length,
+                ++id,
+                nextByte,
+                ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI
             )
 
             chunks.add(chunk)
@@ -141,7 +149,10 @@ class ChunkedFileUploadRemoteOperationTest {
         // segment remaining half with CHUNK_SIZE_MOBILE
         while (nextByte + 1 < length) {
             val chunk = ChunkedFileUploadRemoteOperation.calcNextChunk(
-                length, ++id, nextByte, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE
+                length,
+                ++id,
+                nextByte,
+                ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE
             )
 
             chunks.add(chunk)
@@ -149,8 +160,12 @@ class ChunkedFileUploadRemoteOperationTest {
         }
 
         // calculate expected number of chunks
-        var expectedChunkCount = ceil((length / 2) / ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI.toFloat())
-        expectedChunkCount += ceil((length - expectedChunkCount * ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI) / ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE.toFloat())
+        var expectedChunkCount =
+            ceil((length / 2) / ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI.toFloat())
+        expectedChunkCount += ceil(
+            (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI) /
+                ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE.toFloat()
+        )
         assertEquals(expectedChunkCount.toInt(), chunks.size)
 
         // does total length match file size?
@@ -198,7 +213,10 @@ class ChunkedFileUploadRemoteOperationTest {
 
         while (nextByte + 1 < length) {
             val chunk = ChunkedFileUploadRemoteOperation.calcNextChunk(
-                length, ++id, nextByte, chunkSize
+                length,
+                ++id,
+                nextByte,
+                chunkSize
             )
 
             chunks.add(chunk)

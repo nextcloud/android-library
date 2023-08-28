@@ -35,14 +35,14 @@ import java.io.File
 
 class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
     @Test
-    fun upload_wifi() {
+    fun uploadWifi() {
         val sut = genLargeUpload(true)
         val uploadResult = sut.execute(client)
         assert(uploadResult.isSuccess)
     }
 
     @Test
-    fun upload_mobile() {
+    fun uploadMobile() {
         val sut = genLargeUpload(false)
         val uploadResult = sut.execute(client)
         assert(uploadResult.isSuccess)
