@@ -23,6 +23,8 @@ package com.owncloud.android.lib.resources.files
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
+import com.owncloud.android.lib.resources.files.model.GeoLocation
+import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -56,6 +58,27 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(result.isSuccess)
         assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+    }
+
+    @Test
+    fun testMetadata() {
+        val filePath = getFile("gps.jpg").absolutePath
+        val remotePath = "/gps.jpg"
+
+        assertTrue(
+            UploadFileRemoteOperation(filePath, remotePath, "image/jpg", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        val result = ReadFileRemoteOperation(remotePath).execute(client)
+
+        assertTrue(result.isSuccess)
+        val remoteFile = result.data[0] as RemoteFile
+
+        @Suppress("Detekt.MagicNumber")
+        assertEquals(ImageDimension(451f, 529f), remoteFile.imageDimension)
+        @Suppress("Detekt.MagicNumber")
+        assertEquals(GeoLocation(49.99679166666667, 8.67198611111111), remoteFile.geoLocation)
     }
 
     @Test

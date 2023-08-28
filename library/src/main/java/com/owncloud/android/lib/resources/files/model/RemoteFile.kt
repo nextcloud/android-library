@@ -68,6 +68,8 @@ class RemoteFile : Parcelable, Serializable {
     var lockTimeout: Long = 0
     var lockToken: String? = null
     var tags: Array<String?>? = null
+    var imageDimension: ImageDimension? = null
+    var geoLocation: GeoLocation? = null
 
     constructor() {
         resetData()
@@ -119,6 +121,8 @@ class RemoteFile : Parcelable, Serializable {
         lockTimeout = we.lockTimeout
         lockToken = we.lockToken
         tags = we.tags
+        imageDimension = we.imageDimension
+        geoLocation = we.geoLocation
     }
 
     /**
