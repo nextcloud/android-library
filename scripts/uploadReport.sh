@@ -26,7 +26,7 @@ curl -u "$USER:$PASS" -X PUT "$upload_path" --upload-file "$log_file"
 echo >&2 "Uploaded logcat to https://www.kaminsky.me/nc-dev/library-logcat/$log_filename"
 
 if [ $TYPE = "IT" ]; then
-    cd library/build/reports/androidTests/connected
+    cd library/build/reports/androidTests/connected/debug
 else 
     cd library/build/reports/tests/testDebugUnitTest
 fi
