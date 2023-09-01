@@ -142,7 +142,7 @@ steps:
       - sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
       - ./gradlew assembleDebug
       - ./scripts/wait_for_emulator.sh
-      - ./scripts/wait_for_server.sh server-oldest-stable
+      - ./scripts/wait_for_server.sh server-stable-16
       - scripts/deleteOutdatedComments.sh "stable16" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - scripts/deleteOutdatedComments.sh "stable16" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable16" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
@@ -237,7 +237,7 @@ steps:
       - sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
       - ./gradlew assembleDebug
       - ./scripts/wait_for_emulator.sh
-      - ./scripts/wait_for_server.sh server-stable
+      - ./scripts/wait_for_server.sh server-stable-27
       - scripts/deleteOutdatedComments.sh "stable25" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - scripts/deleteOutdatedComments.sh "stable25" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable25" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
