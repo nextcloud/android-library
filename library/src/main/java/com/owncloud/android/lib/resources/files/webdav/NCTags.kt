@@ -22,6 +22,7 @@
 
 package com.owncloud.android.lib.resources.files.webdav
 
+import android.text.TextUtils
 import androidx.annotation.VisibleForTesting
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
@@ -29,34 +30,33 @@ import at.bitfire.dav4jvm.XmlUtils.propertyName
 import at.bitfire.dav4jvm.XmlUtils.readText
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.resources.shares.ShareType
-import com.owncloud.android.lib.resources.shares.ShareeUser
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
+class NCTags internal constructor(var tags: Array<String>) : Property {
 
     companion object {
         @JvmField
         val NAME =
-            Property.Name(WebdavEntry.NAMESPACE_NC, WebdavEntry.EXTENDED_PROPERTY_SHAREES)
+            Property.Name(WebdavEntry.NAMESPACE_NC, WebdavEntry.EXTENDED_PROPERTY_SYSTEM_TAGS)
     }
 
     class Factory : PropertyFactory {
 
         override fun getName() = NAME
 
-        override fun create(parser: XmlPullParser): NCSharee {
-            // NC sharees property <nc:sharees>
+        override fun create(parser: XmlPullParser): NCTags {
+            // NC sharees property <nc:system-tags>
             readArrayNode(parser).let { sharees ->
-                return NCSharee(sharees.toTypedArray())
+                return NCTags(sharees.toTypedArray())
             }
         }
 
         @Throws(IOException::class, XmlPullParserException::class)
         @VisibleForTesting
-        fun readArrayNode(parser: XmlPullParser): List<ShareeUser> {
-            var list: List<ShareeUser> = emptyList()
+        fun readArrayNode(parser: XmlPullParser): List<String> {
+            var list: List<String> = emptyList()
 
             val depth = parser.depth
             var eventType = parser.eventType
@@ -74,8 +74,8 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
             return list
         }
 
-        private fun readNCSharees(parser: XmlPullParser): List<ShareeUser> {
-            val list: ArrayList<ShareeUser> = ArrayList()
+        private fun readNCSharees(parser: XmlPullParser): List<String> {
+            val list: ArrayList<String> = ArrayList()
 
             val depth = parser.depth
             var eventType = parser.eventType
@@ -90,7 +90,7 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
             return list
         }
 
-        private fun readNCSharee(parser: XmlPullParser): ShareeUser {
+        private fun readNCSharee(parser: XmlPullParser): String {
             val depth = parser.depth
             var eventType = parser.eventType
 
@@ -108,6 +108,7 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
                         "http://nextcloud.org/ns:display-name" -> {
                             displayName = readText(parser)
                         }
+
                         "http://nextcloud.org/ns:type" -> {
                             shareType =
                                 ShareType.fromValue(readText(parser)?.toInt() ?: 0)
@@ -115,10 +116,13 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
                     }
                 }
 
+                if (!TextUtils.isEmpty(parser.text)) {
+                    return parser.text
+                }
                 eventType = parser.next()
             }
 
-            return ShareeUser(userId, displayName, shareType)
+            return ""
         }
     }
 }

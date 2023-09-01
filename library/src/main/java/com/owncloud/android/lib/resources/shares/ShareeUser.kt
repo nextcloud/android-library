@@ -13,5 +13,3 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ShareeUser(val userId: String?, var displayName: String?, val shareType: ShareType?) :
     Parcelable
-data class ShareeUser(var userId: String?, var displayName: String?, var shareType: ShareType?) :
-    Parcelable

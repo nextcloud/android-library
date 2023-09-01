@@ -9,10 +9,6 @@ package com.owncloud.android.lib.common.utils;
 
 import android.net.Uri;
 
-import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerDisplayName;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerId;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.files.webdav.NCEtag;
@@ -22,6 +18,12 @@ import com.owncloud.android.lib.resources.files.webdav.NCMountType;
 import com.owncloud.android.lib.resources.files.webdav.NCPermissions;
 import com.owncloud.android.lib.resources.files.webdav.NCRichWorkspace;
 import com.owncloud.android.lib.resources.files.webdav.NCSharee;
+import com.owncloud.android.lib.resources.files.webdav.NCTags;
+import com.owncloud.android.lib.resources.files.webdav.OCId;
+import com.owncloud.android.lib.resources.files.webdav.OCLocalId;
+import com.owncloud.android.lib.resources.files.webdav.OCOwnerDisplayName;
+import com.owncloud.android.lib.resources.files.webdav.OCOwnerId;
+import com.owncloud.android.lib.resources.files.webdav.OCSize;
 
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
@@ -133,6 +135,10 @@ public class WebDavFileUtils {
                 remoteFile.setSize(((OCSize) property).getOcSize());
             }
 
+            if (property instanceof OCLocalId) {
+                remoteFile.setLocalId(((OCLocalId) property).getLocalId());
+            }
+
             if (property instanceof NCMountType) {
                 remoteFile.setMountType(((NCMountType) property).getType());
             }
@@ -151,6 +157,10 @@ public class WebDavFileUtils {
 
             if (property instanceof NCSharee) {
                 remoteFile.setSharees(((NCSharee) property).getSharees());
+            }
+
+            if (property instanceof NCTags) {
+                remoteFile.setTags(((NCTags) property).getTags());
             }
         }
 

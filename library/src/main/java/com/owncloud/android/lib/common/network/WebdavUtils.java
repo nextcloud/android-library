@@ -29,10 +29,6 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
-import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerDisplayName;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerId;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
 import com.owncloud.android.lib.resources.files.webdav.NCEtag;
 import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
 import com.owncloud.android.lib.resources.files.webdav.NCGetLastModified;
@@ -40,6 +36,12 @@ import com.owncloud.android.lib.resources.files.webdav.NCMountType;
 import com.owncloud.android.lib.resources.files.webdav.NCPermissions;
 import com.owncloud.android.lib.resources.files.webdav.NCRichWorkspace;
 import com.owncloud.android.lib.resources.files.webdav.NCSharee;
+import com.owncloud.android.lib.resources.files.webdav.NCTags;
+import com.owncloud.android.lib.resources.files.webdav.OCId;
+import com.owncloud.android.lib.resources.files.webdav.OCLocalId;
+import com.owncloud.android.lib.resources.files.webdav.OCOwnerDisplayName;
+import com.owncloud.android.lib.resources.files.webdav.OCOwnerId;
+import com.owncloud.android.lib.resources.files.webdav.OCSize;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
@@ -163,6 +165,7 @@ public class WebdavUtils {
     }
 
     public static Property.Name[] getAllPropertiesList() {
+        // TODO re-enable all
         List<Property.Name> list = new ArrayList<>();
 
         list.add(DisplayName.NAME);
@@ -173,6 +176,7 @@ public class WebdavUtils {
         list.add(CreationDate.NAME);
         list.add(GetETag.NAME); // list.add(NCEtag.NAME);
         list.add(NCPermissions.NAME);
+        list.add(OCLocalId.NAME);
 //      propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
         list.add(OCSize.NAME);
         list.add(NCFavorite.NAME);
@@ -195,6 +199,9 @@ public class WebdavUtils {
 //      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME, ncNamespace);
 //      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace);
 //      propSet.add(WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace);
+        list.add(NCTags.NAME);
+        // metadata size
+        // metadata gps
         list.add(OCId.NAME); // what about this?
 
         return list.toArray(new Property.Name[0]);
@@ -348,6 +355,8 @@ public class WebdavUtils {
         list.add(new OCOwnerDisplayName.Factory());
         list.add(new NCRichWorkspace.Factory());
         list.add(new NCSharee.Factory());
+        list.add(new NCTags.Factory());
+        list.add(new OCLocalId.Factory());
 
         PropertyRegistry.INSTANCE.register(list);
     }

@@ -37,21 +37,21 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCOwnerDisplayName private constructor(var string: String?) : Property {
+class OCLocalId private constructor(var localId: Long) : Property {
 
     class Factory : PropertyFactory {
         override fun create(parser: XmlPullParser): Property {
             try {
                 val text = readText(parser)
                 if (!TextUtils.isEmpty(text)) {
-                    return OCOwnerDisplayName(text)
+                    return OCLocalId(text!!.toLong())
                 }
             } catch (e: IOException) {
-                Log.e("OCOwnerDisplayName", "failed to create property", e)
+                Log.e("OCLocalId", "failed to create property", e)
             } catch (e: XmlPullParserException) {
-                Log.e("OCOwnerDisplayName", "failed to create property", e)
+                Log.e("OCLocalId", "failed to create property", e)
             }
-            return OCOwnerDisplayName("")
+            return OCLocalId(-1)
         }
 
         override fun getName(): Property.Name {
@@ -61,9 +61,7 @@ class OCOwnerDisplayName private constructor(var string: String?) : Property {
 
     companion object {
         @JvmField
-        val NAME: Property.Name = Property.Name(
-            WebdavEntry.NAMESPACE_OC,
-            WebdavEntry.EXTENDED_PROPERTY_OWNER_DISPLAY_NAME
-        )
+        val NAME: Property.Name =
+            Property.Name(WebdavEntry.NAMESPACE_OC, WebdavEntry.EXTENDED_PROPERTY_NAME_LOCAL_ID)
     }
 }

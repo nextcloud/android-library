@@ -566,7 +566,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     }
 
     val isDirectory: Boolean
-        get() = "DIR" == contentType
+        get() = DIR_TYPE == contentType
 
     private fun resetData() {
         permissions = null
@@ -587,6 +587,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
     companion object {
         private val TAG = WebdavEntry::class.java.simpleName
+        private const val IS_ENCRYPTED = "1"
+        private const val CODE_PROP_NOT_FOUND = 404
         const val NAMESPACE_OC = "http://owncloud.org/ns"
         const val NAMESPACE_NC = "http://nextcloud.org/ns"
         const val EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions"
@@ -632,7 +634,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val SHAREES_SHARE_TYPE = "type"
         const val PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes"
         const val PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes"
-        private const val IS_ENCRYPTED = "1"
-        private const val CODE_PROP_NOT_FOUND = 404
+        const val DIR_TYPE = "DIR"
     }
 }

@@ -9,7 +9,6 @@ package com.owncloud.android.lib.resources.files;
 
 import android.net.Uri;
 
-import com.nextcloud.common.NextcloudAuthenticator;
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
@@ -29,11 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import at.bitfire.dav4jvm.DavResource;
 import at.bitfire.dav4jvm.Property;
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 
 /**
  * Favorite or unfavorite a file.
@@ -97,13 +96,6 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
         List<Property.Name> removeProperties = new ArrayList<>();
         Map<Property.Name, String> newProperties = new HashMap<>();
 
-        // disable redirect
-        OkHttpClient disabledRedirectClient = client.getClient()
-                .newBuilder()
-                .followRedirects(false)
-                .authenticator(new NextcloudAuthenticator(client.getCredentials(), "Authorization"))
-                .build();
-
         if (makeItFavorited) {
             newProperties.put(NCFavorite.NAME, "1");
         } else {
@@ -114,15 +106,19 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
         String encodedPath = (client.getUserId() + Uri.encode(filePath)).replace("%2F", "/");
         String fullFilePath = webDavUrl + "/files/" + encodedPath;
 
-        boolean resultCode = false;
+        AtomicBoolean resultCode = new AtomicBoolean(false);
 
-        new DavResource(disabledRedirectClient,
+        new DavResource(client.disabledRedirectClient(),
                 HttpUrl.get(fullFilePath))
                 .proppatch(newProperties, removeProperties, (response, hrefRelation) -> {
-                    //resultCode = response.isSuccess();
+                    resultCode.set(response.isSuccess());
                 });
 
-        result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OK);
+        if (resultCode.get()) {
+            result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OK);
+        } else {
+            result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.WRONG_SERVER_RESPONSE);
+        }
 
         return result;
     }
