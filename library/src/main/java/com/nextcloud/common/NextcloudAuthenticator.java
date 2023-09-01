@@ -36,17 +36,17 @@ import okhttp3.Response;
 import okhttp3.Route;
 
 public class NextcloudAuthenticator implements Authenticator {
-    private String credentials;
-    private String authenticatorType;
+    private final String credentials;
 
-    public NextcloudAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
+    public NextcloudAuthenticator(@NonNull String credentials) {
         this.credentials = credentials;
-        this.authenticatorType = authenticatorType;
     }
 
     @Nullable
     @Override
     public Request authenticate(@Nullable Route route, @NonNull Response response) {
+        String authenticatorType = "Authorization";
+
         if (response.request().header(authenticatorType) != null) {
             return null;
         }
