@@ -29,7 +29,6 @@ package com.owncloud.android
 
 import at.bitfire.dav4jvm.DavResource
 import at.bitfire.dav4jvm.Response
-import at.bitfire.dav4jvm.property.CreationDate
 import com.nextcloud.common.NextcloudAuthenticator
 import com.owncloud.android.lib.common.network.WebdavUtils
 import com.owncloud.android.lib.common.utils.WebDavFileUtils
@@ -39,7 +38,6 @@ import com.owncloud.android.lib.resources.files.SearchRemoteOperation
 import com.owncloud.android.lib.resources.files.ToggleFavoriteRemoteOperation
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
-import com.owncloud.android.lib.resources.files.webdav.NCFavorite
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation
 import com.owncloud.android.lib.resources.shares.OCShare
 import com.owncloud.android.lib.resources.shares.ShareType
@@ -59,6 +57,7 @@ class Dav4JVM : AbstractIT() {
     @Throws(IOException::class)
     fun singlePropfind() {
         val path = "/testFolder/"
+        val subFolder = "$path subfolder/"
 
         // create folder
         CreateFolderRemoteOperation(
@@ -86,9 +85,24 @@ class Dav4JVM : AbstractIT() {
                 .isSuccess
         )
 
+        // add one child
+        // create folder
+        CreateFolderRemoteOperation(
+            subFolder,
+            true
+        ).execute(client).isSuccess
+
+        // verify folder
+        assertTrue(ReadFolderRemoteOperation(subFolder).execute(client).isSuccess)
+
         // do old read folder operation to compare data against it
         val result = ReadFolderRemoteOperation(path).execute(client).data as List<RemoteFile>
+        assertEquals(2, result.size)
         val oldRemoteFile = result[0]
+        val oldSubFolderFile = result[1]
+
+        assertEquals(path, oldRemoteFile.remotePath)
+        assertEquals(subFolder, oldSubFolderFile.remotePath)
 
         // new
         val httpUrl = (nextcloudClient.filesDavUri.toString() + path).toHttpUrl()
@@ -109,6 +123,8 @@ class Dav4JVM : AbstractIT() {
         WebdavUtils.registerCustomFactories()
 
         // TODO use DavResource().propfind in ReadFileRemoteOperation/ReadFolderRemoteOperation
+        // TODO extract in own class for convenient use
+        // TODO test all properties on server!
         DavResource(client, httpUrl)
             .propfind(
                 DavConstants.DEPTH_1,
@@ -125,49 +141,11 @@ class Dav4JVM : AbstractIT() {
 
         assertTrue(davResponse?.isSuccess() == true)
         assertTrue(rootElement != null)
-        assertEquals(0, memberElements.size)
+        assertEquals(1, memberElements.size)
 
         val remoteFile = WebDavFileUtils().parseResponse(rootElement, nextcloudClient.filesDavUri)
 
-        val date = davResponse?.get(CreationDate::class.java)
-        assertEquals(
-            oldRemoteFile.creationTimestamp,
-            (WebdavUtils.parseResponseDate(date?.creationDate)?.time ?: 0) / 1000
-        )
-
-        assertTrue(oldRemoteFile.isFavorite)
-        val favorite = davResponse?.get(NCFavorite::class.java)
-        assertTrue(favorite?.isOcFavorite == true)
-
-        assertEquals(oldRemoteFile.remotePath, remoteFile.remotePath)
-        assertEquals(oldRemoteFile.mimeType, remoteFile.mimeType)
-        assertEquals(oldRemoteFile.length, remoteFile.length)
-        assertEquals(oldRemoteFile.creationTimestamp, remoteFile.creationTimestamp)
-        // assertEquals(oldRemoteFile.modifiedTimestamp, remoteFile.modifiedTimestamp)
-        assertEquals(oldRemoteFile.uploadTimestamp, remoteFile.uploadTimestamp)
-        assertEquals(oldRemoteFile.etag, remoteFile.etag)
-        assertEquals(oldRemoteFile.permissions, remoteFile.permissions)
-        assertEquals(oldRemoteFile.remoteId, remoteFile.remoteId)
-        assertEquals(oldRemoteFile.size, remoteFile.size)
-        assertEquals(oldRemoteFile.isFavorite, remoteFile.isFavorite)
-        assertEquals(oldRemoteFile.isEncrypted, remoteFile.isEncrypted)
-        assertEquals(oldRemoteFile.mountType, remoteFile.mountType)
-        assertEquals(oldRemoteFile.ownerId, remoteFile.ownerId)
-        assertEquals(oldRemoteFile.ownerDisplayName, remoteFile.ownerDisplayName)
-        assertEquals(oldRemoteFile.unreadCommentsCount, remoteFile.unreadCommentsCount)
-        assertEquals(oldRemoteFile.isHasPreview, remoteFile.isHasPreview)
-        assertEquals(oldRemoteFile.note, remoteFile.note)
-        assertEquals(oldRemoteFile.sharees.size, remoteFile.sharees.size)
-        assertEquals(oldRemoteFile.richWorkspace, remoteFile.richWorkspace)
-        assertEquals(oldRemoteFile.isLocked, remoteFile.isLocked)
-        assertEquals(oldRemoteFile.lockType, remoteFile.lockType)
-        assertEquals(oldRemoteFile.lockOwner, remoteFile.lockOwner)
-        assertEquals(oldRemoteFile.lockOwnerDisplayName, remoteFile.lockOwnerDisplayName)
-        assertEquals(oldRemoteFile.lockTimestamp, remoteFile.lockTimestamp)
-        assertEquals(oldRemoteFile.lockOwnerEditor, remoteFile.lockOwnerEditor)
-        assertEquals(oldRemoteFile.lockTimeout, remoteFile.lockTimeout)
-        assertEquals(oldRemoteFile.lockToken, remoteFile.lockToken)
-        assertEquals(oldRemoteFile.localId, remoteFile.localId)
+        assertTrue(oldRemoteFile == remoteFile)
     }
 
     @Test
@@ -213,7 +191,11 @@ class Dav4JVM : AbstractIT() {
         assertEquals(2, ror.resultData.size)
 
         val oldRemoteFile = ror.resultData[0]
-        assertEquals(path, oldRemoteFile.remotePath)
+
+        assertTrue(
+            path == ror.resultData[0].remotePath ||
+                path == ror.resultData[1].remotePath
+        )
 
         ror = SearchRemoteOperation(
             "test",
@@ -228,7 +210,10 @@ class Dav4JVM : AbstractIT() {
         assertEquals(2, ror.resultData.size)
 
         val remoteFile = ror.resultData[0]
-        assertEquals(path, remoteFile.remotePath)
+        assertTrue(
+            path == ror.resultData[0].remotePath ||
+                path == ror.resultData[1].remotePath
+        )
 
         assertEquals(oldRemoteFile.remoteId, remoteFile.remoteId)
     }

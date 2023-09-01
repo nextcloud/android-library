@@ -35,6 +35,7 @@ import com.nextcloud.talk.components.filebrowser.models.properties.OCOwnerId;
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
 import com.owncloud.android.lib.resources.files.webdav.NCEtag;
 import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
+import com.owncloud.android.lib.resources.files.webdav.NCGetLastModified;
 import com.owncloud.android.lib.resources.files.webdav.NCMountType;
 import com.owncloud.android.lib.resources.files.webdav.NCPermissions;
 import com.owncloud.android.lib.resources.files.webdav.NCRichWorkspace;
@@ -61,7 +62,6 @@ import at.bitfire.dav4jvm.property.DisplayName;
 import at.bitfire.dav4jvm.property.GetContentLength;
 import at.bitfire.dav4jvm.property.GetContentType;
 import at.bitfire.dav4jvm.property.GetETag;
-import at.bitfire.dav4jvm.property.GetLastModified;
 import at.bitfire.dav4jvm.property.ResourceType;
 
 public class WebdavUtils {
@@ -169,7 +169,7 @@ public class WebdavUtils {
         list.add(GetContentType.NAME);
         list.add(ResourceType.NAME);
         list.add(GetContentLength.NAME);
-        list.add(GetLastModified.NAME);
+        list.add(NCGetLastModified.NAME);
         list.add(CreationDate.NAME);
         list.add(GetETag.NAME); // list.add(NCEtag.NAME);
         list.add(NCPermissions.NAME);
@@ -338,6 +338,7 @@ public class WebdavUtils {
     public static void registerCustomFactories() {
         List<PropertyFactory> list = new ArrayList<>();
         list.add(new NCFavorite.Factory());
+        list.add(new NCGetLastModified.Factory());
         list.add(new NCEtag.Factory());
         list.add(new NCPermissions.Factory());
         list.add(new OCId.Factory());

@@ -49,9 +49,7 @@ class NCFavorite internal constructor(var isOcFavorite: Boolean) : Property {
             return NCFavorite(false)
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName() = NAME
     }
 
     companion object {
