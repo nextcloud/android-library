@@ -17,6 +17,7 @@ import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.files.webdav.NCEtag;
 import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
+import com.owncloud.android.lib.resources.files.webdav.NCGetLastModified;
 import com.owncloud.android.lib.resources.files.webdav.NCMountType;
 import com.owncloud.android.lib.resources.files.webdav.NCPermissions;
 import com.owncloud.android.lib.resources.files.webdav.NCRichWorkspace;
@@ -31,7 +32,6 @@ import java.util.List;
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.Response;
 import at.bitfire.dav4jvm.property.GetContentType;
-import at.bitfire.dav4jvm.property.GetLastModified;
 import at.bitfire.dav4jvm.property.ResourceType;
 import okhttp3.MediaType;
 
@@ -101,8 +101,8 @@ public class WebDavFileUtils {
                 remoteFile.setFavorite(((NCFavorite) property).isOcFavorite());
             }
 
-            if (property instanceof GetLastModified) {
-                remoteFile.setModifiedTimestamp(((GetLastModified) property).getLastModified());
+            if (property instanceof NCGetLastModified) {
+                remoteFile.setModifiedTimestamp(((NCGetLastModified) property).getLastModified());
             }
 
             if (property instanceof GetContentType) {
