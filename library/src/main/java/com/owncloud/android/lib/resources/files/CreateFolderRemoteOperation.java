@@ -31,6 +31,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 
@@ -41,7 +42,7 @@ import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
  * @author David A. Velasco
  * @author masensio
  */
-public class CreateFolderRemoteOperation extends RemoteOperation {
+public class CreateFolderRemoteOperation extends RemoteOperation<Long> {
 
     private static final String TAG = CreateFolderRemoteOperation.class.getSimpleName();
 
@@ -76,8 +77,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<Long> run(OwnCloudClient client) {
+        RemoteOperationResult<Long> result;
 
         result = createFolder(client);
         if (!result.isSuccess() && createFullPath &&
@@ -93,8 +94,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
     }
 
 
-    private RemoteOperationResult createFolder(OwnCloudClient client) {
-        RemoteOperationResult result;
+    private RemoteOperationResult<Long> createFolder(OwnCloudClient client) {
+        RemoteOperationResult<Long> result;
         MkColMethod mkCol = null;
         try {
             mkCol = new MkColMethod(client.getFilesDavUri(remotePath));
@@ -102,19 +103,31 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
             if (!TextUtils.isEmpty(token)) {
                 mkCol.addRequestHeader(E2E_TOKEN, token);
             }
-            
+
             client.executeMethod(mkCol, READ_TIMEOUT, CONNECTION_TIMEOUT);
 
             if (HttpStatus.SC_METHOD_NOT_ALLOWED == mkCol.getStatusCode()) {
-                result = new RemoteOperationResult(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
+                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
             } else {
-                result = new RemoteOperationResult(mkCol.succeeded(), mkCol);
+                result = new RemoteOperationResult<>(mkCol.succeeded(), mkCol);
+                Header fileIdHeader = mkCol.getResponseHeader("OC-FileId");
+                Header cookieHeader = mkCol.getResponseHeader("Set-Cookie");
+
+                if (fileIdHeader != null && cookieHeader != null) {
+                    String instanceId = cookieHeader.getValue().split("=")[0];
+                    String fileId = fileIdHeader.getValue();
+                    String id = fileId.replace(instanceId, "");
+
+                    result.setResultData(Long.valueOf(id));
+                } else {
+                    result.setResultData(null);
+                }
             }
 
             Log_OC.d(TAG, "Create directory " + remotePath + ": " + result.getLogMessage());
             client.exhaustResponse(mkCol.getResponseBodyAsStream());
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Create directory " + remotePath + ": " + result.getLogMessage(), e);
 
         } finally {
@@ -124,8 +137,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
         return result;
     }
 
-    private RemoteOperationResult createParentFolder(String parentPath, OwnCloudClient client) {
-        RemoteOperation operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
+    private RemoteOperationResult<Long> createParentFolder(String parentPath, OwnCloudClient client) {
+        RemoteOperation<Long> operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
         return operation.execute(client);
     }
 
