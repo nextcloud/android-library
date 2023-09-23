@@ -32,7 +32,7 @@ import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.trashbin.model.TrashbinFile;
 
@@ -45,7 +45,7 @@ import java.io.IOException;
 /**
  * Restore a {@link TrashbinFile}.
  */
-public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
+public class RestoreTrashbinFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = RestoreTrashbinFileRemoteOperation.class.getSimpleName();
     private static final int RESTORE_READ_TIMEOUT = 30000;

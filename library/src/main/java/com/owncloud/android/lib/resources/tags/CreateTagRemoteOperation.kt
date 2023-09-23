@@ -30,13 +30,13 @@ package com.owncloud.android.lib.resources.tags
 import com.google.gson.Gson
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PostMethod
-import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.apache.commons.httpclient.HttpStatus
 
-class CreateTagRemoteOperation(val name: String) : RemoteOperation<Void>() {
+class CreateTagRemoteOperation(val name: String) : NextcloudRemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val map = HashMap<String, String>()
         map["name"] = name

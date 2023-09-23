@@ -33,7 +33,7 @@ import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 /**
  * Remote operation to get all predefined statuses
  */
-public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation<ArrayList<PredefinedStatus>> {
+public class GetPredefinedStatusesRemoteOperation extends OCSNextcloudRemoteOperation<ArrayList<PredefinedStatus>> {
     private static final String TAG = GetPredefinedStatusesRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/predefined_statuses";
 

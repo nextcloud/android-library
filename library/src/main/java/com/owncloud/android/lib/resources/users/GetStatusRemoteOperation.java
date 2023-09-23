@@ -33,14 +33,14 @@ import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
 /**
  * Remote operation to get status
  */
-public class GetStatusRemoteOperation extends OCSRemoteOperation<Status> {
+public class GetStatusRemoteOperation extends OCSNextcloudRemoteOperation<Status> {
 
     private static final String TAG = GetStatusRemoteOperation.class.getSimpleName();
     private static final String GET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status";

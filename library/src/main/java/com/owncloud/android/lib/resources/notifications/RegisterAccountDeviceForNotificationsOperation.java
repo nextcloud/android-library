@@ -32,7 +32,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.PushResponse;
@@ -42,7 +42,7 @@ import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 import java.lang.reflect.Type;
 
-public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation<PushResponse> {
+public class RegisterAccountDeviceForNotificationsOperation extends LegacyRemoteOperation<PushResponse> {
     // OCS Route
     private static final String OCS_ROUTE =
             "/ocs/v2.php/apps/notifications/api/v2/push" + JSON_FORMAT;

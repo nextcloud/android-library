@@ -27,7 +27,6 @@
 package com.owncloud.android.lib.common.accounts
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.common.ExternalLink
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import org.junit.Test
@@ -35,10 +34,10 @@ import org.junit.Test
 class ExternalLinksOperationIT : AbstractIT() {
     @Test
     fun retrieveExternalLinks() {
-        val result = ExternalLinksOperation().execute(client)
+        val result = ExternalLinksOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val data = result.data as ArrayList<ExternalLink>
+        val data = result.resultData
         assertEquals(2, data.size)
 
         assertEquals("Nextcloud", data[0].name)

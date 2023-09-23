@@ -30,7 +30,9 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
+import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 import org.junit.Test
 
 class CommentFileRemoteOperationIT : AbstractIT() {
@@ -44,7 +46,10 @@ class CommentFileRemoteOperationIT : AbstractIT() {
         )
 
         val readResult = ReadFileRemoteOperation(remotePath).execute(client)
-        val remoteFile = readResult.data.get(0) as RemoteFile
+        val remoteFile = readResult.data[0] as RemoteFile
+        assertTrue(readResult.isSuccess)
+
+        checkComments(0, remoteFile.localId)
 
         assertTrue(
             CommentFileRemoteOperation("test", remoteFile.localId)
@@ -52,10 +57,16 @@ class CommentFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        assertTrue(
-            MarkCommentsAsReadRemoteOperation(remoteFile.localId)
-                .execute(client)
-                .isSuccess
-        )
+        checkComments(1, remoteFile.localId)
+    }
+
+    private fun checkComments(expectedComments: Int, fileId: Long) {
+        val readComment =
+            PropFindMethod(client.baseUri.toString() + "/remote.php/dav/comments/files/" + fileId)
+        client.executeMethod(readComment)
+        assertTrue(readComment.succeeded())
+
+        // offset by 1, as "root" entry always exists if file exists
+        assertEquals(expectedComments + 1, readComment.responseBodyAsMultiStatus.responses.size)
     }
 }

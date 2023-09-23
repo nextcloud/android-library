@@ -32,13 +32,13 @@ import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
-import com.owncloud.android.lib.resources.OCSRemoteOperation
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation
 import org.apache.commons.httpclient.HttpStatus
 
 /**
  * Get hoverCard of an user
  */
-class GetHoverCardRemoteOperation(private val userId: String) : OCSRemoteOperation<HoverCard?>() {
+class GetHoverCardRemoteOperation(private val userId: String) : OCSNextcloudRemoteOperation<HoverCard?>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<HoverCard?> {
         var result: RemoteOperationResult<HoverCard?>

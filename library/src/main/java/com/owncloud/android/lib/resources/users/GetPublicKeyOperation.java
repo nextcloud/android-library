@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.users;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -41,7 +41,7 @@ import org.json.JSONObject;
  * Remote operation performing the fetch of the public key for an user
  */
 
-public class GetPublicKeyOperation extends RemoteOperation<String> {
+public class GetPublicKeyOperation extends LegacyRemoteOperation<String> {
 
     private static final String TAG = GetPublicKeyOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;

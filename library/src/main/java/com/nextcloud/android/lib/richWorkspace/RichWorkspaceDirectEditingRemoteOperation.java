@@ -29,7 +29,7 @@ package com.nextcloud.android.lib.richWorkspace;
 
 import com.google.gson.GsonBuilder;
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -45,7 +45,7 @@ import java.util.Map;
  * Get direct editing url for rich workspace
  */
 
-public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
+public class RichWorkspaceDirectEditingRemoteOperation extends LegacyRemoteOperation {
     private static final String TAG = RichWorkspaceDirectEditingRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;

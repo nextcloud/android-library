@@ -27,7 +27,7 @@ package com.owncloud.android.lib.resources.files;
 import android.text.TextUtils;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -41,7 +41,7 @@ import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
  * @author David A. Velasco
  * @author masensio
  */
-public class CreateFolderRemoteOperation extends RemoteOperation {
+public class CreateFolderRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = CreateFolderRemoteOperation.class.getSimpleName();
 
@@ -125,7 +125,7 @@ public class CreateFolderRemoteOperation extends RemoteOperation {
     }
 
     private RemoteOperationResult createParentFolder(String parentPath, OwnCloudClient client) {
-        RemoteOperation operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
+        LegacyRemoteOperation operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
         return operation.execute(client);
     }
 

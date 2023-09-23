@@ -31,7 +31,7 @@ import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.DeleteMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
@@ -40,7 +40,7 @@ import org.apache.commons.httpclient.HttpStatus;
  * Remote operation to clear custome status message
  */
 
-public class ClearStatusMessageRemoteOperation extends OCSRemoteOperation {
+public class ClearStatusMessageRemoteOperation extends OCSNextcloudRemoteOperation {
 
     private static final String TAG = ClearStatusMessageRemoteOperation.class.getSimpleName();
     private static final String URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message";

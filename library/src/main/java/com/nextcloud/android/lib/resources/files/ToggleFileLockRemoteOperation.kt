@@ -24,7 +24,7 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.common.OkHttpMethodBase
 import com.nextcloud.operations.LockMethod
 import com.nextcloud.operations.UnlockMethod
-import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import org.apache.commons.httpclient.HttpStatus
@@ -35,7 +35,7 @@ import org.apache.commons.httpclient.HttpStatus
  * @param toLock `true` if file is to be locked, `false` if it is to be unlocked
  */
 class ToggleFileLockRemoteOperation(private val toLock: Boolean, private val filePath: String) :
-    RemoteOperation<Void>() {
+    NextcloudRemoteOperation<Void>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var method: OkHttpMethodBase? = null

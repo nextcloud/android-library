@@ -31,7 +31,7 @@ import android.net.Uri;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -50,7 +50,7 @@ import java.util.ArrayList;
  * @author David A. Velasco
  * @author masensio
  */
-public class GetStatusRemoteOperation extends RemoteOperation {
+public class GetStatusRemoteOperation extends LegacyRemoteOperation {
 
     /**
      * Maximum time to wait for a response from the server when the connection is being tested, in MILLISECONDs.

@@ -25,7 +25,7 @@ package com.owncloud.android.lib.resources.users;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PutMethod;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -35,7 +35,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 
-public class SetUserInfoRemoteOperation extends RemoteOperation<Boolean> {
+public class SetUserInfoRemoteOperation extends NextcloudRemoteOperation<Boolean> {
 
     private static final String TAG = SetUserInfoRemoteOperation.class.getSimpleName();
 

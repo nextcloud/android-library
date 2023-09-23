@@ -27,8 +27,8 @@ package com.owncloud.android.lib.resources.files;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
 import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.OperationCancelledException;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author masensio
  */
 
-public class DownloadFileRemoteOperation extends RemoteOperation {
+public class DownloadFileRemoteOperation extends LegacyRemoteOperation {
 
     private static final String TAG = DownloadFileRemoteOperation.class.getSimpleName();
 

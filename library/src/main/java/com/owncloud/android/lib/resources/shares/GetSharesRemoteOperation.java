@@ -29,7 +29,7 @@ package com.owncloud.android.lib.resources.shares;
 import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Get the data from the server about ALL the known shares owned by the requester.
  */
-public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
+public class GetSharesRemoteOperation extends LegacyRemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesRemoteOperation.class.getSimpleName();
     private boolean sharedWithMe = false;

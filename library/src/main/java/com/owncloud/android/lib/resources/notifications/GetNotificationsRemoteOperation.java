@@ -35,7 +35,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
@@ -51,7 +51,7 @@ import java.util.List;
  * accessible via the notifications endpoint at {@value OCS_ROUTE_LIST_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
-public class GetNotificationsRemoteOperation extends RemoteOperation<List<Notification>> {
+public class GetNotificationsRemoteOperation extends LegacyRemoteOperation<List<Notification>> {
 
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =

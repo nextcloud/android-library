@@ -56,8 +56,8 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
     @BeforeClass
     public static void beforeClass() {
-        capability = (OCCapability) new GetCapabilitiesRemoteOperation(null)
-                .execute(client)
+        capability = (OCCapability) new GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient)
                 .getSingleData();
     }
 

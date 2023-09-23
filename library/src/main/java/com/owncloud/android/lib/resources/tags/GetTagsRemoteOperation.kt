@@ -31,14 +31,14 @@ import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.network.WebdavEntry.Companion.EXTENDED_PROPERTY_NAME_REMOTE_ID
 import com.owncloud.android.lib.common.network.WebdavEntry.Companion.NAMESPACE_OC
 import com.owncloud.android.lib.common.network.WebdavEntry.Companion.SHAREES_DISPLAY_NAME
-import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
 import org.apache.jackrabbit.webdav.xml.Namespace
 
-class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
+class GetTagsRemoteOperation : LegacyRemoteOperation<List<Tag>>() {
     @Deprecated("Deprecated in Java")
     override fun run(client: OwnCloudClient): RemoteOperationResult<List<Tag>> {
         val ocNamespace = Namespace.getNamespace(NAMESPACE_OC)

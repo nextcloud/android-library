@@ -29,7 +29,7 @@ package com.owncloud.android.lib.resources.shares;
 import android.text.TextUtils;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Creates a new share.  This allows sharing with a user or group or as a link.
  */
-public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
+public class CreateShareRemoteOperation extends LegacyRemoteOperation<List<OCShare>> {
 
     private static final String TAG = CreateShareRemoteOperation.class.getSimpleName();
 

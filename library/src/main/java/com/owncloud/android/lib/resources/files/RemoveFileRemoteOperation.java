@@ -25,7 +25,7 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -38,7 +38,7 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
  * @author David A. Velasco
  * @author masensio
  */
-public class RemoveFileRemoteOperation extends RemoteOperation {
+public class RemoveFileRemoteOperation extends LegacyRemoteOperation {
     private static final String TAG = RemoveFileRemoteOperation.class.getSimpleName();
 
     private static final int REMOVE_READ_TIMEOUT = 30000;

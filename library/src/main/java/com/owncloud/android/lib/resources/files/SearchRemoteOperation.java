@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.files;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.WebDavFileUtils;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
@@ -46,7 +46,7 @@ import java.util.List;
 /**
  * Remote operation performing the search in the Nextcloud server.
  */
-public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
+public class SearchRemoteOperation extends LegacyRemoteOperation<List<RemoteFile>> {
 
 
     public enum SearchType {

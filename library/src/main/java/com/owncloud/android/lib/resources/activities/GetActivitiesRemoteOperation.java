@@ -36,8 +36,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.GetMethod;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.activities.model.Activity;
@@ -46,9 +45,7 @@ import com.owncloud.android.lib.resources.activities.model.RichElementTypeAdapte
 import com.owncloud.android.lib.resources.activities.models.PreviewObject;
 import com.owncloud.android.lib.resources.activities.models.PreviewObjectAdapter;
 
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -61,7 +58,7 @@ import java.util.List;
  * accessible via the activities endpoint at {@value OCS_ROUTE_V12_AND_UP}, specified at
  * {@link "https://github.com/nextcloud/activity/blob/master/docs/endpoint-v2.md"}.
  */
-public class GetActivitiesRemoteOperation extends RemoteOperation {
+public class GetActivitiesRemoteOperation extends NextcloudRemoteOperation {
 
     private static final String TAG = GetActivitiesRemoteOperation.class.getSimpleName();
 
@@ -155,86 +152,6 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         } catch (IOException e) {
             Log_OC.e(TAG, "Error getting user activities", e);
             return new RemoteOperationResult(e);
-        } finally {
-            if (get != null) {
-                get.releaseConnection();
-            }
-        }
-
-        return result;
-    }
-    
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
-        int status;
-        org.apache.commons.httpclient.methods.GetMethod get = null;
-        ArrayList<Activity> activities;
-        String url = client.getBaseUri() + OCS_ROUTE_V12_AND_UP;
-        
-        // add filter for fileId, if available
-        if (fileId > 0) {
-            url = url + "/filter";
-        }
-        
-        Log_OC.d(TAG, "URL: " + url);
-
-        try {
-            get = new org.apache.commons.httpclient.methods.GetMethod(url);
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            ArrayList<NameValuePair> parameters = new ArrayList<>();
-            parameters.add(new NameValuePair("format", "json"));
-            parameters.add(new NameValuePair("previews", "true"));
-            
-            if (lastGiven != -1) {
-                parameters.add(new NameValuePair("since", String.valueOf(lastGiven)));
-            }
-
-            if (fileId > 0) {
-                parameters.add(new NameValuePair("sort", "desc"));
-                parameters.add(new NameValuePair("object_type", "files"));
-                parameters.add(new NameValuePair("object_id", String.valueOf(fileId)));
-            }
-
-            get.setQueryString(parameters.toArray(new NameValuePair[]{}));
-
-            status = client.executeMethod(get);
-            String response = get.getResponseBodyAsString();
-
-            Header nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
-            if (nextPageHeader != null) {
-                lastGiven = Integer.parseInt(nextPageHeader.getValue());
-            } else {
-                lastGiven = -1;
-            }
-
-            if (isSuccess(status)) {
-                Log_OC.d(TAG, "Successful response: " + response);
-                result = new RemoteOperationResult(true, status, get.getResponseHeaders());
-                // Parse the response
-                if (response == null) {
-                    activities = new ArrayList<>();
-                } else {
-                    activities = parseResult(response);
-                }
-
-                ArrayList<Object> data = new ArrayList<>();
-                data.add(activities);
-                data.add(lastGiven);
-                result.setData(data);
-            } else {
-                result = new RemoteOperationResult(false, status, get.getResponseHeaders());
-                Log_OC.e(TAG, "Failed response while getting user activities ");
-                if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
-                } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
-                }
-            }
-        } catch (IOException e) {
-            result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Exception while getting remote activities", e);
         } finally {
             if (get != null) {
                 get.releaseConnection();

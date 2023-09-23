@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.notifications;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -39,7 +39,7 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
  * Delete a notification, specified at
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
  */
-public class DeleteNotificationRemoteOperation extends RemoteOperation {
+public class DeleteNotificationRemoteOperation extends LegacyRemoteOperation {
 
     // OCS Route
     private static final String OCS_ROUTE_LIST_V12_AND_UP =

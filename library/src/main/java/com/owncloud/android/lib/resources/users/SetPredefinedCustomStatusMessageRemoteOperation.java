@@ -31,7 +31,7 @@ import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
+import com.owncloud.android.lib.resources.OCSNextcloudRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
@@ -41,9 +41,9 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 /**
- * Remote operation performing setting of predefined custome status message
+ * Remote operation performing setting of predefined custom status message
  */
-public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation<ArrayList<PredefinedStatus>> {
+public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSNextcloudRemoteOperation<ArrayList<PredefinedStatus>> {
 
     private static final String TAG = SetPredefinedCustomStatusMessageRemoteOperation.class.getSimpleName();
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message/predefined";

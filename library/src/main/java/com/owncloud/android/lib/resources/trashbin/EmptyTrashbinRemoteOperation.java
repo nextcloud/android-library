@@ -31,7 +31,7 @@ import android.util.Log;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.DeleteMethod;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.NextcloudRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -42,7 +42,7 @@ import java.io.IOException;
 /**
  * Empty trashbin.
  */
-public class EmptyTrashbinRemoteOperation extends RemoteOperation<Boolean> {
+public class EmptyTrashbinRemoteOperation extends NextcloudRemoteOperation<Boolean> {
 
     private static final String TAG = EmptyTrashbinRemoteOperation.class.getSimpleName();
 

@@ -30,7 +30,7 @@ package com.owncloud.android.lib.resources.trashbin;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.LegacyRemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.trashbin.model.TrashbinFile;
@@ -48,7 +48,7 @@ import java.util.List;
  * Remote operation performing the read of remote trashbin folder on Nextcloud server.
  */
 
-public class ReadTrashbinFolderRemoteOperation extends RemoteOperation<List<TrashbinFile>> {
+public class ReadTrashbinFolderRemoteOperation extends LegacyRemoteOperation<List<TrashbinFile>> {
 
     private static final String TAG = ReadTrashbinFolderRemoteOperation.class.getSimpleName();
     
