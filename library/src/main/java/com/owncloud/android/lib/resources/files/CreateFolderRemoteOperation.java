@@ -111,9 +111,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
             } else {
                 result = new RemoteOperationResult<>(mkCol.succeeded(), mkCol);
                 Header fileIdHeader = mkCol.getResponseHeader("OC-FileId");
-                Header cookieHeader = mkCol.getResponseHeader("Set-Cookie");
 
-                if (fileIdHeader != null && cookieHeader != null) {
+                if (fileIdHeader != null) {
                     String fileId = fileIdHeader.getValue();
 
                     result.setResultData(fileId);
