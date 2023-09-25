@@ -42,7 +42,7 @@ import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
  * @author David A. Velasco
  * @author masensio
  */
-public class CreateFolderRemoteOperation extends RemoteOperation<Long> {
+public class CreateFolderRemoteOperation extends RemoteOperation<String> {
 
     private static final String TAG = CreateFolderRemoteOperation.class.getSimpleName();
 
@@ -77,8 +77,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation<Long> {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult<Long> run(OwnCloudClient client) {
-        RemoteOperationResult<Long> result;
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
 
         result = createFolder(client);
         if (!result.isSuccess() && createFullPath &&
@@ -94,8 +94,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation<Long> {
     }
 
 
-    private RemoteOperationResult<Long> createFolder(OwnCloudClient client) {
-        RemoteOperationResult<Long> result;
+    private RemoteOperationResult<String> createFolder(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
         MkColMethod mkCol = null;
         try {
             mkCol = new MkColMethod(client.getFilesDavUri(remotePath));
@@ -114,11 +114,9 @@ public class CreateFolderRemoteOperation extends RemoteOperation<Long> {
                 Header cookieHeader = mkCol.getResponseHeader("Set-Cookie");
 
                 if (fileIdHeader != null && cookieHeader != null) {
-                    String instanceId = cookieHeader.getValue().split("=")[0];
                     String fileId = fileIdHeader.getValue();
-                    String id = fileId.replace(instanceId, "");
 
-                    result.setResultData(Long.valueOf(id));
+                    result.setResultData(fileId);
                 } else {
                     result.setResultData(null);
                 }
@@ -137,8 +135,8 @@ public class CreateFolderRemoteOperation extends RemoteOperation<Long> {
         return result;
     }
 
-    private RemoteOperationResult<Long> createParentFolder(String parentPath, OwnCloudClient client) {
-        RemoteOperation<Long> operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
+    private RemoteOperationResult<String> createParentFolder(String parentPath, OwnCloudClient client) {
+        RemoteOperation<String> operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
         return operation.execute(client);
     }
 

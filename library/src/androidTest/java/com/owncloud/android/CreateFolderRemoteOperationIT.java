@@ -75,7 +75,7 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     public void testCreateFolder() {
         String remotePath = mFullPath2FolderBase;
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult<Long> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue(result.isSuccess());
 
         // Create Subfolder
@@ -89,13 +89,13 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     public void testFileID() {
         String remotePath = mFullPath2FolderBase + "/" + RandomStringGenerator.make(TAG_LENGTH);
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult<Long> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue(result.isSuccess());
 
         RemoteOperationResult readResult = new ReadFileRemoteOperation(remotePath).execute(client);
         assertTrue(readResult.isSuccess());
 
-        Long remoteId = ((RemoteFile) readResult.getData().get(0)).getLocalId();
+        String remoteId = ((RemoteFile) readResult.getData().get(0)).getRemoteId();
         assertEquals(result.getResultData(), remoteId);
     }
 
@@ -106,7 +106,7 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     @Test
     public void testCreateFolderSpecialCharactersOnNewVersion() {
         String remotePath = mFullPath2FolderBase + "_<";
-        RemoteOperationResult<Long> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_>";
