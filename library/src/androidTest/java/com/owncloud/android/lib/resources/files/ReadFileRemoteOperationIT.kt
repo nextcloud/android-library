@@ -26,6 +26,7 @@ import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -77,6 +78,9 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         @Suppress("Detekt.MagicNumber")
         assertEquals(ImageDimension(451f, 529f), remoteFile.imageDimension)
+
+        testOnlyOnServer(NextcloudVersion.nextcloud_27)
+
         @Suppress("Detekt.MagicNumber")
         assertEquals(GeoLocation(49.99679166666667, 8.67198611111111), remoteFile.geoLocation)
     }

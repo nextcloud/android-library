@@ -26,10 +26,16 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import com.nextcloud.test.RandomStringGenerator;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ExistenceCheckRemoteOperation;
+import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
+import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,18 +45,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Class to test Create Folder Operation
  */
-public class CreateFolderIT extends AbstractIT {
+public class CreateFolderRemoteOperationIT extends AbstractIT {
     private static final String FOLDER_PATH_BASE = "/testCreateFolder";
+    private static final int TAG_LENGTH = 10;
 
-    private List<String> mCreatedFolderPaths;
+    private final List<String> mCreatedFolderPaths;
     private String mFullPath2FolderBase;
 
-    public CreateFolderIT() {
+    public CreateFolderRemoteOperationIT() {
         super();
         mCreatedFolderPaths = new ArrayList<>();
     }
@@ -70,7 +75,7 @@ public class CreateFolderIT extends AbstractIT {
     public void testCreateFolder() {
         String remotePath = mFullPath2FolderBase;
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<Long> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue(result.isSuccess());
 
         // Create Subfolder
@@ -80,6 +85,20 @@ public class CreateFolderIT extends AbstractIT {
         assertTrue(result.isSuccess());
     }
 
+    @Test
+    public void testFileID() {
+        String remotePath = mFullPath2FolderBase + "/" + RandomStringGenerator.make(TAG_LENGTH);
+        mCreatedFolderPaths.add(remotePath);
+        RemoteOperationResult<Long> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        assertTrue(result.isSuccess());
+
+        RemoteOperationResult readResult = new ReadFileRemoteOperation(remotePath).execute(client);
+        assertTrue(readResult.isSuccess());
+
+        Long remoteId = ((RemoteFile) readResult.getData().get(0)).getLocalId();
+        assertEquals(result.getResultData(), remoteId);
+    }
+
     /**
      * Test to create folder with special characters: /  \  < >  :  "  |  ?
      * > oc8.1 no characters are forbidden
@@ -87,7 +106,7 @@ public class CreateFolderIT extends AbstractIT {
     @Test
     public void testCreateFolderSpecialCharactersOnNewVersion() {
         String remotePath = mFullPath2FolderBase + "_<";
-        RemoteOperationResult result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<Long> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_>";
