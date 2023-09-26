@@ -110,6 +110,9 @@ class OCCapability {
     // Groupfolders
     var groupfolders = CapabilityBooleanType.UNKNOWN
 
+    // Drop-Account
+    var dropAccount = CapabilityBooleanType.UNKNOWN
+
     // Etag for capabilities
     var etag: String? = ""
 

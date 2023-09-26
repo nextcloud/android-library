@@ -166,6 +166,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     // end to end encryption
     private static final String PROPERTY_KEYS_EXIST = "keys-exist";
 
+    // drop-account
+    private static final String NODE_DROP_ACCOUNT = "drop-account";
+
 
     private OCCapability currentCapability = null;
 
@@ -672,6 +675,17 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 } else {
                     capability.setGroupfolders(CapabilityBooleanType.FALSE);
+                }
+
+                // drop-account
+                if (respCapabilities.has(NODE_DROP_ACCOUNT)) {
+                    JSONObject dropAccountCapability = respCapabilities.getJSONObject(NODE_DROP_ACCOUNT);
+
+                    if (dropAccountCapability.getBoolean(PROPERTY_ENABLED)) {
+                        capability.setDropAccount(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setDropAccount(CapabilityBooleanType.FALSE);
+                    }
                 }
             }
 
