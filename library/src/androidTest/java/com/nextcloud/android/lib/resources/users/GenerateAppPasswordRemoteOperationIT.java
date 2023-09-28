@@ -26,15 +26,16 @@ public class GenerateAppPasswordRemoteOperationIT extends AbstractIT {
     @Test
     public void generateAppPassword() {
         GenerateAppPasswordRemoteOperation sut = new GenerateAppPasswordRemoteOperation();
-        RemoteOperationResult result = sut.execute(client);
+        RemoteOperationResult<String> result = sut.execute(client);
 
         assertTrue(result.isSuccess());
 
-        String appPassword = (String) result.getSingleData();
+        String appPassword = result.getResultData();
         assertFalse(TextUtils.isEmpty(appPassword));
 
         OwnCloudCredentials oldOwnCloudCredentials = client.getCredentials();
-        OwnCloudCredentials newOwnCloudCredentials = new OwnCloudBasicCredentials(oldOwnCloudCredentials.getUsername(),
+        OwnCloudCredentials newOwnCloudCredentials = new OwnCloudBasicCredentials(
+                oldOwnCloudCredentials.getUsername(),
                 appPassword);
 
         assertNotEquals(oldOwnCloudCredentials, newOwnCloudCredentials);
