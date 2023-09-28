@@ -205,6 +205,7 @@ services:
       - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/external.git /var/www/html/apps/external/"
       - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
       - su www-data -c "php /var/www/html/occ app:enable external"
+      - su www-data -c "php /var/www/html/occ notification:generate test test"
       - /run.sh
 
 trigger:
