@@ -113,6 +113,9 @@ class OCCapability {
     // Drop-Account
     var dropAccount = CapabilityBooleanType.UNKNOWN
 
+    // Security guard
+    var securityGuard = CapabilityBooleanType.UNKNOWN
+
     // Etag for capabilities
     var etag: String? = ""
 
