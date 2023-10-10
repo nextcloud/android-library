@@ -9,9 +9,13 @@ package com.owncloud.android.lib.resources.files
 
 import android.os.Build
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.common.OwnCloudBasicCredentials
+import com.owncloud.android.lib.common.OwnCloudClientFactory
+import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import junit.framework.TestCase.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -80,6 +84,35 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         )
     }
 
+    @Throws(Throwable::class)
+    @Test
+    fun uploadFileWithQuotaExceeded() {
+        // user3 has quota of 1Mb
+        val client3 = OwnCloudClientFactory.createOwnCloudClient(url, context, true)
+        client3.credentials = OwnCloudBasicCredentials("user3", "user3")
+        client3.userId = "user3"
+
+        // create file
+        val filePath = createFile("quota", LARGE_FILE)
+        val remotePath = "/quota.md"
+
+        val creationTimestamp = getCreationTimestamp(File(filePath))
+        val sut =
+            UploadFileRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                creationTimestamp,
+                true
+            )
+
+        val uploadResult = sut.execute(client3)
+        assertFalse(uploadResult.isSuccess)
+        assertEquals(ResultCode.QUOTA_EXCEEDED, uploadResult.code)
+    }
+
     private fun getCreationTimestamp(file: File): Long? {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return null
@@ -101,5 +134,6 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     companion object {
         const val TIME_OFFSET = 10
+        const val LARGE_FILE = 10 * 1024
     }
 }
