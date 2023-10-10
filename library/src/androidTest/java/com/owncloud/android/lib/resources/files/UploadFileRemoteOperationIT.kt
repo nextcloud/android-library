@@ -9,9 +9,13 @@ package com.owncloud.android.lib.resources.files
 
 import android.os.Build
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.common.OwnCloudBasicCredentials
+import com.owncloud.android.lib.common.OwnCloudClientFactory
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import junit.framework.TestCase.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -22,6 +26,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.TimeUnit
 
 class UploadFileRemoteOperationIT : AbstractIT() {
+    @Throws(IOException::class)
     @Test
     fun creationTime() {
         val imageFile = getFile("imageFile.png")
@@ -30,6 +35,7 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         assertTrue(creationDate!! > (System.currentTimeMillis() / MILLI_TO_SECOND) - TIME_OFFSET)
     }
 
+    @Throws(IOException::class)
     @Test
     fun upload() {
         // create file
@@ -78,6 +84,34 @@ class UploadFileRemoteOperationIT : AbstractIT() {
             uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
                 uploadTimestamp + TIME_OFFSET > remoteFile.uploadTimestamp
         )
+    }
+
+    @Throws(IOException::class)
+    @Test
+    fun uploadWithDisabledUser() {
+        // use disabled user
+        val client3 = OwnCloudClientFactory.createOwnCloudClient(url, context, true)
+        client3.credentials = OwnCloudBasicCredentials("disabled", "disabled")
+
+        // create file
+        val filePath = createFile("text")
+        val remotePath = "/test.md"
+
+        val creationTimestamp = getCreationTimestamp(File(filePath))
+        val sut =
+            UploadFileRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                creationTimestamp,
+                true
+            )
+
+        val uploadResult = sut.execute(client3)
+        assertFalse(uploadResult.isSuccess)
+        assertEquals(RemoteOperationResult.ResultCode.USER_DISABLED, uploadResult.code)
     }
 
     private fun getCreationTimestamp(file: File): Long? {
