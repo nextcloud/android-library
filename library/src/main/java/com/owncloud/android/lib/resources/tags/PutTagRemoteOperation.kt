@@ -38,11 +38,12 @@ import org.apache.commons.httpclient.HttpStatus
 class PutTagRemoteOperation(val id: String, val fileId: Long) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val empty: RequestBody = EMPTY_REQUEST
-        val putMethod = PutMethod(
-            client.baseUri.toString() + TAG_URL + fileId + "/" + id,
-            true,
-            empty
-        )
+        val putMethod =
+            PutMethod(
+                client.baseUri.toString() + TAG_URL + fileId + "/" + id,
+                true,
+                empty
+            )
 
         val status = putMethod.execute(client)
 

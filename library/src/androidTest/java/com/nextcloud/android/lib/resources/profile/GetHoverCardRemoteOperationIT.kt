@@ -41,8 +41,9 @@ class GetHoverCardRemoteOperationIT : AbstractIT() {
 
     @Test
     fun testHoverCard() {
-        val result = GetHoverCardRemoteOperation(nextcloudClient.userId)
-            .execute(nextcloudClient)
+        val result =
+            GetHoverCardRemoteOperation(nextcloudClient.userId)
+                .execute(nextcloudClient)
         assertTrue(result.logMessage, result.isSuccess)
         val hoverCard = result.resultData
         assertEquals(nextcloudClient.userId, hoverCard?.userId)

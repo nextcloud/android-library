@@ -6,7 +6,6 @@ import org.junit.Before
 import org.junit.Test
 
 class NextcloudUriDelegateIT {
-
     lateinit var sut: NextcloudUriDelegate
 
     @Before

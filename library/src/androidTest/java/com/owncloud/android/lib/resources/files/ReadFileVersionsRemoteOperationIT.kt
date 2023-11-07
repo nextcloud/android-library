@@ -37,13 +37,14 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         val txtFile = getFile(ASSETS__TEXT_FILE_NAME)
         val filePath = "/test.md"
 
-        var uploadResult = UploadFileRemoteOperation(
-            txtFile.absolutePath,
-            filePath,
-            "txt/plain",
-            System.currentTimeMillis() / MILLI_TO_SECOND
-        )
-            .execute(client)
+        var uploadResult =
+            UploadFileRemoteOperation(
+                txtFile.absolutePath,
+                filePath,
+                "txt/plain",
+                System.currentTimeMillis() / MILLI_TO_SECOND
+            )
+                .execute(client)
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
@@ -54,8 +55,9 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         assertTrue(sutResult.isSuccess)
 
         var versionCount = 0
-        val ocCapability = GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient).singleData as OCCapability
+        val ocCapability =
+            GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).singleData as OCCapability
         if (ocCapability.version.isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
             // with NC26+ we always have a starting version
             versionCount++
@@ -69,13 +71,14 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
             close()
         }
 
-        uploadResult = UploadFileRemoteOperation(
-            txtFile.absolutePath,
-            filePath,
-            "txt/plain",
-            System.currentTimeMillis() / MILLI_TO_SECOND
-        )
-            .execute(client)
+        uploadResult =
+            UploadFileRemoteOperation(
+                txtFile.absolutePath,
+                filePath,
+                "txt/plain",
+                System.currentTimeMillis() / MILLI_TO_SECOND
+            )
+                .execute(client)
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 

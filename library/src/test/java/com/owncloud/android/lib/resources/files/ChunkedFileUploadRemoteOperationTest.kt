@@ -44,14 +44,15 @@ class ChunkedFileUploadRemoteOperationTest {
     @Test
     fun testAssembleTimeout() {
         MockitoAnnotations.openMocks(this)
-        val sut = ChunkedFileUploadRemoteOperation(
-            null,
-            null,
-            null,
-            null,
-            System.currentTimeMillis() / 1000,
-            false
-        )
+        val sut =
+            ChunkedFileUploadRemoteOperation(
+                null,
+                null,
+                null,
+                null,
+                System.currentTimeMillis() / 1000,
+                false
+            )
 
         // 0b
         Mockito.`when`(file!!.length()).thenReturn(0L)
@@ -135,12 +136,13 @@ class ChunkedFileUploadRemoteOperationTest {
 
         // segment first half with CHUNK_SIZE_WIFI
         while (nextByte + 1 < length / 2) {
-            val chunk = ChunkedFileUploadRemoteOperation.calcNextChunk(
-                length,
-                ++id,
-                nextByte,
-                ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI
-            )
+            val chunk =
+                ChunkedFileUploadRemoteOperation.calcNextChunk(
+                    length,
+                    ++id,
+                    nextByte,
+                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI
+                )
 
             chunks.add(chunk)
             nextByte += chunk.length
@@ -148,12 +150,13 @@ class ChunkedFileUploadRemoteOperationTest {
 
         // segment remaining half with CHUNK_SIZE_MOBILE
         while (nextByte + 1 < length) {
-            val chunk = ChunkedFileUploadRemoteOperation.calcNextChunk(
-                length,
-                ++id,
-                nextByte,
-                ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE
-            )
+            val chunk =
+                ChunkedFileUploadRemoteOperation.calcNextChunk(
+                    length,
+                    ++id,
+                    nextByte,
+                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE
+                )
 
             chunks.add(chunk)
             nextByte += chunk.length
@@ -162,10 +165,11 @@ class ChunkedFileUploadRemoteOperationTest {
         // calculate expected number of chunks
         var expectedChunkCount =
             ceil((length / 2) / ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI.toFloat())
-        expectedChunkCount += ceil(
-            (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI) /
-                ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE.toFloat()
-        )
+        expectedChunkCount +=
+            ceil(
+                (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI) /
+                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE.toFloat()
+            )
         assertEquals(expectedChunkCount.toInt(), chunks.size)
 
         // does total length match file size?
@@ -175,16 +179,21 @@ class ChunkedFileUploadRemoteOperationTest {
         assertEquals(chunks.size, chunks.distinctBy(Chunk::id).size)
 
         // all bytes contained?
-        val cumulativeSize = chunks.sortedBy(Chunk::start).fold(0L) { acc, chunk ->
-            assertEquals(acc, chunk.start)
-            acc + chunk.length
-        }
+        val cumulativeSize =
+            chunks.sortedBy(Chunk::start).fold(0L) { acc, chunk ->
+                assertEquals(acc, chunk.start)
+                acc + chunk.length
+            }
 
         // does total length match file size?
         assertEquals(length, cumulativeSize)
     }
 
-    private fun checkChunks(length: Long, chunkSize: Long, offset: Long) {
+    private fun checkChunks(
+        length: Long,
+        chunkSize: Long,
+        offset: Long
+    ) {
         val chunks = segmentFile(offset, length, chunkSize).sortedBy(Chunk::id)
 
         // as many chunks as expected?
@@ -197,27 +206,33 @@ class ChunkedFileUploadRemoteOperationTest {
         assertEquals(chunks.size, chunks.distinctBy(Chunk::id).size)
 
         // all bytes contained?
-        val cumulativeSize = chunks.sortedBy(Chunk::start).fold(offset) { acc, chunk ->
-            assertEquals(acc, chunk.start)
-            acc + chunk.length
-        }
+        val cumulativeSize =
+            chunks.sortedBy(Chunk::start).fold(offset) { acc, chunk ->
+                assertEquals(acc, chunk.start)
+                acc + chunk.length
+            }
 
         // does total length match file size?
         assertEquals(length, cumulativeSize)
     }
 
-    private fun segmentFile(firstByte: Long, length: Long, chunkSize: Long): List<Chunk> {
+    private fun segmentFile(
+        firstByte: Long,
+        length: Long,
+        chunkSize: Long
+    ): List<Chunk> {
         val chunks = mutableListOf<Chunk>()
         var id = 0
         var nextByte = firstByte
 
         while (nextByte + 1 < length) {
-            val chunk = ChunkedFileUploadRemoteOperation.calcNextChunk(
-                length,
-                ++id,
-                nextByte,
-                chunkSize
-            )
+            val chunk =
+                ChunkedFileUploadRemoteOperation.calcNextChunk(
+                    length,
+                    ++id,
+                    nextByte,
+                    chunkSize
+                )
 
             chunks.add(chunk)
             nextByte += chunk.length

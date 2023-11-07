@@ -129,12 +129,14 @@ class NextcloudClient private constructor(
         var status = method.getStatusCode()
         val result = RedirectionPath(status, OwnCloudClient.MAX_REDIRECTIONS_COUNT)
 
-        val statusIsRedirection = status == HttpStatus.SC_MOVED_PERMANENTLY ||
-            status == HttpStatus.SC_MOVED_TEMPORARILY ||
-            status == HttpStatus.SC_TEMPORARY_REDIRECT
+        val statusIsRedirection =
+            status == HttpStatus.SC_MOVED_PERMANENTLY ||
+                status == HttpStatus.SC_MOVED_TEMPORARILY ||
+                status == HttpStatus.SC_TEMPORARY_REDIRECT
         while (redirectionsCount < OwnCloudClient.MAX_REDIRECTIONS_COUNT && statusIsRedirection) {
-            val location = method.getResponseHeader("Location")
-                ?: method.getResponseHeader("location")
+            val location =
+                method.getResponseHeader("Location")
+                    ?: method.getResponseHeader("location")
 
             if (location != null) {
                 Log_OC.d(TAG, "Location to redirect: $location")
@@ -143,8 +145,9 @@ class NextcloudClient private constructor(
                 // due to it will be set a different url
                 method.releaseConnection()
                 method.uri = location
-                val destination = method.getRequestHeader("Destination")
-                    ?: method.getRequestHeader("destination")
+                val destination =
+                    method.getRequestHeader("Destination")
+                        ?: method.getRequestHeader("destination")
 
                 if (destination != null) {
                     setRedirectedDestinationHeader(method, location, destination)

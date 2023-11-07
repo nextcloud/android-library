@@ -31,8 +31,10 @@ import org.junit.Test
 import java.io.IOException
 
 class CreateLocalFileExceptionTest {
-
-    private fun buildException(path: String, cause: Throwable = IOException()): CreateLocalFileException {
+    private fun buildException(
+        path: String,
+        cause: Throwable = IOException()
+    ): CreateLocalFileException {
         return CreateLocalFileException(path, cause)
     }
 
@@ -65,7 +67,11 @@ class CreateLocalFileExceptionTest {
         testInvalidPath("/path/to/foo|tar")
     }
 
-    private fun testInvalidPath(path: String, cause: Throwable = IOException(), expected: Boolean = true) {
+    private fun testInvalidPath(
+        path: String,
+        cause: Throwable = IOException(),
+        expected: Boolean = true
+    ) {
         val exception = buildException(path, cause)
         assertEquals(
             "Wrong value for isCausedByInvalidPath, path=\"$path\"",

@@ -33,7 +33,6 @@ import java.io.IOException
 
 class DashboardGetWidgetItemsRemoteOperation(val id: String, private val limitSize: Int) :
     OCSRemoteOperation<HashMap<String, List<DashboardWidgetItem>>>() {
-
     override fun run(client: NextcloudClient): RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>> {
         lateinit var result: RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>>
         lateinit var get: GetMethod
@@ -44,11 +43,12 @@ class DashboardGetWidgetItemsRemoteOperation(val id: String, private val limitSi
             val status = client.execute(get)
 
             if (status == HttpStatus.SC_OK) {
-                val list = getServerResponse(
-                    get,
-                    object :
-                        TypeToken<ServerResponse<HashMap<String, List<DashboardWidgetItem>>>>() {}
-                ).ocs.data
+                val list =
+                    getServerResponse(
+                        get,
+                        object :
+                            TypeToken<ServerResponse<HashMap<String, List<DashboardWidgetItem>>>>() {}
+                    ).ocs.data
 
                 result =
                     RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>>(true, get)

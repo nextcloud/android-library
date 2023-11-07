@@ -53,13 +53,14 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
             getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val searchProviders = getServerResponse(
-                    getMethod,
-                    object : TypeToken<ServerResponse<ArrayList<SearchProvider>?>?>() {}
-                )
-                    ?.ocs
-                    ?.data
-                    ?: ArrayList()
+                val searchProviders =
+                    getServerResponse(
+                        getMethod,
+                        object : TypeToken<ServerResponse<ArrayList<SearchProvider>?>?>() {}
+                    )
+                        ?.ocs
+                        ?.data
+                        ?: ArrayList()
 
                 val eTag = getMethod.getResponseHeader("ETag") ?: ""
 

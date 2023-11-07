@@ -81,15 +81,17 @@ class MoveFileRemoteOperationIT : AbstractIT() {
         )
 
         // first not try to overwrite
-        var result = MoveFileRemoteOperation(firstRemotePath, secondRemotePath, false)
-            .execute(client)
+        var result =
+            MoveFileRemoteOperation(firstRemotePath, secondRemotePath, false)
+                .execute(client)
 
         assertFalse(result.isSuccess)
         assertEquals(RemoteOperationResult.ResultCode.INVALID_OVERWRITE, result.code)
 
         // then overwrite
-        result = MoveFileRemoteOperation(firstRemotePath, secondRemotePath, true)
-            .execute(client)
+        result =
+            MoveFileRemoteOperation(firstRemotePath, secondRemotePath, true)
+                .execute(client)
 
         assertTrue(result.isSuccess)
 

@@ -39,7 +39,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ToggleFileLockRemoteOperationIT : AbstractIT() {
-
     @Test
     fun lockUnlockFile() {
         // only on >= NC24

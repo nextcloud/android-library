@@ -80,9 +80,10 @@ class WebdavEntryTest {
         """
 
         private fun getElement(): Element {
-            val document = DomUtil.parseDocument(
-                ByteArrayInputStream(EXAMPLE_MULTI_STATUS.toByteArray())
-            )
+            val document =
+                DomUtil.parseDocument(
+                    ByteArrayInputStream(EXAMPLE_MULTI_STATUS.toByteArray())
+                )
             return document.documentElement
         }
 

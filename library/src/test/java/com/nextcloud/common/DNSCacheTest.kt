@@ -11,15 +11,15 @@ import org.junit.Test
 import java.net.InetAddress
 
 class DNSCacheTest : TestCase() {
-
     companion object {
         private const val TEST_HOST = "test.localhost"
         private val TEST_IPV4 =
             InetAddress.getByAddress(TEST_HOST, byteArrayOf(127, 0, 0, 1))
-        private val TEST_IPV6 = InetAddress.getByAddress(
-            TEST_HOST,
-            byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-        )
+        private val TEST_IPV6 =
+            InetAddress.getByAddress(
+                TEST_HOST,
+                byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+            )
     }
 
     private fun setStaticClock() {
@@ -37,7 +37,10 @@ class DNSCacheTest : TestCase() {
         DNSCache.clear()
     }
 
-    private fun compareLookupLists(expected: List<InetAddress>, actual: List<InetAddress>) {
+    private fun compareLookupLists(
+        expected: List<InetAddress>,
+        actual: List<InetAddress>
+    ) {
         assertEquals("Wrong address list size", expected.size, actual.size)
         for (i in expected.indices) {
             assertEquals("Wrong address at position $i", expected[i], actual[i])

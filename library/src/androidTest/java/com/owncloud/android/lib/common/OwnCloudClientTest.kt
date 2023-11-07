@@ -36,11 +36,12 @@ import org.junit.Test
 class OwnCloudClientTest : AbstractIT() {
     @Test
     fun testUri() {
-        val client = OwnCloudClientFactory.createOwnCloudClient(
-            Uri.parse("https://10.0.2.2/nc"),
-            context,
-            false
-        )
+        val client =
+            OwnCloudClientFactory.createOwnCloudClient(
+                Uri.parse("https://10.0.2.2/nc"),
+                context,
+                false
+            )
         client.userId = "test"
 
         assertEquals(
@@ -57,24 +58,26 @@ class OwnCloudClientTest : AbstractIT() {
 
     @Test
     fun testUserId() {
-        val client = OwnCloudClientFactory.createOwnCloudClient(
-            Uri.parse("https://10.0.2.2/nc"),
-            context,
-            false
-        )
+        val client =
+            OwnCloudClientFactory.createOwnCloudClient(
+                Uri.parse("https://10.0.2.2/nc"),
+                context,
+                false
+            )
 
         val credentials = basic("user", "password")
         val nextcloudClient = NextcloudClient(url, "user", credentials, context)
 
-        val testList = listOf(
-            Pair("test@test.de", "test@test.de"),
-            Pair("Test User", "Test%20User"),
-            Pair("test", "test"),
-            Pair("test+test@test.localhost", "test+test@test.localhost"),
-            Pair("test - ab4c", "test%20-%20ab4c"),
-            Pair("test.-&51_+-?@test.localhost", "test.-%2651_+-%3F@test.localhost"),
-            Pair("test'ab4c", "test%27ab4c")
-        )
+        val testList =
+            listOf(
+                Pair("test@test.de", "test@test.de"),
+                Pair("Test User", "Test%20User"),
+                Pair("test", "test"),
+                Pair("test+test@test.localhost", "test+test@test.localhost"),
+                Pair("test - ab4c", "test%20-%20ab4c"),
+                Pair("test.-&51_+-?@test.localhost", "test.-%2651_+-%3F@test.localhost"),
+                Pair("test'ab4c", "test%27ab4c")
+            )
 
         testList.forEach { pair ->
             client.userId = pair.first
