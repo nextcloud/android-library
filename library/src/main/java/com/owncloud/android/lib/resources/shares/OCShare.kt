@@ -137,11 +137,12 @@ class OCShare : Parcelable, Serializable {
         id = source.readLong()
         fileSource = source.readLong()
         itemSource = source.readLong()
-        shareType = try {
-            ShareType.valueOf(source.readString()!!)
-        } catch (x: IllegalArgumentException) {
-            ShareType.NO_SHARED
-        }
+        shareType =
+            try {
+                ShareType.valueOf(source.readString()!!)
+            } catch (x: IllegalArgumentException) {
+                ShareType.NO_SHARED
+            }
         shareWith = source.readString()
         path = source.readString()
         permissions = source.readInt()
@@ -165,7 +166,10 @@ class OCShare : Parcelable, Serializable {
         return this.hashCode()
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(
+        dest: Parcel,
+        flags: Int
+    ) {
         dest.writeLong(id)
         dest.writeLong(fileSource)
         dest.writeLong(itemSource)
@@ -202,34 +206,39 @@ class OCShare : Parcelable, Serializable {
         const val DELETE_PERMISSION_FLAG = 8
         const val SHARE_PERMISSION_FLAG = 16
 
-        const val MAXIMUM_PERMISSIONS_FOR_FILE = READ_PERMISSION_FLAG +
-            UPDATE_PERMISSION_FLAG +
-            SHARE_PERMISSION_FLAG
-        const val MAXIMUM_PERMISSIONS_FOR_FOLDER = MAXIMUM_PERMISSIONS_FOR_FILE +
-            CREATE_PERMISSION_FLAG +
-            DELETE_PERMISSION_FLAG
-        const val FEDERATED_PERMISSIONS_FOR_FILE = READ_PERMISSION_FLAG +
-            UPDATE_PERMISSION_FLAG +
-            CREATE_PERMISSION_FLAG +
-            DELETE_PERMISSION_FLAG
-        const val FEDERATED_PERMISSIONS_FOR_FOLDER = READ_PERMISSION_FLAG +
-            UPDATE_PERMISSION_FLAG +
-            CREATE_PERMISSION_FLAG +
-            DELETE_PERMISSION_FLAG +
-            SHARE_PERMISSION_FLAG
+        const val MAXIMUM_PERMISSIONS_FOR_FILE =
+            READ_PERMISSION_FLAG +
+                UPDATE_PERMISSION_FLAG +
+                SHARE_PERMISSION_FLAG
+        const val MAXIMUM_PERMISSIONS_FOR_FOLDER =
+            MAXIMUM_PERMISSIONS_FOR_FILE +
+                CREATE_PERMISSION_FLAG +
+                DELETE_PERMISSION_FLAG
+        const val FEDERATED_PERMISSIONS_FOR_FILE =
+            READ_PERMISSION_FLAG +
+                UPDATE_PERMISSION_FLAG +
+                CREATE_PERMISSION_FLAG +
+                DELETE_PERMISSION_FLAG
+        const val FEDERATED_PERMISSIONS_FOR_FOLDER =
+            READ_PERMISSION_FLAG +
+                UPDATE_PERMISSION_FLAG +
+                CREATE_PERMISSION_FLAG +
+                DELETE_PERMISSION_FLAG +
+                SHARE_PERMISSION_FLAG
 
         /**
          * Parcelable Methods
          */
         @JvmField
-        val CREATOR: Parcelable.Creator<OCShare> = object : Parcelable.Creator<OCShare> {
-            override fun createFromParcel(source: Parcel): OCShare {
-                return OCShare(source)
-            }
+        val CREATOR: Parcelable.Creator<OCShare> =
+            object : Parcelable.Creator<OCShare> {
+                override fun createFromParcel(source: Parcel): OCShare {
+                    return OCShare(source)
+                }
 
-            override fun newArray(size: Int): Array<OCShare?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<OCShare?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 }

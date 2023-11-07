@@ -26,7 +26,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SearchResultEntryTest {
-
     @Test
     fun testFilePath() {
         val sut = SearchResultEntry()
@@ -73,7 +72,10 @@ class SearchResultEntryTest {
         )
     }
 
-    private fun setPath(path: String, entry: SearchResultEntry): String? {
+    private fun setPath(
+        path: String,
+        entry: SearchResultEntry
+    ): String? {
         entry.resourceUrl = path
 
         return entry.remotePath()

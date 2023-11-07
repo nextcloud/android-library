@@ -62,16 +62,17 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation("/note/", true).execute(client).isSuccess)
 
         // share folder to user "admin"
-        val createOperationResult = CreateShareRemoteOperation(
-            "/note/",
-            ShareType.USER,
-            "admin",
-            false,
-            "",
-            OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
-            true,
-            ""
-        ).execute(client)
+        val createOperationResult =
+            CreateShareRemoteOperation(
+                "/note/",
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true,
+                ""
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -99,14 +100,15 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
 
         // share folder via public link
-        val createOperationResult = CreateShareRemoteOperation(
-            "/label/",
-            ShareType.PUBLIC_LINK,
-            "",
-            true,
-            "",
-            OCShare.READ_PERMISSION_FLAG
-        ).execute(client)
+        val createOperationResult =
+            CreateShareRemoteOperation(
+                "/label/",
+                ShareType.PUBLIC_LINK,
+                "",
+                true,
+                "",
+                OCShare.READ_PERMISSION_FLAG
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -135,14 +137,15 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
 
         // share folder via public link
-        val createOperationResult = CreateShareRemoteOperation(
-            folder,
-            ShareType.PUBLIC_LINK,
-            "",
-            true,
-            "",
-            OCShare.READ_PERMISSION_FLAG
-        ).execute(client)
+        val createOperationResult =
+            CreateShareRemoteOperation(
+                folder,
+                ShareType.PUBLIC_LINK,
+                "",
+                true,
+                "",
+                OCShare.READ_PERMISSION_FLAG
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -161,7 +164,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         when {
             capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {
                 assertEquals(
-                    "Password needs to be at least 10 characters long. Password is present in compromised password list. Please choose a different password.",
+                    "Password needs to be at least 10 characters long. " +
+                        "Password is present in compromised password list. " +
+                        "Please choose a different password.",
                     result.message
                 )
             }
@@ -182,14 +187,15 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
 
         // share folder via public link
-        val createOperationResult = CreateShareRemoteOperation(
-            folder,
-            ShareType.PUBLIC_LINK,
-            "",
-            true,
-            "",
-            OCShare.READ_PERMISSION_FLAG
-        ).execute(client)
+        val createOperationResult =
+            CreateShareRemoteOperation(
+                folder,
+                ShareType.PUBLIC_LINK,
+                "",
+                true,
+                "",
+                OCShare.READ_PERMISSION_FLAG
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 

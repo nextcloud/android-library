@@ -33,7 +33,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RemoteOperationResultTest {
-
     companion object {
         private val BEARER_HEADER = Header("www-authenticate", "Bearer realm=foo")
         private val BASIC_HEADER = Header("www-authenticate", "Basic foo")
@@ -54,13 +53,14 @@ class RemoteOperationResultTest {
 
     @Test
     fun test_multipleAuth_withLocation() {
-        val sut = genResultWithHeaders(
-            arrayOf(
-                BEARER_HEADER,
-                BASIC_HEADER,
-                LOCATION_HEADER
+        val sut =
+            genResultWithHeaders(
+                arrayOf(
+                    BEARER_HEADER,
+                    BASIC_HEADER,
+                    LOCATION_HEADER
+                )
             )
-        )
 
         assertTrue(
             "Missing bearer auth header",
@@ -79,11 +79,12 @@ class RemoteOperationResultTest {
 
     @Test
     fun test_noLocation_singleAuth() {
-        val sut = genResultWithHeaders(
-            arrayOf(
-                BEARER_HEADER
+        val sut =
+            genResultWithHeaders(
+                arrayOf(
+                    BEARER_HEADER
+                )
             )
-        )
 
         assertEquals(
             "Wrong auth headers length",
@@ -103,11 +104,12 @@ class RemoteOperationResultTest {
 
     @Test
     fun test_noAuth_location() {
-        val sut = genResultWithHeaders(
-            arrayOf(
-                LOCATION_HEADER
+        val sut =
+            genResultWithHeaders(
+                arrayOf(
+                    LOCATION_HEADER
+                )
             )
-        )
 
         assertEquals(
             "Wrong auth headers length",

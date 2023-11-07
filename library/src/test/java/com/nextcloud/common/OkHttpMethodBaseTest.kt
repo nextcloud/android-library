@@ -44,7 +44,6 @@ import org.mockito.MockitoAnnotations
 import java.io.IOException
 
 class OkHttpMethodBaseTest {
-
     @Mock
     lateinit var context: Context
 
@@ -68,11 +67,12 @@ class OkHttpMethodBaseTest {
     fun `exceptions throws by OkHttpMethodBase are handled`() {
         // GIVEN
         //      failing method
-        val method = object : OkHttpMethodBase("http://example.com", true) {
-            override fun applyType(temp: Request.Builder) {
-                temp.get()
+        val method =
+            object : OkHttpMethodBase("http://example.com", true) {
+                override fun applyType(temp: Request.Builder) {
+                    temp.get()
+                }
             }
-        }
         val call = mock<Call>()
         whenever(okHttpClient.newCall(any())).thenReturn(call)
         whenever(call.execute()).thenThrow(IOException::class.java)

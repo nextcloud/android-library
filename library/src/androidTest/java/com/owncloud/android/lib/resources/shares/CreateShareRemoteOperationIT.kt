@@ -60,16 +60,17 @@ class CreateShareRemoteOperationIT : AbstractIT() {
         )
 
         // share folder to user "admin"
-        val sut = CreateShareRemoteOperation(
-            "/share/",
-            ShareType.USER,
-            "admin",
-            false,
-            "",
-            OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
-            true,
-            note
-        ).execute(client)
+        val sut =
+            CreateShareRemoteOperation(
+                "/share/",
+                ShareType.USER,
+                "admin",
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true,
+                note
+            ).execute(client)
 
         junit.framework.Assert.assertTrue(sut.isSuccess)
 

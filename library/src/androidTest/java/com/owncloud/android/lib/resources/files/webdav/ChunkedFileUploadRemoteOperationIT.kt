@@ -80,16 +80,17 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         val remotePath = "/bigFile.md"
 
         // set up first upload
-        var sut = ChunkedFileUploadRemoteOperation(
-            filePath,
-            remotePath,
-            "text/markdown",
-            "",
-            RANDOM_MTIME,
-            timestamp,
-            false,
-            true
-        )
+        var sut =
+            ChunkedFileUploadRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                timestamp,
+                false,
+                true
+            )
 
         // start first upload
         var uploadResult: RemoteOperationResult<String>? = null
@@ -111,16 +112,17 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         }
 
         // start second upload of same file
-        sut = ChunkedFileUploadRemoteOperation(
-            filePath,
-            remotePath,
-            "text/markdown",
-            "",
-            RANDOM_MTIME,
-            timestamp,
-            false,
-            true
-        )
+        sut =
+            ChunkedFileUploadRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                timestamp,
+                false,
+                true
+            )
 
         // reset result; start second upload
         uploadResult = null

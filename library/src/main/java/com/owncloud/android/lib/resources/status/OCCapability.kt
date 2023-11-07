@@ -114,11 +114,12 @@ class OCCapability {
     var etag: String? = ""
 
     val version: OwnCloudVersion
-        get() = OwnCloudVersion(
-            listOf(versionMayor, versionMinor, versionMicro).joinToString(
-                VERSION_DOT
+        get() =
+            OwnCloudVersion(
+                listOf(versionMayor, versionMinor, versionMicro).joinToString(
+                    VERSION_DOT
+                )
             )
-        )
 
     companion object {
         private const val VERSION_DOT = "."

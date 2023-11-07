@@ -88,7 +88,10 @@ abstract class OkHttpMethodBase(
      * @param header HTTP request header name
      * @param value HTTP request header value
      */
-    fun addRequestHeader(header: String, value: String) {
+    fun addRequestHeader(
+        header: String,
+        value: String
+    ) {
         requestHeaders[header] = value
     }
 

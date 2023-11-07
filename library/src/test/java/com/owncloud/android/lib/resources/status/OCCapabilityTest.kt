@@ -30,7 +30,6 @@ package com.owncloud.android.lib.resources.status
 import org.junit.Test
 
 class OCCapabilityTest {
-
     /**
      * This won't compile if the fields below are not nullable. This is sort of redundant,
      * but it's meant to prevent a crash in client apps when trying to assign null from Java.

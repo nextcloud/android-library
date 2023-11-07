@@ -42,12 +42,14 @@ class ExistenceCheckRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        var existenceResult = ExistenceCheckRemoteOperation(remotePath, false)
-            .execute(client)
+        var existenceResult =
+            ExistenceCheckRemoteOperation(remotePath, false)
+                .execute(client)
         assertTrue(existenceResult.isSuccess)
 
-        existenceResult = ExistenceCheckRemoteOperation(notExistingRemotePath, false)
-            .execute(client)
+        existenceResult =
+            ExistenceCheckRemoteOperation(notExistingRemotePath, false)
+                .execute(client)
         assertFalse(existenceResult.isSuccess)
     }
 }

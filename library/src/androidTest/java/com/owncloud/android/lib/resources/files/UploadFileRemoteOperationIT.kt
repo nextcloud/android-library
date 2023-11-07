@@ -36,7 +36,6 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.TimeUnit
 
 class UploadFileRemoteOperationIT : AbstractIT() {
-
     @Test
     fun creationTime() {
         val imageFile = getFile("imageFile.png")
@@ -52,15 +51,16 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         val remotePath = "/test.md"
 
         val creationTimestamp = getCreationTimestamp(File(filePath))
-        val sut = UploadFileRemoteOperation(
-            filePath,
-            remotePath,
-            "text/markdown",
-            "",
-            RANDOM_MTIME,
-            creationTimestamp,
-            true
-        )
+        val sut =
+            UploadFileRemoteOperation(
+                filePath,
+                remotePath,
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                creationTimestamp,
+                true
+            )
         val uploadTimestamp = System.currentTimeMillis() / MILLI_TO_SECOND
 
         val uploadResult = sut.execute(client)

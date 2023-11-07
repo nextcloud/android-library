@@ -36,30 +36,24 @@ data class Activity(
     @SerializedName("activity_id")
     val activityId: Int,
     val datetime: Date,
-
     // legacy purposes
     val date: Date,
     val app: String,
     val type: String,
     val user: String,
-
     @SerializedName("affecteduser")
     val affectedUser: String,
     val subject: String,
     val message: String,
     val icon: String,
     val link: String,
-
     @SerializedName("object_type")
     val objectType: String,
-
     @SerializedName("object_id")
     val objectId: String,
-
     @SerializedName("object_name")
     val objectName: String,
     val previews: List<PreviewObject>,
-
     @SerializedName("subject_rich")
     val richSubjectElement: RichElement
 )

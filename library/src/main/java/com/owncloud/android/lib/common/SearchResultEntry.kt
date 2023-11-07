@@ -40,7 +40,6 @@ data class SearchResultEntry(
     var rounded: Boolean = false,
     var attributes: Map<String, String> = emptyMap()
 ) {
-
     companion object {
         private const val PARAM_DIR = "dir"
         private const val PARAM_FILE = "scrollto"
@@ -59,18 +58,20 @@ data class SearchResultEntry(
     }
 
     private fun parseRemotePath(): String {
-        val sanitizer = UrlQuerySanitizer().apply {
-            allowUnregisteredParamaters = true
-            unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAllButNulLegal()
-        }
+        val sanitizer =
+            UrlQuerySanitizer().apply {
+                allowUnregisteredParamaters = true
+                unregisteredParameterValueSanitizer = UrlQuerySanitizer.getAllButNulLegal()
+            }
 
         sanitizer.parseUrl(resourceUrl)
 
         val dirParam = sanitizer.getValue(PARAM_DIR)
-        val dir = when (dirParam) {
-            DIR_ROOT -> ""
-            else -> dirParam
-        }
+        val dir =
+            when (dirParam) {
+                DIR_ROOT -> ""
+                else -> dirParam
+            }
 
         val file = sanitizer.getValue(PARAM_FILE)
 

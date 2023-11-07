@@ -72,8 +72,9 @@ class RenameFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        val result = RenameFileRemoteOperation("file1.jpg", firstRemotePath, "file2.png", false)
-            .execute(client)
+        val result =
+            RenameFileRemoteOperation("file1.jpg", firstRemotePath, "file2.png", false)
+                .execute(client)
 
         assertFalse(result.isSuccess)
         assertEquals(RemoteOperationResult.ResultCode.INVALID_OVERWRITE, result.code)
