@@ -70,6 +70,7 @@ class RemoteFile : Parcelable, Serializable {
     var tags: Array<String?>? = null
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
+    var livePhoto: String? = null
 
     constructor() {
         resetData()
@@ -120,6 +121,7 @@ class RemoteFile : Parcelable, Serializable {
         lockTimestamp = we.lockTimestamp
         lockTimeout = we.lockTimeout
         lockToken = we.lockToken
+        livePhoto = we.livePhoto
         tags = we.tags
         imageDimension = we.imageDimension
         geoLocation = we.geoLocation
@@ -152,6 +154,7 @@ class RemoteFile : Parcelable, Serializable {
         lockTimestamp = 0
         lockTimeout = 0
         lockToken = null
+        livePhoto = null
         tags = null
     }
 
@@ -191,6 +194,7 @@ class RemoteFile : Parcelable, Serializable {
         lockTimestamp = source.readLong()
         lockTimeout = source.readLong()
         lockToken = source.readString()
+        livePhoto = source.readString()
     }
 
     override fun describeContents(): Int {
@@ -224,6 +228,7 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeLong(lockTimestamp)
         dest.writeLong(lockTimeout)
         dest.writeString(lockToken)
+        dest.writeString(livePhoto)
     }
 
     companion object {

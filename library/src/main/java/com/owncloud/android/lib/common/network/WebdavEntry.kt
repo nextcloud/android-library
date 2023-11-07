@@ -101,6 +101,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var tags = arrayOfNulls<String>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
+    var livePhoto: String? = null
+        private set
 
     enum class MountType {
         INTERNAL, EXTERNAL, GROUP
@@ -440,6 +442,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace)
         lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace)
         lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace)
+        livePhoto = parseStringProp(propSet, EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace)
     }
 
     private fun parseStringProp(
@@ -561,6 +564,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
+        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "file-metadata-live-photo"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
