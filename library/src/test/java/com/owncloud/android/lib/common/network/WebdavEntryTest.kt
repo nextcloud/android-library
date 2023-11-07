@@ -31,7 +31,7 @@ import java.io.ByteArrayInputStream
 
 class WebdavEntryTest {
     companion object {
-        private const val exampleMultiStatus = """<?xml version="1.0"?>
+        private const val EXAMPLE_MULTI_STATUS = """<?xml version="1.0"?>
         <d:multistatus xmlns:d="DAV:" xmlns:nc="http://nextcloud.org/ns" xmlns:oc="http://owncloud.org/ns">
             <d:response>
                 <d:href>/remote.php/dav/files/test/test.md</d:href>
@@ -81,7 +81,7 @@ class WebdavEntryTest {
 
         private fun getElement(): Element {
             val document = DomUtil.parseDocument(
-                ByteArrayInputStream(exampleMultiStatus.toByteArray())
+                ByteArrayInputStream(EXAMPLE_MULTI_STATUS.toByteArray())
             )
             return document.documentElement
         }
