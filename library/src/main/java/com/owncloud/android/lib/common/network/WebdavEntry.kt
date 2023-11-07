@@ -414,6 +414,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 geoLocation = Gson().fromJson(prop.value.toString(), GeoLocation::class.java)
             }
 
+            // NC metadata live photo property: < nc:metadata-files-live-photo />
+            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ocNamespace]
+            if (prop != null && prop.value != null) {
+                livePhoto = prop.value.toString()
+            }
+
             parseLockProperties(ncNamespace, propSet)
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
@@ -564,7 +570,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
-        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "file-metadata-live-photo"
+        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"

@@ -170,6 +170,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_GPS, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace);
 
         return propSet;
     }
