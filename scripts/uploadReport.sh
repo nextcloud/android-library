@@ -28,5 +28,5 @@ find . -type f -exec curl -u $USER:$PASS -X PUT $URL/$REMOTE_FOLDER/$(echo {} | 
 
 echo "Uploaded failing library tests to https://www.kaminsky.me/nc-dev/library-integrationTests/$REMOTE_FOLDER"
 
-curl -u $GIT_USERNAME:$GIT_TOKEN -X POST https://api.github.com/repos/nextcloud/android-library/issues/$PR_ID/comments -d "{ \"body\" : \"$BRANCH_TYPE test failed: https://www.kaminsky.me/nc-dev/library-integrationTests/$REMOTE_FOLDER \" }"
+curl -u $GIT_USERNAME:$GIT_TOKEN -X POST https://api.github.com/repos/nextcloud/android-library/issues/$PR_ID/comments -d "{ \"body\" : \"$BRANCH_TYPE test failed: https://www.kaminsky.me/nc-dev/library-integrationTests/$REMOTE_FOLDER/debug/ \" }"
 exit 1
