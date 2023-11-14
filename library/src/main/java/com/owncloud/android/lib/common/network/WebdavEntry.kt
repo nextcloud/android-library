@@ -79,6 +79,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var ownerDisplayName: String? = null
     var unreadCommentsCount = 0
     var isHasPreview = false
+    var hidden = false
     var note = ""
     var sharees = arrayOfNulls<ShareeUser>(0)
     var richWorkspace: String? = null
@@ -320,6 +321,14 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 true
             }
 
+            // NC has hidden property <nc-hidden>
+            prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
+            hidden = if (prop != null) {
+                java.lang.Boolean.valueOf(prop.value.toString())
+            } else {
+                true
+            }
+
             // NC trashbin-original-location <nc:trashbin-original-location>
             prop = propSet[TRASHBIN_ORIGINAL_LOCATION, ncNamespace]
             if (prop != null) {
@@ -537,6 +546,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         quotaAvailableBytes = null
         isFavorite = false
         isHasPreview = false
+        hidden = false
     }
 
     companion object {
@@ -571,6 +581,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
         const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
+        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"

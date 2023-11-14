@@ -51,6 +51,7 @@ class RemoteFile : Parcelable, Serializable {
     var size: Long = 0
     var isFavorite = false
     var isEncrypted = false
+    var hidden = false
     var mountType: MountType? = null
     var ownerId: String? = null
     var ownerDisplayName: String? = null
@@ -111,6 +112,7 @@ class RemoteFile : Parcelable, Serializable {
         note = we.note
         unreadCommentsCount = we.unreadCommentsCount
         isHasPreview = we.isHasPreview
+        hidden = we.hidden
         sharees = we.sharees
         richWorkspace = we.richWorkspace
         isLocked = we.isLocked
@@ -184,6 +186,7 @@ class RemoteFile : Parcelable, Serializable {
         ownerId = source.readString()
         ownerDisplayName = source.readString()
         isHasPreview = source.readString().toBoolean()
+        hidden = source.readString().toBoolean()
         note = source.readString()
         source.readParcelableArray(ShareeUser::class.java.classLoader)
         isLocked = source.readInt() == 1
@@ -218,6 +221,7 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeString(ownerId)
         dest.writeString(ownerDisplayName)
         dest.writeString(isHasPreview.toString())
+        dest.writeString(hidden.toString())
         dest.writeString(note)
         dest.writeParcelableArray(sharees, 0)
         dest.writeInt(if (isLocked) 1 else 0)
