@@ -560,7 +560,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_NAME_REMOTE_ID = "id"
         const val EXTENDED_PROPERTY_NAME_SIZE = "size"
         const val EXTENDED_PROPERTY_FAVORITE = "favorite"
-        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
+        const val EXTENDED_PROPERTY_HIDDEN = "nc:hidden"
         const val EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted"
         const val EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type"
         const val EXTENDED_PROPERTY_OWNER_ID = "owner-id"
