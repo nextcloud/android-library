@@ -130,6 +130,7 @@ public class GetCapabilitiesIT extends AbstractIT {
         assertFalse(capability.getEtag().isEmpty());
         assertSame(CapabilityBooleanType.FALSE, capability.getRichDocuments());
         assertFalse(capability.getDirectEditingEtag().isEmpty());
+        assertSame(CapabilityBooleanType.UNKNOWN, capability.getDropAccount());
 
         // user status
         if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_20)) {
