@@ -31,14 +31,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.lang.reflect.Type;
 
@@ -59,7 +59,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
 
-    private int id;
+    private final int id;
 
     public GetNotificationRemoteOperation(int id) {
         this.id = id;
@@ -67,7 +67,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
 
     @SuppressFBWarnings("HTTP_PARAMETER_POLLUTION")
     @Override
-    protected RemoteOperationResult<Notification> run(OwnCloudClient client) {
+    public RemoteOperationResult<Notification> run(NextcloudClient client) {
         RemoteOperationResult<Notification> result;
         int status;
         GetMethod get = null;
@@ -75,27 +75,22 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
 
         // get the notification
         try {
-            get = new GetMethod(url);
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            get = new com.nextcloud.operations.GetMethod(url, true);
 
-            status = client.executeMethod(get);
+            status = client.execute(get);
             String response = get.getResponseBodyAsString();
 
             if (isSuccess(status)) {
-                result = new RemoteOperationResult<>(true, status, get.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, get);
                 Log_OC.d(this, "Successful response: " + response);
 
                 // Parse the response
                 Notification notification = parseResult(response);
                 result.setResultData(notification);
             } else {
-                result = new RemoteOperationResult<>(false, status, get.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, get);
                 Log_OC.e(this, "Failed response while getting user notifications ");
-                if (response != null) {
-                    Log_OC.e(this, "*** status code: " + status + " ; response message: " + response);
-                } else {
-                    Log_OC.e(this, "*** status code: " + status);
-                }
+                Log_OC.e(this, "*** status code: " + status + " ; response message: " + response);
             }
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);

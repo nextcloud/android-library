@@ -37,9 +37,11 @@ import okhttp3.RequestBody
 class PostMethod(
     uri: String,
     useOcsApiRequestHeader: Boolean,
-    val body: RequestBody
+    val body: RequestBody? = null
 ) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
     override fun applyType(temp: Request.Builder) {
-        temp.post(body)
+        body?.let {
+            temp.post(it)
+        }
     }
 }

@@ -23,6 +23,7 @@
 
 package com.owncloud.android.lib.resources.users;
 
+import com.nextcloud.common.JSONRequestBody;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -30,9 +31,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 
 public class SetUserInfoRemoteOperation extends RemoteOperation<Boolean> {
@@ -75,14 +73,12 @@ public class SetUserInfoRemoteOperation extends RemoteOperation<Boolean> {
 
         try {
             // request body
-            MediaType json = MediaType.parse("application/json; charset=utf-8");
-            RequestBody requestBody = RequestBody.create(json, "{\"key\": \"" + field.getFieldName() + "\"" +
-                    ", \"value\": \"" + value + "\"}");
+            JSONRequestBody jsonRequestBody = new JSONRequestBody("key", field.getFieldName());
+            jsonRequestBody.put("value", value);
 
             // remote request
-            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserIdPlain(),
-                    true,
-                    requestBody);
+            method = new PutMethod(client.getBaseUri() + OCS_ROUTE_PATH + client.getUserIdPlain(), true,
+                                   jsonRequestBody.get());
 
             int status = client.execute(method);
 
