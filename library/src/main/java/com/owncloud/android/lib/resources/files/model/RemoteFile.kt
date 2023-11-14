@@ -50,8 +50,8 @@ class RemoteFile : Parcelable, Serializable {
     var remoteId: String? = null
     var size: Long = 0
     var isFavorite = false
-    var isEncrypted = false
     var hidden = false
+    var isEncrypted = false
     var mountType: MountType? = null
     var ownerId: String? = null
     var ownerDisplayName: String? = null
@@ -87,7 +87,7 @@ class RemoteFile : Parcelable, Serializable {
      */
     constructor(path: String?) {
         resetData()
-        require(!(path == null || path.isEmpty() || !path.startsWith(FileUtils.PATH_SEPARATOR))) {
+        require(!(path.isNullOrEmpty() || !path.startsWith(FileUtils.PATH_SEPARATOR))) {
             "Trying to create a OCFile with a non valid remote path: $path"
         }
         remotePath = path
@@ -105,6 +105,7 @@ class RemoteFile : Parcelable, Serializable {
         remoteId = we.remoteId
         size = we.size
         isFavorite = we.isFavorite
+        hidden = we.hidden
         isEncrypted = we.isEncrypted
         mountType = we.mountType
         ownerId = we.ownerId
@@ -112,7 +113,6 @@ class RemoteFile : Parcelable, Serializable {
         note = we.note
         unreadCommentsCount = we.unreadCommentsCount
         isHasPreview = we.isHasPreview
-        hidden = we.hidden
         sharees = we.sharees
         richWorkspace = we.richWorkspace
         isLocked = we.isLocked
@@ -144,6 +144,7 @@ class RemoteFile : Parcelable, Serializable {
         remoteId = null
         size = 0
         isFavorite = false
+        hidden = false
         isEncrypted = false
         ownerId = ""
         ownerDisplayName = ""
@@ -181,12 +182,12 @@ class RemoteFile : Parcelable, Serializable {
         remoteId = source.readString()
         size = source.readLong()
         isFavorite = source.readString().toBoolean()
+        hidden = source.readString().toBoolean()
         isEncrypted = source.readString().toBoolean()
         mountType = source.readSerializable() as MountType?
         ownerId = source.readString()
         ownerDisplayName = source.readString()
         isHasPreview = source.readString().toBoolean()
-        hidden = source.readString().toBoolean()
         note = source.readString()
         source.readParcelableArray(ShareeUser::class.java.classLoader)
         isLocked = source.readInt() == 1
@@ -216,12 +217,12 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeString(remoteId)
         dest.writeLong(size)
         dest.writeString(isFavorite.toString())
+        dest.writeString(hidden.toString())
         dest.writeString(isEncrypted.toString())
         dest.writeSerializable(mountType)
         dest.writeString(ownerId)
         dest.writeString(ownerDisplayName)
         dest.writeString(isHasPreview.toString())
-        dest.writeString(hidden.toString())
         dest.writeString(note)
         dest.writeParcelableArray(sharees, 0)
         dest.writeInt(if (isLocked) 1 else 0)

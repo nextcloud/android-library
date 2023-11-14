@@ -60,6 +60,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var trashbinFilename: String? = null
     var trashbinDeletionTimestamp: Long = 0
     var isFavorite = false
+    var hidden = false
+        private set
     var isEncrypted = false
     var mountType: MountType? = null
     var contentLength: Long = 0
@@ -79,10 +81,9 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var ownerDisplayName: String? = null
     var unreadCommentsCount = 0
     var isHasPreview = false
-    var hidden = false
-    var note = ""
     var sharees = arrayOfNulls<ShareeUser>(0)
     var richWorkspace: String? = null
+    var note = ""
     var isLocked = false
         private set
     var lockOwnerType: FileLockType? = null
@@ -262,6 +263,15 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 false
             }
 
+            // NC has hidden property <nc-hidden>
+            prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
+            hidden = if (prop != null) {
+                val value = (prop.value as String)
+                value.toBoolean()
+            } else {
+                false
+            }
+
             // NC encrypted property <nc:is-encrypted>
             prop = propSet[EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace]
             isEncrypted = if (prop != null) {
@@ -316,14 +326,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             // NC has preview property <nc-has-preview>
             prop = propSet[EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace]
             isHasPreview = if (prop != null) {
-                java.lang.Boolean.valueOf(prop.value.toString())
-            } else {
-                true
-            }
-
-            // NC has hidden property <nc-hidden>
-            prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
-            hidden = if (prop != null) {
                 java.lang.Boolean.valueOf(prop.value.toString())
             } else {
                 true
@@ -545,8 +547,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         quotaUsedBytes = null
         quotaAvailableBytes = null
         isFavorite = false
-        isHasPreview = false
         hidden = false
+        isHasPreview = false
     }
 
     companion object {
@@ -558,6 +560,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_NAME_REMOTE_ID = "id"
         const val EXTENDED_PROPERTY_NAME_SIZE = "size"
         const val EXTENDED_PROPERTY_FAVORITE = "favorite"
+        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
         const val EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted"
         const val EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type"
         const val EXTENDED_PROPERTY_OWNER_ID = "owner-id"
@@ -581,7 +584,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
         const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
-        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
