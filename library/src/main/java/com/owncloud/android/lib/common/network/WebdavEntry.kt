@@ -276,12 +276,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 false
             }
 
-            // NC metadata live photo property: <nc:metadata-file-live-photo />
-            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace]
-            if (prop != null && prop.value != null) {
-                livePhoto = prop.value.toString()
-            }
-
             // NC encrypted property <nc:is-encrypted>
             prop = propSet[EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace]
             isEncrypted = if (prop != null) {
@@ -440,6 +434,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
             if (prop != null && prop.value != null) {
                 geoLocation = Gson().fromJson(prop.value.toString(), GeoLocation::class.java)
+            }
+
+            // NC metadata live photo property: <nc:metadata-file-live-photo />
+            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace]
+            if (prop != null && prop.value != null) {
+                livePhoto = prop.value.toString()
             }
 
             parseLockProperties(ncNamespace, propSet)
@@ -608,7 +608,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
-        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "file-metadata-live-photo"
+        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
