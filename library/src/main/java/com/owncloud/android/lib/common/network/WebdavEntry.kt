@@ -474,7 +474,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace)
         lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace)
         lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace)
-        livePhoto = parseStringProp(propSet, EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace)
     }
 
     private fun parseStringProp(
