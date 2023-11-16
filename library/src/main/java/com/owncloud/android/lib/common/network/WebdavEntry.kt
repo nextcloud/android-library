@@ -63,6 +63,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var isFavorite = false
     var hidden = false
         private set
+
     var isEncrypted = false
     var mountType: MountType? = null
     var contentLength: Long = 0
