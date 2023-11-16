@@ -205,7 +205,10 @@ class RemoteFile : Parcelable, Serializable {
         return this.hashCode()
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(
+        dest: Parcel,
+        flags: Int
+    ) {
         dest.writeString(remotePath)
         dest.writeString(mimeType)
         dest.writeLong(length)
@@ -246,14 +249,15 @@ class RemoteFile : Parcelable, Serializable {
          * Parcelable Methods
          */
         @JvmField
-        val CREATOR: Parcelable.Creator<RemoteFile> = object : Parcelable.Creator<RemoteFile> {
-            override fun createFromParcel(source: Parcel): RemoteFile {
-                return RemoteFile(source)
-            }
+        val CREATOR: Parcelable.Creator<RemoteFile> =
+            object : Parcelable.Creator<RemoteFile> {
+                override fun createFromParcel(source: Parcel): RemoteFile {
+                    return RemoteFile(source)
+                }
 
-            override fun newArray(size: Int): Array<RemoteFile?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<RemoteFile?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 }

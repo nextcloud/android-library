@@ -39,11 +39,12 @@ class UsernameVariationsIT(private val username: String) : AbstractIT() {
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun data(): Collection<Array<Any>> = listOf(
-            arrayOf("test"),
-            arrayOf("test test"),
-            arrayOf("test@test")
-        )
+        fun data(): Collection<Array<Any>> =
+            listOf(
+                arrayOf("test"),
+                arrayOf("test test"),
+                arrayOf("test@test")
+            )
     }
 
     @Test

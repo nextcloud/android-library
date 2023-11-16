@@ -108,7 +108,9 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         private set
 
     enum class MountType {
-        INTERNAL, EXTERNAL, GROUP
+        INTERNAL,
+        EXTERNAL,
+        GROUP
     }
 
     init {
@@ -179,21 +181,23 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             // {NS:} creation_time
             prop = propSet[EXTENDED_PROPERTY_CREATION_TIME, ncNamespace]
             if (prop != null) {
-                createTimestamp = try {
-                    (prop.value as String).toLong()
-                } catch (e: NumberFormatException) {
-                    0
-                }
+                createTimestamp =
+                    try {
+                        (prop.value as String).toLong()
+                    } catch (e: NumberFormatException) {
+                        0
+                    }
             }
 
             // {NS:} upload_time
             prop = propSet[EXTENDED_PROPERTY_UPLOAD_TIME, ncNamespace]
             if (prop != null) {
-                uploadTimestamp = try {
-                    (prop.value as String).toLong()
-                } catch (e: NumberFormatException) {
-                    0
-                }
+                uploadTimestamp =
+                    try {
+                        (prop.value as String).toLong()
+                    } catch (e: NumberFormatException) {
+                        0
+                    }
             }
 
             // {DAV:}getetag
@@ -283,53 +287,58 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
             // NC mount-type property <nc:mount-type>
             prop = propSet[EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace]
-            mountType = if (prop != null) {
-                when (prop.value) {
-                    "external" -> {
-                        MountType.EXTERNAL
+            mountType =
+                if (prop != null) {
+                    when (prop.value) {
+                        "external" -> {
+                            MountType.EXTERNAL
+                        }
+                        "group" -> {
+                            MountType.GROUP
+                        }
+                        else -> {
+                            MountType.INTERNAL
+                        }
                     }
-                    "group" -> {
-                        MountType.GROUP
-                    }
-                    else -> {
-                        MountType.INTERNAL
-                    }
+                } else {
+                    MountType.INTERNAL
                 }
-            } else {
-                MountType.INTERNAL
-            }
 
             // OC owner-id property <oc:owner-id>
             prop = propSet[EXTENDED_PROPERTY_OWNER_ID, ocNamespace]
-            ownerId = if (prop != null) {
-                prop.value as String
-            } else {
-                ""
-            }
+            ownerId =
+                if (prop != null) {
+                    prop.value as String
+                } else {
+                    ""
+                }
 
             // OC owner-display-name property <oc:owner-display-name>
             prop = propSet[EXTENDED_PROPERTY_OWNER_DISPLAY_NAME, ocNamespace]
-            ownerDisplayName = if (prop != null) {
-                prop.value as String
-            } else {
-                ""
-            }
+            ownerDisplayName =
+                if (prop != null) {
+                    prop.value as String
+                } else {
+                    ""
+                }
 
             // OC unread comments property <oc-comments-unread>
             prop = propSet[EXTENDED_PROPERTY_UNREAD_COMMENTS, ocNamespace]
-            unreadCommentsCount = if (prop != null) {
-                Integer.valueOf(prop.value.toString())
-            } else {
-                0
-            }
+            unreadCommentsCount =
+                if (prop != null) {
+                    Integer.valueOf(prop.value.toString())
+                } else {
+                    0
+                }
 
             // NC has preview property <nc-has-preview>
             prop = propSet[EXTENDED_PROPERTY_HAS_PREVIEW, ncNamespace]
-            isHasPreview = if (prop != null) {
-                java.lang.Boolean.valueOf(prop.value.toString())
-            } else {
-                true
-            }
+            isHasPreview =
+                if (prop != null) {
+                    java.lang.Boolean.valueOf(prop.value.toString())
+                } else {
+                    true
+                }
 
             // NC trashbin-original-location <nc:trashbin-original-location>
             prop = propSet[TRASHBIN_ORIGINAL_LOCATION, ncNamespace]
@@ -358,15 +367,16 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             // NC rich-workspace property <nc:rich-workspace>
             // can be null if rich-workspace is disabled for this user
             prop = propSet[EXTENDED_PROPERTY_RICH_WORKSPACE, ncNamespace]
-            richWorkspace = if (prop != null) {
-                if (prop.value != null) {
-                    prop.value.toString()
+            richWorkspace =
+                if (prop != null) {
+                    if (prop.value != null) {
+                        prop.value.toString()
+                    } else {
+                        ""
+                    }
                 } else {
-                    ""
+                    null
                 }
-            } else {
-                null
-            }
 
             // NC sharees property <nc-sharees>
             prop = propSet[EXTENDED_PROPERTY_SHAREES, ncNamespace]
@@ -437,21 +447,26 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         }
     }
 
-    private fun parseLockProperties(ncNamespace: Namespace, propSet: DavPropertySet) {
+    private fun parseLockProperties(
+        ncNamespace: Namespace,
+        propSet: DavPropertySet
+    ) {
         // file locking
         var prop: DavProperty<*>? = propSet[EXTENDED_PROPERTY_LOCK, ncNamespace]
-        isLocked = if (prop != null && prop.value != null) {
-            "1" == prop.value as String
-        } else {
-            false
-        }
+        isLocked =
+            if (prop != null && prop.value != null) {
+                "1" == prop.value as String
+            } else {
+                false
+            }
         prop = propSet[EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace]
-        lockOwnerType = if (prop != null && prop.value != null) {
-            val value: Int = (prop.value as String).toInt()
-            fromValue(value)
-        } else {
-            null
-        }
+        lockOwnerType =
+            if (prop != null && prop.value != null) {
+                val value: Int = (prop.value as String).toInt()
+                fromValue(value)
+            } else {
+                null
+            }
         lockOwnerId = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace)
         lockOwnerDisplayName =
             parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace)
@@ -487,10 +502,11 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         val displayName = extractDisplayName(element)
         val userId = extractUserId(element)
         val shareType = extractShareType(element)
-        val isSupportedShareType = ShareType.EMAIL == shareType ||
-            ShareType.FEDERATED == shareType ||
-            ShareType.GROUP == shareType ||
-            ShareType.ROOM == shareType
+        val isSupportedShareType =
+            ShareType.EMAIL == shareType ||
+                ShareType.FEDERATED == shareType ||
+                ShareType.GROUP == shareType ||
+                ShareType.ROOM == shareType
         return if ((isSupportedShareType || displayName.isNotEmpty()) && userId.isNotEmpty()) {
             ShareeUser(userId, displayName, shareType)
         } else {

@@ -43,16 +43,18 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
     override fun run(client: OwnCloudClient): RemoteOperationResult<List<Tag>> {
         val ocNamespace = Namespace.getNamespace(NAMESPACE_OC)
 
-        val propSet = DavPropertyNameSet().apply {
-            add(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace)
-            add(SHAREES_DISPLAY_NAME, ocNamespace)
-        }
+        val propSet =
+            DavPropertyNameSet().apply {
+                add(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace)
+                add(SHAREES_DISPLAY_NAME, ocNamespace)
+            }
 
-        val propFindMethod = PropFindMethod(
-            client.baseUri.toString() + TAG_URL,
-            propSet,
-            1
-        )
+        val propFindMethod =
+            PropFindMethod(
+                client.baseUri.toString() + TAG_URL,
+                propSet,
+                1
+            )
 
         val status = client.executeMethod(propFindMethod)
 
@@ -62,10 +64,12 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
             val result = mutableListOf<Tag>()
             response.forEach {
                 if (it.getProperties(HttpStatus.SC_OK).contentSize > 0) {
-                    val id = it.getProperties(HttpStatus.SC_OK)
-                        .get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace).value as String
-                    val name = it.getProperties(HttpStatus.SC_OK)
-                        .get(SHAREES_DISPLAY_NAME, ocNamespace).value as String
+                    val id =
+                        it.getProperties(HttpStatus.SC_OK)
+                            .get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace).value as String
+                    val name =
+                        it.getProperties(HttpStatus.SC_OK)
+                            .get(SHAREES_DISPLAY_NAME, ocNamespace).value as String
 
                     result.add(Tag(id, name))
                 }

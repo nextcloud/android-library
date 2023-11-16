@@ -38,7 +38,6 @@ import com.owncloud.android.lib.common.network.WebdavUtils
  * this should be separate from the client.
  */
 class NextcloudUriDelegate(baseUri: Uri, var userId: String?) : NextcloudUriProvider {
-
     constructor(baseUri: Uri) : this(baseUri, null)
 
     val userIdEncoded: String?

@@ -37,21 +37,14 @@ import kotlinx.parcelize.Parcelize
 data class UserInfo(
     var id: String?,
     var enabled: Boolean?,
-
     @SerializedName(value = "display-name", alternate = ["displayname"])
     var displayName: String?,
-
     var email: String?,
-
     var phone: String?,
-
     var address: String?,
-
     @SerializedName(value = "website", alternate = ["webpage"])
     var website: String?,
-
     var twitter: String?,
-
     var quota: Quota?,
     var groups: ArrayList<String>?
 ) : Parcelable

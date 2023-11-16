@@ -41,9 +41,10 @@ class NotificationIT : AbstractIT() {
 
         // get one
         val firstNotification = all.resultData[0]
-        val first = GetNotificationRemoteOperation(firstNotification.notificationId).execute(
-            client
-        )
+        val first =
+            GetNotificationRemoteOperation(firstNotification.notificationId).execute(
+                client
+            )
         assertTrue(first.isSuccess)
         assertEquals(firstNotification.message, first.resultData.message)
     }

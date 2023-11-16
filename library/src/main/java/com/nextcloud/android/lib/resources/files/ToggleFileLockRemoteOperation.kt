@@ -44,10 +44,11 @@ class ToggleFileLockRemoteOperation(private val toLock: Boolean, private val fil
         try {
             // remote request
             val uri = client.getFilesDavUri(filePath)
-            method = when (toLock) {
-                true -> LockMethod(uri, false)
-                false -> UnlockMethod(uri, false)
-            }
+            method =
+                when (toLock) {
+                    true -> LockMethod(uri, false)
+                    false -> UnlockMethod(uri, false)
+                }
             method.addRequestHeader(HEADER_USER_LOCK, HEADER_USER_LOCK_VALUE)
 
             val status: Int = client.execute(method)

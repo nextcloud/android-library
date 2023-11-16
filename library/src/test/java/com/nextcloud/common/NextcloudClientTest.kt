@@ -47,7 +47,6 @@ import org.mockito.MockitoAnnotations
 import java.io.IOException
 
 class NextcloudClientTest {
-
     @Mock
     lateinit var context: Context
 
@@ -73,11 +72,12 @@ class NextcloudClientTest {
         //      failing operations
         //      operations throws any kind of exception
         val exception = RuntimeException("test exception")
-        val operation = object : RemoteOperation<String>() {
-            override fun run(client: NextcloudClient?): RemoteOperationResult<String> {
-                throw exception
+        val operation =
+            object : RemoteOperation<String>() {
+                override fun run(client: NextcloudClient?): RemoteOperationResult<String> {
+                    throw exception
+                }
             }
-        }
 
         // WHEN
         //      operation is executed

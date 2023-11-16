@@ -63,30 +63,33 @@ class UnifiedSearchRemoteOperation(
         var result: RemoteOperationResult<SearchResult>
         var getMethod: GetMethod? = null
         try {
-            var uri = client.baseUri.toString() +
-                ENDPOINT +
-                provider +
-                SEARCH +
-                JSON_FORMAT +
-                TERM +
-                URLEncoder.encode(query, "UTF-8") +
-                LIMIT.format(limit)
+            var uri =
+                client.baseUri.toString() +
+                    ENDPOINT +
+                    provider +
+                    SEARCH +
+                    JSON_FORMAT +
+                    TERM +
+                    URLEncoder.encode(query, "UTF-8") +
+                    LIMIT.format(limit)
             cursor?.let {
                 uri += CURSOR.format(it)
             }
-            getMethod = GetMethod(
-                uri,
-                true
-            )
+            getMethod =
+                GetMethod(
+                    uri,
+                    true
+                )
 
             // remote request
             getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val searchProviders = getServerResponse(
-                    getMethod,
-                    object : TypeToken<ServerResponse<SearchResult>?>() {}
-                )?.ocs?.data
+                val searchProviders =
+                    getServerResponse(
+                        getMethod,
+                        object : TypeToken<ServerResponse<SearchResult>?>() {}
+                    )?.ocs?.data
 
                 if (searchProviders != null) {
                     result = RemoteOperationResult(true, getMethod)

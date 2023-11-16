@@ -53,8 +53,9 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
     @Test
     fun getSearchProvidersOnOldServer() {
         // only on < NC20
-        val ocCapability = GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient).singleData as OCCapability
+        val ocCapability =
+            GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).singleData as OCCapability
         assumeTrue(
             ocCapability.version.isOlderThan(OwnCloudVersion.nextcloud_20)
         )

@@ -34,7 +34,10 @@ class Status(val status: StatusType, val message: String?, val icon: String, val
         parcel.readLong()
     )
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
+    override fun writeToParcel(
+        parcel: Parcel,
+        flags: Int
+    ) {
         parcel.writeString(status.name)
         parcel.writeString(message)
         parcel.writeString(icon)

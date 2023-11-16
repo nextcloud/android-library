@@ -52,11 +52,12 @@ class GetGroupfoldersRemoteOperation :
                 )
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val map = getServerResponse(
-                    getMethod,
-                    object : TypeToken<ServerResponse<Map<String, Groupfolder>>>() {}
-                )
-                    .ocs.data
+                val map =
+                    getServerResponse(
+                        getMethod,
+                        object : TypeToken<ServerResponse<Map<String, Groupfolder>>>() {}
+                    )
+                        .ocs.data
                 result = RemoteOperationResult(true, getMethod)
                 result.setResultData(map)
             } else {

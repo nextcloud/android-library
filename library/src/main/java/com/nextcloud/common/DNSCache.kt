@@ -40,7 +40,6 @@ import java.net.UnknownHostException
  * DNS Cache which prefers IPv6 unless otherwise specified
  */
 object DNSCache {
-
     const val DEFAULT_TTL = 30 * 1000L
 
     // 30 seconds is the Java default. Let's keep it.
@@ -71,10 +70,11 @@ object DNSCache {
         if (entry?.addresses?.isNotEmpty() == true && !entry.isExpired()) {
             return entry.addresses
         }
-        val preferIPV4 = when (entry) {
-            null -> false
-            else -> entry.preferIPV4
-        }
+        val preferIPV4 =
+            when (entry) {
+                null -> false
+                else -> entry.preferIPV4
+            }
 
         val addresses = dns.lookup(hostname).toMutableList()
         if (addresses.isEmpty()) {
@@ -93,7 +93,10 @@ object DNSCache {
      */
     @Synchronized
     @JvmStatic
-    fun setIPVersionPreference(hostname: String, preferIPV4: Boolean) {
+    fun setIPVersionPreference(
+        hostname: String,
+        preferIPV4: Boolean
+    ) {
         val entry = cache[hostname]
         if (entry != null) {
             val addresses = sortAddresses(entry.addresses, preferIPV4)
@@ -129,14 +132,16 @@ object DNSCache {
     private fun sortAddresses(
         addresses: List<InetAddress>,
         preferIPV4: Boolean
-    ): List<InetAddress> = addresses.sortedWith { address1, _ ->
-        val order = when (address1) {
-            is Inet4Address -> 1
-            else -> -1
+    ): List<InetAddress> =
+        addresses.sortedWith { address1, _ ->
+            val order =
+                when (address1) {
+                    is Inet4Address -> 1
+                    else -> -1
+                }
+            when (preferIPV4) {
+                true -> order * -1
+                else -> order
+            }
         }
-        when (preferIPV4) {
-            true -> order * -1
-            else -> order
-        }
-    }
 }

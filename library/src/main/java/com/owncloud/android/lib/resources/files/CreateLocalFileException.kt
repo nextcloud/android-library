@@ -30,7 +30,6 @@ package com.owncloud.android.lib.resources.files
 import java.io.IOException
 
 class CreateLocalFileException(val path: String, cause: Throwable) : Exception(cause) {
-
     override val message: String = "File could not be created"
 
     /**

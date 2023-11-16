@@ -31,19 +31,20 @@ import org.junit.runners.model.Statement
  * C&p from https://stackoverflow.com/questions/45635833/how-can-i-use-flakytest-annotation-now on 18.03.2020
  */
 class RetryTestRule(val retryCount: Int = 1) : TestRule {
-
     companion object {
         private val TAG = RetryTestRule::class.java.simpleName
     }
 
-    override fun apply(base: Statement, description: Description): Statement {
+    override fun apply(
+        base: Statement,
+        description: Description
+    ): Statement {
         return statement(base, description)
     }
 
     @Suppress("TooGenericExceptionCaught") // and this exactly what we want here
     private fun statement(base: Statement, description: Description): Statement {
         return object : Statement() {
-
             override fun evaluate() {
                 Log.e(TAG, "Evaluating ${description.methodName}")
 

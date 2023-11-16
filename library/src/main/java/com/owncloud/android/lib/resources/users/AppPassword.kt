@@ -29,4 +29,6 @@ package com.owncloud.android.lib.resources.users
 
 import com.google.gson.annotations.SerializedName
 
-class AppPassword(@SerializedName("apppassword") val appPassword: String)
+class AppPassword(
+    @SerializedName("apppassword") val appPassword: String
+)

@@ -32,7 +32,6 @@ import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
 
 class DashboardListWidgetsRemoteOperation : OCSRemoteOperation<Map<String, DashboardWidget>>() {
-
     override fun run(client: NextcloudClient): RemoteOperationResult<Map<String, DashboardWidget>> {
         lateinit var result: RemoteOperationResult<Map<String, DashboardWidget>>
         lateinit var get: GetMethod
@@ -42,10 +41,11 @@ class DashboardListWidgetsRemoteOperation : OCSRemoteOperation<Map<String, Dashb
             val status = client.execute(get)
 
             if (status == HttpStatus.SC_OK) {
-                val list = getServerResponse(
-                    get,
-                    object : TypeToken<ServerResponse<HashMap<String, DashboardWidget>>>() {}
-                ).ocs.data
+                val list =
+                    getServerResponse(
+                        get,
+                        object : TypeToken<ServerResponse<HashMap<String, DashboardWidget>>>() {}
+                    ).ocs.data
 
                 result = RemoteOperationResult<Map<String, DashboardWidget>>(true, get)
                 result.resultData = list
