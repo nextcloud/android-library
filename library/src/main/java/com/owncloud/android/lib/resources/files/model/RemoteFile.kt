@@ -105,7 +105,6 @@ class RemoteFile : Parcelable, Serializable {
         remoteId = we.remoteId
         size = we.size
         isFavorite = we.isFavorite
-        hidden = we.hidden
         isEncrypted = we.isEncrypted
         mountType = we.mountType
         ownerId = we.ownerId
@@ -123,10 +122,11 @@ class RemoteFile : Parcelable, Serializable {
         lockTimestamp = we.lockTimestamp
         lockTimeout = we.lockTimeout
         lockToken = we.lockToken
-        livePhoto = we.livePhoto
         tags = we.tags
         imageDimension = we.imageDimension
         geoLocation = we.geoLocation
+        livePhoto = we.livePhoto
+        hidden = we.hidden
     }
 
     /**
@@ -182,7 +182,6 @@ class RemoteFile : Parcelable, Serializable {
         remoteId = source.readString()
         size = source.readLong()
         isFavorite = source.readString().toBoolean()
-        hidden = source.readString().toBoolean()
         isEncrypted = source.readString().toBoolean()
         mountType = source.readSerializable() as MountType?
         ownerId = source.readString()
@@ -199,6 +198,7 @@ class RemoteFile : Parcelable, Serializable {
         lockTimeout = source.readLong()
         lockToken = source.readString()
         livePhoto = source.readString()
+        hidden = source.readInt() == 1
     }
 
     override fun describeContents(): Int {
@@ -220,7 +220,6 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeString(remoteId)
         dest.writeLong(size)
         dest.writeString(isFavorite.toString())
-        dest.writeString(hidden.toString())
         dest.writeString(isEncrypted.toString())
         dest.writeSerializable(mountType)
         dest.writeString(ownerId)
@@ -237,6 +236,7 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeLong(lockTimeout)
         dest.writeString(lockToken)
         dest.writeString(livePhoto)
+        dest.writeInt(if (hidden) 1 else 0)
     }
 
     companion object {

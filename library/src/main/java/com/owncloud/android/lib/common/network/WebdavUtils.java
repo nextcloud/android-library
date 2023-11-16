@@ -106,7 +106,6 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE, ocNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_FAVORITE, ocNamespace);
-        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HIDDEN, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_OWNER_ID, ocNamespace);
@@ -130,6 +129,7 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_GPS, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HIDDEN, ncNamespace);
 
         return propSet;
     }
