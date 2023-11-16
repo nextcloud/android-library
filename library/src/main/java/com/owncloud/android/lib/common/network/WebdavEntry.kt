@@ -291,6 +291,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 false
             }
 
+
             // NC mount-type property <nc:mount-type>
             prop = propSet[EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace]
             mountType =
