@@ -24,7 +24,6 @@
 package com.owncloud.android.lib.common.network
 
 import android.net.Uri
-import android.util.Log
 import com.google.gson.Gson
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.FileLockType
@@ -272,9 +271,15 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             // NC has hidden property <nc:hidden>
             prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
             hidden = if (prop != null) {
-                ONE == prop.value as String
+                ONE == prop.value.toString()
             } else {
                 false
+            }
+
+            // NC metadata live photo property: <nc:metadata-file-live-photo />
+            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace]
+            if (prop != null && prop.value != null) {
+                livePhoto = prop.value.toString()
             }
 
             // NC encrypted property <nc:is-encrypted>
@@ -436,12 +441,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 geoLocation = Gson().fromJson(prop.value.toString(), GeoLocation::class.java)
             }
 
-            // NC metadata live photo property: < nc:metadata-files-live-photo />
-            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ocNamespace]
-            if (prop != null && prop.value != null) {
-                livePhoto = prop.value.toString()
-            }
-
             parseLockProperties(ncNamespace, propSet)
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
@@ -460,6 +459,15 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             } else {
                 false
             }
+
+        val hiddenProp: DavProperty<*>? = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
+        hidden =
+            if (hiddenProp != null && hiddenProp.value != null) {
+                "1" == hiddenProp.value as String
+            } else {
+                false
+            }
+
         prop = propSet[EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace]
         lockOwnerType =
             if (prop != null && prop.value != null) {
@@ -475,6 +483,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace)
         lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace)
         lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace)
+        livePhoto = parseStringProp(propSet, EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace)
     }
 
     private fun parseStringProp(
