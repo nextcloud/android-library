@@ -24,6 +24,7 @@
 package com.owncloud.android.lib.common.network
 
 import android.net.Uri
+import android.util.Log
 import com.google.gson.Gson
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.FileLockType
@@ -258,16 +259,15 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             prop = propSet[EXTENDED_PROPERTY_FAVORITE, ocNamespace]
             isFavorite = if (prop != null) {
                 val favoriteValue = prop.value as String
-                IS_ENCRYPTED == favoriteValue
+                ONE == favoriteValue
             } else {
                 false
             }
 
-            // NC has hidden property <nc-hidden>
+            // NC has hidden property <nc:hidden>
             prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
             hidden = if (prop != null) {
-                val value = (prop.value as String)
-                value.toBoolean()
+                ONE == prop.value as String
             } else {
                 false
             }
@@ -276,7 +276,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             prop = propSet[EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace]
             isEncrypted = if (prop != null) {
                 val encryptedValue = prop.value as String
-                IS_ENCRYPTED == encryptedValue
+                ONE == encryptedValue
             } else {
                 false
             }
@@ -459,7 +459,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace)
         lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace)
         lockToken = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_TOKEN, ncNamespace)
-        livePhoto = parseStringProp(propSet, EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace)
     }
 
     private fun parseStringProp(
@@ -547,7 +546,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         quotaUsedBytes = null
         quotaAvailableBytes = null
         isFavorite = false
-        hidden = false
         isHasPreview = false
     }
 
@@ -560,7 +558,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_NAME_REMOTE_ID = "id"
         const val EXTENDED_PROPERTY_NAME_SIZE = "size"
         const val EXTENDED_PROPERTY_FAVORITE = "favorite"
-        const val EXTENDED_PROPERTY_HIDDEN = "nc:hidden"
+        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
         const val EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted"
         const val EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type"
         const val EXTENDED_PROPERTY_OWNER_ID = "owner-id"
@@ -592,7 +590,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val SHAREES_SHARE_TYPE = "type"
         const val PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes"
         const val PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes"
-        private const val IS_ENCRYPTED = "1"
+        private const val ONE = "1"
         private const val CODE_PROP_NOT_FOUND = 404
     }
 }
