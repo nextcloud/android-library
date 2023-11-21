@@ -8,12 +8,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class JSONRequestBody() {
     private val content = mutableMapOf<String, String>()
 
-    constructor(key: String, value: String) : this() {
+    constructor(key: String, value: String): this() {
         put(key, value)
     }
 
-    fun put(key: String, value: String) {
+    fun put(key: String, value: String): JSONRequestBody {
         content[key] = value
+        return this
     }
 
     fun get(): RequestBody {
