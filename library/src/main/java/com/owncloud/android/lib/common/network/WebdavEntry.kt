@@ -25,6 +25,7 @@ package com.owncloud.android.lib.common.network
 
 import android.net.Uri
 import com.google.gson.Gson
+import com.nextcloud.extensions.fromDavProperty
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.FileLockType
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
@@ -101,6 +102,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var tags = arrayOfNulls<String>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
+
+    private val gson = Gson()
 
     enum class MountType {
         INTERNAL,
@@ -282,9 +285,11 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                         "external" -> {
                             MountType.EXTERNAL
                         }
+
                         "group" -> {
                             MountType.GROUP
                         }
+
                         else -> {
                             MountType.INTERNAL
                         }
@@ -414,15 +419,13 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
             // NC metadata size property <nc:file-metadata-size>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace]
-            if (prop != null && prop.value != null) {
-                imageDimension = Gson().fromJson(prop.value.toString(), ImageDimension::class.java)
-            }
+                ?: propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+            imageDimension = gson.fromDavProperty(prop)
 
             // NC metadata gps property <nc:file-metadata-gps>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace]
-            if (prop != null && prop.value != null) {
-                geoLocation = Gson().fromJson(prop.value.toString(), GeoLocation::class.java)
-            }
+                ?: propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+            geoLocation = gson.fromDavProperty(prop)
 
             parseLockProperties(ncNamespace, propSet)
         } else {
@@ -577,8 +580,13 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout"
         const val EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token"
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
-        const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
-        const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"
+
+        // v27
+        const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
+        const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
+
+        const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "file-metadata-photos-size"
+        const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "file-metadata-photos-gps"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
