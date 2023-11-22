@@ -13,7 +13,7 @@ BRANCH_TYPE=$BRANCH-$TYPE
 URL=https://nextcloud.kaminsky.me/remote.php/dav/files/$USER/library-integrationTests
 
 if [ $TYPE = "IT" ]; then
-    cd library/build/reports/androidTests/connected
+    cd library/build/reports/androidTests/connected/debug
 else 
     cd library/build/reports/tests/testDebugUnitTest
 fi

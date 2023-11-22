@@ -27,7 +27,7 @@
 package com.nextcloud.android.lib.resources.profile
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.status.NextcloudVersion
+import com.owncloud.android.lib.resources.status.NextcloudVersion.Companion.nextcloud_23
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -36,7 +36,7 @@ import org.junit.Test
 class GetHoverCardRemoteOperationIT : AbstractIT() {
     @Before
     fun before() {
-        testOnlyOnServer(NextcloudVersion.nextcloud_23)
+        requireServerVersion(nextcloud_23)
     }
 
     @Test

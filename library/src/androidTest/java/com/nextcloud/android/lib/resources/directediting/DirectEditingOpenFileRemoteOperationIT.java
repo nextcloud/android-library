@@ -34,14 +34,21 @@ import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import junit.framework.TestCase;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 
 public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
+    @BeforeClass
+    public static void beforeClass() {
+        requireServerVersion(OwnCloudVersion.nextcloud_18);
+    }
+
     @Test
     public void openFile() throws IOException {
         // create file

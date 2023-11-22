@@ -56,7 +56,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertEquals(2, result.data.size)
 
         // tag testing only on NC27+
-        testOnlyOnServer(NextcloudVersion.nextcloud_27)
+        requireServerVersion(NextcloudVersion.nextcloud_27)
 
         // Folder
         var remoteFolder = result.data[0] as RemoteFile

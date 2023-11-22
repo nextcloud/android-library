@@ -47,6 +47,7 @@ import com.owncloud.android.lib.resources.files.ToggleFavoriteRemoteOperation;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import junit.framework.TestCase;
 
@@ -174,6 +175,8 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 
     @Test
     public void sharedWithMe() {
+        requireServerVersion(OwnCloudVersion.nextcloud_19);
+
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
         GetSharesRemoteOperation sutSharedWithMe = new GetSharesRemoteOperation(true);
 
@@ -234,7 +237,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void favorites() {
         // only on NC25+
-        testOnlyOnServer(NextcloudVersion.nextcloud_25);
+        requireServerVersion(NextcloudVersion.nextcloud_25);
 
         // share folder to user "admin"
         assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
@@ -277,7 +280,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void noFavorite() {
         // only on NC25+
-        testOnlyOnServer(NextcloudVersion.nextcloud_25);
+        requireServerVersion(NextcloudVersion.nextcloud_25);
 
         assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
 

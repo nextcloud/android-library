@@ -30,13 +30,19 @@ import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
 public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
+    @BeforeClass
+    public static void beforeClass() {
+        requireServerVersion(OwnCloudVersion.nextcloud_18);
+    }
 
     @Test
     public void getEditLinkForRoot() {

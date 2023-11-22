@@ -42,7 +42,7 @@ class ToggleFileLockRemoteOperationIT : AbstractIT() {
     @Test
     fun lockUnlockFile() {
         // only on >= NC24
-        testOnlyOnServer(nextcloud_24)
+        requireServerVersion(nextcloud_24)
 
         // create file
         val filePath: String = createFile("text")

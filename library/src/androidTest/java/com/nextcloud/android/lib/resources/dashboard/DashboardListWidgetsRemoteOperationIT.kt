@@ -32,7 +32,7 @@ class DashboardListWidgetsRemoteOperationIT : AbstractIT() {
     @Test
     fun list() {
         // only on NC25+
-        testOnlyOnServer(NextcloudVersion.nextcloud_25)
+        requireServerVersion(NextcloudVersion.nextcloud_25)
 
         val result = DashboardListWidgetsRemoteOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)

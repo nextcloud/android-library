@@ -27,13 +27,20 @@
 package com.nextcloud.android.lib.resources.directediting
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class DirectEditingObtainRemoteOperationIT : AbstractIT() {
+    @Before
+    fun before() {
+        requireServerVersion(OwnCloudVersion.nextcloud_18)
+    }
+
     @Test
     fun testGetAll() {
         val result = DirectEditingObtainRemoteOperation().execute(client)
