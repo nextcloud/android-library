@@ -419,20 +419,20 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
             // NC metadata size property <nc:file-metadata-size>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace]
-            if (prop == null) {
+            imageDimension = if (prop == null) {
                 prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
-                imageDimension = gson.fromDavProperty<ImageDimension>(prop)
+                gson.fromDavProperty<ImageDimension>(prop)
             } else {
-                imageDimension = prop.value as ImageDimension?
+                prop.value as ImageDimension?
             }
 
             // NC metadata gps property <nc:file-metadata-gps>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace]
-            if (prop == null) {
+            geoLocation = if (prop == null) {
                 prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
-                geoLocation = gson.fromDavProperty<GeoLocation>(prop)
+                gson.fromDavProperty<GeoLocation>(prop)
             } else {
-                geoLocation = prop.value as GeoLocation?
+                 prop.value as GeoLocation?
             }
 
             parseLockProperties(ncNamespace, propSet)
