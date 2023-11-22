@@ -417,7 +417,6 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                 }
             }
 
-
             // NC metadata size property <nc:file-metadata-size>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace]
                 ?: propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
