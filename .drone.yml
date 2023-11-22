@@ -165,7 +165,7 @@ services:
   - name: server-stable
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
-      SERVER_VERSION: stable26
+      SERVER_VERSION: stable27
     commands:
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
@@ -189,7 +189,7 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable password_policy"
       - su www-data -c "php /var/www/html/occ app:enable external"
       - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
-      - su www-data -c "git clone https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
+      - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
       - su www-data -c "php /var/www/html/occ app:enable files_lock"
       - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/groupfolders.git /var/www/html/apps/groupfolders/"
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
@@ -208,4 +208,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 859bc0d6c075e220c5a801f42c6a1ecc5302fd7b53bf297b2e4bd99ee5e90b01
+hmac: 6e5294dd68e3c1b79e0b06e6a3e31e3c3f4599d2839fb7d98f87f1381b263a9f
+
+...
