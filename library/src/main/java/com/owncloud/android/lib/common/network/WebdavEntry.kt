@@ -420,12 +420,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             // NC metadata size property <nc:file-metadata-size>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace]
                 ?: propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
-            imageDimension = gson.fromDavProperty(prop)
+            imageDimension = gson.fromDavProperty<ImageDimension>(prop)
 
             // NC metadata gps property <nc:file-metadata-gps>
             prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace]
                 ?: propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
-            geoLocation = gson.fromDavProperty(prop)
+            geoLocation = gson.fromDavProperty<GeoLocation>(prop)
 
             parseLockProperties(ncNamespace, propSet)
         } else {
@@ -585,8 +585,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
 
-        const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "file-metadata-photos-size"
-        const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "file-metadata-photos-gps"
+        const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
+        const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
