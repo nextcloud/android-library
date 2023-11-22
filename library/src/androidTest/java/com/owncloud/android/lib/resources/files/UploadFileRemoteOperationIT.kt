@@ -35,8 +35,9 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun upload() {
-        val ocCapability = GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient).singleData as OCCapability
+        val ocCapability =
+            GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient).singleData as OCCapability
 
         // create file
         val filePath = createFile("text")
