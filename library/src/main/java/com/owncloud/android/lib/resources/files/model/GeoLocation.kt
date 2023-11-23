@@ -27,4 +27,30 @@
 
 package com.owncloud.android.lib.resources.files.model
 
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
+
 data class GeoLocation(var latitude: Double = -1.0, var longitude: Double = -1.0)
+
+fun parseGeoLocation(xmlString: String): GeoLocation {
+    val xmlPullParserFactory = XmlPullParserFactory.newInstance()
+    xmlPullParserFactory.isNamespaceAware = true
+    val parser = xmlPullParserFactory.newPullParser()
+    parser.setInput(xmlString.reader())
+
+    var eventType = parser.eventType
+    val geoLocation = GeoLocation()
+
+    while (eventType != XmlPullParser.END_DOCUMENT) {
+        if (eventType == XmlPullParser.START_TAG && parser.name == "Location") {
+            val latitude = parser.getAttributeValue(null, "latitude")?.toDoubleOrNull() ?: -1.0
+            val longitude = parser.getAttributeValue(null, "longitude")?.toDoubleOrNull() ?: -1.0
+            geoLocation.latitude = latitude
+            geoLocation.longitude = longitude
+            break
+        }
+        eventType = parser.next()
+    }
+
+    return geoLocation
+}

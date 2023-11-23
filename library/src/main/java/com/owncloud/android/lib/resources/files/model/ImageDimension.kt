@@ -27,4 +27,29 @@
 
 package com.owncloud.android.lib.resources.files.model
 
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
+
 data class ImageDimension(var width: Float = -1f, var height: Float = -1f)
+
+fun parseImageDimensions(xmlString: String): ImageDimension {
+    val xmlPullParserFactory = XmlPullParserFactory.newInstance()
+    val parser = xmlPullParserFactory.newPullParser()
+    parser.setInput(xmlString.reader())
+
+    var eventType = parser.eventType
+    val imageDimension = ImageDimension()
+
+    while (eventType != XmlPullParser.END_DOCUMENT) {
+        if (eventType == XmlPullParser.START_TAG && parser.name == "Dimension") {
+            val width = parser.getAttributeValue(null, "width")?.toFloatOrNull() ?: -1f
+            val height = parser.getAttributeValue(null, "height")?.toFloatOrNull() ?: -1f
+            imageDimension.width = width
+            imageDimension.height = height
+            break
+        }
+        eventType = parser.next()
+    }
+
+    return imageDimension
+}

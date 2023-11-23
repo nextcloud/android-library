@@ -31,6 +31,8 @@ import com.owncloud.android.lib.resources.files.model.FileLockType
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
+import com.owncloud.android.lib.resources.files.model.parseGeoLocation
+import com.owncloud.android.lib.resources.files.model.parseImageDimensions
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
 import org.apache.jackrabbit.webdav.MultiStatusResponse
@@ -424,7 +426,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
                     gson.fromDavProperty<ImageDimension>(prop)
                 } else {
-                    prop.value as ImageDimension?
+                    parseImageDimensions(prop.value.toString())
                 }
 
             // NC metadata gps property <nc:file-metadata-gps>
@@ -434,7 +436,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
                     gson.fromDavProperty<GeoLocation>(prop)
                 } else {
-                    prop.value as GeoLocation?
+                    parseGeoLocation(prop.value.toString())
                 }
 
             parseLockProperties(ncNamespace, propSet)
