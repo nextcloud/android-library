@@ -7,6 +7,7 @@
  */
 package com.owncloud.android.lib.resources.users;
 
+import com.nextcloud.common.JSONRequestBody;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -14,9 +15,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 /**
  * Remote operation performing setting user defined custom status message
@@ -46,14 +44,12 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
 
         try {
             // request body
-            MediaType json = MediaType.parse("application/json; charset=utf-8");
-            RequestBody requestBody = RequestBody.create(json,
-                    "{\"message\": \"" + message + "\", " +
-                            "\"statusIcon\": \"" + statusIcon + "\", " +
-                            "\"clearAt\": " + clearAt + "}");
+            JSONRequestBody jsonRequestBody = new JSONRequestBody("message", message);
+            jsonRequestBody.put("statusIcon", statusIcon);
+            jsonRequestBody.put("clearAt", clearAt.toString());
 
             // remote request
-            putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, requestBody);
+            putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, jsonRequestBody.get());
 
             int status = client.execute(putMethod);
 

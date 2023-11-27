@@ -12,14 +12,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.JSONRequestBody;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.PostMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 import java.lang.reflect.Type;
 
@@ -53,25 +54,25 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     }
 
     @Override
-    protected RemoteOperationResult<PushResponse> run(OwnCloudClient client) {
+    public RemoteOperationResult<PushResponse> run(NextcloudClient client) {
         RemoteOperationResult<PushResponse> result;
         int status;
-        Utf8PostMethod post = null;
+        PostMethod post = null;
 
         try {
+            // request body
+            JSONRequestBody jsonRequestBody = new JSONRequestBody(PUSH_TOKEN_HASH, pushTokenHash);
+            jsonRequestBody.put(DEVICE_PUBLIC_KEY, devicePublicKey);
+            jsonRequestBody.put(PROXY_SERVER, proxyServer);
+
             // Post Method
-            post = new Utf8PostMethod(client.getBaseUri() + OCS_ROUTE);
-            post.setParameter(PUSH_TOKEN_HASH, pushTokenHash);
-            post.setParameter(DEVICE_PUBLIC_KEY, devicePublicKey);
-            post.setParameter(PROXY_SERVER, proxyServer);
+            post = new PostMethod(client.getBaseUri() + OCS_ROUTE, true, jsonRequestBody.get());
 
-            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            status = client.executeMethod(post);
+            status = client.execute(post);
             String response = post.getResponseBodyAsString();
 
             if (isSuccess(status)) {
-                result = new RemoteOperationResult<>(true, status, post.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, post);
                 Log_OC.d(TAG, "Successful response: " + response);
 
                 // Parse the response
@@ -81,7 +82,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
                 if (isInvalidSessionToken(response)) {
                     result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.ACCOUNT_USES_STANDARD_PASSWORD);
                 } else {
-                    result = new RemoteOperationResult<>(false, status, post.getResponseHeaders());
+                    result = new RemoteOperationResult<>(false, post);
                 }
             }
         } catch (Exception e) {
