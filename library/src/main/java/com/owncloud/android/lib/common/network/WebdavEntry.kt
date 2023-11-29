@@ -31,8 +31,6 @@ import com.owncloud.android.lib.resources.files.model.FileLockType
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
-import com.owncloud.android.lib.resources.files.model.parseGeoLocation
-import com.owncloud.android.lib.resources.files.model.parseImageDimensions
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
 import org.apache.jackrabbit.webdav.MultiStatusResponse
@@ -426,7 +424,19 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
                     gson.fromDavProperty<ImageDimension>(prop)
                 } else {
-                    parseImageDimensions(prop.value.toString())
+                    val xmlData = prop.value as ArrayList<*>
+                    var width = 0f
+                    var height = 0f
+                    xmlData.forEach {
+                        val element = it as Element
+                        if (element.tagName == "width") {
+                            width = element.firstChild.textContent.toFloat()
+                        } else if (element.tagName == "height") {
+                            height = element.firstChild.textContent.toFloat()
+                        }
+                    }
+
+                    ImageDimension(width, height)
                 }
 
             // NC metadata gps property <nc:file-metadata-gps>
@@ -436,7 +446,19 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
                     gson.fromDavProperty<GeoLocation>(prop)
                 } else {
-                    parseGeoLocation(prop.value.toString())
+                    val xmlData = prop.value as ArrayList<*>
+                    var latitude = 0.0
+                    var longitude = 0.0
+                    xmlData.forEach {
+                        val element = it as Element
+                        if (element.tagName == "latitude") {
+                            latitude = element.firstChild.textContent.toDouble()
+                        } else if (element.tagName == "longitude") {
+                            longitude = element.firstChild.textContent.toDouble()
+                        }
+                    }
+
+                    GeoLocation(latitude, longitude)
                 }
 
             parseLockProperties(ncNamespace, propSet)

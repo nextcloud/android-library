@@ -82,7 +82,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
         @Suppress("Detekt.MagicNumber")
-        assertEquals(GeoLocation(49.99679166666667, 8.67198611111111), remoteFile.geoLocation)
+        assertEquals(GeoLocation(49.996791666667, 8.6719861111111), remoteFile.geoLocation)
     }
 
     @Test
