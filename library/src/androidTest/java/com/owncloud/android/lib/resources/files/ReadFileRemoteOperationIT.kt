@@ -26,7 +26,9 @@ import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
+import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -81,8 +83,18 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
-        @Suppress("Detekt.MagicNumber")
-        assertEquals(GeoLocation(49.99679166666667, 8.67198611111111), remoteFile.geoLocation)
+        val ocCapability =
+            GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient)
+                .singleData as OCCapability
+
+        if (ocCapability.version.majorVersionNumber == NextcloudVersion.nextcloud_27.majorVersionNumber) {
+            @Suppress("Detekt.MagicNumber")
+            assertEquals(GeoLocation(49.99679166666667, 8.67198611111111), remoteFile.geoLocation)
+        } else {
+            @Suppress("Detekt.MagicNumber")
+            assertEquals(GeoLocation(49.996791666667, 8.6719861111111), remoteFile.geoLocation)
+        }
     }
 
     @Test

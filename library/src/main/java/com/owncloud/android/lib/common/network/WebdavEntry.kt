@@ -25,6 +25,7 @@ package com.owncloud.android.lib.common.network
 
 import android.net.Uri
 import com.google.gson.Gson
+import com.nextcloud.extensions.fromDavProperty
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.FileLockType
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
@@ -101,6 +102,8 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var tags = arrayOfNulls<String>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
+
+    private val gson = Gson()
 
     enum class MountType {
         INTERNAL,
@@ -282,9 +285,11 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                         "external" -> {
                             MountType.EXTERNAL
                         }
+
                         "group" -> {
                             MountType.GROUP
                         }
+
                         else -> {
                             MountType.INTERNAL
                         }
@@ -413,16 +418,48 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             }
 
             // NC metadata size property <nc:file-metadata-size>
-            prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
-            if (prop != null && prop.value != null) {
-                imageDimension = Gson().fromJson(prop.value.toString(), ImageDimension::class.java)
-            }
+            prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace]
+            imageDimension =
+                if (prop == null) {
+                    prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+                    gson.fromDavProperty<ImageDimension>(prop)
+                } else {
+                    val xmlData = prop.value as ArrayList<*>
+                    var width = 0f
+                    var height = 0f
+                    xmlData.forEach {
+                        val element = it as Element
+                        if (element.tagName == "width") {
+                            width = element.firstChild.textContent.toFloat()
+                        } else if (element.tagName == "height") {
+                            height = element.firstChild.textContent.toFloat()
+                        }
+                    }
+
+                    ImageDimension(width, height)
+                }
 
             // NC metadata gps property <nc:file-metadata-gps>
-            prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
-            if (prop != null && prop.value != null) {
-                geoLocation = Gson().fromJson(prop.value.toString(), GeoLocation::class.java)
-            }
+            prop = propSet[EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace]
+            geoLocation =
+                if (prop == null) {
+                    prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+                    gson.fromDavProperty<GeoLocation>(prop)
+                } else {
+                    val xmlData = prop.value as ArrayList<*>
+                    var latitude = 0.0
+                    var longitude = 0.0
+                    xmlData.forEach {
+                        val element = it as Element
+                        if (element.tagName == "latitude") {
+                            latitude = element.firstChild.textContent.toDouble()
+                        } else if (element.tagName == "longitude") {
+                            longitude = element.firstChild.textContent.toDouble()
+                        }
+                    }
+
+                    GeoLocation(latitude, longitude)
+                }
 
             parseLockProperties(ncNamespace, propSet)
         } else {
@@ -577,8 +614,13 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         const val EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout"
         const val EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token"
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
+
+        // v27
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
+
+        const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
+        const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"
         const val TRASHBIN_FILENAME = "trashbin-filename"
         const val TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location"
         const val TRASHBIN_DELETION_TIME = "trashbin-deletion-time"
