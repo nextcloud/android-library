@@ -25,6 +25,8 @@ steps:
     - ./scripts/wait_for_server.sh server-master
     - scripts/deleteOutdatedComments.sh "master" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
     - scripts/deleteOutdatedComments.sh "master" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+    - adb logcat -c
+    - adb logcat > logcat.txt &
     - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
     - ./gradlew installDebugAndroidTest
     - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "master" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
@@ -94,6 +96,9 @@ services:
       - su www-data -c "git clone https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test -d test"
+      - su www-data -c "git clone https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
+      - su www-data -c "cd /var/www/html/apps/photos; composer install"
+      - su www-data -c "php /var/www/html/occ app:enable -f photos"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -165,7 +170,7 @@ services:
   - name: server-stable
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
-      SERVER_VERSION: stable26
+      SERVER_VERSION: stable27
     commands:
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
@@ -189,7 +194,7 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable password_policy"
       - su www-data -c "php /var/www/html/occ app:enable external"
       - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
-      - su www-data -c "git clone https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
+      - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
       - su www-data -c "php /var/www/html/occ app:enable files_lock"
       - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/groupfolders.git /var/www/html/apps/groupfolders/"
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
@@ -208,4 +213,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 859bc0d6c075e220c5a801f42c6a1ecc5302fd7b53bf297b2e4bd99ee5e90b01
+hmac: 6d69c7c3739747691580d04a781eb67cf95d2f33f8149d5ebd2cbcc30611b4f0
+
+...
