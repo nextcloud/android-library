@@ -20,6 +20,7 @@
  */
 package com.owncloud.android.lib.resources.files
 
+import android.util.Log
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
@@ -45,6 +46,34 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(result.isSuccess)
         assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+    }
+
+    @Test
+    fun testLivePhoto() {
+        val movieFile = createFile("movie_file_of_live_photo")
+        val movieFilePath = "/livePhoto"
+        assertTrue(
+            UploadFileRemoteOperation(movieFile, movieFilePath, "video/mov", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        val livePhoto = createFile("live_photo")
+        val livePhotoPath = "/live_photo.jpeg"
+        assertTrue(
+            UploadFileRemoteOperation(livePhoto, livePhotoPath, "image/jpeg", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
+        assertTrue(movieFileResult.isSuccess)
+        val movieRemoteFile = movieFileResult.data[0] as RemoteFile
+
+        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(client)
+        assertTrue(livePhotoResult.isSuccess)
+        val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
+
+        assertTrue(movieRemoteFile.hidden)
+        assertTrue(livePhotoRemoteFile.livePhoto == movieRemoteFile.livePhoto)
     }
 
     @Test
