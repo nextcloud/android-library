@@ -48,6 +48,34 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     }
 
     @Test
+    fun testLivePhoto() {
+        val movieFile = createFile("sample")
+        val movieFilePath = "/sampleMovie"
+        assertTrue(
+            UploadFileRemoteOperation(movieFile, movieFilePath, "video/mov", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        val livePhoto = createFile("sample")
+        val livePhotoPath = "/samplePic"
+        assertTrue(
+            UploadFileRemoteOperation(livePhoto, livePhotoPath, "image/jpeg", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
+        assertTrue(movieFileResult.isSuccess)
+        val movieRemoteFile = movieFileResult.data[0] as RemoteFile
+
+        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(client)
+        assertTrue(livePhotoResult.isSuccess)
+        val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
+
+        assertTrue(movieRemoteFile.hidden)
+        assertTrue(livePhotoRemoteFile.livePhoto == movieRemoteFile.livePhoto)
+    }
+
+    @Test
     fun readRemoteFile() {
         // create file
         val filePath = createFile("text")

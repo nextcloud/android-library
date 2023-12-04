@@ -130,6 +130,8 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_GPS, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HIDDEN, ncNamespace);
 
         return propSet;
     }
@@ -173,6 +175,8 @@ public class WebdavUtils {
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_GPS, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE, ncNamespace);
         propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_PHOTOS_GPS, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace);
+        propSet.add(WebdavEntry.EXTENDED_PROPERTY_HIDDEN, ncNamespace);
 
         return propSet;
     }
