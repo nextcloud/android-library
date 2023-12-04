@@ -102,6 +102,10 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     var tags = arrayOfNulls<String>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
+    var hidden = false
+        private set
+    var livePhoto: String? = null
+        private set
 
     private val gson = Gson()
 
@@ -461,6 +465,21 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     GeoLocation(latitude, longitude)
                 }
 
+            // NC metadata live photo property: <nc:metadata-files-live-photo/>
+            prop = propSet[EXTENDED_PROPERTY_METADATA_LIVE_PHOTO, ncNamespace]
+            if (prop != null && prop.value != null) {
+                livePhoto = prop.value.toString()
+            }
+
+            // NC has hidden property <nc:hidden>
+            prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
+            hidden =
+                if (prop != null) {
+                    java.lang.Boolean.valueOf(prop.value.toString())
+                } else {
+                    false
+                }
+
             parseLockProperties(ncNamespace, propSet)
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
@@ -618,6 +637,9 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         // v27
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
         const val EXTENDED_PROPERTY_METADATA_GPS = "file-metadata-gps"
+
+        const val EXTENDED_PROPERTY_HIDDEN = "hidden"
+        const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
 
         const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
         const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"

@@ -70,6 +70,8 @@ class RemoteFile : Parcelable, Serializable {
     var tags: Array<String?>? = null
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
+    var hidden = false
+    var livePhoto: String? = null
 
     constructor() {
         resetData()
@@ -85,7 +87,7 @@ class RemoteFile : Parcelable, Serializable {
      */
     constructor(path: String?) {
         resetData()
-        require(!(path == null || path.isEmpty() || !path.startsWith(FileUtils.PATH_SEPARATOR))) {
+        require(!(path.isNullOrEmpty() || !path.startsWith(FileUtils.PATH_SEPARATOR))) {
             "Trying to create a OCFile with a non valid remote path: $path"
         }
         remotePath = path
@@ -123,6 +125,8 @@ class RemoteFile : Parcelable, Serializable {
         tags = we.tags
         imageDimension = we.imageDimension
         geoLocation = we.geoLocation
+        livePhoto = we.livePhoto
+        hidden = we.hidden
     }
 
     /**
@@ -153,6 +157,8 @@ class RemoteFile : Parcelable, Serializable {
         lockTimeout = 0
         lockToken = null
         tags = null
+        hidden = false
+        livePhoto = null
     }
 
     /**
@@ -191,6 +197,8 @@ class RemoteFile : Parcelable, Serializable {
         lockTimestamp = source.readLong()
         lockTimeout = source.readLong()
         lockToken = source.readString()
+        livePhoto = source.readString()
+        hidden = source.readInt() == 1
     }
 
     override fun describeContents(): Int {
@@ -227,6 +235,8 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeLong(lockTimestamp)
         dest.writeLong(lockTimeout)
         dest.writeString(lockToken)
+        dest.writeString(livePhoto)
+        dest.writeInt(if (hidden) 1 else 0)
     }
 
     companion object {

@@ -48,6 +48,51 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     }
 
     @Test
+    fun testLivePhoto() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_28)
+
+        val movieFile = createFile("sample")
+        val movieFilePath = "/sampleMovie.mov"
+        assertTrue(
+            UploadFileRemoteOperation(movieFile, movieFilePath, "video/mov", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        val livePhoto = createFile("sample")
+        val livePhotoPath = "/samplePic.jpg"
+        assertTrue(
+            UploadFileRemoteOperation(livePhoto, livePhotoPath, "image/jpeg", RANDOM_MTIME)
+                .execute(client).isSuccess
+        )
+
+        // link them
+        assertTrue(
+            LinkLivePhotoRemoteOperation(
+                livePhotoPath,
+                movieFilePath
+            ).execute(client).isSuccess
+        )
+
+        assertTrue(
+            LinkLivePhotoRemoteOperation(
+                movieFilePath,
+                livePhotoPath
+            ).execute(client).isSuccess
+        )
+
+        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
+        assertTrue(movieFileResult.isSuccess)
+        val movieRemoteFile = movieFileResult.data[0] as RemoteFile
+
+        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(client)
+        assertTrue(livePhotoResult.isSuccess)
+        val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
+
+        assertEquals(livePhotoRemoteFile.livePhoto, movieRemoteFile.remotePath)
+        assertTrue(movieRemoteFile.hidden)
+    }
+
+    @Test
     fun readRemoteFile() {
         // create file
         val filePath = createFile("text")
