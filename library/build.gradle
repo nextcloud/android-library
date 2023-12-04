@@ -5,7 +5,7 @@ buildscript {
         junit_version = '4.13.2'
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4'
+        classpath 'com.android.tools.build:gradle:8.2.0'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.2.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.4"
@@ -61,7 +61,7 @@ dependencies {
 
     // dependencies for tests
     testImplementation "junit:junit:$junit_version"
-    testImplementation 'org.mockito:mockito-core:5.7.0'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
 
     // dependencies for instrumented tests
