@@ -49,6 +49,8 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun testLivePhoto() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_28)
+
         val movieFile = createFile("sample")
         val movieFilePath = "/sampleMovie.mov"
         assertTrue(
