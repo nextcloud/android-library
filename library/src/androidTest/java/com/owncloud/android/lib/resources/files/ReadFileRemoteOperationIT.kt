@@ -50,17 +50,32 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     @Test
     fun testLivePhoto() {
         val movieFile = createFile("sample")
-        val movieFilePath = "/sampleMovie"
+        val movieFilePath = "/sampleMovie.mov"
         assertTrue(
             UploadFileRemoteOperation(movieFile, movieFilePath, "video/mov", RANDOM_MTIME)
                 .execute(client).isSuccess
         )
 
         val livePhoto = createFile("sample")
-        val livePhotoPath = "/samplePic"
+        val livePhotoPath = "/samplePic.jpg"
         assertTrue(
             UploadFileRemoteOperation(livePhoto, livePhotoPath, "image/jpeg", RANDOM_MTIME)
                 .execute(client).isSuccess
+        )
+
+        // link them
+        assertTrue(
+            LinkLivePhotoRemoteOperation(
+                livePhotoPath,
+                movieFilePath
+            ).execute(client).isSuccess
+        )
+
+        assertTrue(
+            LinkLivePhotoRemoteOperation(
+                movieFilePath,
+                livePhotoPath
+            ).execute(client).isSuccess
         )
 
         val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
@@ -71,8 +86,8 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         assertTrue(livePhotoResult.isSuccess)
         val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
 
+        assertEquals(livePhotoRemoteFile.livePhoto, movieRemoteFile.remotePath)
         assertTrue(movieRemoteFile.hidden)
-        assertTrue(livePhotoRemoteFile.livePhoto == movieRemoteFile.livePhoto)
     }
 
     @Test
