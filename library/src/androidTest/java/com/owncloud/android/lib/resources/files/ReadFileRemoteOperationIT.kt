@@ -50,6 +50,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun testLivePhoto() {
+
         val movieFile = createFile("movie_file_of_live_photo")
         val movieFilePath = "/livePhoto"
         assertTrue(
