@@ -264,21 +264,23 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
             // OC favorite property <oc:favorite>
             prop = propSet[EXTENDED_PROPERTY_FAVORITE, ocNamespace]
-            isFavorite = if (prop != null) {
-                val favoriteValue = prop.value as String
-                ONE == favoriteValue
-            } else {
-                false
-            }
+            isFavorite =
+                if (prop != null) {
+                    val favoriteValue = prop.value as String
+                    ONE == favoriteValue
+                } else {
+                    false
+                }
 
             // NC encrypted property <nc:is-encrypted>
             prop = propSet[EXTENDED_PROPERTY_IS_ENCRYPTED, ncNamespace]
-            isEncrypted = if (prop != null) {
-                val encryptedValue = prop.value as String
-                ONE == encryptedValue
-            } else {
-                false
-            }
+            isEncrypted =
+                if (prop != null) {
+                    val encryptedValue = prop.value as String
+                    ONE == encryptedValue
+                } else {
+                    false
+                }
 
             // NC mount-type property <nc:mount-type>
             prop = propSet[EXTENDED_PROPERTY_MOUNT_TYPE, ncNamespace]
@@ -472,11 +474,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
             // NC has hidden property <nc:hidden>
             prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
-            hidden = if (prop != null) {
-                java.lang.Boolean.valueOf(prop.value.toString())
-            } else {
-                false
-            }
+            hidden =
+                if (prop != null) {
+                    java.lang.Boolean.valueOf(prop.value.toString())
+                } else {
+                    false
+                }
 
             parseLockProperties(ncNamespace, propSet)
         } else {
@@ -490,22 +493,25 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
     ) {
         // file locking
         var prop: DavProperty<*>? = propSet[EXTENDED_PROPERTY_LOCK, ncNamespace]
-        isLocked = if (prop != null && prop.value != null) {
-            "1" == prop.value as String
-        } else {
-            false
-        }
+        isLocked =
+            if (prop != null && prop.value != null) {
+                "1" == prop.value as String
+            } else {
+                false
+            }
 
         prop = propSet[EXTENDED_PROPERTY_LOCK_OWNER_TYPE, ncNamespace]
-        lockOwnerType = if (prop != null && prop.value != null) {
-            val value: Int = (prop.value as String).toInt()
-            fromValue(value)
-        } else {
-            null
-        }
+        lockOwnerType =
+            if (prop != null && prop.value != null) {
+                val value: Int = (prop.value as String).toInt()
+                fromValue(value)
+            } else {
+                null
+            }
 
         lockOwnerId = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER, ncNamespace)
-        lockOwnerDisplayName = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace)
+        lockOwnerDisplayName =
+            parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME, ncNamespace)
         lockOwnerEditor = parseStringProp(propSet, EXTENDED_PROPERTY_LOCK_OWNER_EDITOR, ncNamespace)
         lockTimestamp = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIME, ncNamespace)
         lockTimeout = parseLongProp(propSet, EXTENDED_PROPERTY_LOCK_TIMEOUT, ncNamespace)
