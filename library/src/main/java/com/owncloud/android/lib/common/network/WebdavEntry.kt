@@ -473,11 +473,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
             // NC has hidden property <nc:hidden>
             prop = propSet[EXTENDED_PROPERTY_HIDDEN, ncNamespace]
-            hidden = if (prop != null) {
-                java.lang.Boolean.valueOf(prop.value.toString())
-            } else {
-                false
-            }
+            hidden =
+                if (prop != null) {
+                    java.lang.Boolean.valueOf(prop.value.toString())
+                } else {
+                    false
+                }
 
             parseLockProperties(ncNamespace, propSet)
         } else {
