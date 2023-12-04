@@ -71,6 +71,13 @@ class ReadFileRemoteOperationIT : AbstractIT() {
             ).execute(client).isSuccess
         )
 
+        assertTrue(
+            LinkLivePhotoRemoteOperation(
+                movieFilePath,
+                livePhotoPath
+            ).execute(client).isSuccess
+        )
+
         val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
         assertTrue(movieFileResult.isSuccess)
         val movieRemoteFile = movieFileResult.data[0] as RemoteFile
@@ -80,6 +87,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
 
         assertEquals(livePhotoRemoteFile.livePhoto, movieRemoteFile.remotePath)
+        assertTrue(movieRemoteFile.hidden)
     }
 
     @Test
