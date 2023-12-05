@@ -1,4 +1,6 @@
 import com.github.spotbugs.snom.SpotBugsTask
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
 
 buildscript {
     ext {
@@ -6,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.0'
-        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.2.5'
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.4"
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
@@ -80,8 +82,8 @@ dependencies {
 
 spotbugs {
     ignoreFailures = true // should continue checking
-    effort = "max"
-    reportLevel = "medium"
+    effort = Effort.MAX
+    reportLevel = Confidence.valueOf('MEDIUM')
 }
 
 tasks.withType(SpotBugsTask){task ->
