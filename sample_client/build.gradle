@@ -17,7 +17,7 @@ repositories {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     lintOptions {
         abortOnError false
@@ -28,7 +28,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 33
+        targetSdkVersion 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
