@@ -169,6 +169,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     // drop-account
     private static final String NODE_DROP_ACCOUNT = "drop-account";
 
+    // security guard
+    private static final String NODE_SECURITY_GUARD = "security_guard";
+    private static final String NODE_DIAGNOSTICS = "diagnostics";
 
     private OCCapability currentCapability = null;
 
@@ -686,6 +689,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     } else {
                         capability.setDropAccount(CapabilityBooleanType.FALSE);
                     }
+                }
+
+                // security guard
+                if (respCapabilities.has(NODE_SECURITY_GUARD)) {
+                    JSONObject securityGuardCapability = respCapabilities.getJSONObject(NODE_SECURITY_GUARD);
+
+                    if (securityGuardCapability.getBoolean(NODE_DIAGNOSTICS)) {
+                        capability.setSecurityGuard(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setSecurityGuard(CapabilityBooleanType.FALSE);
+                    }
+                } else {
+                    capability.setSecurityGuard(CapabilityBooleanType.FALSE);
                 }
             }
 
