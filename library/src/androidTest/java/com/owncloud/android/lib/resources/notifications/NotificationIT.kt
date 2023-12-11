@@ -16,15 +16,12 @@ class NotificationIT : AbstractIT() {
     @Test
     fun getNotification() {
         // get all
-        val all = GetNotificationsRemoteOperation().execute(client)
+        val all = GetNotificationsRemoteOperation().execute(nextcloudClient)
         assertTrue(all.isSuccess)
 
         // get one
         val firstNotification = all.resultData[0]
-        val first =
-            GetNotificationRemoteOperation(firstNotification.notificationId).execute(
-                client
-            )
+        val first = GetNotificationRemoteOperation(firstNotification.notificationId).execute(nextcloudClient)
         assertTrue(first.isSuccess)
         assertEquals(firstNotification.message, first.resultData.message)
     }
