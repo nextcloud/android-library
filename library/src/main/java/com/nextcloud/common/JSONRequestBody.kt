@@ -12,7 +12,10 @@ class JSONRequestBody() {
         put(key, value)
     }
 
-    fun put(key: String, value: String) {
+    fun put(
+        key: String,
+        value: String
+    ) {
         content[key] = value
     }
 
