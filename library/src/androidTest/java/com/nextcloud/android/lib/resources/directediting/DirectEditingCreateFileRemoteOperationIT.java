@@ -27,13 +27,13 @@
 
 package com.nextcloud.android.lib.resources.directediting;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
     @Test
@@ -41,7 +41,7 @@ public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
         RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/test.md",
                 "text",
                 "textdocument")
-                .execute(client);
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         String url = result.getResultData();
@@ -55,7 +55,7 @@ public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
                                                                                           "text",
                                                                                           "textdocument",
                                                                                           "1")
-                .execute(client);
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         String url = result.getResultData();
@@ -69,7 +69,7 @@ public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
                                                                                           "text",
                                                                                           "textdocument",
                                                                                           "1")
-                .execute(client);
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         String url = result.getResultData();

@@ -27,9 +27,6 @@
 
 package com.nextcloud.android.lib.resources.directediting;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
@@ -40,6 +37,9 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
     @Test
@@ -57,10 +57,11 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
         // open file
-        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
+        RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertFalse(url.isEmpty());
     }
@@ -80,10 +81,11 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
         // open file
-        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
+        RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertFalse(url.isEmpty());
     }
@@ -103,10 +105,11 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
         // open file
-        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
+        RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertFalse(url.isEmpty());
     }
@@ -118,7 +121,8 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
         TestCase.assertFalse(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
 
         // open file
-        RemoteOperationResult result = new DirectEditingOpenFileRemoteOperation(remotePath, "text").execute(client);
+        RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
+                .execute(nextcloudClient);
         assertFalse(result.isSuccess());
     }
 }
