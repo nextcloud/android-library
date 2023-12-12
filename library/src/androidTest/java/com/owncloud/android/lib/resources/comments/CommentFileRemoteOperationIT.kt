@@ -48,7 +48,7 @@ class CommentFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(
             CommentFileRemoteOperation("test", remoteFile.localId)
-                .execute(client)
+                .execute(nextcloudClient)
                 .isSuccess
         )
 
