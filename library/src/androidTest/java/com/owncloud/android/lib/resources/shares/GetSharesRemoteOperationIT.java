@@ -7,15 +7,8 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
@@ -33,6 +26,13 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.List;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
@@ -281,8 +281,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void favorite() {
         // only on NC25+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
+        OCCapability ocCapability = new GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData();
         assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
 
         String path = "/shareToAdminFavorite/";

@@ -12,7 +12,6 @@ import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
-import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -145,7 +144,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         val capabilityResult = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
         assertTrue(capabilityResult.isSuccess)
-        val capability = capabilityResult.singleData as OCCapability
+        val capability = capabilityResult.resultData
 
         when {
             capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {

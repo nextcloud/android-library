@@ -15,7 +15,6 @@ import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
-import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -115,10 +114,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
-        val ocCapability =
-            GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient)
-                .singleData as OCCapability
+        val ocCapability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData
 
         if (ocCapability.version.majorVersionNumber == NextcloudVersion.nextcloud_27.majorVersionNumber) {
             @Suppress("Detekt.MagicNumber")

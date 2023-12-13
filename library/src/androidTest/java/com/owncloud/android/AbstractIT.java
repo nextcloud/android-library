@@ -7,16 +7,9 @@
  */
 package com.owncloud.android;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
@@ -54,7 +47,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import okhttp3.Credentials;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Common base for all integration tests
@@ -315,9 +314,9 @@ public abstract class AbstractIT {
     }
 
     protected void testOnlyOnServer(OwnCloudVersion version) {
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
+        OCCapability ocCapability = new GetCapabilitiesRemoteOperation()
             .execute(nextcloudClient)
-            .getSingleData();
+            .getResultData();
         assumeTrue(ocCapability.getVersion().isNewerOrEqual(version));
     }
 }

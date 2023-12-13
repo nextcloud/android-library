@@ -7,10 +7,6 @@
  */
 package com.owncloud.android;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import android.net.Uri;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -30,6 +26,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests related to file operations
@@ -154,8 +154,7 @@ public class FileIT extends AbstractIT {
         ShareeUser sharee = new ShareeUser("users", "", ShareType.GROUP);
 
         // only on NC26+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
+        OCCapability ocCapability = new GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData();
         if (ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
             sharee.setDisplayName("users");
         }

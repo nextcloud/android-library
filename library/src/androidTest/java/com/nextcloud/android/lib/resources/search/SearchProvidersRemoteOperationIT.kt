@@ -9,7 +9,6 @@ package com.nextcloud.android.lib.resources.search
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
-import com.owncloud.android.lib.resources.status.OCCapability
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -38,9 +37,7 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
     @Test
     fun getSearchProvidersOnOldServer() {
         // only on < NC20
-        val ocCapability =
-            GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).singleData as OCCapability
+        val ocCapability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData
         assumeTrue(
             ocCapability.version.isOlderThan(OwnCloudVersion.nextcloud_20)
         )

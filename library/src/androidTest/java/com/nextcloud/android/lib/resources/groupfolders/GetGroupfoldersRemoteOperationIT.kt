@@ -17,7 +17,7 @@ import org.junit.Test
 class GetGroupfoldersRemoteOperationIT : AbstractIT() {
     @Test
     fun getGroupfolders() {
-        val capability = GetCapabilitiesRemoteOperation().execute(client).singleData as OCCapability
+        val capability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData as OCCapability
 
         assumeTrue(capability.groupfolders.isTrue)
 
