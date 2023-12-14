@@ -52,7 +52,7 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
     implementation 'com.github.bitfireAT:dav4jvm:2.2.1' // in transition phase, we use old and new libs
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
-    implementation 'androidx.annotation:annotation:1.7.0'
+    implementation 'androidx.annotation:annotation:1.7.1'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1u2'
 
     implementation "androidx.core:core-ktx:1.10.1"
