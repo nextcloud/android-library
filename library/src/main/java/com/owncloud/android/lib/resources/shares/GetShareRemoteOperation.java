@@ -9,18 +9,18 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
-import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
-import static com.owncloud.android.lib.resources.shares.ShareUtils.SHARING_API_PATH;
-
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.util.List;
+
+import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
+import static com.owncloud.android.lib.resources.shares.ShareUtils.SHARING_API_PATH;
 
 /**
  * Get the data about a Share resource, known its remote ID.
@@ -38,20 +38,18 @@ public class GetShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
 
     @Override
-    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+    public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
         RemoteOperationResult<List<OCShare>> result;
         int status;
 
-        // Get Method
-        GetMethod get = null;
+        // get method
+        com.nextcloud.operations.GetMethod get = null;
 
-        // Get the response
         try {
-            get = new GetMethod(client.getBaseUri() + SHARING_API_PATH + "/" + remoteId);
+            get = new GetMethod(client.getBaseUri() + SHARING_API_PATH + "/" + remoteId, true);
             get.setQueryString(INCLUDE_TAGS);
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            status = client.executeMethod(get);
+            status = client.execute(get);
 
             if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();

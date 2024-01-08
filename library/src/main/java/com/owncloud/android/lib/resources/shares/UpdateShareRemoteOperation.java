@@ -13,14 +13,14 @@ package com.owncloud.android.lib.resources.shares;
 import android.net.Uri;
 import android.util.Pair;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.JSONRequestBody;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -36,7 +36,7 @@ import java.util.Locale;
  * 
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-public class UpdateShareRemoteOperation extends RemoteOperation {
+public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 
@@ -47,14 +47,12 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
     private static final String PARAM_LABEL = "label";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
-    private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
-    private static final String ENTITY_CHARSET = "UTF-8";
 
 
     /**
      * Identifier of the share to update
      */
-    private long remoteId;
+    private final long remoteId;
 
     /**
      * Password to set for the public link
@@ -142,7 +140,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+    public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
         RemoteOperationResult<List<OCShare>> result = null;
         int status;
 
@@ -182,7 +180,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         }
 
         /// perform required PUT requests
-        PutMethod put = null;
+        com.nextcloud.operations.PutMethod put = null;
         String uriString;
 
         try {
@@ -196,15 +194,11 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
                 if (put != null) {
                     put.releaseConnection();
                 }
-                put = new PutMethod(uriString);
-                put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-                put.setRequestEntity(new StringRequestEntity(
-                        parameter.first + "=" + parameter.second,
-                        ENTITY_CONTENT_TYPE,
-                        ENTITY_CHARSET
-                ));
+                JSONRequestBody jsonRequestBody = new JSONRequestBody(parameter.first, parameter.second);
 
-                status = client.executeMethod(put);
+                put = new PutMethod(uriString, true, jsonRequestBody.get());
+
+                status = client.execute(put);
 
                 if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
                     String response = put.getResponseBodyAsString();

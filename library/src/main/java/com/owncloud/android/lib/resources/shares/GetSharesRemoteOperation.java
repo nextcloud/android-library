@@ -10,15 +10,16 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 
@@ -28,7 +29,7 @@ import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesRemoteOperation.class.getSimpleName();
-    private boolean sharedWithMe = false;
+    private final boolean sharedWithMe;
 
     public GetSharesRemoteOperation() {
         this(false);
@@ -39,24 +40,23 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
     }
 
     @Override
-    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+    public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
         RemoteOperationResult<List<OCShare>> result;
         int status;
 
         // Get Method
-        GetMethod get = null;
+        com.nextcloud.operations.GetMethod get = null;
 
         // Get the response
         try {
-            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH, true);
             get.setQueryString(INCLUDE_TAGS);
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
             if (sharedWithMe) {
-                get.setQueryString("shared_with_me=true");
+                get.setQueryString(Map.of("shared_with_me", "true"));
             }
 
-            status = client.executeMethod(get);
+            status = client.execute(get);
 
             if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();

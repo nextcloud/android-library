@@ -7,10 +7,6 @@
  */
 package com.owncloud.android.lib.common.operations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
@@ -21,6 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test create share
@@ -56,7 +56,7 @@ public class CreateShareIT extends AbstractIT {
                 "",
                 false,
                 "",
-                1).execute(client);
+                1).execute(nextcloudClient);
         assertTrue(result.isSuccess());
     }
 
@@ -67,7 +67,7 @@ public class CreateShareIT extends AbstractIT {
                 "",
                 false,
                 "",
-                1).execute(client);
+                1).execute(nextcloudClient);
 
         assertFalse(result.isSuccess());
         assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
@@ -83,7 +83,7 @@ public class CreateShareIT extends AbstractIT {
                 "admin",
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
         assertTrue(result.isSuccess());
     }
 
@@ -97,7 +97,7 @@ public class CreateShareIT extends AbstractIT {
                 "no_exist",
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
         assertFalse(result.isSuccess());
 
         // TODO 404 is File not found, but actually it is "user not found"
@@ -114,7 +114,7 @@ public class CreateShareIT extends AbstractIT {
                 "admin",
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
         assertFalse(result.isSuccess());
         assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
     }
@@ -129,7 +129,7 @@ public class CreateShareIT extends AbstractIT {
                 "admin",
                 false,
                 "",
-                1).execute(client);
+                1).execute(nextcloudClient);
         assertTrue(result.isSuccess());
     }
 
@@ -143,7 +143,7 @@ public class CreateShareIT extends AbstractIT {
                 "no_exist",
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
         assertFalse(result.isSuccess());
 
         // TODO 404 is File not found, but actually it is "user not found"
@@ -160,7 +160,7 @@ public class CreateShareIT extends AbstractIT {
                 "admin",
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
         assertFalse(result.isSuccess());
         assertEquals(ResultCode.FILE_NOT_FOUND, result.getCode());
     }
@@ -189,7 +189,7 @@ public class CreateShareIT extends AbstractIT {
                 "no_exist@" + serverUri2,
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
 
         assertFalse("sharee doesn't exist in an existing remote server", result.isSuccess());
         assertEquals("sharee doesn't exist in an existing remote server, forbidden",
@@ -206,7 +206,7 @@ public class CreateShareIT extends AbstractIT {
                 "no_exist",
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
         assertFalse(result.isSuccess());
         // TODO expected:<SHARE_WRONG_PARAMETER> but was:<SHARE_FORBIDDEN>
         assertEquals("remote server doesn't exist", ResultCode.SHARE_FORBIDDEN, result.getCode());
@@ -222,7 +222,7 @@ public class CreateShareIT extends AbstractIT {
                 "admin@" + serverUri2,
                 false,
                 "",
-                31).execute(client);
+                31).execute(nextcloudClient);
 
         assertFalse("file doesn't exist", result.isSuccess());
         assertEquals("file doesn't exist", ResultCode.FILE_NOT_FOUND, result.getCode());

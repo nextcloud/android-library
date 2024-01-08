@@ -10,23 +10,25 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.DeleteMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
+
+import java.util.List;
 
 /**
  * Remove a share
  */
 
-public class RemoveShareRemoteOperation extends RemoteOperation {
+public class RemoveShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = RemoveShareRemoteOperation.class.getSimpleName();
 
-    private long remoteShareId;
+    private final long remoteShareId;
 
     /**
      * Constructor
@@ -40,16 +42,14 @@ public class RemoveShareRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
-        DeleteMethod delete = null;
+    public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
+        com.nextcloud.operations.DeleteMethod delete = null;
 
         try {
-            delete = new DeleteMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + remoteShareId);
+            delete = new DeleteMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + remoteShareId, true);
 
-            delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            int status = client.executeMethod(delete);
+            int status = client.execute(delete);
 
             if (isSuccess(status)) {
                 String response = delete.getResponseBodyAsString();
@@ -63,10 +63,10 @@ public class RemoveShareRemoteOperation extends RemoteOperation {
                 Log_OC.d(TAG, "Unshare " + remoteShareId + ": " + result.getLogMessage());
 
             } else {
-                result = new RemoteOperationResult(false, delete);
+                result = new RemoteOperationResult<>(false, delete);
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Unshare Link Exception " + result.getLogMessage(), e);
 
         } finally {
