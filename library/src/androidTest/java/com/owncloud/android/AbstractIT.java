@@ -7,16 +7,9 @@
  */
 package com.owncloud.android;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
@@ -54,7 +47,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import okhttp3.Credentials;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Common base for all integration tests
@@ -70,6 +69,7 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
+    protected static NextcloudClient nextcloudClient2;
     protected static Context context;
     protected static Uri url;
 
@@ -108,6 +108,10 @@ public abstract class AbstractIT {
         String userId = loginName; // for test same as userId
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
+
+        String userId2 = loginName; // for test same as userId
+        String credentials2 = Credentials.basic(loginName2, password2);
+        nextcloudClient2 = new NextcloudClient(url, userId2, credentials2, context);
 
         waitForServer(client, url);
         testConnection();
