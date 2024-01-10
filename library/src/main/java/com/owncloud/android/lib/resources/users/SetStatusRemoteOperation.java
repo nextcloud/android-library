@@ -40,7 +40,7 @@ public class SetStatusRemoteOperation extends OCSRemoteOperation<Boolean> {
 
         try {
             // request body
-            JSONRequestBody jsonRequestBody = new JSONRequestBody("statusType", type.toString());
+            JSONRequestBody jsonRequestBody = new JSONRequestBody("statusType", type.getString());
 
             // remote request
             putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, jsonRequestBody.get());
