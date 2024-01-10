@@ -26,9 +26,6 @@
  */
 package com.owncloud.android.lib.common.operations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
@@ -39,6 +36,9 @@ import com.owncloud.android.lib.resources.shares.ShareType;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Class to test Get Shares Operation
@@ -55,7 +55,7 @@ public class GetSharesIT extends AbstractIT {
                 "",
                 false,
                 "",
-                1).execute(client).isSuccess());
+                1).execute(nextcloudClient).isSuccess());
 
         assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(client).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/2/",
@@ -63,9 +63,9 @@ public class GetSharesIT extends AbstractIT {
                 "",
                 false,
                 "",
-                1).execute(client).isSuccess());
+                1).execute(nextcloudClient).isSuccess());
 
-        RemoteOperationResult<List<OCShare>> result = new GetSharesRemoteOperation().execute(client);
+        RemoteOperationResult<List<OCShare>> result = new GetSharesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(2, result.getResultData().size());
         assertEquals("/1/", result.getResultData().get(0).getPath());

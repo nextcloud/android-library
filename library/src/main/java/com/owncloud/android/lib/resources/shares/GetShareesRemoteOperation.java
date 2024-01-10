@@ -29,17 +29,18 @@ package com.owncloud.android.lib.resources.shares;
 
 import android.net.Uri;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by masensio on 08/10/2015.
@@ -62,7 +63,7 @@ import java.util.ArrayList;
  * Status codes:
  *    100 - successful
  */
-public class GetShareesRemoteOperation extends RemoteOperation {
+public class GetShareesRemoteOperation extends RemoteOperation<List<Object>> {
 
     private static final String TAG = GetShareesRemoteOperation.class.getSimpleName();
 
@@ -120,10 +121,10 @@ public class GetShareesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    public RemoteOperationResult<List<Object>> run(NextcloudClient client) {
+        RemoteOperationResult<List<Object>> result;
         int status;
-        GetMethod get = null;
+        com.nextcloud.operations.GetMethod get = null;
 
         try{
             Uri requestUri = client.getBaseUri();
@@ -137,10 +138,9 @@ public class GetShareesRemoteOperation extends RemoteOperation {
             uriBuilder.appendQueryParameter(PARAM_LOOKUP, VALUE_FALSE);
 
             // Get Method
-            get = new GetMethod(uriBuilder.build().toString());
-            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            get = new GetMethod(uriBuilder.build().toString(), true);
 
-            status = client.executeMethod(get);
+            status = client.execute(get);
 
             if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
@@ -213,25 +213,20 @@ public class GetShareesRemoteOperation extends RemoteOperation {
                 }
 
                 // Result
-                result = new RemoteOperationResult(true, get);
-                result.setData(data);
+                result = new RemoteOperationResult<>(true, get);
+                result.setResultData(data);
 
                 Log_OC.d(TAG, "*** Get Users or groups completed");
 
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting users/groups from the server");
-
-                if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
-                } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
-                }
+                Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting users/groups", e);
 
         } finally {

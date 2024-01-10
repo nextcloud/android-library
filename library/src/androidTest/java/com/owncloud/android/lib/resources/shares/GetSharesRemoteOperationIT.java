@@ -27,16 +27,10 @@
 
 package com.owncloud.android.lib.resources.shares;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -53,6 +47,14 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.List;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+import okhttp3.Credentials;
+
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
@@ -72,31 +74,16 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         assertEquals(0, result.getResultData().size());
 
         // share folder to user "admin"
-        assertTrue(new CreateShareRemoteOperation("/shareToAdmin/",
-                ShareType.USER,
-                "admin",
-                false,
-                "",
-                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER)
-                .execute(client).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToAdmin/", ShareType.USER, "admin", false, "",
+                                                  OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER).execute(nextcloudClient).isSuccess());
 
         // share folder via public link
-        assertTrue(new CreateShareRemoteOperation("/shareViaLink/",
-                ShareType.PUBLIC_LINK,
-                "",
-                true,
-                "",
-                OCShare.READ_PERMISSION_FLAG)
-                .execute(client).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareViaLink/", ShareType.PUBLIC_LINK, "", true, "",
+                                                  OCShare.READ_PERMISSION_FLAG).execute(nextcloudClient).isSuccess());
 
         // share folder to group
-        assertTrue(new CreateShareRemoteOperation("/shareToGroup/",
-                ShareType.GROUP,
-                "users",
-                false,
-                "",
-                OCShare.NO_PERMISSION)
-                .execute(client).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToGroup/", ShareType.GROUP, "users", false, "",
+                                                  OCShare.NO_PERMISSION).execute(nextcloudClient).isSuccess());
 
         // share folder to circle
         // get share 
@@ -126,7 +113,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 
         sut = new GetSharesRemoteOperation();
 
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         assertEquals(3, result.getResultData().size());
@@ -177,30 +164,25 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
         GetSharesRemoteOperation sutSharedWithMe = new GetSharesRemoteOperation(true);
 
-        RemoteOperationResult<List<OCShare>> result = sut.execute(client);
+        RemoteOperationResult<List<OCShare>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getResultData().size());
 
-        RemoteOperationResult<List<OCShare>> resultSharedWithMe = sutSharedWithMe.execute(client);
+        RemoteOperationResult<List<OCShare>> resultSharedWithMe = sutSharedWithMe.execute(nextcloudClient);
         assertTrue(resultSharedWithMe.isSuccess());
         assertEquals(0, resultSharedWithMe.getResultData().size());
 
 
         // share folder to user "admin"
         assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
-        assertTrue(new CreateShareRemoteOperation("/shareToAdmin/",
-                ShareType.USER,
-                "admin",
-                false,
-                "",
-                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER)
-                .execute(client).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToAdmin/", ShareType.USER, "admin", false, "",
+                                                  OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER).execute(nextcloudClient).isSuccess());
 
         // Expect one file shared by me, no file shared with me
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertEquals(1, result.getResultData().size());
 
-        resultSharedWithMe = sutSharedWithMe.execute(client);
+        resultSharedWithMe = sutSharedWithMe.execute(nextcloudClient);
         assertEquals(0, resultSharedWithMe.getResultData().size());
 
         // create client for user "user1"
@@ -208,26 +190,26 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
         String loginName = "user1";
         String password = "user1";
+        String credentials = Credentials.basic(loginName, password);
 
         OwnCloudClient clientUser1 = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         clientUser1.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         clientUser1.setUserId(loginName); // for test same as userId
 
+        NextcloudClient nextcloudClientUser1 = OwnCloudClientFactory.createNextcloudClient(url, loginName,
+                                                                                           credentials, context, true);
+
         // share folder to previous user
         assertTrue(new CreateFolderRemoteOperation("/shareToUser/", true).execute(clientUser1).isSuccess());
-        assertTrue(new CreateShareRemoteOperation("/shareToUser/",
-                ShareType.USER,
-                client.getCredentials().getUsername(),
-                false,
-                "",
-                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER)
-                .execute(clientUser1).isSuccess());
+        assertTrue(new CreateShareRemoteOperation("/shareToUser/", ShareType.USER,
+                                                  client.getCredentials().getUsername(), false, "",
+                                                  OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER).execute(nextcloudClientUser1).isSuccess());
 
         // Expect one file shared by me, one file shared with me
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertEquals(1, result.getResultData().size());
 
-        resultSharedWithMe = sutSharedWithMe.execute(client);
+        resultSharedWithMe = sutSharedWithMe.execute(nextcloudClient);
         assertEquals(1, resultSharedWithMe.getResultData().size());
     }
 
@@ -245,7 +227,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true)
-                .execute(client);
+                .execute(nextcloudClient);
 
         assertTrue(createResult.isSuccess());
 
@@ -263,7 +245,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true)
-                .execute(client);
+                .execute(nextcloudClient);
 
         assertTrue(createResult.isSuccess());
 
@@ -289,7 +271,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true)
-                .execute(client);
+                .execute(nextcloudClient);
 
         assertTrue(createResult.isSuccess());
 
@@ -319,7 +301,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true)
-                .execute(client);
+                .execute(nextcloudClient);
 
         assertTrue(createResult.isSuccess());
 
