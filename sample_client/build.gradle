@@ -30,8 +30,6 @@ android {
         minSdkVersion 14
         targetSdkVersion 33
 
-        multiDexEnabled true
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     namespace 'com.owncloud.android.lib.sampleclient'

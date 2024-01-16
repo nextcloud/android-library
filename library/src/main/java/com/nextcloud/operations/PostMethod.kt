@@ -33,7 +33,6 @@ import okhttp3.RequestBody
 
 /**
  * HTTP POST method that uses OkHttp with new NextcloudClient
- * UTF8 by default
  */
 class PostMethod(
     uri: String,
