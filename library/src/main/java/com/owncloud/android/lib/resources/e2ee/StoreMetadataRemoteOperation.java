@@ -102,7 +102,7 @@ public class StoreMetadataRemoteOperation extends RemoteOperation {
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
             Log_OC.e(TAG, "Storing of metadata for folder " + fileId + " failed: " + result.getLogMessage(),
-                    result.getException());
+                     result.getException());
         } finally {
             if (postMethod != null)
                 postMethod.releaseConnection();

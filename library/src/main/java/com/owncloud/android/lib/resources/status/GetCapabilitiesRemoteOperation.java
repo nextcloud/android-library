@@ -165,6 +165,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
     // end to end encryption
     private static final String PROPERTY_KEYS_EXIST = "keys-exist";
+    private static final String PROPERTY_API_VERSION = "api-version";
 
     // drop-account
     private static final String NODE_DROP_ACCOUNT = "drop-account";
@@ -581,6 +582,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                         capability.setEndToEndEncryptionKeysExist(CapabilityBooleanType.UNKNOWN);
                     }
 
+                    String version = respEndToEndEncryption.getString(PROPERTY_API_VERSION);
+                    E2EVersion e2EVersion = E2EVersion.fromValue(version);
+                    capability.setEndToEndEncryptionApiVersion(e2EVersion);
 
                     Log_OC.d(TAG, "*** Added " + NODE_END_TO_END_ENCRYPTION);
                 }

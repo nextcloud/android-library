@@ -25,22 +25,6 @@
  *
  */
 
-package com.nextcloud.operations
+package com.owncloud.android.lib.resources.e2ee
 
-import com.nextcloud.common.OkHttpMethodBase
-import okhttp3.Request
-import okhttp3.RequestBody
-
-/**
- * HTTP POST method that uses OkHttp with new NextcloudClient
- * UTF8 by default
- */
-class PostMethod(
-    uri: String,
-    useOcsApiRequestHeader: Boolean,
-    val body: RequestBody
-) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
-    override fun applyType(temp: Request.Builder) {
-        temp.post(body)
-    }
-}
+data class MetadataResponse(val signature: String, val metadata: String)

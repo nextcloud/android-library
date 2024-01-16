@@ -26,14 +26,9 @@
  */
 package com.owncloud.android;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
+import com.owncloud.android.lib.resources.status.E2EVersion;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
@@ -41,10 +36,17 @@ import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Class to test GetRemoteCapabilitiesOperation
  */
-public class GetCapabilitiesIT extends AbstractIT {
+public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     /**
      * Test get capabilities
      */
@@ -150,12 +152,15 @@ public class GetCapabilitiesIT extends AbstractIT {
         // groupfolder
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_27)) {
             if (userId.equals("test")) {
-                capability.getGroupfolders().isTrue();
+                assertTrue(capability.getGroupfolders().isTrue());
             } else {
-                capability.getGroupfolders().isFalse();
+                assertTrue(capability.getGroupfolders().isFalse());
             }
         } else {
-            capability.getGroupfolders().isFalse();
+            assertTrue(capability.getGroupfolders().isFalse());
         }
+
+        // e2e
+        assertNotSame(capability.getEndToEndEncryptionApiVersion(), E2EVersion.UNKNOWN);
     }
 }

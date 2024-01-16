@@ -36,6 +36,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.net.HttpURLConnection
 
 /**
  * Common base class for all new OkHttpMethods
@@ -184,4 +185,8 @@ abstract class OkHttpMethodBase(
     }
 
     abstract fun applyType(temp: Request.Builder)
+
+    fun isSuccess(): Boolean {
+        return getStatusCode() == HttpURLConnection.HTTP_OK
+    }
 }
