@@ -27,64 +27,89 @@
 
 package com.owncloud.android.lib.resources.users;
 
-import com.google.gson.reflect.TypeToken;
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.ocs.ServerResponse;
-import com.owncloud.android.lib.ocs.responses.PrivateKey;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 
 /**
- * Remote operation performing the fetch of the private key for an user
+ * Remote operation performing the fetch of the public key for an user
  */
 
-public class GetPrivateKeyOperation extends OCSRemoteOperation<PrivateKey> {
+public class GetPublicKeyRemoteOperation extends RemoteOperation<String> {
 
-    private static final String TAG = GetPrivateKeyOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
-    private static final String PUBLIC_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/private-key";
+    private static final String TAG = GetPublicKeyRemoteOperation.class.getSimpleName();
+    private static final String PUBLIC_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/public-key";
+
+    // JSON node names
+    private static final String NODE_OCS = "ocs";
+    private static final String NODE_DATA = "data";
+    private static final String NODE_PUBLIC_KEYS = "public-keys";
+
+    private String user;
+
+    public GetPublicKeyRemoteOperation() {
+        this.user = "";
+    }
+
+    public GetPublicKeyRemoteOperation(String user) {
+        this.user = user;
+    }
 
     /**
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult<PrivateKey> run(OwnCloudClient client) {
+    public RemoteOperationResult<String> run(NextcloudClient client) {
         GetMethod getMethod = null;
-        RemoteOperationResult<PrivateKey> result;
+        RemoteOperationResult<String> result;
 
         try {
             // remote request
-            getMethod = new GetMethod(client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT);
-            getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            getMethod = new GetMethod(client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT, true);
 
-            int status = client.executeMethod(getMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
-
-            if (status == HttpStatus.SC_OK) {
-                ServerResponse<PrivateKey> serverResponse =
-                        getServerResponse(getMethod, new TypeToken<ServerResponse<PrivateKey>>() {
-                        });
-
-                result = new RemoteOperationResult<>(true, getMethod);
-                result.setResultData(serverResponse.getOcs().data);
+            if (!user.isEmpty()) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put("users", "[\"" + user + "\"]");
+                getMethod.setQueryString(map);
             } else {
-                result = new RemoteOperationResult<>(false, getMethod);
-                client.exhaustResponse(getMethod.getResponseBodyAsStream());
+                user = client.getUserId();
             }
 
+            int status = client.execute(getMethod);
+
+            if (status == HttpStatus.SC_OK) {
+                String response = getMethod.getResponseBodyAsString();
+
+                // Parse the response
+                JSONObject respJSON = new JSONObject(response);
+                String key = respJSON
+                        .getJSONObject(NODE_OCS)
+                        .getJSONObject(NODE_DATA)
+                        .getJSONObject(NODE_PUBLIC_KEYS)
+                        .getString(user);
+
+                result = new RemoteOperationResult<>(true, getMethod);
+                result.setResultData(key);
+            } else {
+                result = new RemoteOperationResult<>(false, getMethod);
+            }
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
-            Log_OC.e(TAG, "Fetching of public key failed: " + result.getLogMessage(), result.getException());
+            Log_OC.e(TAG,
+                    "Fetching of public key failed for user " + user + ": " + result.getLogMessage(),
+                    result.getException());
         } finally {
             if (getMethod != null)
                 getMethod.releaseConnection();
         }
         return result;
     }
-
 }
