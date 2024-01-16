@@ -25,7 +25,7 @@
  *
  */
 
-package com.owncloud.android.lib.resources.e2ee;
+package com.owncloud.android.lib.resources.users;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -40,33 +40,29 @@ import java.util.ArrayList;
 
 
 /**
- * Lock a file
+ * Remote operation performing the storage of the private key for an user
  */
-public class LockFileRemoteOperation extends RemoteOperation {
 
-    private static final String TAG = LockFileRemoteOperation.class.getSimpleName();
+public class StorePrivateKeyOperation extends RemoteOperation {
+
+    private static final String TAG = StorePrivateKeyOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
     private static final int SYNC_CONNECTION_TIMEOUT = 5000;
-    private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
-
-    private final long localId;
-    private final String token;
+    private static final String PRIVATE_KEY_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/private-key";
+    private static final String PRIVATE_KEY = "privateKey";
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
+    private static final String NODE_PRIVATE_KEY = "private-key";
+
+    private String privateKey;
 
     /**
      * Constructor
      */
-    public LockFileRemoteOperation(long localId, String token) {
-        this.localId = localId;
-        this.token = token;
-    }
-
-    public LockFileRemoteOperation(long localId) {
-        this.localId = localId;
-        this.token = "";
+    public StorePrivateKeyOperation(String privateKey) {
+        this.privateKey = privateKey;
     }
 
     /**
@@ -74,19 +70,14 @@ public class LockFileRemoteOperation extends RemoteOperation {
      */
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
         Utf8PostMethod postMethod = null;
+        RemoteOperationResult result;
 
         try {
-            postMethod = new Utf8PostMethod(client.getBaseUri() + LOCK_FILE_URL + localId + JSON_FORMAT);
-
-            if (!token.isEmpty()) {
-                postMethod.setParameter(E2E_TOKEN, token);
-            }
-
             // remote request
+            postMethod = new Utf8PostMethod(client.getBaseUri() + PRIVATE_KEY_URL + JSON_FORMAT);
             postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+            postMethod.setParameter(PRIVATE_KEY, privateKey);
 
             int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
@@ -95,26 +86,25 @@ public class LockFileRemoteOperation extends RemoteOperation {
 
                 // Parse the response
                 JSONObject respJSON = new JSONObject(response);
-                String token = (String) respJSON
-                        .getJSONObject(NODE_OCS)
-                        .getJSONObject(NODE_DATA)
-                        .get(E2E_TOKEN);
+                String key = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).get(NODE_PRIVATE_KEY);
 
                 result = new RemoteOperationResult(true, postMethod);
-                ArrayList<Object> tokenArray = new ArrayList<>();
-                tokenArray.add(token);
-                result.setData(tokenArray);
+                ArrayList<Object> keys = new ArrayList<>();
+                keys.add(key);
+                result.setData(keys);
             } else {
                 result = new RemoteOperationResult(false, postMethod);
                 client.exhaustResponse(postMethod.getResponseBodyAsStream());
             }
+
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Lock file with id " + localId + " failed: " + result.getLogMessage(), result.getException());
+            Log_OC.e(TAG, "Storing private key failed: " + result.getLogMessage(), result.getException());
         } finally {
             if (postMethod != null)
                 postMethod.releaseConnection();
         }
         return result;
     }
+
 }

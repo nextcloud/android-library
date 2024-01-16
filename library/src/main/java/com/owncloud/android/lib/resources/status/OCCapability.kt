@@ -87,7 +87,6 @@ class OCCapability {
 
     var endToEndEncryption = CapabilityBooleanType.UNKNOWN
     var endToEndEncryptionKeysExist = CapabilityBooleanType.UNKNOWN
-    var endToEndEncryptionApiVersion = E2EVersion.UNKNOWN
 
     // Richdocuments
     var richDocuments = CapabilityBooleanType.UNKNOWN
