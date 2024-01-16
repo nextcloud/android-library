@@ -42,8 +42,10 @@ import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
+import org.junit.Test;
+
 public class UpdateMetadataRemoteOperationIT extends AbstractIT {
-    //@Test
+    @Test
     public void uploadAndModifyV1() {
         // tests only for NC19+
         testOnlyOnServer(OwnCloudVersion.nextcloud_20);
@@ -111,7 +113,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertEquals(updatedMetadata, retrievedMetadata2);
     }
 
-    //@Test
+    @Test
     public void uploadAndModifyV2() {
         // tests only for NC19+
         testOnlyOnServer(OwnCloudVersion.nextcloud_20);
