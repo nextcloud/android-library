@@ -30,9 +30,11 @@ package com.nextcloud.common
 
 import android.content.Context
 import android.net.Uri
+import android.text.TextUtils
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_CONNECTION_TIMEOUT_LONG
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.accounts.AccountUtils
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
@@ -45,6 +47,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
@@ -81,14 +85,28 @@ class NextcloudClient private constructor(
             sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
+            var proxy: Proxy? = null
+
+            val proxyHost = OwnCloudClientManagerFactory.getProxyHost()
+            val proxyPort = OwnCloudClientManagerFactory.getProxyPort()
+
+            if (!TextUtils.isEmpty(proxyHost) && proxyPort > 0) {
+                proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(proxyHost, proxyPort))
+                Log_OC.d(this, "Proxy settings: $proxyHost:$proxyPort")
+            }
+
             return OkHttpClient.Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
                 .connectTimeout(DEFAULT_CONNECTION_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .readTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
-                .callTimeout(DEFAULT_CONNECTION_TIMEOUT_LONG + DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
+                .callTimeout(
+                    DEFAULT_CONNECTION_TIMEOUT_LONG + DEFAULT_DATA_TIMEOUT_LONG,
+                    TimeUnit.MILLISECONDS
+                )
                 .sslSocketFactory(sslSocketFactory, trustManager)
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .fastFallback(true)
+                .proxy(proxy)
                 .build()
         }
     }

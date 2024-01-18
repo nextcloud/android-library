@@ -26,6 +26,7 @@
 package com.owncloud.android.lib.common;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.nextcloud.common.DNSCache;
 import com.nextcloud.common.NextcloudUriDelegate;
@@ -102,23 +103,15 @@ public class OwnCloudClient extends HttpClient {
 
 
     private void applyProxySettings() {
-    	String proxyHost = System.getProperty("http.proxyHost");
-    	String proxyPortSt = System.getProperty("http.proxyPort");
-    	int proxyPort = 0;
-    	try {
-    		if (proxyPortSt != null && proxyPortSt.length() > 0) {
-    			proxyPort = Integer.parseInt(proxyPortSt);
-    		}
-    	} catch (Exception e) {
-    		// nothing to do here
-    	}
+        String proxyHost = OwnCloudClientManagerFactory.getProxyHost();
+        Integer proxyPort = OwnCloudClientManagerFactory.getProxyPort();
 
-    	if (proxyHost != null && proxyHost.length() > 0) {
-	    	HostConfiguration hostCfg = getHostConfiguration();
-	    	hostCfg.setProxy(proxyHost, proxyPort);
-	    	Log_OC.d(TAG, "Proxy settings: " + proxyHost + ":" + proxyPort);
-    	}
-	}
+        if (!TextUtils.isEmpty(proxyHost) && proxyPort > 0) {
+            HostConfiguration hostCfg = getHostConfiguration();
+            hostCfg.setProxy(proxyHost, proxyPort);
+            Log_OC.d(this, "Proxy settings: " + proxyHost + ":" + proxyPort);
+        }
+    }
 
 
 	public void setCredentials(OwnCloudCredentials credentials) {
