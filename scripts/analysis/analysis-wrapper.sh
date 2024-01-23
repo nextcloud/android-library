@@ -8,7 +8,7 @@ PR_NUMBER=$5
 
 
 stableBranch="master"
-repository="library"
+repository="android-library"
 
 curl "https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.xml" -o "/tmp/$stableBranch.xml"
 ruby scripts/analysis/spotbugs-up.rb "$stableBranch"
