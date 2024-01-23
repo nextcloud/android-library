@@ -56,7 +56,7 @@ else
     fi
     
     # check for NotNull
-    if [[ $(grep org.jetbrains.annotations app/src/main/* -irl | wc -l) -gt 0 ]] ; then
+    if [[ $(grep org.jetbrains.annotations library/src/main/* -irl | wc -l) -gt 0 ]] ; then
         notNull="org.jetbrains.annotations.* is used. Please use androidx.annotation.* instead.<br><br>"
     fi
 
