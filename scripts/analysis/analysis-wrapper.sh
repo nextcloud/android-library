@@ -1,44 +1,45 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-#1: GIT_USERNAME
-#2: GIT_TOKEN
-#3: BRANCH
-#4: LOG_USERNAME
-#5: LOG_PASSWORD
-#6: DRONE_BUILD_NUMBER
-#7: PULL_REQUEST_NUMBER
+BRANCH=$1
+LOG_USERNAME=$2
+LOG_PASSWORD=$3
+BUILD_NUMBER=$4
+PR_NUMBER=$5
+
 
 stableBranch="master"
 repository="library"
 
-ruby scripts/analysis/findbugs-up.rb $1 $2 $3
-findbugsValue=$?
+curl "https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.xml" -o "/tmp/$stableBranch.xml"
+ruby scripts/analysis/spotbugs-up.rb "$stableBranch"
+spotbugsValue=$?
 
 # exit codes:
 # 0: count was reduced
 # 1: count was increased
 # 2: count stayed the same
 
-echo "Branch: $3"
+source scripts/lib.sh
 
-if [ $3 = $stableBranch ]; then
-    echo "New SpotBugs result for $stableBranch at: https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html"
-    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/dav/files/$4/$repository-findbugs/$stableBranch.html --upload-file library/build/reports/spotbugs/spotbugs.html
+echo "Branch: $BRANCH"
 
-    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" library/build/reports/spotbugs/spotbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"/Summary/SpotBugs ($stableBranch)/" | tr "\"" "\'" | tr -d "\r\n" | sed 's/^ *//')
-    curl -u $4:$5 -X PUT -d "$summary" https://nextcloud.kaminsky.me/remote.php/dav/files/$4/$repository-findbugs/findbugs-summary-$stableBranch.html
+if [ "$BRANCH" = $stableBranch ]; then
+    echo "New spotbugs result for $stableBranch at: https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html"
+    curl -u "${LOG_USERNAME}:${LOG_PASSWORD}" -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.html --upload-file app/build/reports/spotbugs/spotbugs.html
+    curl 2>/dev/null -u "${LOG_USERNAME}:${LOG_PASSWORD}" -X PUT "https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.xml" --upload-file app/build/reports/spotbugs/gplayDebug.xml
 else
-    if [ -e $6 ]; then
+    if [ -e "${BUILD_NUMBER}" ]; then
         6=$stableBranch"-"$(date +%F)
     fi
-    echo "New SpotBugs results at https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html"
-    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/dav/files/$4/$repository-findbugs/$6.html --upload-file library/build/reports/spotbugs/spotbugs.html
 
-    # delete all old comments
-    oldComments=$(curl 2>/dev/null -u $1:$2 -X GET https://api.github.com/repos/nextcloud/android-library/issues/$7/comments | jq '.[] | (.id |tostring) + "|" + (.user.login | test("nextcloud-android-bot") | tostring) ' | grep true | tr -d "\"" | cut -f1 -d"|")
+    echo "New spotbugs results at https://www.kaminsky.me/nc-dev/$repository-findbugs/${BUILD_NUMBER}.html"
+    curl 2>/dev/null -u "${LOG_USERNAME}:${LOG_PASSWORD}" -X PUT "https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/${BUILD_NUMBER}.html" --upload-file app/build/reports/spotbugs/spotbugs.html
 
-    echo $oldComments | while read comment ; do
-        curl 2>/dev/null -u $1:$2 -X DELETE https://api.github.com/repos/nextcloud/android-library/issues/comments/$comment
+    # delete all old comments, starting with Codacy
+    oldComments=$(curl_gh -X GET "https://api.github.com/repos/nextcloud/$repository/issues/${PR_NUMBER}/comments" | jq '.[] | select((.user.login | contains("github-actions")) and  (.body | test("<h1>Codacy.*"))) | .id')
+
+    echo "$oldComments" | while read -r comment ; do
+        curl_gh -X DELETE "https://api.github.com/repos/nextcloud/$repository/issues/comments/$comment"
     done
 
     # spotbugs file must exist
@@ -48,18 +49,33 @@ else
     fi
 
     # add comment with results
-    findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" library/build/reports/spotbugs/spotbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html\">SpotBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n" | sed 's/^ *//')
-    findbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/$repository-findbugs/findbugs-summary-$stableBranch.html | tr "\"" "\'" | tr -d "\r\n" | sed s"#SpotBugs#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html\">SpotBugs</a>#" | tr "\"" "\'" | tr -d "\n" | sed 's/^ *//')
+    spotbugsResult="<h1>SpotBugs</h1>$(scripts/analysis/spotbugsComparison.py "/tmp/$stableBranch.xml" app/build/reports/spotbugs/gplayDebug.xml --link-new "https://www.kaminsky.me/nc-dev/$repository-findbugs/${BUILD_NUMBER}.html" --link-base "https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html")"
 
-    if ( [ $findbugsValue -eq 1 ] ) ; then
-        findbugsMessage="<h1>SpotBugs increased!</h1>"
+    if ( [ $spotbugsValue -eq 1 ] ) ; then
+        spotbugsMessage="<h1>SpotBugs increased!</h1>"
+    fi
+    
+    # check for NotNull
+    if [[ $(grep org.jetbrains.annotations app/src/main/* -irl | wc -l) -gt 0 ]] ; then
+        notNull="org.jetbrains.annotations.* is used. Please use androidx.annotation.* instead.<br><br>"
     fi
 
-    curl -u $1:$2 -X POST https://api.github.com/repos/nextcloud/android-library/issues/$7/comments -d "{ \"body\" : \"$findbugsResultNew $findbugsResultOld $findbugsMessage \" }"
+    bodyContent="$spotbugsResult $spotbugsMessage $gplayLimitation $notNull"
+    echo "$bodyContent" >> "$GITHUB_STEP_SUMMARY"
+    payload="{ \"body\" : \"$bodyContent\" }"
+    curl_gh -X POST "https://api.github.com/repos/nextcloud/$repository/issues/${PR_NUMBER}/comments" -d "$payload"
 
-    if [ $findbugsValue -eq 2 ]; then
+    if [ ! -z "$gplayLimitation" ]; then
+        exit 1
+    fi
+
+    if [ -n "$notNull" ]; then
+        exit 1
+    fi
+
+    if [ $spotbugsValue -eq 2 ]; then
         exit 0
     else
-        exit $findbugsValue
+        exit $spotbugsValue
     fi
 fi
