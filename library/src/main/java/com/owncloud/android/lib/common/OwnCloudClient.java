@@ -74,7 +74,7 @@ public class OwnCloudClient extends HttpClient {
     private OwnCloudCredentials credentials = null;
     private int mInstanceNumber;
 
-    private final Context context;
+    private AdvancedX509KeyManager keyManager;
 
     /**
      * Constructor
@@ -85,7 +85,7 @@ public class OwnCloudClient extends HttpClient {
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
-        this.context = context;
+        this.keyManager = new AdvancedX509KeyManager(context);
         nextcloudUriDelegate = new NextcloudUriDelegate(baseUri);
 
         mInstanceNumber = sInstanceCounter++;
@@ -165,7 +165,7 @@ public class OwnCloudClient extends HttpClient {
             if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
                 URI uri = method.getURI();
                 Log_OC.e(TAG, "Received http status 400 for " + uri + " -> removing client certificate");
-                new AdvancedX509KeyManager(context).removeKeys(uri);
+                keyManager.removeKeys(uri);
             }
             return httpStatus;
         } finally {
@@ -205,7 +205,7 @@ public class OwnCloudClient extends HttpClient {
             } else if (status == HttpStatus.SC_BAD_REQUEST) {
                 URI uri = method.getURI();
                 Log_OC.e(TAG, "Received http status 400 for " + uri + " -> removing client certificate");
-                new AdvancedX509KeyManager(context).removeKeys(uri);
+                keyManager.removeKeys(uri);
             }
 
             if (followRedirects) {
