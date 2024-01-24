@@ -23,6 +23,10 @@ THE SOFTWARE.
  */
 package com.owncloud.android.lib.common.network;
 
+import static android.Manifest.permission.POST_NOTIFICATIONS;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKMAlias.Type.KEYCHAIN;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -36,6 +40,12 @@ import android.security.KeyChain;
 import android.security.KeyChainException;
 import android.util.SparseArray;
 import android.webkit.ClientCertRequest;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.owncloud.android.lib.R;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -57,6 +67,7 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,16 +77,8 @@ import java.util.Set;
 import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509KeyManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okhttp3.HttpUrl;
-
-import static android.Manifest.permission.POST_NOTIFICATIONS;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKMAlias.Type.KEYCHAIN;
 
 /**
  * AdvancedX509KeyManager is an implementation of X509KeyManager that handles key management,
@@ -563,6 +566,7 @@ public class AdvancedX509KeyManager
     * @param port port of connection
     * @return decision object with result of user interaction
     */
+   @SuppressFBWarnings({"UW", "WA"})
    private @NonNull AKMDecision interactClientCert(@NonNull final String hostname, final int port) {
       Log_OC.d(TAG, "interactClientCert(hostname=" + hostname + ", port=" + port + ")");
 
@@ -657,6 +661,10 @@ public class AdvancedX509KeyManager
             return prefix;
          }
 
+         /**
+          * @throws IllegalArgumentException if prefix is unknown
+          */
+         @SuppressFBWarnings("DRE")
          public static Type parse(String prefix) throws IllegalArgumentException {
             for (Type type : Type.values()) {
                if (type.getPrefix().equals(prefix)) {
@@ -728,10 +736,10 @@ public class AdvancedX509KeyManager
          constructedAlias.append(type.getPrefix());
          constructedAlias.append(alias);
          if (hostname != null) {
-            constructedAlias.append(":");
+            constructedAlias.append(':');
             constructedAlias.append(hostname);
             if (port != null) {
-               constructedAlias.append(":");
+               constructedAlias.append(':');
                constructedAlias.append(port);
             }
          }
@@ -747,6 +755,11 @@ public class AdvancedX509KeyManager
                  Objects.equals(alias, other.alias) &&
                  Objects.equals(hostname, other.hostname) &&
                  Objects.equals(port, other.port);
+      }
+
+      @Override
+      public int hashCode() {
+         return Objects.hash(type, alias, hostname, port);
       }
 
       /**
@@ -821,7 +834,7 @@ public class AdvancedX509KeyManager
       }
 
       public static Set<KeyType> parse(Iterable<String> keyTypes) {
-         Set<KeyType> keyTypeSet = new HashSet<>();
+         EnumSet<KeyType> keyTypeSet = EnumSet.noneOf(KeyType.class);
          if (keyTypes != null) {
             for (String keyType : keyTypes) {
                keyTypeSet.add(parse(keyType));

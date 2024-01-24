@@ -14,7 +14,6 @@ private const val HOST_SAME = "hostname"
 private const val HOST_OTHER = "hostname1"
 
 class AdvancedX509KeyManagerTests {
-
     @Test
     fun testAKMAliasMatches() {
         val akmAlias1 = AKMAlias(AKMAlias.Type.KEYCHAIN, ALIAS_SAME, HOST_SAME, PORT_SAME)

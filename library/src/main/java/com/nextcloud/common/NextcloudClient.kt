@@ -48,8 +48,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.apache.commons.httpclient.HttpStatus
 import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
@@ -126,11 +124,12 @@ class NextcloudClient private constructor(
 
     @Suppress("TooGenericExceptionCaught")
     fun <T> execute(remoteOperation: RemoteOperation<T>): RemoteOperationResult<T> {
-        val result = try {
-            remoteOperation.run(this)
-        } catch (ex: Exception) {
-            RemoteOperationResult(ex)
-        }
+        val result =
+            try {
+                remoteOperation.run(this)
+            } catch (ex: Exception) {
+                RemoteOperationResult(ex)
+            }
         if (result.httpCode == HttpStatus.SC_BAD_REQUEST) {
             val url = remoteOperation.client.hostConfiguration.hostURL
             Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
