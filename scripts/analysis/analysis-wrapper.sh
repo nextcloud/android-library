@@ -26,7 +26,7 @@ echo "Branch: $BRANCH"
 if [ "$BRANCH" = $stableBranch ]; then
     echo "New spotbugs result for $stableBranch at: https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.html"
     curl -u "${LOG_USERNAME}:${LOG_PASSWORD}" -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.html --upload-file library/build/reports/spotbugs/spotbugs.html
-    curl 2>/dev/null -u "${LOG_USERNAME}:${LOG_PASSWORD}" -X PUT "https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.xml" --upload-file library/build/reports/spotbugs/spotbugs.html
+    curl 2>/dev/null -u "${LOG_USERNAME}:${LOG_PASSWORD}" -X PUT "https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$stableBranch.xml" --upload-file library/build/reports/spotbugs/debug.xml
 else
     if [ -e "${BUILD_NUMBER}" ]; then
         6=$stableBranch"-"$(date +%F)
