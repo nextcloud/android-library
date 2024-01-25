@@ -63,7 +63,7 @@ class NextcloudClientTest {
         MockitoAnnotations.initMocks(this)
         val userId = "test"
         val credentials = Credentials.basic("login", "test")
-        nextcloudClient = NextcloudClient(uri, userId, credentials, okHttpClient)
+        nextcloudClient = NextcloudClient(uri, userId, credentials, okHttpClient, context)
     }
 
     @Test

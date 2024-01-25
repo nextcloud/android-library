@@ -36,6 +36,7 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_CONNECTION_
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.accounts.AccountUtils
+import com.owncloud.android.lib.common.network.AdvancedX509KeyManager
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
 import com.owncloud.android.lib.common.network.RedirectionPath
@@ -56,7 +57,8 @@ import javax.net.ssl.TrustManager
 class NextcloudClient private constructor(
     val delegate: NextcloudUriDelegate,
     var credentials: String,
-    val client: OkHttpClient
+    val client: OkHttpClient,
+    val context: Context
 ) : NextcloudUriProvider by delegate {
     var followRedirects = true
 
@@ -64,8 +66,9 @@ class NextcloudClient private constructor(
         baseUri: Uri,
         userId: String,
         credentials: String,
-        client: OkHttpClient
-    ) : this(NextcloudUriDelegate(baseUri, userId), credentials, client)
+        client: OkHttpClient,
+        context: Context
+    ) : this(NextcloudUriDelegate(baseUri, userId), credentials, client, context)
 
     var userId: String
         get() = delegate.userId!!
@@ -79,10 +82,11 @@ class NextcloudClient private constructor(
 
         private fun createDefaultClient(context: Context): OkHttpClient {
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
+            val keyManager = AdvancedX509KeyManager(context)
 
             val sslContext = NetworkUtils.getSSLContext()
 
-            sslContext.init(null, arrayOf<TrustManager>(trustManager), null)
+            sslContext.init(arrayOf(keyManager), arrayOf<TrustManager>(trustManager), null)
             val sslSocketFactory = sslContext.socketFactory
 
             var proxy: Proxy? = null
@@ -116,25 +120,43 @@ class NextcloudClient private constructor(
         userId: String,
         credentials: String,
         context: Context
-    ) : this(baseUri, userId, credentials, createDefaultClient(context))
+    ) : this(baseUri, userId, credentials, createDefaultClient(context), context)
 
     @Suppress("TooGenericExceptionCaught")
     fun <T> execute(remoteOperation: RemoteOperation<T>): RemoteOperationResult<T> {
-        return try {
-            remoteOperation.run(this)
-        } catch (ex: Exception) {
-            RemoteOperationResult(ex)
+        val result =
+            try {
+                remoteOperation.run(this)
+            } catch (ex: Exception) {
+                RemoteOperationResult(ex)
+            }
+        if (result.httpCode == HttpStatus.SC_BAD_REQUEST) {
+            val url = remoteOperation.client.hostConfiguration.hostURL
+            Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
+            AdvancedX509KeyManager(context).removeKeys(url)
         }
+        return result
     }
 
     @Throws(IOException::class)
     fun execute(method: OkHttpMethodBase): Int {
-        return method.execute(this)
+        val httpStatus = method.execute(this)
+        if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
+            val uri = method.uri
+            Log_OC.e(TAG, "Received http status 400 for $uri -> removing client certificate")
+            AdvancedX509KeyManager(context).removeKeys(uri)
+        }
+        return httpStatus
     }
 
     internal fun execute(request: Request): ResponseOrError {
         return try {
             val response = client.newCall(request).execute()
+            if (response.code == HttpStatus.SC_BAD_REQUEST) {
+                val url = request.url
+                Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
+                AdvancedX509KeyManager(context).removeKeys(url)
+            }
             ResponseOrError(response)
         } catch (ex: IOException) {
             ResponseOrError(ex)

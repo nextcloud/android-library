@@ -36,7 +36,6 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -48,6 +47,7 @@ import java.security.cert.CertificateException;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509KeyManager;
 
 public class NetworkUtils {
     
@@ -118,8 +118,10 @@ public class NetworkUtils {
             AdvancedX509TrustManager trustMgr = new AdvancedX509TrustManager(trustStore);
             TrustManager[] tms = new TrustManager[]{trustMgr};
 
+            X509KeyManager[] kms = new X509KeyManager[]{ new AdvancedX509KeyManager(context) };
+
             SSLContext sslContext = getSSLContext();
-            sslContext.init(null, tms, null);
+            sslContext.init(kms, tms, null);
 
             mHostnameVerifier = new BrowserCompatHostnameVerifier();
             mAdvancedSslSocketFactory = new AdvancedSslSocketFactory(sslContext, trustMgr, mHostnameVerifier);
