@@ -450,19 +450,25 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
                     gson.fromDavProperty<GeoLocation>(prop)
                 } else {
-                    val xmlData = prop.value as ArrayList<*>
-                    var latitude = 0.0
-                    var longitude = 0.0
-                    xmlData.forEach {
-                        val element = it as Element
-                        if (element.tagName == "latitude") {
-                            latitude = element.firstChild.textContent.toDouble()
-                        } else if (element.tagName == "longitude") {
-                            longitude = element.firstChild.textContent.toDouble()
+                    try {
+                        val xmlData = prop.value as ArrayList<*>
+                        var latitude = 0.0
+                        var longitude = 0.0
+                        xmlData.forEach {
+                            val element = it as Element
+                            if (element.tagName == "latitude") {
+                                latitude = element.firstChild.textContent.toDouble()
+                            } else if (element.tagName == "longitude") {
+                                longitude = element.firstChild.textContent.toDouble()
+                            }
                         }
-                    }
 
-                    GeoLocation(latitude, longitude)
+                        GeoLocation(latitude, longitude)
+                    } catch (e: ClassCastException) {
+
+                        prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+                        gson.fromDavProperty<GeoLocation>(prop)
+                    }
                 }
 
             // NC metadata live photo property: <nc:metadata-files-live-photo/>
