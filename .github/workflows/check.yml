@@ -25,7 +25,7 @@ jobs:
                     mkdir -p "$HOME/.gradle"
                     echo "org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" > "$HOME/.gradle/gradle.properties"
             -   name: Check ${{ matrix.task }}
-                uses: gradle/gradle-build-action@v2
+                uses: gradle/gradle-build-action@v3
                 with:
                     arguments: ${{ matrix.task }}
             -   uses: actions/upload-artifact@v4
