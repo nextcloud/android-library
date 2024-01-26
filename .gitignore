@@ -34,3 +34,4 @@ tests/test_cases/proguard-project.txt
 
 # Test files
 /test
+/gradle/verification-keyring.gpg
