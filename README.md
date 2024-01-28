@@ -29,6 +29,8 @@ thanks to it you will learn how to use the library.
 ### Gradle / Maven dependency
 At the moment we do not have a publishing mechanism to a maven repository so the easiest way to add the library to your app is via a JitPack Dependency [![](https://jitpack.io/v/nextcloud/android-library.svg)](https://jitpack.io/#nextcloud/android-library)
 
+
+#### build via Groovy configuration
 ```
 repositories {
     ...
@@ -40,6 +42,28 @@ dependencies {
         exclude group: 'org.ogce', module: 'xpp3' // unused in Android and brings wrong Junit version
     }
 ```
+####  build via Kotlin configuration
+
+in settings.gradle.kts
+``` 
+dependencyResolutionManagement {
+    ...
+    repositories {
+    ...
+        maven(url = "https://jitpack.io")
+    }
+}
+```
+
+in build.gradle.kts
+``` 
+dependencies {
+    ...
+    implementation("com.github.nextcloud:android-library:$androidLibraryVersion") {
+        exclude(group = "org.ogce", module = "xpp3") // unused in Android and brings wrong Junit version
+    }
+```
+
 
 ### As a git submodule
 Basically get this code and compile it having it integrated via a git submodule:
