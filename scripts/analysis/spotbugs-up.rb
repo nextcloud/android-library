@@ -15,7 +15,7 @@ require 'open3'
 
 # run Spotbugs
 puts "running Spotbugs..."
-system './gradlew spotbugsDebug 1>/dev/null 2>&1'
+system './gradlew spotbugsDebug'
 
 # find number of warnings
 current_warning_count = `./scripts/analysis/spotbugsSummary.py --file library/build/reports/spotbugs/debug.xml --total`.to_i
