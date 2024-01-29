@@ -22,6 +22,7 @@
          </trusted-key>
          <trusted-key id="08EF3EC268A80497ED2030812838A2C567F74226" group="org.scala-lang.modules" name="scala-parallel-collections_2.13" version="1.0.4"/>
          <trusted-key id="08F0AAB4D0C1A4BDDE340765B341DDB020FCB6AB" group="org.bouncycastle"/>
+		 <trusted-key id="48B086A7D843CFA258E83286928FBF39003C0425" group="org.springframework"/>
          <trusted-key id="09939C73246B4BA7444CAA453D002DBC5EA9615F" group="dev.drewhamilton.poko"/>
          <trusted-key id="0A784736254716AC0EBEF6E2365D826E84B11B58" group="com.karumi"/>
          <trusted-key id="0CC641C3A62453AB390066C4A41F13C999945293" group="commons-logging" name="commons-logging" version="1.2"/>
