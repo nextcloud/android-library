@@ -82,7 +82,7 @@ class SendClientDiagnosticRemoteOperation(
         if (e2eError != null) {
             map.add(e2eError.toJsonWithTypeString())
         } else {
-            map.add(""""$E2E_ERRORS": {}""")
+            map.add(""""$E2EE_ERRORS": {}""")
         }
 
         return map.joinToString(prefix = "{", postfix = "}")
@@ -94,6 +94,6 @@ class SendClientDiagnosticRemoteOperation(
         const val SYNC_CONFLICTS = "sync_conflicts"
         const val PROBLEMS = "problems"
         const val VIRUS_DETECTED = "virus_detected"
-        const val E2E_ERRORS = "e2e_errors"
+        const val E2EE_ERRORS = "e2ee_errors"
     }
 }
