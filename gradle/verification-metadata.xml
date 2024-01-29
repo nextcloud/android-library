@@ -6,18 +6,6 @@
       <trusted-artifacts>
          <trust group="com.android.tools.build" name="aapt2" version="8.2.2-10154469" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
       </trusted-artifacts>
-      <ignored-keys>
-         <ignored-key id="586654072EAD6677" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="E93671C7272B7B3F" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="8118B3BCDB1A5000" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="F3D1600878E85A3D" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="858FC4C4F43856A3" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="928FBF39003C0425" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="012579464D01C06A" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="379CE192D401AB61" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="3AD93C3C677A106E" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="36D4E9618F3ADAB5" reason="Key couldn't be downloaded from any key server"/>
-      </ignored-keys>
       <trusted-keys>
          <trusted-key id="015479E1055341431B4545AB72475FD306B9CAB7" group="com.googlecode.javaewah" name="JavaEWAH" version="1.2.3"/>
          <trusted-key id="042B29E928995B9DB963C636C7CA19B7B620D787" group="com.github.stephenc.jcip" name="jcip-annotations" version="1.0-1"/>
