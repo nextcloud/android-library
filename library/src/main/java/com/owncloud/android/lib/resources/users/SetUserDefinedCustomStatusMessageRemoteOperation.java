@@ -19,7 +19,7 @@ import org.apache.commons.httpclient.HttpStatus;
 /**
  * Remote operation performing setting user defined custom status message
  */
-public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation {
+public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation<Void> {
 
     private static final String TAG = SetUserDefinedCustomStatusMessageRemoteOperation.class.getSimpleName();
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message/custom";
@@ -38,9 +38,9 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<Void> run(NextcloudClient client) {
         PutMethod putMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<Void> result;
 
         try {
             // request body
@@ -54,13 +54,13 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
             int status = client.execute(putMethod);
 
             if (status == HttpStatus.SC_OK) {
-                result = new RemoteOperationResult(true, putMethod);
+                result = new RemoteOperationResult<>(true, putMethod);
             } else {
-                result = new RemoteOperationResult(false, putMethod);
+                result = new RemoteOperationResult<>(false, putMethod);
                 putMethod.releaseConnection();
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Setting of predefined custom status failed: " + result.getLogMessage(),
                     result.getException());
         } finally {
