@@ -19,7 +19,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import java.util.ArrayList;
 
 /**
- * Remote operation performing setting of predefined custome status message
+ * Remote operation performing setting of predefined custom status message
  */
 public class SetPredefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation<ArrayList<PredefinedStatus>> {
 
