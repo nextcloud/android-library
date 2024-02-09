@@ -429,12 +429,16 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
                     gson.fromDavProperty<ImageDimension>(prop)
                 } else {
-                    val result = ImageDimension()
                     val xmlData = prop.value as? ArrayList<*>
-                    result.width = xmlData?.processXmlData<Float>("width") ?: -1f
-                    result.height = xmlData?.processXmlData<Float>("height") ?: -1f
+                    val width = xmlData?.processXmlData<Float>("width")
+                    val height = xmlData?.processXmlData<Float>("height")
 
-                    result
+                    if (width != null && height != null) {
+                        ImageDimension(width, height)
+                    } else {
+                        prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+                        gson.fromDavProperty<ImageDimension>(prop)
+                    }
                 }
 
             // NC metadata gps property <nc:file-metadata-gps>
@@ -444,12 +448,16 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
                     gson.fromDavProperty<GeoLocation>(prop)
                 } else {
-                    val result = GeoLocation()
                     val xmlData = prop.value as? ArrayList<*>
-                    result.latitude = xmlData?.processXmlData<Double>("latitude") ?: -1.0
-                    result.longitude = xmlData?.processXmlData<Double>("longitude") ?: -1.0
+                    val latitude = xmlData?.processXmlData<Double>("latitude")
+                    val longitude = xmlData?.processXmlData<Double>("longitude")
 
-                    result
+                    if (latitude != null && longitude != null) {
+                        GeoLocation(latitude, longitude)
+                    } else {
+                        prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+                        gson.fromDavProperty<GeoLocation>(prop)
+                    }
                 }
 
             // NC metadata live photo property: <nc:metadata-files-live-photo/>
