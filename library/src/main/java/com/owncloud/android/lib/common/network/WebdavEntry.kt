@@ -26,6 +26,7 @@ package com.owncloud.android.lib.common.network
 import android.net.Uri
 import com.google.gson.Gson
 import com.nextcloud.extensions.fromDavProperty
+import com.nextcloud.extensions.processXmlData
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.FileLockType
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
@@ -428,19 +429,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
                     gson.fromDavProperty<ImageDimension>(prop)
                 } else {
-                    val xmlData = prop.value as ArrayList<*>
-                    var width = 0f
-                    var height = 0f
-                    xmlData.forEach {
-                        val element = it as Element
-                        if (element.tagName == "width") {
-                            width = element.firstChild.textContent.toFloat()
-                        } else if (element.tagName == "height") {
-                            height = element.firstChild.textContent.toFloat()
-                        }
-                    }
+                    val result = ImageDimension()
+                    val xmlData = prop.value as? ArrayList<*>
+                    result.width = xmlData?.processXmlData<Float>("width") ?: -1f
+                    result.height = xmlData?.processXmlData<Float>("height") ?: -1f
 
-                    ImageDimension(width, height)
+                    result
                 }
 
             // NC metadata gps property <nc:file-metadata-gps>
@@ -450,19 +444,12 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
                     prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
                     gson.fromDavProperty<GeoLocation>(prop)
                 } else {
-                    val xmlData = prop.value as ArrayList<*>
-                    var latitude = 0.0
-                    var longitude = 0.0
-                    xmlData.forEach {
-                        val element = it as Element
-                        if (element.tagName == "latitude") {
-                            latitude = element.firstChild.textContent.toDouble()
-                        } else if (element.tagName == "longitude") {
-                            longitude = element.firstChild.textContent.toDouble()
-                        }
-                    }
+                    val result = GeoLocation()
+                    val xmlData = prop.value as? ArrayList<*>
+                    result.latitude = xmlData?.processXmlData<Double>("latitude") ?: -1.0
+                    result.longitude = xmlData?.processXmlData<Double>("longitude") ?: -1.0
 
-                    GeoLocation(latitude, longitude)
+                    result
                 }
 
             // NC metadata live photo property: <nc:metadata-files-live-photo/>
