@@ -9,7 +9,7 @@ inline fun <reified T> ArrayList<*>.processXmlData(tagName: String): T? {
             val textContent = element.firstChild.textContent
 
             return when (T::class) {
-                Float::class -> textContent.toDouble() as T
+                Float::class -> textContent.toFloat() as T
                 Double::class -> textContent.toDouble() as T
                 else -> textContent as T
             }
