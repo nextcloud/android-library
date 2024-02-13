@@ -27,41 +27,36 @@
 
 package com.owncloud.android.lib.resources.files.webdav
 
-import android.text.TextUtils
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.common.network.ExtendedProperties
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCOwnerId private constructor(var ownerId: String?) : Property {
-
+class OCOwnerId private constructor(val ownerId: String?) : Property {
     class Factory : PropertyFactory {
+        override fun getName() = NAME
+
         override fun create(parser: XmlPullParser): Property {
             try {
                 val text = readText(parser)
-                if (!TextUtils.isEmpty(text)) {
+                if (!text.isNullOrEmpty()) {
                     return OCOwnerId(text)
                 }
             } catch (e: IOException) {
-                Log.e("OCId", "failed to create property", e)
+                Log.e("OCOwnerId", "failed to create property", e)
             } catch (e: XmlPullParserException) {
-                Log.e("OCId", "failed to create property", e)
+                Log.e("OCOwnerId", "failed to create property", e)
             }
-            return OCOwnerId("")
-        }
-
-        override fun getName(): Property.Name {
-            return NAME
+            return OCOwnerId(null)
         }
     }
 
     companion object {
         @JvmField
-        val NAME: Property.Name =
-            Property.Name(WebdavEntry.NAMESPACE_OC, WebdavEntry.EXTENDED_PROPERTY_OWNER_ID)
+        val NAME = ExtendedProperties.OWNER_ID.toPropertyName()
     }
 }

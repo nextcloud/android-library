@@ -27,23 +27,23 @@
 
 package com.owncloud.android.lib.resources.files.webdav
 
-import android.text.TextUtils
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.common.network.ExtendedProperties
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCOwnerDisplayName private constructor(var string: String?) : Property {
-
+class OCOwnerDisplayName private constructor(val ownerDisplayName: String?) : Property {
     class Factory : PropertyFactory {
+        override fun getName() = NAME
+
         override fun create(parser: XmlPullParser): Property {
             try {
                 val text = readText(parser)
-                if (!TextUtils.isEmpty(text)) {
+                if (!text.isNullOrEmpty()) {
                     return OCOwnerDisplayName(text)
                 }
             } catch (e: IOException) {
@@ -51,19 +51,12 @@ class OCOwnerDisplayName private constructor(var string: String?) : Property {
             } catch (e: XmlPullParserException) {
                 Log.e("OCOwnerDisplayName", "failed to create property", e)
             }
-            return OCOwnerDisplayName("")
-        }
-
-        override fun getName(): Property.Name {
-            return NAME
+            return OCOwnerDisplayName(null)
         }
     }
 
     companion object {
         @JvmField
-        val NAME: Property.Name = Property.Name(
-            WebdavEntry.NAMESPACE_OC,
-            WebdavEntry.EXTENDED_PROPERTY_OWNER_DISPLAY_NAME
-        )
+        val NAME = ExtendedProperties.OWNER_DISPLAY_NAME.toPropertyName()
     }
 }
