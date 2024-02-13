@@ -1,22 +1,27 @@
-/*
- * Nextcloud Android client application
+/* Nextcloud Android Library is available under MIT license
  *
- * @author Tobias Kaminsky
- * Copyright (C) 2022 Tobias Kaminsky
- * Copyright (C) 2022 Nextcloud GmbH
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2022 Tobias Kaminsky
+ *   Copyright (C) 2022 Nextcloud GmbH
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Affero General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU Affero General Public License for more details.
+ *   The above copyright notice and this permission notice shall be included in
+ *   all copies or substantial portions of the Software.
  *
- *  You should have received a copy of the GNU Affero General Public License
- *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ *   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ *   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *   THE SOFTWARE.
  *
  */
 
@@ -27,29 +32,21 @@ import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.propertyName
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
-
-    companion object {
-        @JvmField
-        val NAME =
-            Property.Name(WebdavEntry.NAMESPACE_NC, WebdavEntry.EXTENDED_PROPERTY_SHAREES)
-    }
-
+class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
     class Factory : PropertyFactory {
-
         override fun getName() = NAME
 
-        override fun create(parser: XmlPullParser): NCSharee {
+        override fun create(parser: XmlPullParser): NCSharees {
             // NC sharees property <nc:sharees>
             readArrayNode(parser).let { sharees ->
-                return NCSharee(sharees.toTypedArray())
+                return NCSharees(sharees.toTypedArray())
             }
         }
 
@@ -60,7 +57,7 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
 
             val depth = parser.depth
             var eventType = parser.eventType
-            while (!(eventType == XmlPullParser.END_TAG && parser.depth == depth)) {
+            while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                 if (eventType != XmlPullParser.TEXT) {
                     list = readNCSharees(parser)
                 }
@@ -79,7 +76,7 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
 
             val depth = parser.depth
             var eventType = parser.eventType
-            while (!(eventType == XmlPullParser.END_TAG && parser.depth == depth)) {
+            while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                 if (eventType == XmlPullParser.START_TAG && parser.depth == depth + 1) {
                     list.add(readNCSharee(parser))
                 }
@@ -98,19 +95,19 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
             var displayName: String? = null
             var shareType: ShareType? = null
 
-            while (!(eventType == XmlPullParser.END_TAG && parser.depth == depth)) {
+            while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                 if (eventType != XmlPullParser.TEXT) {
-                    when (parser.propertyName().toString()) {
-                        "http://nextcloud.org/ns:id" -> {
+                    when (parser.propertyName().name) {
+                        ExtendedProperties.SHAREES_ID.name -> {
                             userId = readText(parser)
                         }
 
-                        "http://nextcloud.org/ns:display-name" -> {
+                        ExtendedProperties.SHAREES_DISPLAY_NAME.name -> {
                             displayName = readText(parser)
                         }
-                        "http://nextcloud.org/ns:type" -> {
-                            shareType =
-                                ShareType.fromValue(readText(parser)?.toInt() ?: 0)
+
+                        ExtendedProperties.SHAREES_SHARE_TYPE.name -> {
+                            shareType = ShareType.fromValue(readText(parser)?.toInt() ?: 0)
                         }
                     }
                 }
@@ -120,5 +117,10 @@ class NCSharee internal constructor(var sharees: Array<ShareeUser>) : Property {
 
             return ShareeUser(userId, displayName, shareType)
         }
+    }
+
+    companion object {
+        @JvmField
+        val NAME = ExtendedProperties.SHAREES.toPropertyName()
     }
 }

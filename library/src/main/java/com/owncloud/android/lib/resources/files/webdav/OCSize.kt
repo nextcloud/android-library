@@ -27,41 +27,36 @@
 
 package com.owncloud.android.lib.resources.files.webdav
 
-import android.text.TextUtils
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.common.network.ExtendedProperties
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCSize private constructor(var ocSize: Long) : Property {
-
+class OCSize private constructor(val size: Long) : Property {
     class Factory : PropertyFactory {
+        override fun getName() = NAME
+
         override fun create(parser: XmlPullParser): Property {
             try {
                 val text = readText(parser)
-                if (!TextUtils.isEmpty(text)) {
-                    return OCSize(text!!.toLong())
+                if (!text.isNullOrEmpty()) {
+                    return OCSize(text.toLong())
                 }
             } catch (e: IOException) {
                 Log.e("OCSize", "failed to create property", e)
             } catch (e: XmlPullParserException) {
                 Log.e("OCSize", "failed to create property", e)
             }
-            return OCSize(-1)
-        }
-
-        override fun getName(): Property.Name {
-            return NAME
+            return OCSize(0)
         }
     }
 
     companion object {
         @JvmField
-        val NAME: Property.Name =
-            Property.Name(WebdavEntry.NAMESPACE_OC, WebdavEntry.EXTENDED_PROPERTY_NAME_SIZE)
+        val NAME = ExtendedProperties.NAME_SIZE.toPropertyName()
     }
 }

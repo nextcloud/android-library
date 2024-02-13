@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
  *
- *   @author Tobias Kaminsky
- *   Copyright (C) 2022 Tobias Kaminsky
- *   Copyright (C) 2022 Nextcloud GmbH
+ *   @author ZetaTom
+ *   Copyright (C) 2024 ZetaTom
+ *   Copyright (C) 2024 Nextcloud GmbH
  *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCLocalId private constructor(val localId: Long) : Property {
+class NCTrashbinLocation private constructor(val originalLocation: String?) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
@@ -44,19 +44,19 @@ class OCLocalId private constructor(val localId: Long) : Property {
             try {
                 val text = readText(parser)
                 if (!text.isNullOrEmpty()) {
-                    return OCLocalId(text.toLong())
+                    return NCTrashbinLocation(text)
                 }
             } catch (e: IOException) {
-                Log.e("OCLocalId", "failed to create property", e)
+                Log.e("NCTrashbinLocation", "failed to create property", e)
             } catch (e: XmlPullParserException) {
-                Log.e("OCLocalId", "failed to create property", e)
+                Log.e("NCTrashbinLocation", "failed to create property", e)
             }
-            return OCLocalId(0)
+            return NCTrashbinLocation(null)
         }
     }
 
     companion object {
         @JvmField
-        val NAME = ExtendedProperties.NAME_LOCAL_ID.toPropertyName()
+        val NAME = ExtendedProperties.TRASHBIN_ORIGINAL_LOCATION.toPropertyName()
     }
 }

@@ -27,24 +27,24 @@
 
 package com.owncloud.android.lib.resources.files.webdav
 
-import android.text.TextUtils
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.common.network.ExtendedProperties
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCPreview private constructor(var isNcPreview: Boolean) : Property {
-
+class NCPreview private constructor(val preview: Boolean) : Property {
     class Factory : PropertyFactory {
+        override fun getName() = NAME
+
         override fun create(parser: XmlPullParser): Property {
             try {
                 val text = readText(parser)
-                if (!TextUtils.isEmpty(text)) {
-                    return NCPreview(java.lang.Boolean.parseBoolean(text))
+                if (!text.isNullOrEmpty()) {
+                    return NCPreview(text.toBoolean())
                 }
             } catch (e: IOException) {
                 Log.e("NCPreview", "failed to create property", e)
@@ -53,15 +53,10 @@ class NCPreview private constructor(var isNcPreview: Boolean) : Property {
             }
             return NCPreview(false)
         }
-
-        override fun getName(): Property.Name {
-            return NAME
-        }
     }
 
     companion object {
         @JvmField
-        val NAME: Property.Name =
-            Property.Name(WebdavEntry.NAMESPACE_NC, WebdavEntry.EXTENDED_PROPERTY_HAS_PREVIEW)
+        val NAME = ExtendedProperties.HAS_PREVIEW.toPropertyName()
     }
 }

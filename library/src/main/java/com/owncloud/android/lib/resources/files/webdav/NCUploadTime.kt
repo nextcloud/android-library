@@ -1,8 +1,8 @@
 /* Nextcloud Android Library is available under MIT license
 *
-*   @author Tobias Kaminsky
-*   Copyright (C) 2022 Tobias Kaminsky
-*   Copyright (C) 2022 Nextcloud GmbH
+*   @author ZetaZom
+*   Copyright (C) 2024 ZetaTom
+*   Copyright (C) 2024 Nextcloud GmbH
 *
 *   Permission is hereby granted, free of charge, to any person obtaining a copy
 *   of this software and associated documentation files (the "Software"), to deal
@@ -36,27 +36,27 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCRichWorkspace private constructor(val richWorkspace: String?) : Property {
+class NCUploadTime private constructor(val uploadTime: Long) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
-        override fun create(parser: XmlPullParser): NCRichWorkspace {
+        override fun create(parser: XmlPullParser): Property {
             try {
                 val text = XmlUtils.readText(parser)
                 if (!text.isNullOrEmpty()) {
-                    return NCRichWorkspace(text)
+                    return NCUploadTime(text.toLong())
                 }
             } catch (e: IOException) {
-                Log.e("NCRichWorkspace", "failed to create property", e)
+                Log.e("NCUploadTime", "failed to create property", e)
             } catch (e: XmlPullParserException) {
-                Log.e("NCRichWorkspace", "failed to create property", e)
+                Log.e("NCUploadTime", "failed to create property", e)
             }
-            return NCRichWorkspace(null)
+            return NCUploadTime(0)
         }
     }
 
     companion object {
         @JvmField
-        val NAME = ExtendedProperties.RICH_WORKSPACE.toPropertyName()
+        val NAME = ExtendedProperties.UPLOAD_TIME.toPropertyName()
     }
 }
