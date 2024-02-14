@@ -1,6 +1,6 @@
 /* Nextcloud Android Library is available under MIT license
  *
- *   @author Tobias Kaminsky
+ *   @author ZetaTom
  *   Copyright (C) 2023 Tobias Kaminsky
  *   Copyright (C) 2023 Nextcloud GmbH
  *
@@ -25,24 +25,19 @@
  *
  */
 
-package com.owncloud.android.lib.resources.notifications
+package com.nextcloud.operations
 
-import com.owncloud.android.AbstractIT
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
-import org.junit.Test
+import com.nextcloud.common.OkHttpMethodBase
+import okhttp3.Request
 
-class NotificationIT : AbstractIT() {
-    @Test
-    fun getNotification() {
-        // get all
-        val all = GetNotificationsRemoteOperation().execute(nextcloudClient)
-        assertTrue(all.isSuccess)
-
-        // get one
-        val firstNotification = all.resultData[0]
-        val first = GetNotificationRemoteOperation(firstNotification.notificationId).execute(nextcloudClient)
-        assertTrue(first.isSuccess)
-        assertEquals(firstNotification.message, first.resultData.message)
+/**
+ * HTTP HEAD method that uses OkHttp with new NextcloudClient
+ */
+class HeadMethod(
+    uri: String,
+    useOcsApiRequestHeader: Boolean
+) : OkHttpMethodBase(uri, useOcsApiRequestHeader) {
+    override fun applyType(temp: Request.Builder) {
+        temp.head()
     }
 }
