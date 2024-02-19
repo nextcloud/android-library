@@ -9,9 +9,15 @@ inline fun <reified T> ArrayList<*>.processXmlData(tagName: String): T? {
             val textContent = element.firstChild.textContent
 
             return when (T::class) {
-                Float::class -> textContent.toFloat() as T
-                Double::class -> textContent.toDouble() as T
-                else -> textContent as T
+                Float::class -> {
+                    val floatValue = textContent.toFloatOrNull()
+                    if (floatValue != null) floatValue as T else null
+                }
+                Double::class -> {
+                    val doubleValue = textContent.toDoubleOrNull()
+                    if (doubleValue != null) doubleValue as T else null
+                }
+                else -> return null
             }
         }
     }
