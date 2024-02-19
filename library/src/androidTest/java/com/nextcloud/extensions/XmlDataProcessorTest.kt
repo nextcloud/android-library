@@ -4,10 +4,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.w3c.dom.Element
-import javax.xml.parsers.DocumentBuilderFactory
 
 class XmlDataProcessorTest {
-
     @Test
     fun testProcessXmlDataWhenGivenEmptyArrayListShouldReturnNull() {
         val tag = "width"
@@ -65,17 +63,5 @@ class XmlDataProcessorTest {
         val xmlData: ArrayList<Element> = arrayListOf(element)
         val result = xmlData.processXmlData<Float>(tag)
         assertNull(result)
-    }
-
-    private fun createElement(xml: String, value: String): Element {
-        val builder = DocumentBuilderFactory.newInstance().run {
-            newDocumentBuilder()
-        }
-        val document = builder.newDocument()
-        val element = document.createElement(xml).apply {
-            textContent = value
-        }
-        document.appendChild(element)
-        return element
     }
 }
