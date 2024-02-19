@@ -138,7 +138,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         ETAG_UNCHANGED,
         VIRUS_DETECTED,
         FOLDER_ALREADY_EXISTS,
-        CANNOT_CREATE_FILE
+        CANNOT_CREATE_FILE,
+        USER_DISABLED
     }
 
     private boolean mSuccess = false;
@@ -329,7 +330,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     public RemoteOperationResult(boolean success, HttpMethod httpMethod) {
         this(success, httpMethod.getStatusCode(), httpMethod.getStatusText(), httpMethod.getResponseHeaders());
 
-        if (mHttpCode == HttpStatus.SC_BAD_REQUEST || mHttpCode == HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE) {
+        if (mHttpCode == HttpStatus.SC_BAD_REQUEST ||
+                mHttpCode == HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE ||
+                mHttpCode == HttpStatus.SC_SERVICE_UNAVAILABLE) {
             try {
                 String bodyResponse = httpMethod.getResponseBodyAsString();
 
@@ -342,6 +345,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
                     }
                     if (xmlParser.isVirusException()) {
                         mCode = ResultCode.VIRUS_DETECTED;
+                    }
+
+                    if (xmlParser.isUserDisabledException()) {
+                        mCode = ResultCode.USER_DISABLED;
                     }
 
                     mHttpPhrase = xmlParser.getMessage();
