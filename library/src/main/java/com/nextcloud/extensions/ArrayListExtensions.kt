@@ -2,6 +2,7 @@ package com.nextcloud.extensions
 
 import org.w3c.dom.Element
 
+@Suppress("ReturnCount", "NestedBlockDepth")
 inline fun <reified T> ArrayList<*>.processXmlData(tagName: String): T? {
     this.forEach {
         val element = it as? Element
