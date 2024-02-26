@@ -23,6 +23,8 @@ package com.nextcloud.operations.assistant
 
 import android.content.Context
 import com.nextcloud.common.User
+import com.nextcloud.operations.assistant.model.CreatedTask
+import com.nextcloud.operations.assistant.model.CreatedTaskData
 import com.nextcloud.operations.assistant.model.TaskTypes
 import com.owncloud.android.lib.common.network.NetworkManager
 
@@ -32,5 +34,27 @@ class AssistantRepository(user: User, context: Context) :
 
     override fun getTaskTypes(): TaskTypes? {
         return operation.get("/ocs/v2.php/textprocessing/tasktypes", TaskTypes::class.java)
+    }
+
+    override fun createTask(
+        input: String,
+        type: String,
+        appId: String,
+        identifier: String,
+    ): CreatedTask? {
+        val json = """
+        {
+            "input": $input,
+            "type": $type,
+            "appId": $appId,
+            "identifier": $identifier
+        }
+    """.trimIndent()
+
+        return operation.post(
+            "/ocs/v2.php/textprocessing/schedule",
+            CreatedTaskData::class.java,
+            json
+        )
     }
 }

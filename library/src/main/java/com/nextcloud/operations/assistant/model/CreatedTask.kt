@@ -19,18 +19,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.operations.assistant
+package com.nextcloud.operations.assistant.model
 
-import com.nextcloud.operations.assistant.model.CreatedTask
-import com.nextcloud.operations.assistant.model.TaskTypes
+data class CreatedTask (
+    val meta: OcsMeta,
+    val data: CreatedTaskData
+)
 
-interface AssistantRepositoryType {
-    fun getTaskTypes(): TaskTypes?
+data class CreatedTaskData (
+    val task: Task
+)
 
-    fun createTask(
-        input: String,
-        type: String,
-        appId: String = "assistant",
-        identifier: String = ""
-    ): CreatedTask?
-}
+data class Task (
+    val id: Long,
+    val type: String,
+    val status: Long,
+    val userID: String,
+    val appID: String,
+    val input: String,
+    val output: String? = null,
+    val identifier: String,
+    val completionExpectedAt: String? = null
+)

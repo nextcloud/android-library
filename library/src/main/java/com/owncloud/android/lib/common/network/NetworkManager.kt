@@ -23,20 +23,35 @@ package com.owncloud.android.lib.common.network
 
 import android.content.Context
 import com.google.gson.Gson
+import com.nextcloud.common.NextcloudClient
 import com.nextcloud.common.User
 import com.owncloud.android.lib.common.OwnCloudClientFactory
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.Headers
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.lang.reflect.Type
 
+@Suppress("TooGenericExceptionCaught")
 class NetworkManager(user: User, context: Context) {
     private val tag = "NetworkManager"
 
-    private val client = OwnCloudClientFactory.createNextcloudClient(user, context)
+    private var client: NextcloudClient? = null
+
+    init {
+        try {
+            client = OwnCloudClientFactory.createNextcloudClient(user, context)
+        } catch (e: Throwable) {
+            Log_OC.d(tag, "Error caught at creating NextCloud client")
+        }
+    }
+
     private val httpClient = OkHttpClient()
-    private val accessToken = client.credentials
+    private val accessToken = client?.credentials
     private val gson = Gson()
     private val headers =
         Headers.Builder()
@@ -49,7 +64,12 @@ class NetworkManager(user: User, context: Context) {
         endpoint: String,
         type: Type
     ): T? {
-        val url = "${client.baseUri}$endpoint"
+        if (client == null) {
+            Log_OC.d(tag, "Trying to execute a remote operation with a null Nextcloud Client")
+            return null
+        }
+
+        val url = "${client?.baseUri}$endpoint"
 
         val request =
             Request.Builder()
@@ -59,12 +79,44 @@ class NetworkManager(user: User, context: Context) {
 
         httpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
-                Log_OC.d(tag, "GET request not successfull")
+                Log_OC.d(tag, "GET request couldn't fetched")
                 return null
             }
 
             val json = response.body.string()
             Log_OC.d(tag, "GET response $endpoint: $json")
+            return gson.fromJson(json, type)
+        }
+    }
+
+    fun <T> post(
+        endpoint: String,
+        type: Type,
+        jsonBody: String
+    ): T? {
+        if (client == null) {
+            Log_OC.d(tag, "Trying to execute a remote operation with a null Nextcloud Client")
+            return null
+        }
+
+        val url = "${client?.baseUri}$endpoint"
+
+        val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+        val request = Request.Builder()
+            .url(url)
+            .headers(headers)
+            .post(requestBody)
+            .build()
+
+        httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                Log_OC.d(tag, "POST request couldn't fetched")
+                return null
+            }
+
+            val json = response.body.string()
+            Log_OC.d(tag, "POST response $endpoint: $json")
             return gson.fromJson(json, type)
         }
     }
