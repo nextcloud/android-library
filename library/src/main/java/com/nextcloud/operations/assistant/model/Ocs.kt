@@ -21,22 +21,22 @@
 
 package com.nextcloud.operations.assistant.model
 
-data class Ocs (
+data class Ocs(
     val meta: OcsMeta,
     val data: OcsData
 )
 
-data class OcsData (
+data class OcsData(
     val types: List<OcsType>
 )
 
-data class OcsType (
+data class OcsType(
     val id: String,
     val name: String,
     val description: String
 )
 
-data class OcsMeta (
+data class OcsMeta(
     val status: String,
     val statuscode: Long,
     val message: String
