@@ -19,29 +19,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.operations.assistant.model
+package com.nextcloud.operations.assistant
 
-data class TaskTypes(
-    val ocs: Ocs
-)
+import com.nextcloud.operations.assistant.model.TaskTypes
 
-data class Ocs(
-    val meta: OcsMeta,
-    val data: OcsData
-)
-
-data class OcsData(
-    val types: List<OcsType>
-)
-
-data class OcsType(
-    val id: String,
-    val name: String,
-    val description: String
-)
-
-data class OcsMeta(
-    val status: String,
-    val statuscode: Long,
-    val message: String
-)
+interface AssistantRepositoryType {
+    fun getTaskTypes(): TaskTypes?
+}
