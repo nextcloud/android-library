@@ -33,6 +33,7 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.common.User;
 import com.owncloud.android.lib.common.OwnCloudAccount;
@@ -55,6 +56,7 @@ import java.io.IOException;
  */
 public abstract class RemoteOperation<T> implements Runnable {
 
+    public final Gson gson = new Gson();
     private static final String TAG = RemoteOperation.class.getSimpleName();
 
     /**
