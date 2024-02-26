@@ -19,16 +19,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.operations
+package com.nextcloud.operations.assistant
 
-import com.nextcloud.operations.assistant.GetAssistantTaskTypes
-import com.owncloud.android.AbstractIT
-import org.junit.Test
+import android.content.Context
+import com.nextcloud.common.User
+import com.nextcloud.operations.assistant.model.TaskTypes
+import com.owncloud.android.lib.common.network.NetworkManager
 
-class GetAssistantTaskTypesIT : AbstractIT() {
-    @Test
-    fun getTaskTypes() {
-        val result = GetAssistantTaskTypes().execute(nextcloudClient)
-        assert(result.resultData.data.types.isNotEmpty())
+class AssistantRepository(user: User, context: Context) :
+    AssistantRepositoryType {
+    private val operation = NetworkManager(user, context)
+
+    override fun getTaskTypes(): TaskTypes? {
+        return operation.get("/ocs/v2.php/textprocessing/tasktypes", TaskTypes::class.java)
     }
 }
