@@ -25,8 +25,7 @@ import com.nextcloud.operations.assistant.GetAssistantTaskTypes
 import com.owncloud.android.AbstractIT
 import org.junit.Test
 
-class GetAssistantTaskTypesIT: AbstractIT() {
-
+class GetAssistantTaskTypesIT : AbstractIT() {
     @Test
     fun getTaskTypes() {
         val result = GetAssistantTaskTypes().execute(nextcloudClient)
