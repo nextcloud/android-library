@@ -25,13 +25,13 @@ data class TaskTypes(
     val ocs: Ocs
 )
 
-data class Ocs(
-    val meta: OcsMeta,
-    val data: OcsData
+data class TaskTypesData(
+    val types: List<OcsType>
 )
 
-data class OcsData(
-    val types: List<OcsType>
+data class Ocs(
+    val meta: OcsMeta,
+    val data: TaskTypesData
 )
 
 data class OcsType(
