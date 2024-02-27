@@ -28,11 +28,9 @@ import com.nextcloud.common.User
 import com.owncloud.android.lib.common.OwnCloudClientFactory
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.Headers
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.lang.reflect.Type
 
@@ -89,6 +87,32 @@ class NetworkManager(user: User, context: Context) {
         }
     }
 
+    fun <T> delete(endpoint: String, type: Type): T? {
+        if (client == null) {
+            Log_OC.d(tag, "Trying to execute a remote operation with a null Nextcloud Client")
+            return null
+        }
+
+        val url = "${client?.baseUri}$endpoint"
+
+        val request = Request.Builder()
+            .url(url)
+            .delete()
+            .headers(headers)
+            .build()
+
+        httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                Log_OC.d(tag, "DELETE request couldn't be executed")
+                return null
+            }
+
+            val json = response.body.string()
+            Log_OC.d(tag, "DELETE response $endpoint: $json")
+            return gson.fromJson(json, type)
+        }
+    }
+
     fun <T> post(
         endpoint: String,
         type: Type,
@@ -101,7 +125,8 @@ class NetworkManager(user: User, context: Context) {
 
         val url = "${client?.baseUri}$endpoint"
 
-        val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val requestBody =
+            jsonBody.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         val request = Request.Builder()
             .url(url)

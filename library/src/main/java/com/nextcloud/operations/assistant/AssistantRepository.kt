@@ -36,6 +36,18 @@ class AssistantRepository(user: User, context: Context) :
         return operation.get("/ocs/v2.php/textprocessing/tasktypes", TaskTypes::class.java)
     }
 
+     override fun getTaskList(appId: String): TaskTypes? {
+        return operation.get("/ocs/v2.php/textprocessing/tasks/app/$appId", TaskTypes::class.java)
+    }
+
+    override fun deleteTask(id: String): CreatedTask? {
+        return operation.delete("/ocs/v2.php/textprocessing/task/$id", TaskTypes::class.java)
+    }
+
+    override fun getTask(id: String): CreatedTask? {
+        return operation.get("/ocs/v2.php/textprocessing/task/$id", TaskTypes::class.java)
+    }
+
     override fun createTask(
         input: String,
         type: String,
