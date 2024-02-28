@@ -27,6 +27,7 @@ import com.nextcloud.operations.assistant.model.CreatedTask
 import com.nextcloud.operations.assistant.model.CreatedTaskData
 import com.nextcloud.operations.assistant.model.TaskTypes
 import com.owncloud.android.lib.common.network.NetworkManager
+import org.json.JSONObject
 
 class AssistantRepository(user: User, context: Context) :
     AssistantRepositoryType {
@@ -57,18 +58,16 @@ class AssistantRepository(user: User, context: Context) :
         appId: String,
         identifier: String,
     ): CreatedTask? {
-        val json = """
-        {
-            "input": $input,
-            "type": $type,
-            "appId": $appId,
-            "identifier": $identifier
+        val json = JSONObject().apply {
+            put("input", input)
+            put("type", type)
+            put("appId", appId)
+            put("identifier", identifier)
         }
-    """.trimIndent()
 
         return operation.post(
             "/ocs/v2.php/textprocessing/schedule",
-            CreatedTaskData::class.java,
+            CreatedTask::class.java,
             json
         )
     }

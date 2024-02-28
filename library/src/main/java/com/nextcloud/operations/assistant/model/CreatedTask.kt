@@ -22,7 +22,11 @@
 package com.nextcloud.operations.assistant.model
 
 data class CreatedTask (
-    val meta: OcsMeta,
+    val ocs: CreatedTaskOcs
+)
+
+data class CreatedTaskOcs (
+    val meta: Meta,
     val data: CreatedTaskData
 )
 
@@ -34,10 +38,16 @@ data class Task (
     val id: Long,
     val type: String,
     val status: Long,
-    val userID: String,
-    val appID: String,
+    val userId: String? = null,
+    val appId: String,
     val input: String,
     val output: String? = null,
     val identifier: String,
     val completionExpectedAt: String? = null
+)
+
+data class Meta (
+    val status: String,
+    val statuscode: Long,
+    val message: String
 )
