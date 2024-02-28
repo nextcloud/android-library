@@ -68,6 +68,8 @@ class OCCapability {
     var filesSharingResharing = CapabilityBooleanType.UNKNOWN
     var filesSharingFederationOutgoing = CapabilityBooleanType.UNKNOWN
     var filesSharingFederationIncoming = CapabilityBooleanType.UNKNOWN
+    var filesSharingByMail = CapabilityBooleanType.UNKNOWN
+    var filesSharingByMailSendPasswordByMail = CapabilityBooleanType.UNKNOWN
 
     // Files
     var filesBigFileChunking = CapabilityBooleanType.UNKNOWN
