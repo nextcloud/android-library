@@ -27,13 +27,10 @@ import com.nextcloud.operations.assistant.model.TaskTypes
 interface AssistantRepositoryType {
     fun getTaskTypes(): TaskTypes?
 
-    // TODO Check return type
     fun getTask(id: String): CreatedTask?
 
-    // TODO Check return type
     fun deleteTask(id: String): CreatedTask?
 
-    // TODO Check return type
     fun getTaskList(appId: String): TaskTypes?
 
     fun createTask(

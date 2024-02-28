@@ -48,7 +48,8 @@ class NetworkManager(user: User, context: Context) {
         }
     }
 
-    private val httpClient = OkHttpClient()
+    private val httpClient =
+        OkHttpClient.Builder().addInterceptor(NetworkManagerInterceptor()).build()
     private val accessToken = client?.credentials
     private val gson = Gson()
     private val headers =
