@@ -19,29 +19,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.operations.assistant.model
+package com.owncloud.android.lib.resources.assistant.model
 
-data class TaskTypes(
-    val ocs: Ocs
-)
-
-data class TaskTypesData(
-    val types: List<OcsType>
-)
-
-data class Ocs(
-    val meta: OcsMeta,
-    val data: TaskTypesData
-)
-
-data class OcsType(
+data class TaskType(
     val id: String,
     val name: String,
     val description: String
-)
-
-data class OcsMeta(
-    val status: String,
-    val statuscode: Long,
-    val message: String
 )
