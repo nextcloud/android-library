@@ -19,24 +19,35 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.operations.assistant
+package com.owncloud.android.lib.resources.assistant.model
 
-import com.nextcloud.operations.assistant.model.CreatedTask
-import com.nextcloud.operations.assistant.model.TaskTypes
+data class CreatedTask (
+    val ocs: CreatedTaskOcs
+)
 
-interface AssistantRepositoryType {
-    fun getTaskTypes(): TaskTypes?
+data class CreatedTaskOcs (
+    val meta: Meta,
+    val data: CreatedTaskData
+)
 
-    fun getTask(id: String): CreatedTask?
+data class CreatedTaskData (
+    val task: Task
+)
 
-    fun deleteTask(id: String): CreatedTask?
+data class Task (
+    val id: Long,
+    val type: String,
+    val status: Long,
+    val userId: String? = null,
+    val appId: String,
+    val input: String,
+    val output: String? = null,
+    val identifier: String,
+    val completionExpectedAt: String? = null
+)
 
-    fun getTaskList(appId: String): TaskTypes?
-
-    fun createTask(
-        input: String,
-        type: String,
-        appId: String = "assistant",
-        identifier: String = ""
-    ): CreatedTask?
-}
+data class Meta (
+    val status: String,
+    val statuscode: Long,
+    val message: String
+)

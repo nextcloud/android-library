@@ -50,9 +50,6 @@ public abstract class OCSRemoteOperation<T> extends RemoteOperation<T> {
         String response = method.getResponseBodyAsString();
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(response);
-
-        Gson gson = new Gson();
-
         return gson.fromJson(element, type.getType());
     }
 
@@ -60,9 +57,6 @@ public abstract class OCSRemoteOperation<T> extends RemoteOperation<T> {
         String response = method.getResponseBodyAsString();
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(response);
-
-        Gson gson = new Gson();
-
         return gson.fromJson(element, type.getType());
     }
 }
