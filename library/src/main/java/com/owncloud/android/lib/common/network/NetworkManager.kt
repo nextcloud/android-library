@@ -32,6 +32,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.lang.reflect.Type
 
 @Suppress("TooGenericExceptionCaught")
@@ -117,7 +118,7 @@ class NetworkManager(user: User, context: Context) {
     fun <T> post(
         endpoint: String,
         type: Type,
-        jsonBody: String
+        json: JSONObject
     ): T? {
         if (client == null) {
             Log_OC.d(tag, "Trying to execute a remote operation with a null Nextcloud Client")
@@ -127,7 +128,7 @@ class NetworkManager(user: User, context: Context) {
         val url = "${client?.baseUri}$endpoint"
 
         val requestBody =
-            jsonBody.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
         val request = Request.Builder()
             .url(url)
