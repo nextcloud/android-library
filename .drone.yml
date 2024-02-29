@@ -208,8 +208,8 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test test"
       - su www-data -c "git clone https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+      - su www-data -c "cd /var/www/html/apps/assistant; git checkout tags/v1.0.2; make"
       - su www-data -c "php /var/www/html/occ app:enable -f assistant"
-      - su www-data -c "cd /var/www/html/apps/assistant; make"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - /usr/local/bin/run.sh
 
