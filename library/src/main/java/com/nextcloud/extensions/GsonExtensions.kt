@@ -1,3 +1,10 @@
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2023 Alper Ozturk <alper_ozturk@proton.me>
+ * SPDX-License-Identifier: MIT
+ */
 package com.nextcloud.extensions
 
 import com.google.gson.Gson

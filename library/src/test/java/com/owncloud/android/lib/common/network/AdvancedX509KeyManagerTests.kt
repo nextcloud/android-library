@@ -1,3 +1,9 @@
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2023 Elv1zz <elv1zz.git@gmail.com>
+ * SPDX-License-Identifier: MIT
+ */
 package com.owncloud.android.lib.common.network
 
 import com.owncloud.android.lib.common.network.AdvancedX509KeyManager.AKMAlias

@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: MIT
+-->
 # [Nextcloud](https://nextcloud.com) Android Library v2 [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/android-library/status.svg)](https://drone.nextcloud.com/nextcloud/android-library) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9f94f04e0f447a6b21c0ae08f6f7594)](https://www.codacy.com/app/Nextcloud/android-library?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/android-library&amp;utm_campaign=Badge_Grade)
 
 ## Introduction

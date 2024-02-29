@@ -1,3 +1,15 @@
+/*
+ * Nextcloud Android Common Library
+ *
+ * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2023 Unpublished <unpublished@gmx.net>
+ * SPDX-FileCopyrightText: 2022 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2022 Álvaro Brey Vilas <alvaro.brey@nextcloud.com>
+ * SPDX-FileCopyrightText: 2014-2016 ownCloud Inc.
+ * SPDX-FileCopyrightText: 2014 Marcello Steiner <steiner.marcello@gmail.com>
+ * SPDX-License-Identifier: MIT
+ */
+
 buildscript {
     ext {
         kotlin_version = '1.9.22'

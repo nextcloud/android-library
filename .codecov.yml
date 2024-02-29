@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
 codecov:
   branch: master
   ci:

@@ -1,9 +1,12 @@
-###################################################################
-  Nextcloud Android Library                                       
+#############################################################################
+  Nextcloud Android Library       
 
-  Copyright (C) 2014 ownCloud Inc.
-  Copyright (C) 2012 Bartek Przybylski
-###################################################################
+  SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+  SPDX-FileCopyrightText: 2014 ownCloud Inc.
+  SPDX-FileCopyrightText: 2012 Bartek Przybylski
+  
+  SPDX-License-Identifier: MIT  
+#############################################################################
 
 
 ###########
