@@ -32,12 +32,13 @@ import org.apache.commons.httpclient.HttpStatus
 class CreateTaskRemoteOperation(private val input: String, private val type: String) :
     RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        val requestBody = hashMapOf(
-            "input" to input,
-            "type" to type,
-            "appId" to "assistant",
-            "identifier" to ""
-        )
+        val requestBody =
+            hashMapOf(
+                "input" to input,
+                "type" to type,
+                "appId" to "assistant",
+                "identifier" to ""
+            )
 
         val json = gson.toJson(requestBody)
 

@@ -21,11 +21,11 @@
 
 package com.owncloud.android.lib.resources.assistant.model
 
-data class TaskList (
+data class TaskList(
     var tasks: List<Task>?
 )
 
-data class Task (
+data class Task(
     val id: Long,
     val type: String?,
     val status: Long?,
