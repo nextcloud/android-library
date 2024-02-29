@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ ~ Nextcloud Android Library
+ ~
+ ~ SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-FileCopyrightText: 2015 ownCloud Inc.
+ ~ SPDX-License-Identifier: MIT
+-->
 <resources>
     <string name="title_no_client_cert">No client certificate was found</string>
     <string name="message_install_client_cert">Do you want to install a TLS client certificate?</string>

@@ -1,10 +1,16 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-FileCopyrightText: 2014-2016 ownCloud Inc.
+ ~ SPDX-FileCopyrightText: 2012 Bartosz Przybylski
+ ~ SPDX-License-Identifier: MIT
+-->
 ###  License
 
-ownCloud Android Library is available under MIT license
+Nextcloud Android Library is available under MIT license
 
 Copyright (C) 2016 Nextcloud Project
 Copyright (C) 2014-2016 ownCloud Inc.
-Copyright (C) 2012 Bartek Przybylski
+Copyright (C) 2012 Bartosz Przybylski
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
