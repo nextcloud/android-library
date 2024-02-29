@@ -179,7 +179,10 @@ services:
     environment:
       SERVER_VERSION: stable27
     commands:
-      - apt-get update && apt-get install -y composer npm; mkdir /var/www/.npm; chown -R 33:33 /var/www/.vnm /var/www/.bashrc
+      - apt-get update && apt-get install -y composer
+      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.vnm /var/www/.bashrc
+      - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
+      - su www-data -c "source ~/.bashrc; nvm install node"
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
@@ -225,6 +228,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 69ddcc906b15b7dff75eaf59ff4082104ba4d87af9992753973834e7c6a9b47f
+hmac: ab85101c3bf0b545f0e82c35459474bc09eb34c9409a3f4e32be5a9908ebf164
 
 ...
