@@ -63,7 +63,7 @@ services:
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     commands:
       - apt-get update && apt-get install -y composer
-      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/
+      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.vnm /var/www/.bashrc
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - /usr/local/bin/initnc.sh
@@ -179,7 +179,7 @@ services:
     environment:
       SERVER_VERSION: stable27
     commands:
-      - apt-get update && apt-get install -y composer npm; mkdir /var/www/.npm; chown -R 33:33 /var/www/.npm
+      - apt-get update && apt-get install -y composer npm; mkdir /var/www/.npm; chown -R 33:33 /var/www/.vnm /var/www/.bashrc
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
