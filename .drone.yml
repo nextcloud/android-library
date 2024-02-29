@@ -1,9 +1,10 @@
-# SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
-# SPDX-License-Identifier: MIT
 ---
 kind: pipeline
 type: docker
 name: test-master
+
+# SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
 
 steps:
 - name: test
