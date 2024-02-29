@@ -22,7 +22,7 @@
 package com.owncloud.android.lib.resources.assistant.model
 
 data class TaskList (
-    val tasks: List<Task>
+    var tasks: List<Task>
 )
 
 data class Task (
