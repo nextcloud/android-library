@@ -63,7 +63,7 @@ services:
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     commands:
       - apt-get update && apt-get install -y composer
-      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.vnm /var/www/.bashrc
+      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.bashrc
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - /usr/local/bin/initnc.sh
@@ -180,7 +180,7 @@ services:
       SERVER_VERSION: stable27
     commands:
       - apt-get update && apt-get install -y composer
-      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.vnm /var/www/.bashrc
+      - mkdir /var/www/.nvm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.bashrc
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
