@@ -22,11 +22,11 @@
 package com.owncloud.android.lib.resources.assistant.model
 
 data class TaskTypes (
-    val types: List<TaskType>
+    val types: List<TaskType>?
 )
 
 data class TaskType(
-    val id: String,
-    val name: String,
-    val description: String
+    val id: String?,
+    val name: String?,
+    val description: String?
 )
