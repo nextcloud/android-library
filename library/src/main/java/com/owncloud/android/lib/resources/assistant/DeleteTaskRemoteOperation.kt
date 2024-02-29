@@ -48,7 +48,6 @@ class DeleteTaskRemoteOperation(private val appId: Long) : RemoteOperation<Void>
         } finally {
             postMethod?.releaseConnection()
         }
-
         return result
     }
 
