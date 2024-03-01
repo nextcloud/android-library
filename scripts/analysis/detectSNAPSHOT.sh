@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-FileCopyrightText: 2017 Tobias Kaminsky <tobias@kaminsky.me>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 count=$(./gradlew dependencies | grep SNAPSHOT -c)
 
 if [ $count -eq 0 ] ; then

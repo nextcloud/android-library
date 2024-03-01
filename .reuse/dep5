@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: android-library
+Upstream-Contact: Nextcloud Android team <android@nextcloud.com>
+Source: https://github.com/nextcloud/android-library
+
+Files: gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar sample_client/gradle/wrapper/gradle-wrapper.jar
+Copyright: 2015-2021 the original authors
+License: Apache-2.0
+
+Files: gradle/verification-keyring.keys gradle/verification-metadata.xml
+Copyright: none
+License: MIT
+
+Files: renovate.json5 */.gitignore .library/src/androidTest/assets/* sample_client/src/main/res/mipmap-hdpi/* .idea/*  library/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker sample_client/src/main/res/mipmap-* scripts/analysis/findbugs-results.txt sample_client/src/main/assets/nc_logo.png library/src/androidTest/assets/*
+Copyright: 2024 Nextcloud GmbH and Nextcloud contributors
+License: MIT
