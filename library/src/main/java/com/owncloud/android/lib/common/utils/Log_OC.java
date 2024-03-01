@@ -1,3 +1,14 @@
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2021 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2019 Chris Narkiewicz <hello@ezaquarii.com>
+ * SPDX-FileCopyrightText: 2015-2016 Bartosz Przybylski <bart.p.pl@gmail.com>
+ * SPDX-FileCopyrightText: 2014 ownCloud Inc.
+ * SPDX-FileCopyrightText: 2014 jabarros <jabarros@solidgear.es>
+ * SPDX-License-Identifier: MIT
+ */
 package com.owncloud.android.lib.common.utils;
 
 import android.content.Context;
@@ -11,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-
 
 public class Log_OC {
 

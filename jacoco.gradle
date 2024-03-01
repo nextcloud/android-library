@@ -1,3 +1,11 @@
+/*
+ * Nextcloud Android Common Library
+ *
+ * SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-License-Identifier: MIT
+ */
+
 apply plugin: 'jacoco'
 
 jacoco {
