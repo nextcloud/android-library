@@ -1,3 +1,8 @@
+# Nextcloud Android Library
+# SPDX-FileCopyrightText: 2022-2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
+# SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
+# SPDX-License-Identifier: MIT
 build:
   maxIssues: 0
   weights:
