@@ -66,6 +66,9 @@ services:
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     commands:
       - apt-get update && apt-get install -y composer
+      - mkdir /var/www/.nvm /var/www/.npm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
+      - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
+      - su www-data -c "source ~/.bashrc; nvm install node"
       - /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
@@ -102,6 +105,10 @@ services:
       - su www-data -c "git clone https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
+      - su www-data -c "git clone https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+      - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; make"
+      - su www-data -c "php /var/www/html/occ app:enable -f assistant"
+      - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -175,6 +182,10 @@ services:
     environment:
       SERVER_VERSION: stable27
     commands:
+        - apt-get update && apt-get install -y composer
+        - mkdir /var/www/.nvm /var/www/.npm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
+        - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
+        - su www-data -c "source ~/.bashrc; nvm install node"
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
@@ -206,6 +217,10 @@ services:
       - su www-data -c "git clone -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test test"
+          - su www-data -c "git clone https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+          - su www-data -c "cd /var/www/html/apps/assistant; git checkout tags/v1.0.2; source ~/.bashrc; make"
+          - su www-data -c "php /var/www/html/occ app:enable -f assistant"
+          - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -216,4 +231,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 11f8c4f828dbe5fd7faac061e6678a9c6b9fedac0601a1ac3b753102381d3918
+hmac: 1fb704f7c721412a3d25d79472652236c11bebb82c8748e132b413b8906e7a84
+
+...

@@ -28,7 +28,7 @@
 package com.owncloud.android.lib.resources.assistant.model
 
 data class TaskTypes(
-    var types: List<TaskType>?
+    var types: List<TaskType>
 )
 
 data class TaskType(
