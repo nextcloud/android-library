@@ -13,12 +13,12 @@ BRANCH_TYPE=$BRANCH-$TYPE
 URL=https://nextcloud.kaminsky.me/remote.php/dav/files/$USER/library-integrationTests
 
 # upload logcat
-log_filename="${$ID}_logcat.txt.xz"
+log_filename=$ID"_logcat.txt.xz"
 log_file="${log_filename}"
 upload_path="https://nextcloud.kaminsky.me/remote.php/webdav/library-logcat/$log_filename"
 xz logcat.txt
 mv logcat.txt.xz "$log_file"
-curl -u "${$USER}:${$PASS}" -X PUT "$upload_path" --upload-file "$log_file"
+curl -u "$USER:$PASS" -X PUT "$upload_path" --upload-file "$log_file"
 echo >&2 "Uploaded logcat to https://www.kaminsky.me/nc-dev/library-logcat/$log_filename"
 
 if [ $TYPE = "IT" ]; then
