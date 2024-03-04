@@ -145,6 +145,8 @@ steps:
       - ./scripts/wait_for_server.sh server-stable
       - scripts/deleteOutdatedComments.sh "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - scripts/deleteOutdatedComments.sh "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - adb logcat -c
+      - adb logcat > logcat.txt &
       - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew installDebugAndroidTest
       - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
@@ -232,6 +234,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 05ce597eecb009f9783123cd1e1e507ceed79671fcb5544cd8d4eaafb6df49c1
+hmac: 1db4c5952e15c8f0a55ab96243f42c80968f566926d40c2a94747489aef11331
 
 ...
