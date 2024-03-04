@@ -20,7 +20,7 @@ class AssistantIT : AbstractIT() {
     fun before() {
         testOnlyOnServer(NextcloudVersion.nextcloud_28)
     }
-    
+
     @Test
     fun testGetTaskTypes() {
         val result = GetTaskTypesRemoteOperation().execute(nextcloudClient)
