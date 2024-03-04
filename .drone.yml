@@ -180,7 +180,7 @@ services:
   - name: server-stable
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
-      SERVER_VERSION: stable27
+        SERVER_VERSION: stable28
     commands:
       - apt-get update && apt-get install -y composer
       - mkdir /var/www/.nvm /var/www/.npm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
