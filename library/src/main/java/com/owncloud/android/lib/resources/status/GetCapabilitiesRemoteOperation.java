@@ -343,12 +343,6 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     Log_OC.d(TAG, "*** Added " + NODE_CORE);
                 }
 
-                if (respCapabilities.has(PROPERTY_ASSISTANT)) {
-                    JSONObject respCore = respCapabilities.getJSONObject(PROPERTY_ASSISTANT);
-                    capability.setAssistant(respCore.getBoolean(PROPERTY_ENABLED));
-                    Log_OC.d(TAG, "*** Added " + PROPERTY_ASSISTANT);
-                }
-
                 // Add files_sharing: public, user, resharing
                 if (respCapabilities.has(NODE_FILES_SHARING)) {
                     JSONObject respFilesSharing = respCapabilities.getJSONObject(NODE_FILES_SHARING);
@@ -674,6 +668,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 } else {
                     capability.setGroupfolders(CapabilityBooleanType.FALSE);
+                }
+
+                // assistant
+                if (respCapabilities.has(PROPERTY_ASSISTANT)) {
+                    JSONObject assistantCapability = respCapabilities.getJSONObject(PROPERTY_ASSISTANT);
+
+                    if (assistantCapability.getBoolean(PROPERTY_ENABLED)) {
+                        capability.setAssistant(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setAssistant(CapabilityBooleanType.FALSE);
+                    }
+                } else {
+                    capability.setAssistant(CapabilityBooleanType.FALSE);
                 }
 
                 // drop-account

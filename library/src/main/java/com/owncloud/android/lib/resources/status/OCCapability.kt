@@ -36,8 +36,6 @@ class OCCapability {
     var serverBackgroundDefault = CapabilityBooleanType.UNKNOWN
     var serverBackgroundPlain = CapabilityBooleanType.UNKNOWN
 
-    var assistant: Boolean = false
-
     // Core PollInterval
     var corePollInterval: Int = 0
 
@@ -97,6 +95,8 @@ class OCCapability {
 
     // Groupfolders
     var groupfolders = CapabilityBooleanType.UNKNOWN
+
+    var assistant = CapabilityBooleanType.UNKNOWN
 
     // Drop-Account
     var dropAccount = CapabilityBooleanType.UNKNOWN

@@ -146,9 +146,9 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         // assistant
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_28)) {
             if (userId.equals("test")) {
-                assertTrue(capability.getAssistant());
+                assertTrue(capability.getAssistant().isTrue());
             } else {
-                assertFalse(capability.getAssistant());
+                assertFalse(capability.getAssistant().isFalse());
             }
         }
 
