@@ -36,6 +36,8 @@ class OCCapability {
     var serverBackgroundDefault = CapabilityBooleanType.UNKNOWN
     var serverBackgroundPlain = CapabilityBooleanType.UNKNOWN
 
+    var assistant: Boolean = false
+
     // Core PollInterval
     var corePollInterval: Int = 0
 

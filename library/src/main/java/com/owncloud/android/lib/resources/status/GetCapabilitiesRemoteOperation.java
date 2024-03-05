@@ -85,6 +85,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String PROPERTY_ENABLED = "enabled";
     private static final String PROPERTY_ENFORCED = "enforced";
     private static final String PROPERTY_DAYS = "days";
+    private static final String PROPERTY_ASSISTANT = "assistant";
     private static final String PROPERTY_SEND_MAIL = "send_mail";
     private static final String PROPERTY_UPLOAD = "upload";
     private static final String PROPERTY_RESHARING = "resharing";
@@ -340,6 +341,12 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     JSONObject respCore = respCapabilities.getJSONObject(NODE_CORE);
                     capability.setCorePollInterval(respCore.getInt(PROPERTY_POLLINTERVAL));
                     Log_OC.d(TAG, "*** Added " + NODE_CORE);
+                }
+
+                if (respCapabilities.has(PROPERTY_ASSISTANT)) {
+                    JSONObject respCore = respCapabilities.getJSONObject(PROPERTY_ASSISTANT);
+                    capability.setAssistant(respCore.getBoolean(PROPERTY_ENABLED));
+                    Log_OC.d(TAG, "*** Added " + PROPERTY_ASSISTANT);
                 }
 
                 // Add files_sharing: public, user, resharing
