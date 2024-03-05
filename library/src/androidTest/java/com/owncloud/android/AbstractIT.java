@@ -115,14 +115,14 @@ public abstract class AbstractIT {
 
     private static void waitForServer(OwnCloudClient client, Uri baseUrl) {
         // use http 
-        Uri httpUrl = Uri.parse(baseUrl.toString().replaceFirst("https", "http"));
+        Uri httpUrl = Uri.parse(baseUrl.toString().replaceFirst("https", "https"));
         GetMethod get = new GetMethod(httpUrl + "/status.php");
 
         try {
             int i = 0;
             while (client.executeMethod(get) != HttpStatus.SC_OK && i < 3) {
                 System.out.println("wait…");
-                Thread.sleep(60 * 1000);
+                // Thread.sleep(60 * 1000);
                 i++;
             }
 
@@ -131,8 +131,6 @@ public abstract class AbstractIT {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -259,8 +257,8 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        removeOnClient(client);
-        removeOnClient(client2);
+        // removeOnClient(client);
+        // removeOnClient(client2);
     }
 
     private void removeOnClient(OwnCloudClient client) {
