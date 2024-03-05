@@ -85,6 +85,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String PROPERTY_ENABLED = "enabled";
     private static final String PROPERTY_ENFORCED = "enforced";
     private static final String PROPERTY_DAYS = "days";
+    private static final String PROPERTY_ASSISTANT = "assistant";
     private static final String PROPERTY_SEND_MAIL = "send_mail";
     private static final String PROPERTY_UPLOAD = "upload";
     private static final String PROPERTY_RESHARING = "resharing";
@@ -667,6 +668,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 } else {
                     capability.setGroupfolders(CapabilityBooleanType.FALSE);
+                }
+
+                // assistant
+                if (respCapabilities.has(PROPERTY_ASSISTANT)) {
+                    JSONObject assistantCapability = respCapabilities.getJSONObject(PROPERTY_ASSISTANT);
+
+                    if (assistantCapability.getBoolean(PROPERTY_ENABLED)) {
+                        capability.setAssistant(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setAssistant(CapabilityBooleanType.FALSE);
+                    }
+                } else {
+                    capability.setAssistant(CapabilityBooleanType.FALSE);
                 }
 
                 // drop-account

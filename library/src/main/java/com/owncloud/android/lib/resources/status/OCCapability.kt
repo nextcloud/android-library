@@ -96,6 +96,8 @@ class OCCapability {
     // Groupfolders
     var groupfolders = CapabilityBooleanType.UNKNOWN
 
+    var assistant = CapabilityBooleanType.UNKNOWN
+
     // Drop-Account
     var dropAccount = CapabilityBooleanType.UNKNOWN
 

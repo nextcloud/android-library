@@ -80,10 +80,10 @@ public abstract class AbstractIT {
 
     @BeforeClass
     public static void beforeAll() throws InterruptedException,
-            CertificateException,
-            NoSuchAlgorithmException,
-            KeyStoreException,
-            IOException {
+        CertificateException,
+        NoSuchAlgorithmException,
+        KeyStoreException,
+        IOException {
         Bundle arguments = InstrumentationRegistry.getArguments();
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
@@ -138,10 +138,10 @@ public abstract class AbstractIT {
     }
 
     private static void testConnection() throws KeyStoreException,
-            CertificateException,
-            NoSuchAlgorithmException,
-            IOException,
-            InterruptedException {
+        CertificateException,
+        NoSuchAlgorithmException,
+        IOException,
+        InterruptedException {
         GetStatusRemoteOperation getStatus = new GetStatusRemoteOperation(context);
 
         RemoteOperationResult result = getStatus.execute(client);
@@ -159,8 +159,8 @@ public abstract class AbstractIT {
                 Thread.sleep(1000);
 
                 assertEquals(certificate,
-                        NetworkUtils.getKnownServersStore(context)
-                                .getCertificate(Integer.toString(certificate.hashCode()))
+                    NetworkUtils.getKnownServersStore(context)
+                        .getCertificate(Integer.toString(certificate.hashCode()))
                 );
 
                 // retry
@@ -271,18 +271,18 @@ public abstract class AbstractIT {
             RemoteFile remoteFile = (RemoteFile) object;
 
             if (!"/".equals(remoteFile.getRemotePath()) &&
-                    remoteFile.getMountType() != WebdavEntry.MountType.GROUP) {
+                remoteFile.getMountType() != WebdavEntry.MountType.GROUP) {
                 if (remoteFile.isEncrypted()) {
                     assertTrue(new ToggleEncryptionRemoteOperation(
-                            remoteFile.getLocalId(),
-                            remoteFile.getRemotePath(),
-                            false)
-                            .execute(client)
-                            .isSuccess());
+                        remoteFile.getLocalId(),
+                        remoteFile.getRemotePath(),
+                        false)
+                        .execute(client)
+                        .isSuccess());
                 }
 
                 assertTrue("Failed to remove " + remoteFile.getRemotePath(),
-                        new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(client).isSuccess());
+                    new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(client).isSuccess());
             }
         }
 
@@ -316,8 +316,8 @@ public abstract class AbstractIT {
 
     protected void testOnlyOnServer(OwnCloudVersion version) {
         OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient)
-                .getSingleData();
+            .execute(nextcloudClient)
+            .getSingleData();
         assumeTrue(ocCapability.getVersion().isNewerOrEqual(version));
     }
 }

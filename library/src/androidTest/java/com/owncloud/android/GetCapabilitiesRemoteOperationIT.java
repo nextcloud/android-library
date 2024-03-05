@@ -143,6 +143,15 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
             assertTrue(capability.getGroupfolders().isFalse());
         }
 
+        // assistant
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_28)) {
+            if (userId.equals("test")) {
+                assertTrue(capability.getAssistant().isTrue());
+            } else {
+                assertFalse(capability.getAssistant().isFalse());
+            }
+        }
+
         // e2e
         assertNotSame(capability.getEndToEndEncryptionApiVersion(), E2EVersion.UNKNOWN);
     }
