@@ -267,6 +267,7 @@ public class OwnCloudClientManager {
         String accountName = account.getName();
         if (accountName != null) {
             client = mClientsWithKnownUsername.remove(accountName);
+            clientsNewWithKnownUsername.remove(accountName);
             if (client != null) {
                 if (Log.isLoggable(TAG, Log.VERBOSE)) {
                     Log_OC.v(TAG, "Removed client for account " + accountName);
