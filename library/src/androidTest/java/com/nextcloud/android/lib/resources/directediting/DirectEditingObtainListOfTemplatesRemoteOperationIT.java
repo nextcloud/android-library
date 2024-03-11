@@ -7,27 +7,29 @@
  */
 package com.nextcloud.android.lib.resources.directediting;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.TemplateList;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
 
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class DirectEditingObtainListOfTemplatesRemoteOperationIT extends AbstractIT {
 
     @Test
     public void testGetAll() {
-        RemoteOperationResult result = new DirectEditingObtainListOfTemplatesRemoteOperation("text",
+        RemoteOperationResult<TemplateList> result = new DirectEditingObtainListOfTemplatesRemoteOperation("text",
                 "textdocument")
-                .execute(client);
+                .execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         TemplateList templateList = (TemplateList) result.getResultData();
 
-        assertEquals("Empty file", templateList.getTemplates().get("empty").getTitle());
-        assertEquals("md", templateList.getTemplates().get("empty").getExtension());
+        assertEquals("Empty file", Objects.requireNonNull(templateList.getTemplates().get("empty")).getTitle());
+        assertEquals("md", Objects.requireNonNull(templateList.getTemplates().get("empty")).getExtension());
     }
 }
