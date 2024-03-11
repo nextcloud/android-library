@@ -6,7 +6,7 @@
  * SPDX-FileCopyrightText: 2018 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources.files
+package com.owncloud.android.lib.resources.comments
 
 import com.nextcloud.common.NextcloudClient
 import com.owncloud.android.lib.common.network.ExtendedProperties
@@ -15,16 +15,13 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 /**
- * Links live photos
+ * Mark all comments for a file as read
  */
-class LinkLivePhotoRemoteOperation(
-    private val path: String,
-    private val linkedFileName: String
-) : RemoteOperation<Void>() {
+class MarkCommentsAsReadRemoteOperation(private val fileId: Long) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        val url = client.getFilesDavUri(path).toHttpUrl()
-        val metadataLiveProperty = mapOf(Pair(ExtendedProperties.METADATA_LIVE_PHOTO.toPropertyName(), linkedFileName))
-        val propPatchMethod = com.nextcloud.operations.PropPatchMethod(url, setProperties = metadataLiveProperty)
+        val url = client.getCommentsUri(fileId).toHttpUrl()
+        val readMarkerProperty = mapOf(Pair(ExtendedProperties.COMMENTS_READ_MARKER.toPropertyName(), ""))
+        val propPatchMethod = com.nextcloud.operations.PropPatchMethod(url, setProperties = readMarkerProperty)
         val response = client.execute(propPatchMethod)
 
         return RemoteOperationResult(response)

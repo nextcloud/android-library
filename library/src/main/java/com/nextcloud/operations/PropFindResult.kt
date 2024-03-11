@@ -22,11 +22,15 @@
 
 package com.nextcloud.operations
 
+import com.nextcloud.common.DavResponse
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 
 data class PropFindResult(
-    var success: Boolean = false,
+    val davResponse: DavResponse = DavResponse(),
     var root: RemoteFile = RemoteFile(),
     val children: MutableList<RemoteFile> = mutableListOf()
-)
-    
+) {
+    fun getContent(): List<RemoteFile> {
+        return children + root
+    }
+}
