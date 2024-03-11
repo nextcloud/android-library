@@ -97,14 +97,14 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
     @Override
     protected RemoteOperationResult<List<RemoteFile>> run(OwnCloudClient client) {
         RemoteOperationResult<List<RemoteFile>> result;
-        NcSearchMethod searchMethod = null;
+        NCSearchMethod searchMethod = null;
         OptionsMethod optionsMethod;
 
         String webDavUrl = client.getDavUri().toString();
         optionsMethod = new OptionsMethod(webDavUrl);
 
         try {
-            searchMethod = new NcSearchMethod(webDavUrl,
+            searchMethod = new NCSearchMethod(webDavUrl,
                     new SearchInfo("NC",
                             Namespace.XMLNS_NAMESPACE,
                             searchQuery),
@@ -125,11 +125,12 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
             if (isSuccess) {
                 // get data from remote folder
                 MultiStatus dataInServer = searchMethod.getResponseBodyAsMultiStatus();
-                WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
-                ArrayList<RemoteFile> mFolderAndFiles = webDavFileUtils.readData(dataInServer,
+                ArrayList<RemoteFile> mFolderAndFiles = WebDavFileUtils.INSTANCE.readData(
+                        dataInServer,
                         client.getFilesDavUri(),
                         false,
-                        true);
+                        true
+                );
 
                 // Result of the operation
                 result = new RemoteOperationResult<>(true, status, searchMethod.getResponseHeaders());
@@ -155,9 +156,9 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
     }
 
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<List<RemoteFile>> run(NextcloudClient client) {
         RemoteOperationResult<List<RemoteFile>> result;
-        NcSearchMethod searchMethod = null;
+        NCSearchMethod searchMethod = null;
 
         String webDavUrl = client.getDavUri().toString();
 
@@ -166,7 +167,7 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
                 searchQuery);
 
         try {
-            searchMethod = new NcSearchMethod(webDavUrl,
+            searchMethod = new NCSearchMethod(webDavUrl,
                     searchInfo,
                     searchType,
                     client.getUserIdPlain(),
@@ -185,16 +186,12 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
             new DavResource(
                     client.disabledRedirectClient(),
                     HttpUrl.get(client.getDavUri().toString()))
-                    .search(searchString, (response, hrefRelation) -> {
-                        responses.add(response);
-                    });
+                    .search(searchString, (response, hrefRelation) -> responses.add(response));
 
             // get data from remote folder
-            WebDavFileUtils webDavFileUtils = new WebDavFileUtils();
-
             ArrayList<RemoteFile> list = new ArrayList<>();
             for (Response response : responses) {
-                list.add(webDavFileUtils.parseResponse(response, client.getFilesDavUri()));
+                list.add(WebDavFileUtils.INSTANCE.parseResponse(response, client.getFilesDavUri()));
             }
 
             // Result of the operation

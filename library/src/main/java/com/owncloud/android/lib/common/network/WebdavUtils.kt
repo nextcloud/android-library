@@ -29,11 +29,11 @@ package com.owncloud.android.lib.common.network
 
 import android.net.Uri
 import at.bitfire.dav4jvm.PropertyRegistry.register
-import at.bitfire.dav4jvm.property.CreationDate
-import at.bitfire.dav4jvm.property.DisplayName
-import at.bitfire.dav4jvm.property.GetContentLength
-import at.bitfire.dav4jvm.property.GetContentType
-import at.bitfire.dav4jvm.property.ResourceType
+import at.bitfire.dav4jvm.property.webdav.CreationDate
+import at.bitfire.dav4jvm.property.webdav.DisplayName
+import at.bitfire.dav4jvm.property.webdav.GetContentLength
+import at.bitfire.dav4jvm.property.webdav.GetContentType
+import at.bitfire.dav4jvm.property.webdav.ResourceType
 import com.google.gson.Gson
 import com.owncloud.android.lib.resources.files.webdav.NCCreationTime
 import com.owncloud.android.lib.resources.files.webdav.NCEncrypted
@@ -205,7 +205,7 @@ object WebdavUtils {
             try {
                 date?.let { return format.parse(it) }
             } catch (e: ParseException) {
-                // this is not the format
+                // wrong format
             }
         }
         return null
@@ -254,19 +254,42 @@ object WebdavUtils {
 
     fun registerCustomFactories() {
         val list = listOf(
+            NCCreationTime.Factory(),
+            NCEncrypted.Factory(),
+            NCEtag.Factory(),
             NCFavorite.Factory(),
             NCGetLastModified.Factory(),
-            NCEtag.Factory(),
-            NCPermissions.Factory(),
-            OCId.Factory(),
-            OCSize.Factory(),
+            NCHidden.Factory(),
+            NCLock.Factory(),
+            NCLockOwnerDisplayName.Factory(),
+            NCLockOwnerEditor.Factory(),
+            NCLockOwner.Factory(),
+            NCLockOwnerType.Factory(),
+            NCLockTime.Factory(),
+            NCLockTimeout.Factory(),
+            NCLockToken.Factory(),
+            NCMetadataGPS.Factory(),
+            NCMetadataLivePhoto.Factory(),
+            NCMetadataPhotosGPS.Factory(),
+            NCMetadataPhotosSize.Factory(),
+            NCMetadataSize.Factory(),
             NCMountType.Factory(),
-            OCOwnerId.Factory(),
-            OCOwnerDisplayName.Factory(),
+            NCNote.Factory(),
+            NCPermissions.Factory(),
+            NCPreview.Factory(),
             NCRichWorkspace.Factory(),
             NCSharees.Factory(),
             NCTags.Factory(),
-            OCLocalId.Factory()
+            NCTrashbinDeletionTime.Factory(),
+            NCTrashbinFilename.Factory(),
+            NCTrashbinLocation.Factory(),
+            NCUploadTime.Factory(),
+            OCCommentsUnread.Factory(),
+            OCId.Factory(),
+            OCLocalId.Factory(),
+            OCOwnerDisplayName.Factory(),
+            OCOwnerId.Factory(),
+            OCSize.Factory(),
         )
         register(list)
     }

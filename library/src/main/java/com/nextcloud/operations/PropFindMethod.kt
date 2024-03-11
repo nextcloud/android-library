@@ -45,21 +45,24 @@ class PropFindMethod
 ) : DavMethod<PropFindResult>(httpUrl) {
 
     override fun apply(client: OkHttpClient, httpUrl: HttpUrl, filesDavUri: Uri): PropFindResult {
-        val webDavFileUtils = WebDavFileUtils()
         val result = PropFindResult()
 
         DavResource(client, httpUrl).propfind(
             depth, *propertySet
         ) { response: Response, hrefRelation: Response.HrefRelation? ->
-            result.success = response.isSuccess()
+            result.davResponse.success = response.isSuccess()
+            response.status?.let { status ->
+                result.davResponse.status = status
+            }
+
 
             when (hrefRelation) {
                 Response.HrefRelation.MEMBER -> result.children.add(
-                    webDavFileUtils.parseResponse(response, filesDavUri)
+                    WebDavFileUtils.parseResponse(response, filesDavUri)
                 )
 
                 Response.HrefRelation.SELF -> result.root =
-                    webDavFileUtils.parseResponse(response, filesDavUri)
+                    WebDavFileUtils.parseResponse(response, filesDavUri)
 
                 Response.HrefRelation.OTHER -> {}
                 else -> {}

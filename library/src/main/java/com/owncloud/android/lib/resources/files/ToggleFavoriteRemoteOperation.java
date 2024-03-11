@@ -11,7 +11,7 @@ import android.net.Uri;
 
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavEntry;
+import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.webdav.NCFavorite;
@@ -56,10 +56,10 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
 
         if (makeItFavorited) {
             DefaultDavProperty<String> favoriteProperty = new DefaultDavProperty<>("oc:favorite", "1",
-                    Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+                    Namespace.getNamespace(WebdavUtils.NAMESPACE_OC));
             newProps.add(favoriteProperty);
         } else {
-            removeProperties.add("oc:favorite", Namespace.getNamespace(WebdavEntry.NAMESPACE_OC));
+            removeProperties.add("oc:favorite", Namespace.getNamespace(WebdavUtils.NAMESPACE_OC));
         }
 
         String webDavUrl = client.getDavUri().toString();

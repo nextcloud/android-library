@@ -8,6 +8,7 @@ package com.owncloud.android.lib.resources.files.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.nextcloud.extensions.readParcelableArrayBridge
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavEntry.MountType
 import com.owncloud.android.lib.resources.files.FileUtils
@@ -39,8 +40,9 @@ class RemoteFile : Parcelable, Serializable {
     var ownerDisplayName: String? = null
     var unreadCommentsCount = 0
     var isHasPreview = false
+    var name: String? = null
     var note: String? = null
-    var sharees: Array<ShareeUser?>? = null
+    var sharees: Array<ShareeUser>? = null
     var richWorkspace: String? = null
     var isLocked = false
     var lockType: FileLockType? = null
@@ -50,7 +52,7 @@ class RemoteFile : Parcelable, Serializable {
     var lockOwnerEditor: String? = null
     var lockTimeout: Long = 0
     var lockToken: String? = null
-    var tags: Array<String?>? = null
+    var tags: Array<String>? = null
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
@@ -92,6 +94,7 @@ class RemoteFile : Parcelable, Serializable {
         mountType = we.mountType
         ownerId = we.ownerId
         ownerDisplayName = we.ownerDisplayName
+        name = we.name
         note = we.note
         unreadCommentsCount = we.unreadCommentsCount
         isHasPreview = we.isHasPreview
@@ -130,6 +133,7 @@ class RemoteFile : Parcelable, Serializable {
         isEncrypted = false
         ownerId = ""
         ownerDisplayName = ""
+        name = ""
         note = ""
         isLocked = false
         lockOwner = null
@@ -170,8 +174,9 @@ class RemoteFile : Parcelable, Serializable {
         ownerId = source.readString()
         ownerDisplayName = source.readString()
         isHasPreview = source.readString().toBoolean()
+        name = source.readString()
         note = source.readString()
-        source.readParcelableArray(ShareeUser::class.java.classLoader)
+        source.readParcelableArrayBridge(ShareeUser::class.java)
         isLocked = source.readInt() == 1
         lockType = fromValue(source.readInt())
         lockOwner = source.readString()
@@ -208,6 +213,7 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeString(ownerId)
         dest.writeString(ownerDisplayName)
         dest.writeString(isHasPreview.toString())
+        dest.writeString(name)
         dest.writeString(note)
         dest.writeParcelableArray(sharees, 0)
         dest.writeInt(if (isLocked) 1 else 0)
@@ -221,6 +227,13 @@ class RemoteFile : Parcelable, Serializable {
         dest.writeString(livePhoto)
         dest.writeInt(if (hidden) 1 else 0)
     }
+
+    /**
+     * Check whether RemoteFile is a directory.
+     *
+     * @return `true`, iff RemoteFile is directory.
+     */
+    fun isDirectory() = mimeType == "DIR"
 
     companion object {
         /**

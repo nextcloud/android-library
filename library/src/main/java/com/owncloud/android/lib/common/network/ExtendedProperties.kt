@@ -1,36 +1,17 @@
-/* Nextcloud Android Library is available under MIT license
-*
-*   @author ZetaZom
-*   Copyright (C) 2024 ZetaTom
-*   Copyright (C) 2024 Nextcloud GmbH
-*
-*   Permission is hereby granted, free of charge, to any person obtaining a copy
-*   of this software and associated documentation files (the "Software"), to deal
-*   in the Software without restriction, including without limitation the rights
-*   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*   copies of the Software, and to permit persons to whom the Software is
-*   furnished to do so, subject to the following conditions:
-*
-*   The above copyright notice and this permission notice shall be included in
-*   all copies or substantial portions of the Software.
-*
-*   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-*   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-*   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-*   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-*   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-*   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-*   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*   THE SOFTWARE.
-*
-*/
-
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2024 ZetaTom <70907959+ZetaTom@users.noreply.github.com>
+ * SPDX-License-Identifier: MIT
+ */
 package com.owncloud.android.lib.common.network
 
 import at.bitfire.dav4jvm.Property
 
 enum class ExtendedProperties(val value: String, val namespace: String) {
     CREATION_TIME("creation_time", WebdavUtils.NAMESPACE_NC),
+    COMMENTS_READ_MARKER("readMarker", WebdavUtils.NAMESPACE_NC),
     FAVORITE("favorite", WebdavUtils.NAMESPACE_OC),
     HAS_PREVIEW("has-preview", WebdavUtils.NAMESPACE_NC),
     HIDDEN("hidden", WebdavUtils.NAMESPACE_NC),
