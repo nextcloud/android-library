@@ -29,10 +29,11 @@ class GetHoverCardRemoteOperation(private val userId: String) : OCSRemoteOperati
                 GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + userId + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val serverResponse: ServerResponse<HoverCard>? = getServerResponse(
-                    getMethod,
-                    object : TypeToken<ServerResponse<HoverCard>>() {}
-                )
+                val serverResponse: ServerResponse<HoverCard>? =
+                    getServerResponse(
+                        getMethod,
+                        object : TypeToken<ServerResponse<HoverCard>>() {}
+                    )
 
                 val hoverCard: HoverCard? = serverResponse?.ocs?.data
 
