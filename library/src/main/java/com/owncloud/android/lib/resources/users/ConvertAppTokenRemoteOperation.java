@@ -40,13 +40,14 @@ public class ConvertAppTokenRemoteOperation extends OCSRemoteOperation<String> {
             int status = client.execute(method);
 
             if (status == HttpStatus.SC_OK) {
-                // Parse the response
-                ServerResponse<AppPassword> serverResponse = getServerResponse(method,
-                        new TypeToken<ServerResponse<AppPassword>>() {
-                        });
+                ServerResponse<AppPassword> serverResponse = getServerResponse(method, new TypeToken<>() {});
 
-                result = new RemoteOperationResult<>(true, method);
-                result.setResultData(serverResponse.getOcs().getData().getAppPassword());
+                if (serverResponse != null) {
+                    result = new RemoteOperationResult<>(true, method);
+                    result.setResultData(serverResponse.getOcs().getData().getAppPassword());
+                } else {
+                    result = new RemoteOperationResult<>(false, method);
+                }
             } else if (status == HttpStatus.SC_FORBIDDEN) {
                 result = new RemoteOperationResult<>(true, method);
                 result.setResultData("");

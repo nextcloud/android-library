@@ -37,10 +37,14 @@ class GetGroupfoldersRemoteOperation :
                     getServerResponse(
                         getMethod,
                         object : TypeToken<ServerResponse<Map<String, Groupfolder>>>() {}
-                    )
-                        .ocs.data
-                result = RemoteOperationResult(true, getMethod)
-                result.setResultData(map)
+                    )?.ocs?.data
+
+                if (map != null) {
+                    result = RemoteOperationResult(true, getMethod)
+                    result.setResultData(map)
+                } else {
+                    result = RemoteOperationResult(false, getMethod)
+                }
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }

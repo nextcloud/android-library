@@ -49,13 +49,15 @@ public class DirectEditingObtainListOfTemplatesRemoteOperation extends OCSRemote
             int status = client.executeMethod(getMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
             if (status == HttpStatus.SC_OK) {
-                TemplateList templateList = getServerResponse(getMethod,
-                                                              new TypeToken<ServerResponse<TemplateList>>() {
-                                                              })
-                        .getOcs().getData();
+                ServerResponse<TemplateList> serverResponse = getServerResponse(getMethod, new TypeToken<>() {});
 
-                result = new RemoteOperationResult<>(true, getMethod);
-                result.setResultData(templateList);
+                if (serverResponse != null) {
+                    TemplateList templateList = serverResponse.getOcs().getData();
+                    result = new RemoteOperationResult<>(true, getMethod);
+                    result.setResultData(templateList);
+                } else {
+                    result = new RemoteOperationResult<>(false, getMethod);
+                }
             } else {
                 result = new RemoteOperationResult<>(false, getMethod);
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
@@ -69,6 +71,7 @@ public class DirectEditingObtainListOfTemplatesRemoteOperation extends OCSRemote
                 getMethod.releaseConnection();
             }
         }
+
         return result;
     }
 }

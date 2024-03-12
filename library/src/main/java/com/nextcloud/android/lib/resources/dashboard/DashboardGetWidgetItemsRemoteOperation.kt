@@ -33,11 +33,16 @@ class DashboardGetWidgetItemsRemoteOperation(val id: String, private val limitSi
                         get,
                         object :
                             TypeToken<ServerResponse<HashMap<String, List<DashboardWidgetItem>>>>() {}
-                    ).ocs.data
+                    )?.ocs?.data
 
-                result =
-                    RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>>(true, get)
-                result.resultData = list
+                if (list != null) {
+                    result =
+                        RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>>(true, get)
+                    result.resultData = list
+                } else {
+                    result =
+                        RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>>(false, get)
+                }
             } else {
                 result =
                     RemoteOperationResult<HashMap<String, List<DashboardWidgetItem>>>(false, get)
