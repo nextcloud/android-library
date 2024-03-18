@@ -28,12 +28,11 @@ class GetTaskListRemoteOperation(private val appId: String) : OCSRemoteOperation
                 GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + appId + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val taskTypes: TaskList =
+                val taskTypes: TaskList? =
                     getServerResponse(
                         getMethod,
                         object : TypeToken<ServerResponse<TaskList>>() {}
-                    )
-                        .ocs.data
+                    )?.ocs?.data
                 result = RemoteOperationResult(true, getMethod)
                 result.setResultData(taskTypes)
             } else {

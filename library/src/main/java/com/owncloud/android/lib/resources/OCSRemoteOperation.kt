@@ -6,35 +6,49 @@
  * SPDX-FileCopyrightText: 2018 Bartosz Przybylski <bart.p.pl@gmail.com>
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources;
+package com.owncloud.android.lib.resources
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import com.nextcloud.common.OkHttpMethodBase;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-
-import org.apache.commons.httpclient.HttpMethodBase;
-
-import java.io.IOException;
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
+import com.nextcloud.common.OkHttpMethodBase
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import org.apache.commons.httpclient.HttpMethodBase
+import java.io.IOException
 
 /**
  * Base class for OCS remote operations with convenient methods
  *
  * @author Bartosz Przybylski
  */
-public abstract class OCSRemoteOperation<T> extends RemoteOperation<T> {
-
-    @Deprecated
-    public <T> T getServerResponse(HttpMethodBase method, TypeToken<T> type) throws IOException {
-        String response = method.getResponseBodyAsString();
-        JsonElement element = JsonParser.parseString(response);
-        return gson.fromJson(element, type.getType());
+abstract class OCSRemoteOperation<T> : RemoteOperation<T>() {
+    @Deprecated("Use OkHttpMethodBase variant instead")
+    fun <T> getServerResponse(
+        method: HttpMethodBase,
+        type: TypeToken<T>
+    ): T? {
+        return try {
+            val response = method.responseBodyAsString
+            val element: JsonElement = JsonParser.parseString(response)
+            gson.fromJson(element, type.type)
+        } catch (ioException: IOException) {
+            null
+        } catch (syntaxException: JsonSyntaxException) {
+            null
+        }
     }
 
-    public <T> T getServerResponse(OkHttpMethodBase method, TypeToken<T> type) {
-        String response = method.getResponseBodyAsString();
-        JsonElement element = JsonParser.parseString(response);
-        return gson.fromJson(element, type.getType());
+    fun <T> getServerResponse(
+        method: OkHttpMethodBase,
+        type: TypeToken<T>
+    ): T? {
+        return try {
+            val response = method.getResponseBodyAsString()
+            val element: JsonElement = JsonParser.parseString(response)
+            gson.fromJson(element, type.type)
+        } catch (syntaxException: JsonSyntaxException) {
+            null
+        }
     }
 }
