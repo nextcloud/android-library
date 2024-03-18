@@ -40,13 +40,13 @@ public class GetStatusRemoteOperation extends OCSRemoteOperation<Status> {
             int status = client.execute(getMethod);
 
             if (status == HttpStatus.SC_OK) {
-                // Parse the response
-                ServerResponse<Status> serverResponse = getServerResponse(getMethod,
-                        new TypeToken<ServerResponse<Status>>() {
-                        });
-
-                result = new RemoteOperationResult<>(true, getMethod);
-                result.setResultData(serverResponse.getOcs().getData());
+                ServerResponse<Status> serverResponse = getServerResponse(getMethod, new TypeToken<>() {});
+                if (serverResponse != null) {
+                    result = new RemoteOperationResult<>(true, getMethod);
+                    result.setResultData(serverResponse.getOcs().getData());
+                } else {
+                    result = new RemoteOperationResult<>(false, getMethod);
+                }
             } else {
                 // 404 if no status was set before
                 if (HttpStatus.SC_NOT_FOUND == getMethod.getStatusCode()) {

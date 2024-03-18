@@ -30,10 +30,14 @@ class DashboardListWidgetsRemoteOperation : OCSRemoteOperation<Map<String, Dashb
                     getServerResponse(
                         get,
                         object : TypeToken<ServerResponse<HashMap<String, DashboardWidget>>>() {}
-                    ).ocs.data
+                    )?.ocs?.data
 
-                result = RemoteOperationResult<Map<String, DashboardWidget>>(true, get)
-                result.resultData = list
+                if (list != null) {
+                    result = RemoteOperationResult<Map<String, DashboardWidget>>(true, get)
+                    result.resultData = list
+                } else {
+                    result = RemoteOperationResult<Map<String, DashboardWidget>>(false, get)
+                }
             } else {
                 result = RemoteOperationResult<Map<String, DashboardWidget>>(false, get)
             }

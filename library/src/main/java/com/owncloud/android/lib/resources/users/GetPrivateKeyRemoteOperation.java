@@ -46,8 +46,12 @@ public class GetPrivateKeyRemoteOperation extends OCSRemoteOperation<PrivateKey>
                         getServerResponse(getMethod, new TypeToken<ServerResponse<PrivateKey>>() {
                         });
 
-                result = new RemoteOperationResult<>(true, getMethod);
-                result.setResultData(serverResponse.getOcs().data);
+                if (serverResponse != null) {
+                    result = new RemoteOperationResult<>(true, getMethod);
+                    result.setResultData(serverResponse.getOcs().data);
+                } else {
+                    result = new RemoteOperationResult<>(false, getMethod);
+                }
             } else {
                 result = new RemoteOperationResult<>(false, getMethod);
             }

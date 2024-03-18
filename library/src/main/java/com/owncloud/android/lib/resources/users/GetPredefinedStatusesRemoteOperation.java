@@ -41,14 +41,14 @@ public class GetPredefinedStatusesRemoteOperation extends OCSRemoteOperation<Arr
             int status = client.execute(getMethod);
 
             if (status == HttpStatus.SC_OK) {
-                // Parse the response
-                ServerResponse<ArrayList<PredefinedStatus>> serverResponse =
-                        getServerResponse(getMethod,
-                                new TypeToken<ServerResponse<ArrayList<PredefinedStatus>>>() {
-                                });
+                ServerResponse<ArrayList<PredefinedStatus>> serverResponse = getServerResponse(getMethod, new TypeToken<>() {});
 
-                result = new RemoteOperationResult<>(true, getMethod);
-                result.setResultData(serverResponse.getOcs().getData());
+                if (serverResponse != null) {
+                    result = new RemoteOperationResult<>(true, getMethod);
+                    result.setResultData(serverResponse.getOcs().getData());
+                } else {
+                    result = new RemoteOperationResult<>(false, getMethod);
+                }
             } else {
                 result = new RemoteOperationResult<>(false, getMethod);
                 getMethod.releaseConnection();
