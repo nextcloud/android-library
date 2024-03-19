@@ -24,10 +24,12 @@ enum class ExtendedProperties(val value: String, val namespace: String) {
     LOCK_TIME("lock-time", WebdavUtils.NAMESPACE_NC),
     LOCK_TIMEOUT("lock-timeout", WebdavUtils.NAMESPACE_NC),
     LOCK_TOKEN("lock-token", WebdavUtils.NAMESPACE_NC),
+    @Deprecated("Removed with v28. Use METADATA_PHOTOS_GPS instead.")
     METADATA_GPS("file-metadata-gps", WebdavUtils.NAMESPACE_NC),
     METADATA_LIVE_PHOTO("metadata-files-live-photo", WebdavUtils.NAMESPACE_NC),
     METADATA_PHOTOS_GPS("metadata-photos-gps", WebdavUtils.NAMESPACE_NC),
     METADATA_PHOTOS_SIZE("metadata-photos-size", WebdavUtils.NAMESPACE_NC),
+    @Deprecated("Removed with v28. Use METADATA_PHOTOS_SIZE instead.")
     METADATA_SIZE("file-metadata-size", WebdavUtils.NAMESPACE_NC),
     MOUNT_TYPE("mount-type", WebdavUtils.NAMESPACE_NC),
     NAME_LOCAL_ID("fileid", WebdavUtils.NAMESPACE_OC),
