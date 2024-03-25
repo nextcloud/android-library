@@ -79,7 +79,7 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable activity"
       - su www-data -c "git clone -b main https://github.com/nextcloud/text.git /var/www/html/apps/text/"
       - su www-data -c "php /var/www/html/occ app:enable text"
-      - su www-data -c "git clone -b artonge/feat/allow_metadata_update_for_subfolders https://github.com/nextcloud/end_to_end_encryption/  /var/www/html/apps/end_to_end_encryption/"
+      - su www-data -c "git clone -b master https://github.com/nextcloud/end_to_end_encryption/  /var/www/html/apps/end_to_end_encryption/"
       - su www-data -c "php /var/www/html/occ app:enable end_to_end_encryption"
       - su www-data -c "git clone -b master https://github.com/nextcloud/password_policy/  /var/www/html/apps/password_policy/"
       - su www-data -c "php /var/www/html/occ app:enable password_policy"
@@ -213,6 +213,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 56749c47df149cc2d3c06343c609210a310e27635ea6ccb040890ab0afbce79d
+hmac: 6d69c7c3739747691580d04a781eb67cf95d2f33f8149d5ebd2cbcc30611b4f0
 
 ...
