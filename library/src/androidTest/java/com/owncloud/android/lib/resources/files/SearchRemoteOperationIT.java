@@ -145,22 +145,43 @@ public class SearchRemoteOperationIT extends AbstractIT {
     @Test
     public void oneFavorite() {
         String path = "/testFolder/";
+        String path2 = "/testFolder2/";
 
         // create folder, make it favorite
         new CreateFolderRemoteOperation(path, true).execute(client);
+        new CreateFolderRemoteOperation(path2, true).execute(client);
         assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(client).isSuccess());
+        assertTrue(new ToggleFavoriteRemoteOperation(true, path2).execute(nextcloudClient).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("",
                 SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
                 false,
                 capability);
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
 
         // test
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
+        assertEquals(2, result.getResultData().size());
+
         RemoteFile remoteFile = result.getResultData().get(0);
         assertEquals(path, remoteFile.getRemotePath());
+
+        RemoteFile remoteFile2 = result.getResultData().get(1);
+        assertEquals(path2, remoteFile2.getRemotePath());
+
+        // unfavorite
+        assertTrue(new ToggleFavoriteRemoteOperation(false, path).execute(client).isSuccess());
+        assertTrue(new ToggleFavoriteRemoteOperation(false, path2).execute(nextcloudClient).isSuccess());
+
+        // test
+        sut = new SearchRemoteOperation("",
+                SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
+                false,
+                capability);
+        result = sut.execute(nextcloudClient);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getResultData().size());
     }
 
     @Test

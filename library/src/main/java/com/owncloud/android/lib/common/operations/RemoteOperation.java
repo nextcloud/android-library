@@ -285,15 +285,19 @@ public abstract class RemoteOperation<T> implements Runnable {
         mContext = context.getApplicationContext();
         mCallerActivity = null;
         mClient = null;     // the client instance will be created from
-                            // mAccount and mContext in the runnerThread to create below
-        
+        // mAccount and mContext in the runnerThread to create below
+
         mListener = listener;
-        
+
         mListenerHandler = listenerHandler;
-        
+
         Thread runnerThread = new Thread(this);
         runnerThread.start();
         return runnerThread;
+    }
+
+    public OwnCloudClient getClient() {
+        return mClient;
     }
 
     /**
@@ -432,15 +436,4 @@ public abstract class RemoteOperation<T> implements Runnable {
             });
         }
     }
-
-
-    /**
-     * Returns the current client instance to access the remote server.
-     * 
-     * @return      Current client instance to access the remote server.
-     */
-    public final OwnCloudClient getClient() {
-        return mClient;
-    }
-
 }

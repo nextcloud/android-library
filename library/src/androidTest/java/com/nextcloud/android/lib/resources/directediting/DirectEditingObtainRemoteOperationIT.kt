@@ -19,8 +19,9 @@ class DirectEditingObtainRemoteOperationIT : AbstractIT() {
     fun testGetAll() {
         val result = DirectEditingObtainRemoteOperation().execute(client)
         assertTrue(result.isSuccess)
+        assertNotNull(result.resultData)
 
-        val (editors, creators) = result.resultData
+        val (editors, creators) = result.resultData!!
         assertTrue(editors.containsKey("text"))
 
         val textEditor = editors["text"]

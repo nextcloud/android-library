@@ -91,16 +91,16 @@ public class ShareToRemoteOperationResultParser {
 
             } else if (shareXmlParser.isWrongParameter()) {
                 result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.SHARE_WRONG_PARAMETER);
-                result.setMessage(shareXmlParser.getMessage());
+                result.message = shareXmlParser.getMessage();
             } else if (shareXmlParser.isNotFound()) {
                 result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.SHARE_NOT_FOUND);
-                result.setMessage(shareXmlParser.getMessage());
+                result.message = shareXmlParser.getMessage();
             } else if (shareXmlParser.isForbidden()) {
                 result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.SHARE_FORBIDDEN);
-                result.setMessage(shareXmlParser.getMessage());
+                result.message = shareXmlParser.getMessage();
             } else {
                 result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.WRONG_SERVER_RESPONSE);
-                result.setMessage(shareXmlParser.getMessage());
+                result.message = shareXmlParser.getMessage();
             }
 
         } catch (XmlPullParserException e) {
