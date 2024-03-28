@@ -30,6 +30,7 @@ package com.owncloud.android.lib.resources.files.webdav
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils
+import at.bitfire.dav4jvm.property.webdav.NS_WEBDAV
 import com.owncloud.android.lib.common.network.WebdavUtils
 import org.xmlpull.v1.XmlPullParser
 
@@ -48,6 +49,6 @@ class NCEtag private constructor(val etag: String?) : Property {
 
     companion object {
         @JvmField
-        val NAME = Property.Name(XmlUtils.NS_WEBDAV, "getetag")
+        val NAME = Property.Name(NS_WEBDAV, "getetag")
     }
 }

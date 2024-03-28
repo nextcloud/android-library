@@ -18,7 +18,7 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Check if file is up to date, by checking only eTag
  */
-class CheckEtagRemoteOperation(private val path: String, private val expectedEtag: String) :
+class CheckEtagRemoteOperation(private val path: String, private val expectedEtag: String?) :
     RemoteOperation<String?>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<String?> {
         val url = client.getFilesDavUri(path).toHttpUrl()
@@ -33,7 +33,7 @@ class CheckEtagRemoteOperation(private val path: String, private val expectedEta
                 RemoteOperationResult(ResultCode.ETAG_UNCHANGED)
             } else {
                 val result = RemoteOperationResult<String?>(ResultCode.ETAG_CHANGED)
-                result.setResultData(etag)
+                result.resultData = etag
                 result
             }
         } else if (propFindResult.davResponse.getStatusCode() == HttpStatus.SC_NOT_FOUND) {

@@ -22,7 +22,7 @@ class GetGroupfoldersRemoteOperationIT : AbstractIT() {
         assumeTrue(capability.groupfolders.isTrue)
 
         val map = GetGroupfoldersRemoteOperation().execute(nextcloudClient).resultData
-        assertEquals(1, map.size)
-        assertEquals("groupfolder", map["1"]?.mountPoint)
+        assertEquals(1, map?.size)
+        assertEquals("groupfolder", map?.get("1")?.mountPoint)
     }
 }

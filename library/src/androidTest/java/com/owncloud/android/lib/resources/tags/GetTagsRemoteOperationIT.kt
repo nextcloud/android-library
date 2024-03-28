@@ -10,6 +10,7 @@ package com.owncloud.android.lib.resources.tags
 import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
@@ -22,8 +23,9 @@ class GetTagsRemoteOperationIT : AbstractIT() {
     fun list() {
         var sut = GetTagsRemoteOperation().execute(client)
         assertTrue(sut.isSuccess)
+        assertNotNull(sut.resultData)
 
-        val count = sut.resultData.size
+        val count = sut.resultData?.size
 
         assertTrue(
             CreateTagRemoteOperation(RandomStringGenerator.make(TAG_LENGTH))
@@ -33,6 +35,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
 
         sut = GetTagsRemoteOperation().execute(client)
         assertTrue(sut.isSuccess)
-        assertEquals(count + 1, sut.resultData.size)
+
+        assertEquals(count?.plus(1), sut.resultData?.size)
     }
 }
