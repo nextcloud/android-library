@@ -415,7 +415,7 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
                     if (width != null && height != null) {
                         ImageDimension(width, height)
                     } else {
-                        prop = propSet[EXTENDED_PROPERTY_METADATA_SIZE, ncNamespace]
+                        prop = getDavProp(propSet, ExtendedProperties.METADATA_SIZE)
                         gson.fromDavProperty<ImageDimension>(prop)
                     }
                 }
@@ -434,7 +434,7 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
                     if (latitude != null && longitude != null) {
                         GeoLocation(latitude, longitude)
                     } else {
-                        prop = propSet[EXTENDED_PROPERTY_METADATA_GPS, ncNamespace]
+                        prop = getDavProp(propSet, ExtendedProperties.METADATA_GPS)
                         gson.fromDavProperty<GeoLocation>(prop)
                     }
                 }
