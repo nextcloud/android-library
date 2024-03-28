@@ -208,11 +208,12 @@ services:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
 ---
 kind: signature
-hmac: 6d69c7c3739747691580d04a781eb67cf95d2f33f8149d5ebd2cbcc30611b4f0
+hmac: 542973ba9170cccc695eef62df1964cb205c1a87743f11e3b9f3f8f319956953
 
 ...
