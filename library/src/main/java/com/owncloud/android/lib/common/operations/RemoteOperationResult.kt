@@ -140,7 +140,13 @@ class RemoteOperationResult<T> : Serializable {
         private set
     val authenticateHeaders = ArrayList<String>()
     private var mData: ArrayList<Any>? = null
-    private var resultData: T? = null
+    var resultData: T? = null
+        get() {
+            if (isSuccess) {
+                return field
+            }
+            throw RuntimeException("Accessing result data after operation failed!")
+        }
 
     /**
      * Public constructor from result code.
@@ -465,17 +471,6 @@ class RemoteOperationResult<T> : Serializable {
         }
     }
 
-    fun setResultData(data: T) {
-        resultData = data
-    }
-
-    fun getResultData(): T? {
-        if (!isSuccess) {
-            throw RuntimeException("Accessing result data after operation failed!")
-        }
-        return resultData
-    }
-
     @get:Deprecated("use getResultData() instead")
     @set:Deprecated("use setResultData() instead")
     var data: java.util.ArrayList<out Any>?
@@ -533,9 +528,10 @@ class RemoteOperationResult<T> : Serializable {
         return result
     }
 
-    val logMessage = {
+    val logMessage: String
+        get() {
             exception?.let { exception ->
-                when (exception) {
+                return when (exception) {
                     is OperationCancelledException -> "Operation cancelled by the caller"
                     is SocketException -> "Socket exception"
                     is SocketTimeoutException -> "Socket timeout exception"
@@ -553,7 +549,7 @@ class RemoteOperationResult<T> : Serializable {
                     else -> "Unexpected exception"
                 }
             }
-            when (code) {
+            return when (code) {
                 ResultCode.INSTANCE_NOT_CONFIGURED -> "The Nextcloud server is not configured!"
                 ResultCode.NO_NETWORK_CONNECTION -> "No network connection"
                 ResultCode.BAD_OC_VERSION -> "No valid Nextcloud version was found at the server"
@@ -570,7 +566,7 @@ class RemoteOperationResult<T> : Serializable {
 
     val isServerFail = httpCode >= HttpStatus.SC_INTERNAL_SERVER_ERROR
 
-    fun isException() =  exception != null
+    val isException = exception != null
 
     val isTemporalRedirection = httpCode == 302 || httpCode == 307
 
@@ -581,8 +577,7 @@ class RemoteOperationResult<T> : Serializable {
     /**
      * Checks if is a non https connection
      */
-    val isNonSecureRedirection = redirectedLocation != null && !redirectedLocation!!.lowercase()
-            .startsWith("https://")
+    val isNonSecureRedirection = redirectedLocation != null && !redirectedLocation!!.lowercase().startsWith("https://")
 
     override fun toString(): String = "RemoteOperationResult{mSuccess=$isSuccess, mHttpCode=$httpCode, mHttpPhrase='$httpPhrase', mException=$exception, mCode=${this.code}, message='$message', getLogMessage='$logMessage'}"
 

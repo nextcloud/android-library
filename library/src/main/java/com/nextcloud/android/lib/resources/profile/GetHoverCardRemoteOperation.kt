@@ -39,7 +39,7 @@ class GetHoverCardRemoteOperation(private val userId: String) : OCSRemoteOperati
 
                 if (hoverCard != null) {
                     result = RemoteOperationResult(true, getMethod)
-                    result.setResultData(hoverCard)
+                    result.resultData = hoverCard
                 } else {
                     result = RemoteOperationResult(false, getMethod)
                 }

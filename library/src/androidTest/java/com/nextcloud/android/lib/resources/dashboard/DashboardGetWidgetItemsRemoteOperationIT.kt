@@ -41,9 +41,9 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
             DashboardGetWidgetItemsRemoteOperation(widgetId, LIMIT_SIZE).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertTrue(result.resultData[widgetId]?.isNotEmpty() ?: false)
+        assertTrue(result.resultData?.get(widgetId)?.isNotEmpty() ?: false)
 
-        val firstResult = result.resultData[widgetId]?.get(0)
+        val firstResult = result.resultData?.get(widgetId)?.get(0)
         assertTrue(firstResult?.title?.isNotEmpty() == true)
         assertTrue(firstResult?.subtitle != null)
         assertTrue(firstResult?.link?.isNotEmpty() == true)
@@ -57,7 +57,7 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
             DashboardGetWidgetItemsRemoteOperation(widgetId, LIMIT_SIZE).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertTrue(result.resultData.isEmpty())
+        assertTrue(result.resultData?.isEmpty() ?: false)
     }
 
     companion object {

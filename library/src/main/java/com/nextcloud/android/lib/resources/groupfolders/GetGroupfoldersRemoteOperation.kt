@@ -41,7 +41,7 @@ class GetGroupfoldersRemoteOperation :
 
                 if (map != null) {
                     result = RemoteOperationResult(true, getMethod)
-                    result.setResultData(map)
+                    result.resultData = map
                 } else {
                     result = RemoteOperationResult(false, getMethod)
                 }

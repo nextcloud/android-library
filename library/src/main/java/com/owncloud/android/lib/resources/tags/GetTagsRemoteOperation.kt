@@ -34,7 +34,7 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
             }
         } ?: emptyList()
 
-        result.setResultData(tags)
+        result.resultData = tags
 
         return result
     }

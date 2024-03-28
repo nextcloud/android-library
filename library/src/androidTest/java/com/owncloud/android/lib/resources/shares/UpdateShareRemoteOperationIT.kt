@@ -15,6 +15,7 @@ import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -61,8 +62,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
             ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
+        assertNotNull(createOperationResult.resultData)
 
-        val share = createOperationResult.resultData[0]
+        val share = createOperationResult.resultData!![0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setNote(note)
@@ -72,8 +74,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         // verify
         val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
+        assertNotNull(getShareOperationResult.resultData)
 
-        val updatedShare = getShareOperationResult.resultData[0]
+        val updatedShare = getShareOperationResult.resultData!![0]
 
         assertEquals(note, updatedShare.note)
 
@@ -97,8 +100,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
             ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
+        assertNotNull(createOperationResult.resultData)
 
-        val share = createOperationResult.resultData[0]
+        val share = createOperationResult.resultData!![0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setLabel(label)
@@ -108,8 +112,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         // verify
         val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
+        assertNotNull(getShareOperationResult.resultData)
 
-        val updatedShare = getShareOperationResult.resultData[0]
+        val updatedShare = getShareOperationResult.resultData!![0]
 
         assertEquals(label, updatedShare.label)
 
@@ -134,8 +139,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
             ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
+        assertNotNull(createOperationResult.resultData)
 
-        val share = createOperationResult.resultData[0]
+        val share = createOperationResult.resultData!![0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("1")
@@ -184,8 +190,9 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
             ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
+        assertNotNull(createOperationResult.resultData)
 
-        val share = createOperationResult.resultData[0]
+        val share = createOperationResult.resultData!![0]
 
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("arnservcvcbtp234")

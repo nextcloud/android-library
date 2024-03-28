@@ -18,10 +18,10 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.assistant.model.TaskTypes
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
+class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes?>() {
     @Suppress("TooGenericExceptionCaught")
-    override fun run(client: NextcloudClient): RemoteOperationResult<TaskTypes> {
-        var result: RemoteOperationResult<TaskTypes>
+    override fun run(client: NextcloudClient): RemoteOperationResult<TaskTypes?> {
+        var result: RemoteOperationResult<TaskTypes?>
         var getMethod: GetMethod? = null
         try {
             getMethod =
@@ -34,7 +34,7 @@ class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
                         object : TypeToken<ServerResponse<TaskTypes>>() {}
                     )?.ocs?.data
                 result = RemoteOperationResult(true, getMethod)
-                result.setResultData(taskTypes)
+                result.resultData = taskTypes
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }

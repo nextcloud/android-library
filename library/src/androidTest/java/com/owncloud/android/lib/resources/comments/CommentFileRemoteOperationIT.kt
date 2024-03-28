@@ -25,7 +25,7 @@ class CommentFileRemoteOperationIT : AbstractIT() {
         )
 
         val readResult = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
-        val remoteFile = readResult.getResultData()
+        val remoteFile = readResult.resultData
 
         assertNotNull(remoteFile)
 
