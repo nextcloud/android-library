@@ -43,7 +43,7 @@ class StatusIT : AbstractIT() {
 
         val status = StatusType.entries.toMutableList()
 
-        if (!isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+        if (!isServerAtLeast(NextcloudVersion.nextcloud_23)) {
             status.remove(StatusType.BUSY)
         }
 
