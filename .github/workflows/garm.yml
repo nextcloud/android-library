@@ -80,7 +80,7 @@ jobs:
                     sdcard-path-or-size: 100M
                     target: google_apis
                     emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
-                    script: scripts/wait_for_emulator.sh && ./gradlew jacocoTestDebugUnitTestReport && ./gradlew installDebugAndroidTest && ./gradlew createDebugCoverageReport./gradlew combinedTestReport
+                    script: scripts/wait_for_emulator.sh && ./gradlew jacocoTestDebugUnitTestReport && ./gradlew installDebugAndroidTest && ./gradlew createDebugCoverageReport && ./gradlew combinedTestReport
 
             -   name: upload failing results
                 if: ${{ failure() }}
