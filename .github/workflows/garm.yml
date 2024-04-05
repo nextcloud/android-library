@@ -40,8 +40,7 @@ jobs:
                 run: |
                     docker cp .github/workflows/configServer.sh server:/tmp/
                     docker exec server sh -c chmod +x /tmp/configServer.sh
-                    docker exec server sh -c chown www-data /tmp/configServer.sh
-                    docker exec --user www-data sh -c "/tmp/configServer.sh"
+                    docker exec --user www-data server /tmp/configServer.sh
 
             -   name: Enable KVM group perms
                 run: |
