@@ -35,6 +35,12 @@ jobs:
                         sleep 5
                     done
 
+            -   name: configure server
+                run: |
+                    docker exec --user www-data server OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1
+                    docker exec --user www-data server git clone -b master https://github.com/nextcloud/activity.git /var/www/html/apps/activity/
+                    docker exec --user www-data server php /var/www/html/occ app:enable activity
+
             -   name: Enable KVM group perms
                 run: |
                     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
