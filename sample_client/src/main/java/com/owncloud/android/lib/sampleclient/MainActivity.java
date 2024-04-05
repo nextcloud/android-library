@@ -39,9 +39,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+
+import okio.BufferedSink;
+import okio.Okio;
 
 public class MainActivity extends Activity implements OnRemoteOperationListener, OnDatatransferProgressListener {
 
@@ -130,6 +137,9 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
             case R.id.button_delete_local:
                 startLocalDeletion();
                 break;
+            case R.id.button_speed_test:
+                performSpeedTest();
+                break;
             default:
                 Toast.makeText(this, R.string.youre_doing_it_wrong, Toast.LENGTH_SHORT).show();
         }
@@ -177,6 +187,183 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
         DownloadFileRemoteOperation downloadOperation = new DownloadFileRemoteOperation(remotePath, downFolder.getAbsolutePath());
         downloadOperation.addDatatransferProgressListener(this);
         downloadOperation.execute(mClient, this, mHandler);
+    }
+
+    private void performSpeedTest() {
+
+        // Size in MB of file to create, upload, then download
+        int sizeInMB = 100;
+
+        // Delay to wait after upload test to allow server to process
+        // 200ms per MB seems to work well
+        int delayInMs = (200 * sizeInMB) + 1000;
+
+        // Limits in bytes per second (0=off)
+        long uploadLimit = 5 * 1000 * 1000;
+        long downloadLimit = 3 * 1000 * 1000;
+
+
+        // Results
+        // 100MB randomly generated file
+        // Using ethernet connection on S10+
+
+        // Original before modifications
+
+        // Upload : Download (kBps)
+        // 36273    29416
+        // 45511    30649
+        // 46929    31673
+
+        // Avg
+        // 42904    30579
+
+
+        // Post modifications
+
+        // Upload : Download (kBps)
+        // 41915    27743
+        // 45430    29066
+        // 46800    33160
+
+        // Avg
+        // 44715    29989
+
+
+        // Create local file with random bytes to upload to the server
+        String date = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.ENGLISH).format(new Date());
+        final File file = new File(getCacheDir(), "speed_test_" + date + ".txt");
+
+        // Fill file with random bytes to limit
+        BufferedSink sink = null;
+        Random random = new Random();
+        byte[] b = new byte[1000];
+        try {
+            // Open sink
+            sink = Okio.buffer(Okio.sink(file));
+            int targetSizeInKB = sizeInMB * 1000;
+
+            // Write bytes to file
+            for(int i=0; i < targetSizeInKB; i++) {
+                random.nextBytes(b);
+                sink.write(b);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (sink != null) {
+                try {
+                    sink.flush();
+                    sink.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Prepare to upload file to server
+        String remotePath = FileUtils.PATH_SEPARATOR + file.getName();
+        String mimeType = "application/octet-stream";
+        // Get the last modification date of the file from the file system
+        long timeStamp = file.lastModified() / 1000;
+        UploadFileRemoteOperation uploadOperation = new UploadFileRemoteOperation(
+            file.getAbsolutePath(),
+            remotePath,
+            mimeType,
+            timeStamp
+        );
+
+        // Set the limit
+        uploadOperation.setBandwidthLimit(uploadLimit);
+
+        // Start the clock
+        long start = System.currentTimeMillis();
+
+        // Use custom listener to update the values in the UI and run the download test after
+        uploadOperation.addDataTransferProgressListener(new OnDatatransferProgressListener() {
+            @Override
+            public void onTransferProgress(long progressRate, long totalTransferredSoFar, long totalToTransfer, String fileAbsoluteName) {
+
+                final long percentage = (totalToTransfer > 0 ? totalTransferredSoFar * 100 / totalToTransfer : 0);
+                final long elapsedTime = System.currentTimeMillis() - start;
+                final long estimatedSpeed = totalTransferredSoFar / Math.max(elapsedTime, 1);
+                Log.d(TAG, "Upload percentage: " + percentage);
+
+                mHandler.post(() -> {
+                    TextView uploadPercent = findViewById(R.id.text_upload_completion);
+                    TextView uploadSpeed = findViewById(R.id.text_upload_speed);
+                    TextView uploadElapsed = findViewById(R.id.text_upload_elapsed);
+
+                    uploadPercent.setText(percentage + " %");
+                    uploadSpeed.setText(estimatedSpeed + " kBps");
+                    uploadElapsed.setText(elapsedTime + " ms");
+
+                    if (percentage == 100) {
+
+                        Log.i(TAG, "Will run download after delay to allow server to process.");
+
+                        // Then continue to the download test
+                        Handler handler = new Handler();
+                        final Runnable r = () -> runDownloadTest(file, downloadLimit);
+                        handler.postDelayed(r, delayInMs);
+
+                        Log.i(TAG, "Upload done!");
+                    }
+                });
+            }
+        });
+
+        // Execute the upload!
+        uploadOperation.execute(mClient, this, mHandler);
+
+    }
+
+    private void runDownloadTest(File file, long downloadLimit)  {
+
+        try {
+
+            // Download remote file
+            Log.i(TAG, "Starting download!");
+
+            // Setup for download
+            File downFolder = new File(getCacheDir(), getString(R.string.download_folder_path));
+            downFolder.mkdir();
+            String remotePath = FileUtils.PATH_SEPARATOR  + file.getName();
+            DownloadFileRemoteOperation downloadOperation = new DownloadFileRemoteOperation(remotePath,
+                downFolder.getAbsolutePath());
+            downloadOperation.setBandwidthLimit(downloadLimit);
+
+            // Start the clock
+            final long start = System.currentTimeMillis();
+
+            // Add the listening code to update the UI
+            downloadOperation.addDatatransferProgressListener(new OnDatatransferProgressListener() {
+                @Override
+                public void onTransferProgress(long progressRate, long totalTransferredSoFar, long totalToTransfer, String fileAbsoluteName) {
+                    final long percentage = (totalToTransfer > 0 ? totalTransferredSoFar * 100 / totalToTransfer : 0);
+                    final long elapsedTime = System.currentTimeMillis() - start;
+                    final long estimatedSpeed = totalTransferredSoFar / Math.max(elapsedTime, 1);
+                    Log.d(TAG, "Download percentage:  " + percentage);
+
+                    mHandler.post(() -> {
+                        TextView downloadPercent = findViewById(R.id.text_download_completion);
+                        TextView downloadSpeed = findViewById(R.id.text_download_speed);
+                        TextView downloadElapsed = findViewById(R.id.text_download_elapsed);
+
+                        downloadPercent.setText(percentage + " %");
+                        downloadSpeed.setText(estimatedSpeed + " kBps");
+                        downloadElapsed.setText(elapsedTime + " ms");
+                    });
+                }
+            });
+
+            // Run the download
+            downloadOperation.execute(mClient, this, mHandler);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("deprecation")
