@@ -17,6 +17,7 @@ jobs:
         services:
             server:
                 image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
+                options: --name server
                 ports:
                     - 80:80
         strategy:
