@@ -38,7 +38,7 @@ jobs:
 
             -   name: configure server
                 run: |
-                    docker cp .github/workflows/config.sh server:/tmp
+                    docker cp .github/workflows/configServer.sh server:/tmp
                     docker exec server sh -c "chmod +x /tmp/config.sh"
                     docker exec server sh -c "chown www-data /tmp/config.sh"
                     docker exec --user www-data sh -c "/tmp/config.sh"
