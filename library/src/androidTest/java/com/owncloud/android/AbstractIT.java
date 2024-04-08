@@ -9,6 +9,7 @@ package com.owncloud.android;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
@@ -53,6 +54,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import okhttp3.Credentials;
 
@@ -70,6 +72,7 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
+    protected static NextcloudClient nextcloudClient2;
     protected static Context context;
     protected static Uri url;
 
@@ -108,6 +111,10 @@ public abstract class AbstractIT {
         String userId = loginName; // for test same as userId
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
+
+        String userId2 = loginName; // for test same as userId
+        String credentials2 = Credentials.basic(loginName2, password2);
+        nextcloudClient2 = new NextcloudClient(url, userId2, credentials2, context);
 
         waitForServer(client, url);
         testConnection();
@@ -259,17 +266,16 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        removeOnClient(client);
-        removeOnClient(client2);
+        removeOnClient(nextcloudClient);
+        removeOnClient(nextcloudClient2);
     }
 
-    private void removeOnClient(OwnCloudClient client) {
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+    private void removeOnClient(NextcloudClient client) {
+        RemoteOperationResult<List<RemoteFile>> result = new ReadFolderRemoteOperation("/").execute(client);
         assertTrue(result.getLogMessage(), result.isSuccess());
+        assertNotNull(result.getResultData());
 
-        for (Object object : result.getData()) {
-            RemoteFile remoteFile = (RemoteFile) object;
-
+        for (RemoteFile remoteFile : result.getResultData()) {
             if (!"/".equals(remoteFile.getRemotePath()) &&
                 remoteFile.getMountType() != WebdavEntry.MountType.GROUP) {
                 if (remoteFile.isEncrypted()) {
