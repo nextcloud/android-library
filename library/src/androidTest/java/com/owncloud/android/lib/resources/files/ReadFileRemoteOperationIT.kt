@@ -25,7 +25,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     fun readRemoteFolder() {
         val remotePath = "/test/"
 
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
         val result = ReadFileRemoteOperation(remotePath).execute(client)
 
@@ -136,7 +136,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         // and blocks all other clients, e.g. 3rd party apps using this lib
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0")
 
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
         var result = ReadFileRemoteOperation(remotePath).execute(client)
         assertTrue(result.isSuccess)

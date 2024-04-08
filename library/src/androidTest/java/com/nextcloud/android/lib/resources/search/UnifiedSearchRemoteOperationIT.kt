@@ -42,7 +42,7 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
     @Test
     fun filesSearch() {
         val remotePath = "/testFolder"
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
         val remoteFile = ReadFileRemoteOperation(remotePath).execute(client).resultData
         val fileId = remoteFile?.localId
 
@@ -62,7 +62,7 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
 
     @Test
     fun filesSearchWhitespace() {
-        assertTrue(CreateFolderRemoteOperation("/test Folder/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/test Folder/", true).execute(nextcloudClient).isSuccess)
 
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)

@@ -288,7 +288,7 @@ public abstract class AbstractIT {
                 }
 
                 assertTrue("Failed to remove " + remoteFile.getRemotePath(),
-                    new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(client).isSuccess());
+                    new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(nextcloudClient).isSuccess());
             }
         }
 

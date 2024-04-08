@@ -39,7 +39,7 @@ public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
     public void getEditLinkForFolder() {
         String path = "/workspace/sub1/";
 
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         RemoteOperationResult result = new RichWorkspaceDirectEditingRemoteOperation(path).execute(client);
         assertTrue(result.isSuccess());
@@ -56,7 +56,7 @@ public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
         String filePath = folder + "Readme.md";
         File txtFile = getFile(ASSETS__TEXT_FILE_NAME);
 
-        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
 
         RemoteOperationResult uploadResult = new UploadFileRemoteOperation(
                 txtFile.getAbsolutePath(),

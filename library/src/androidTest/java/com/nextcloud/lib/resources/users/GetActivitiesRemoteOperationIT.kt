@@ -18,7 +18,7 @@ class GetActivitiesRemoteOperationIT : AbstractIT() {
     @Test
     fun getActivities() {
         // set-up, create a folder so there is an activity
-        assertTrue(CreateFolderRemoteOperation("/test/123/1", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/test/123/1", true).execute(nextcloudClient).isSuccess)
 
         val result = nextcloudClient.execute(GetActivitiesRemoteOperation())
         assertTrue(result.isSuccess)
