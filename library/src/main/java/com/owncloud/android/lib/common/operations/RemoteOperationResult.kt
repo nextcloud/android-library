@@ -283,7 +283,7 @@ class RemoteOperationResult<T> : Serializable {
     constructor(davResponse: DavResponse) : this(
         davResponse.success,
         davResponse.getStatusCode(),
-        davResponse.status?.message ?: "",
+        davResponse.status?.message ?: "HTTP/1.1 200 OK",
         davResponse.headers ?: Headers.headersOf()
     )
 

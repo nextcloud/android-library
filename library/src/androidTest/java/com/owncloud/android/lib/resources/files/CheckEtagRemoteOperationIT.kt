@@ -24,7 +24,7 @@ class CheckEtagRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        val readResult = ReadFileRemoteOperation(remotePath).execute(client)
+        val readResult = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
         val remoteFile = readResult.resultData
         val eTag = remoteFile?.etag
 

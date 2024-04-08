@@ -34,7 +34,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
-        var remoteFile = ReadFileRemoteOperation(filePath).execute(client).resultData
+        var remoteFile = ReadFileRemoteOperation(filePath).execute(nextcloudClient).resultData
         assertNotNull(remoteFile)
 
         var sutResult = ReadFileVersionsRemoteOperation(remoteFile!!.localId).execute(client)
@@ -69,7 +69,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
-        remoteFile = ReadFileRemoteOperation(filePath).execute(client).resultData
+        remoteFile = ReadFileRemoteOperation(filePath).execute(nextcloudClient).resultData
         assertNotNull(remoteFile)
 
         sutResult = ReadFileVersionsRemoteOperation(remoteFile!!.localId).execute(client)

@@ -58,7 +58,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testSearchByFileIdSuccess() {
         assertTrue(new CreateFolderRemoteOperation("/test/", true).execute(nextcloudClient).isSuccess());
 
-        RemoteOperationResult readFile = new ReadFileRemoteOperation("/test/").execute(client);
+        RemoteOperationResult readFile = new ReadFileRemoteOperation("/test/").execute(nextcloudClient);
         assertTrue(readFile.isSuccess());
 
         RemoteFile remoteFile = ((RemoteFile) readFile.getSingleData());

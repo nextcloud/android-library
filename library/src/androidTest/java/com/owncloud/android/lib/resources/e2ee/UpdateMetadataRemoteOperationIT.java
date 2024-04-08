@@ -35,7 +35,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         // create folder
         String folder = "/" + RandomStringGenerator.make(20) + "/";
         assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
-        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
+        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(nextcloudClient).getResultData();
 
         assertNotNull(remoteFolder);
 
@@ -103,7 +103,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         // create folder
         String folder = "/" + RandomStringGenerator.make(20) + "/";
         assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
-        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
+        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(nextcloudClient).getSingleData();
 
         assertNotNull(remoteFolder);
 

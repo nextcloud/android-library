@@ -27,7 +27,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
+        val result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertEquals(remotePath, result.resultData?.remotePath)
@@ -66,11 +66,11 @@ class ReadFileRemoteOperationIT : AbstractIT() {
             ).execute(client).isSuccess
         )
 
-        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
+        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(nextcloudClient)
         assertTrue(movieFileResult.isSuccess)
         val movieRemoteFile = movieFileResult.resultData
 
-        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(client)
+        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(nextcloudClient)
         assertTrue(livePhotoResult.isSuccess)
         val livePhotoRemoteFile = livePhotoResult.resultData
 
@@ -88,7 +88,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
+        val result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertEquals(remotePath, result.resultData?.remotePath)
@@ -104,7 +104,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
+        val result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         val remoteFile = result.resultData
@@ -138,7 +138,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
-        var result = ReadFileRemoteOperation(remotePath).execute(client)
+        var result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val remoteFile = result.resultData
@@ -158,7 +158,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         )
 
         // re-read
-        result = ReadFileRemoteOperation(remotePath).execute(client)
+        result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
         assertTrue(result.resultData?.isEncrypted == true)
     }
 }
