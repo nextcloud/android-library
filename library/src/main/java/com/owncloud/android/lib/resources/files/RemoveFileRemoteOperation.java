@@ -42,13 +42,14 @@ public class RemoveFileRemoteOperation extends RemoteOperation<Void> {
     @Override
     public RemoteOperationResult<Void> run(NextcloudClient client) {
         RemoteOperationResult<Void> result;
+        DeleteMethod delete = null;
 
         try {
-            DeleteMethod delete = new DeleteMethod(client.getFilesDavUri(mRemotePath), true);
+            delete = new DeleteMethod(client.getFilesDavUri(mRemotePath), true);
             int status = client.execute(delete);
 
             result = new RemoteOperationResult<>(
-                (delete.isSuccess() || status == HttpStatusCodesKt.HTTP_NOT_FOUND),
+                (delete.isSuccess() || status == HttpStatusCodesKt.HTTP_NOT_FOUND || status == HttpStatusCodesKt.HTTP_NO_CONTENT),
                 delete
             );
             Log_OC.i(TAG, "Remove " + mRemotePath + ": " + result.getLogMessage());
@@ -57,6 +58,10 @@ public class RemoveFileRemoteOperation extends RemoteOperation<Void> {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Remove " + mRemotePath + ": " + result.getLogMessage(), e);
 
+        } finally {
+            if (delete != null) {
+                delete.releaseConnection();
+            }
         }
 
         return result;
