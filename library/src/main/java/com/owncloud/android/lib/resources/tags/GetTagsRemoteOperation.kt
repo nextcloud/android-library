@@ -19,20 +19,22 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<List<Tag>> {
         val url = (client.baseUri.toString() + TAG_URL).toHttpUrl()
 
-        val propertySet = arrayOf(
-            ExtendedProperties.NAME_REMOTE_ID.toPropertyName(),
-            ExtendedProperties.SHAREES_DISPLAY_NAME.toPropertyName()
-        )
+        val propertySet =
+            arrayOf(
+                ExtendedProperties.NAME_REMOTE_ID.toPropertyName(),
+                ExtendedProperties.SHAREES_DISPLAY_NAME.toPropertyName()
+            )
 
         val propFindMethod = com.nextcloud.operations.PropFindMethod(url, propertySet, 1)
         val propFindResult = client.execute(propFindMethod)
         val result = RemoteOperationResult<List<Tag>>(propFindResult.davResponse)
 
-        val tags = propFindResult.root.remoteId?.let { id ->
-            propFindResult.root.tags?.map {
-                Tag(id, it)
-            }
-        } ?: emptyList()
+        val tags =
+            propFindResult.root.remoteId?.let { id ->
+                propFindResult.root.tags?.map {
+                    Tag(id, it)
+                }
+            } ?: emptyList()
 
         result.resultData = tags
 

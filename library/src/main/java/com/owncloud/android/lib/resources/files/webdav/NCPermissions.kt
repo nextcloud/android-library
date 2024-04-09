@@ -40,7 +40,7 @@ class NCPermissions private constructor(val permissions: String?) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
-        override fun create(parser: XmlPullParser) : Property {
+        override fun create(parser: XmlPullParser): Property {
             try {
                 val text = XmlUtils.readText(parser)
                 if (!text.isNullOrEmpty()) {

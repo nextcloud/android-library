@@ -158,14 +158,15 @@ class RemoteOperationResult<T> : Serializable {
      */
     constructor(code: ResultCode) {
         this.code = code
-        isSuccess = code in listOf(
-            ResultCode.OK,
-            ResultCode.OK_SSL,
-            ResultCode.OK_NO_SSL,
-            ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION,
-            ResultCode.ETAG_CHANGED,
-            ResultCode.ETAG_UNCHANGED
-        )
+        isSuccess = code in
+            listOf(
+                ResultCode.OK,
+                ResultCode.OK_SSL,
+                ResultCode.OK_NO_SSL,
+                ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION,
+                ResultCode.ETAG_CHANGED,
+                ResultCode.ETAG_UNCHANGED
+            )
         mData = null
     }
 
@@ -175,19 +176,20 @@ class RemoteOperationResult<T> : Serializable {
         if (success) {
             this.code = ResultCode.OK
         } else if (httpCode > 0) {
-            this.code = when (httpCode) {
-                HttpStatus.SC_UNAUTHORIZED -> ResultCode.UNAUTHORIZED
-                HttpStatus.SC_NOT_FOUND -> ResultCode.FILE_NOT_FOUND
-                HttpStatus.SC_INTERNAL_SERVER_ERROR -> ResultCode.INSTANCE_NOT_CONFIGURED
-                HttpStatus.SC_CONFLICT -> ResultCode.CONFLICT
-                HttpStatus.SC_INSUFFICIENT_STORAGE -> ResultCode.QUOTA_EXCEEDED
-                HttpStatus.SC_FORBIDDEN -> ResultCode.FORBIDDEN
-                HttpStatus.SC_SERVICE_UNAVAILABLE -> ResultCode.MAINTENANCE_MODE
-                else -> {
-                    Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: $httpCode")
-                    ResultCode.UNHANDLED_HTTP_CODE
+            this.code =
+                when (httpCode) {
+                    HttpStatus.SC_UNAUTHORIZED -> ResultCode.UNAUTHORIZED
+                    HttpStatus.SC_NOT_FOUND -> ResultCode.FILE_NOT_FOUND
+                    HttpStatus.SC_INTERNAL_SERVER_ERROR -> ResultCode.INSTANCE_NOT_CONFIGURED
+                    HttpStatus.SC_CONFLICT -> ResultCode.CONFLICT
+                    HttpStatus.SC_INSUFFICIENT_STORAGE -> ResultCode.QUOTA_EXCEEDED
+                    HttpStatus.SC_FORBIDDEN -> ResultCode.FORBIDDEN
+                    HttpStatus.SC_SERVICE_UNAVAILABLE -> ResultCode.MAINTENANCE_MODE
+                    else -> {
+                        Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: $httpCode")
+                        ResultCode.UNHANDLED_HTTP_CODE
+                    }
                 }
-            }
         }
     }
 
@@ -230,7 +232,9 @@ class RemoteOperationResult<T> : Serializable {
         exception = e
         if (e is OperationCancelledException) {
             this.code = ResultCode.CANCELLED
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && e is ErrnoException && e.errno == OsConstants.ENOTCONN) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            e is ErrnoException && e.errno == OsConstants.ENOTCONN
+        ) {
             this.code = ResultCode.NO_NETWORK_CONNECTION
         } else if (e is ConnectException) {
             this.code = ResultCode.HOST_NOT_AVAILABLE
@@ -449,30 +453,33 @@ class RemoteOperationResult<T> : Serializable {
             this.code = ResultCode.OK
         } else if (httpCode > 0) {
             when (httpCode) {
-                HttpStatus.SC_UNAUTHORIZED ->  // 401
+                HttpStatus.SC_UNAUTHORIZED -> // 401
                     this.code = ResultCode.UNAUTHORIZED
 
-                HttpStatus.SC_FORBIDDEN ->  // 403
+                HttpStatus.SC_FORBIDDEN -> // 403
                     this.code = ResultCode.FORBIDDEN
 
-                HttpStatus.SC_NOT_FOUND ->  // 404
+                HttpStatus.SC_NOT_FOUND -> // 404
                     this.code = ResultCode.FILE_NOT_FOUND
 
-                HttpStatus.SC_CONFLICT ->  // 409
+                HttpStatus.SC_CONFLICT -> // 409
                     this.code = ResultCode.CONFLICT
 
-                HttpStatus.SC_INTERNAL_SERVER_ERROR ->  // 500
+                HttpStatus.SC_INTERNAL_SERVER_ERROR -> // 500
                     this.code = ResultCode.INSTANCE_NOT_CONFIGURED
 
-                HttpStatus.SC_SERVICE_UNAVAILABLE ->  // 503
+                HttpStatus.SC_SERVICE_UNAVAILABLE -> // 503
                     this.code = ResultCode.MAINTENANCE_MODE
 
-                HttpStatus.SC_INSUFFICIENT_STORAGE ->  // 507
+                HttpStatus.SC_INSUFFICIENT_STORAGE -> // 507
                     this.code = ResultCode.QUOTA_EXCEEDED
 
                 else -> {
                     this.code = ResultCode.UNHANDLED_HTTP_CODE // UNKNOWN ERROR
-                    Log_OC.d(TAG,"RemoteOperationResult has processed UNHANDLED_HTTP_CODE: ${this.httpCode} ${this.httpPhrase}")
+                    Log_OC.d(
+                        TAG,
+                        "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: ${this.httpCode} ${this.httpPhrase}"
+                    )
                 }
             }
         }
@@ -545,12 +552,14 @@ class RemoteOperationResult<T> : Serializable {
                     is ConnectTimeoutException -> "Connect timeout exception"
                     is MalformedURLException -> "Malformed URL exception"
                     is UnknownHostException -> "Unknown host exception"
-                    is CertificateCombinedException -> if (exception.isRecoverable) "SSL recoverable exception" else "SSL exception"
+                    is CertificateCombinedException ->
+                        if (exception.isRecoverable) "SSL recoverable exception" else "SSL exception"
                     is SSLException -> "SSL exception"
                     is DavException -> "Unexpected WebDAV exception"
                     is HttpException -> "HTTP violation"
                     is IOException -> "Unrecovered transport exception"
-                    is AccountUtils.AccountNotFoundException -> "${exception.message} (${exception.failedAccount?.name ?: "NULL"})"
+                    is AccountUtils.AccountNotFoundException ->
+                        "${exception.message} (${exception.failedAccount?.name ?: "NULL"})"
                     is AccountsException -> "Exception while using account"
                     is JSONException -> "JSON exception"
                     else -> "Unexpected exception"
@@ -577,16 +586,21 @@ class RemoteOperationResult<T> : Serializable {
 
     val isTemporalRedirection = httpCode == 302 || httpCode == 307
 
-    val isIdPRedirection = redirectedLocation != null &&
-            (redirectedLocation!!.uppercase().contains("SAML") ||
-                redirectedLocation!!.lowercase().contains("wayf"))
+    val isIdPRedirection =
+        redirectedLocation != null &&
+            (
+                redirectedLocation!!.uppercase().contains("SAML") ||
+                    redirectedLocation!!.lowercase().contains("wayf")
+            )
 
     /**
      * Checks if is a non https connection
      */
     val isNonSecureRedirection = redirectedLocation != null && !redirectedLocation!!.lowercase().startsWith("https://")
 
-    override fun toString(): String = "RemoteOperationResult{mSuccess=$isSuccess, mHttpCode=$httpCode, mHttpPhrase='$httpPhrase', mException=$exception, mCode=${this.code}, message='$message', getLogMessage='$logMessage'}"
+    override fun toString(): String =
+        "RemoteOperationResult{mSuccess=$isSuccess, mHttpCode=$httpCode," + "mHttpPhrase='$httpPhrase', " +
+            "mException=$exception, mCode=${this.code}, message='$message', getLogMessage='$logMessage'}"
 
     companion object {
         // Generated - should be refreshed every time the class changes!!

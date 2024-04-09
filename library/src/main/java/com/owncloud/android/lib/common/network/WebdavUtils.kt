@@ -83,121 +83,127 @@ object WebdavUtils {
 
     internal val gson = Gson()
 
-    private val DATETIME_FORMATS = arrayOf(
-        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
-        SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),
-        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US),
-        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US),
-        SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US),
-        SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
-        SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US),
-        SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US)
-    )
+    private val DATETIME_FORMATS =
+        arrayOf(
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
+            SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US),
+            SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US),
+            SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
+            SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US)
+        )
 
     object PROPERTYSETS {
-        val ALL = arrayOf(
-            DisplayName.NAME,
-            GetContentType.NAME,
-            ResourceType.NAME,
-            GetContentLength.NAME,
-            NCGetLastModified.NAME,
-            CreationDate.NAME,
-            NCEtag.NAME,
-            NCPermissions.NAME,
-            OCLocalId.NAME,
-            OCId.NAME,
-            OCSize.NAME,
-            NCFavorite.NAME,
-            NCEncrypted.NAME,
-            NCMountType.NAME,
-            OCOwnerId.NAME,
-            OCOwnerDisplayName.NAME,
-            OCCommentsUnread.NAME,
-            NCPreview.NAME,
-            NCNote.NAME,
-            NCSharees.NAME,
-            NCRichWorkspace.NAME,
-            NCCreationTime.NAME,
-            NCUploadTime.NAME,
-            NCLock.NAME,
-            NCLockOwnerType.NAME,
-            NCLockOwner.NAME,
-            NCLockOwnerDisplayName.NAME,
-            NCLockOwnerEditor.NAME,
-            NCLockTime.NAME,
-            NCLockTimeout.NAME,
-            NCLockToken.NAME,
-            NCTags.NAME,
-            NCMetadataSize.NAME,
-            NCMetadataGPS.NAME,
-            NCMetadataSize.NAME,
-            NCMetadataPhotosSize.NAME,
-            NCMetadataPhotosGPS.NAME,
-            NCMetadataLivePhoto.NAME,
-            NCHidden.NAME
-        )
+        val ALL =
+            arrayOf(
+                DisplayName.NAME,
+                GetContentType.NAME,
+                ResourceType.NAME,
+                GetContentLength.NAME,
+                NCGetLastModified.NAME,
+                CreationDate.NAME,
+                NCEtag.NAME,
+                NCPermissions.NAME,
+                OCLocalId.NAME,
+                OCId.NAME,
+                OCSize.NAME,
+                NCFavorite.NAME,
+                NCEncrypted.NAME,
+                NCMountType.NAME,
+                OCOwnerId.NAME,
+                OCOwnerDisplayName.NAME,
+                OCCommentsUnread.NAME,
+                NCPreview.NAME,
+                NCNote.NAME,
+                NCSharees.NAME,
+                NCRichWorkspace.NAME,
+                NCCreationTime.NAME,
+                NCUploadTime.NAME,
+                NCLock.NAME,
+                NCLockOwnerType.NAME,
+                NCLockOwner.NAME,
+                NCLockOwnerDisplayName.NAME,
+                NCLockOwnerEditor.NAME,
+                NCLockTime.NAME,
+                NCLockTimeout.NAME,
+                NCLockToken.NAME,
+                NCTags.NAME,
+                NCMetadataSize.NAME,
+                NCMetadataGPS.NAME,
+                NCMetadataSize.NAME,
+                NCMetadataPhotosSize.NAME,
+                NCMetadataPhotosGPS.NAME,
+                NCMetadataLivePhoto.NAME,
+                NCHidden.NAME
+            )
 
-        val FILE = arrayOf(
-            DisplayName.NAME,
-            GetContentType.NAME,
-            ResourceType.NAME,
-            GetContentLength.NAME,
-            NCGetLastModified.NAME,
-            CreationDate.NAME,
-            NCEtag.NAME,
-            NCPermissions.NAME,
-            OCLocalId.NAME,
-            OCId.NAME,
-            OCSize.NAME,
-            NCFavorite.NAME,
-            NCPreview.NAME,
-            NCSharees.NAME,
-            NCCreationTime.NAME,
-            NCUploadTime.NAME,
-            NCLock.NAME,
-            NCLockOwnerType.NAME,
-            NCLockOwner.NAME,
-            NCLockOwnerDisplayName.NAME,
-            NCLockOwnerEditor.NAME,
-            NCLockTime.NAME,
-            NCLockTimeout.NAME,
-            NCLockToken.NAME,
-            NCEncrypted.NAME,
-            NCTags.NAME,
-            NCMetadataSize.NAME,
-            NCMetadataGPS.NAME,
-            NCMetadataPhotosSize.NAME,
-            NCMetadataPhotosGPS.NAME,
-            NCMetadataLivePhoto.NAME,
-            NCHidden.NAME
-        )
+        val FILE =
+            arrayOf(
+                DisplayName.NAME,
+                GetContentType.NAME,
+                ResourceType.NAME,
+                GetContentLength.NAME,
+                NCGetLastModified.NAME,
+                CreationDate.NAME,
+                NCEtag.NAME,
+                NCPermissions.NAME,
+                OCLocalId.NAME,
+                OCId.NAME,
+                OCSize.NAME,
+                NCFavorite.NAME,
+                NCPreview.NAME,
+                NCSharees.NAME,
+                NCCreationTime.NAME,
+                NCUploadTime.NAME,
+                NCLock.NAME,
+                NCLockOwnerType.NAME,
+                NCLockOwner.NAME,
+                NCLockOwnerDisplayName.NAME,
+                NCLockOwnerEditor.NAME,
+                NCLockTime.NAME,
+                NCLockTimeout.NAME,
+                NCLockToken.NAME,
+                NCEncrypted.NAME,
+                NCTags.NAME,
+                NCMetadataSize.NAME,
+                NCMetadataGPS.NAME,
+                NCMetadataPhotosSize.NAME,
+                NCMetadataPhotosGPS.NAME,
+                NCMetadataLivePhoto.NAME,
+                NCHidden.NAME
+            )
 
-        val TRASHBIN = arrayOf(
-            ResourceType.NAME,
-            GetContentType.NAME,
-            GetContentLength.NAME,
-            OCSize.NAME,
-            OCId.NAME,
-            NCTrashbinFilename.NAME,
-            NCTrashbinLocation.NAME,
-            NCTrashbinDeletionTime.NAME
-        )
+        val TRASHBIN =
+            arrayOf(
+                ResourceType.NAME,
+                GetContentType.NAME,
+                GetContentLength.NAME,
+                OCSize.NAME,
+                OCId.NAME,
+                NCTrashbinFilename.NAME,
+                NCTrashbinLocation.NAME,
+                NCTrashbinDeletionTime.NAME
+            )
 
-        val FILE_VERSION = arrayOf(
-            GetContentType.NAME,
-            ResourceType.NAME,
-            GetContentLength.NAME,
-            NCGetLastModified.NAME,
-            CreationDate.NAME,
-            OCId.NAME,
-            OCSize.NAME
-        )
+        val FILE_VERSION =
+            arrayOf(
+                GetContentType.NAME,
+                ResourceType.NAME,
+                GetContentLength.NAME,
+                NCGetLastModified.NAME,
+                CreationDate.NAME,
+                OCId.NAME,
+                OCSize.NAME
+            )
 
-        val CHUNK = arrayOf(
-            GetContentType.NAME,
-            ResourceType.NAME,
-            GetContentLength.NAME
-        )
+        val CHUNK =
+            arrayOf(
+                GetContentType.NAME,
+                ResourceType.NAME,
+                GetContentLength.NAME
+            )
     }
 
     fun parseResponseDate(date: String?): Date? {
@@ -253,44 +259,45 @@ object WebdavUtils {
     }
 
     fun registerCustomFactories() {
-        val list = listOf(
-            NCCreationTime.Factory(),
-            NCEncrypted.Factory(),
-            NCEtag.Factory(),
-            NCFavorite.Factory(),
-            NCGetLastModified.Factory(),
-            NCHidden.Factory(),
-            NCLock.Factory(),
-            NCLockOwnerDisplayName.Factory(),
-            NCLockOwnerEditor.Factory(),
-            NCLockOwner.Factory(),
-            NCLockOwnerType.Factory(),
-            NCLockTime.Factory(),
-            NCLockTimeout.Factory(),
-            NCLockToken.Factory(),
-            NCMetadataGPS.Factory(),
-            NCMetadataLivePhoto.Factory(),
-            NCMetadataPhotosGPS.Factory(),
-            NCMetadataPhotosSize.Factory(),
-            NCMetadataSize.Factory(),
-            NCMountType.Factory(),
-            NCNote.Factory(),
-            NCPermissions.Factory(),
-            NCPreview.Factory(),
-            NCRichWorkspace.Factory(),
-            NCSharees.Factory(),
-            NCTags.Factory(),
-            NCTrashbinDeletionTime.Factory(),
-            NCTrashbinFilename.Factory(),
-            NCTrashbinLocation.Factory(),
-            NCUploadTime.Factory(),
-            OCCommentsUnread.Factory(),
-            OCId.Factory(),
-            OCLocalId.Factory(),
-            OCOwnerDisplayName.Factory(),
-            OCOwnerId.Factory(),
-            OCSize.Factory(),
-        )
+        val list =
+            listOf(
+                NCCreationTime.Factory(),
+                NCEncrypted.Factory(),
+                NCEtag.Factory(),
+                NCFavorite.Factory(),
+                NCGetLastModified.Factory(),
+                NCHidden.Factory(),
+                NCLock.Factory(),
+                NCLockOwnerDisplayName.Factory(),
+                NCLockOwnerEditor.Factory(),
+                NCLockOwner.Factory(),
+                NCLockOwnerType.Factory(),
+                NCLockTime.Factory(),
+                NCLockTimeout.Factory(),
+                NCLockToken.Factory(),
+                NCMetadataGPS.Factory(),
+                NCMetadataLivePhoto.Factory(),
+                NCMetadataPhotosGPS.Factory(),
+                NCMetadataPhotosSize.Factory(),
+                NCMetadataSize.Factory(),
+                NCMountType.Factory(),
+                NCNote.Factory(),
+                NCPermissions.Factory(),
+                NCPreview.Factory(),
+                NCRichWorkspace.Factory(),
+                NCSharees.Factory(),
+                NCTags.Factory(),
+                NCTrashbinDeletionTime.Factory(),
+                NCTrashbinFilename.Factory(),
+                NCTrashbinLocation.Factory(),
+                NCUploadTime.Factory(),
+                OCCommentsUnread.Factory(),
+                OCId.Factory(),
+                OCLocalId.Factory(),
+                OCOwnerDisplayName.Factory(),
+                OCOwnerId.Factory(),
+                OCSize.Factory()
+            )
         register(list)
     }
 }

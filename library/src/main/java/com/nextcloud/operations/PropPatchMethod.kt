@@ -17,20 +17,28 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 
 class PropPatchMethod
-@JvmOverloads constructor(
-    httpUrl: HttpUrl,
-    private val setProperties: Map<Property.Name, String> = emptyMap(),
-    private val removeProperties: List<Property.Name> = emptyList()
-) : DavMethod<DavResponse>(httpUrl){
-    override fun apply(client: OkHttpClient, httpUrl: HttpUrl, filesDavUri: Uri): DavResponse {
-        val result = DavResponse()
-        DavResource(client, httpUrl).proppatch(setProperties, removeProperties) { response: Response, hrefRelation: Response.HrefRelation? ->
-            result.success = response.isSuccess()
-            response.status?.let { status ->
-                result.status = status
+    @JvmOverloads
+    constructor(
+        httpUrl: HttpUrl,
+        private val setProperties: Map<Property.Name, String> = emptyMap(),
+        private val removeProperties: List<Property.Name> = emptyList()
+    ) : DavMethod<DavResponse>(httpUrl) {
+        override fun apply(
+            client: OkHttpClient,
+            httpUrl: HttpUrl,
+            filesDavUri: Uri
+        ): DavResponse {
+            val result = DavResponse()
+            DavResource(
+                client,
+                httpUrl
+            ).proppatch(setProperties, removeProperties) { response: Response, hrefRelation: Response.HrefRelation? ->
+                result.success = response.isSuccess()
+                response.status?.let { status ->
+                    result.status = status
+                }
             }
-        }
 
-        return  result
+            return result
+        }
     }
-}

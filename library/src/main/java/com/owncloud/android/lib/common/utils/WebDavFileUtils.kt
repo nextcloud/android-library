@@ -52,10 +52,11 @@ object WebDavFileUtils {
         var we: WebdavEntry
         var start = 1
         if (isReadFolderOperation) {
-            we = WebdavEntry(
-                remoteData.responses[0],
-                filesDavUri.encodedPath!!
-            )
+            we =
+                WebdavEntry(
+                    remoteData.responses[0],
+                    filesDavUri.encodedPath!!
+                )
             mFolderAndFiles.add(RemoteFile(we))
         } else {
             start = 0
@@ -65,7 +66,7 @@ object WebDavFileUtils {
         var remoteFile: RemoteFile
         val responses = remoteData.responses
         for (i in start until responses.size) {
-            /// new OCFile instance with the data from the server
+            // / new OCFile instance with the data from the server
             we = WebdavEntry(responses[i], filesDavUri.encodedPath!!)
             remoteFile = RemoteFile(we)
             mFolderAndFiles.add(remoteFile)
@@ -73,7 +74,10 @@ object WebDavFileUtils {
         return mFolderAndFiles
     }
 
-    fun readData(responses: List<Response>, filesDavUri: Uri): ArrayList<RemoteFile> {
+    fun readData(
+        responses: List<Response>,
+        filesDavUri: Uri
+    ): ArrayList<RemoteFile> {
         val list = ArrayList<RemoteFile>()
         for (response in responses) {
             list.add(parseResponse(response, filesDavUri))
@@ -81,12 +85,16 @@ object WebDavFileUtils {
         return list
     }
 
-    fun parseResponse(response: Response, filesDavUri: Uri): RemoteFile {
+    fun parseResponse(
+        response: Response,
+        filesDavUri: Uri
+    ): RemoteFile {
         val remoteFile = RemoteFile()
 
         // TODO: refactor
-        val path = response.href.toString().split(filesDavUri.encodedPath!!.toRegex(), limit = 2)
-            .toTypedArray()[1].replace("//", "/")
+        val path =
+            response.href.toString().split(filesDavUri.encodedPath!!.toRegex(), limit = 2)
+                .toTypedArray()[1].replace("//", "/")
 
         for (property in response.properties) {
             when (property) {
@@ -96,9 +104,10 @@ object WebDavFileUtils {
                 is NCGetLastModified -> remoteFile.modifiedTimestamp = property.lastModified
                 is GetContentLength -> remoteFile.length = property.contentLength
                 is GetContentType -> remoteFile.mimeType = (property.type ?: "").toString()
-                is ResourceType -> if (property.types.contains(ResourceType.COLLECTION)) {
-                    remoteFile.mimeType = WebdavEntry.DIR_TYPE
-                }
+                is ResourceType ->
+                    if (property.types.contains(ResourceType.COLLECTION)) {
+                        remoteFile.mimeType = WebdavEntry.DIR_TYPE
+                    }
                 is NCPermissions -> remoteFile.permissions = property.permissions
                 is OCId -> remoteFile.remoteId = property.id
                 is OCSize -> remoteFile.size = property.size

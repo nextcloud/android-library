@@ -38,36 +38,42 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 
 class PropFindMethod
-@JvmOverloads constructor(
-    httpUrl: HttpUrl,
-    private val propertySet: Array<Property.Name> = WebdavUtils.PROPERTYSETS.ALL,
-    private val depth: Int = 1
-) : DavMethod<PropFindResult>(httpUrl) {
+    @JvmOverloads
+    constructor(
+        httpUrl: HttpUrl,
+        private val propertySet: Array<Property.Name> = WebdavUtils.PROPERTYSETS.ALL,
+        private val depth: Int = 1
+    ) : DavMethod<PropFindResult>(httpUrl) {
+        override fun apply(
+            client: OkHttpClient,
+            httpUrl: HttpUrl,
+            filesDavUri: Uri
+        ): PropFindResult {
+            val result = PropFindResult()
 
-    override fun apply(client: OkHttpClient, httpUrl: HttpUrl, filesDavUri: Uri): PropFindResult {
-        val result = PropFindResult()
+            DavResource(client, httpUrl).propfind(
+                depth,
+                *propertySet
+            ) { response: Response, hrefRelation: Response.HrefRelation? ->
+                result.davResponse.success = response.isSuccess()
+                response.status?.let { status ->
+                    result.davResponse.status = status
+                }
 
-        DavResource(client, httpUrl).propfind(
-            depth, *propertySet
-        ) { response: Response, hrefRelation: Response.HrefRelation? ->
-            result.davResponse.success = response.isSuccess()
-            response.status?.let { status ->
-                result.davResponse.status = status
+                when (hrefRelation) {
+                    Response.HrefRelation.MEMBER ->
+                        result.children.add(
+                            WebDavFileUtils.parseResponse(response, filesDavUri)
+                        )
+
+                    Response.HrefRelation.SELF, Response.HrefRelation.OTHER ->
+                        result.root =
+                            WebDavFileUtils.parseResponse(response, filesDavUri)
+
+                    else -> {}
+                }
             }
 
-
-            when (hrefRelation) {
-                Response.HrefRelation.MEMBER -> result.children.add(
-                    WebDavFileUtils.parseResponse(response, filesDavUri)
-                )
-
-                Response.HrefRelation.SELF, Response.HrefRelation.OTHER -> result.root =
-                    WebDavFileUtils.parseResponse(response, filesDavUri)
-
-                else -> {}
-            }
+            return result
         }
-
-        return result
-    }
-} 
+    } 

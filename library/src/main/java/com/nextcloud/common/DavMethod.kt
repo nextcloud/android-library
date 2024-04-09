@@ -34,5 +34,9 @@ abstract class DavMethod<T>(private val httpUrl: HttpUrl) {
         return apply(nextcloudClient.disabledRedirectClient(), httpUrl, nextcloudClient.filesDavUri)
     }
 
-    abstract fun apply(client: OkHttpClient, httpUrl: HttpUrl, filesDavUri: Uri): T
+    abstract fun apply(
+        client: OkHttpClient,
+        httpUrl: HttpUrl,
+        filesDavUri: Uri
+    ): T
 }

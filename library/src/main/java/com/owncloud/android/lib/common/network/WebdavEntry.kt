@@ -506,10 +506,11 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
     }
 
     private fun extractDisplayName(element: Element): String {
-        val displayName = element.getElementsByTagNameNS(
-            ExtendedProperties.SHAREES_DISPLAY_NAME.namespace,
-            ExtendedProperties.SHAREES_DISPLAY_NAME.value
-        ).item(0)
+        val displayName =
+            element.getElementsByTagNameNS(
+                ExtendedProperties.SHAREES_DISPLAY_NAME.namespace,
+                ExtendedProperties.SHAREES_DISPLAY_NAME.value
+            ).item(0)
         return if (displayName != null && displayName.firstChild != null) {
             displayName.firstChild.nodeValue
         } else {
@@ -518,10 +519,11 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
     }
 
     private fun extractUserId(element: Element): String {
-        val userId = element.getElementsByTagNameNS(
-            ExtendedProperties.SHAREES_ID.namespace,
-            ExtendedProperties.SHAREES_ID.value
-        ).item(0)
+        val userId =
+            element.getElementsByTagNameNS(
+                ExtendedProperties.SHAREES_ID.namespace,
+                ExtendedProperties.SHAREES_ID.value
+            ).item(0)
         return if (userId != null && userId.firstChild != null) {
             userId.firstChild.nodeValue
         } else {
@@ -530,10 +532,11 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
     }
 
     private fun extractShareType(element: Element): ShareType {
-        val shareType = element.getElementsByTagNameNS(
-            ExtendedProperties.SHAREES_SHARE_TYPE.namespace,
-            ExtendedProperties.SHAREES_SHARE_TYPE.value
-        ).item(0)
+        val shareType =
+            element.getElementsByTagNameNS(
+                ExtendedProperties.SHAREES_SHARE_TYPE.namespace,
+                ExtendedProperties.SHAREES_SHARE_TYPE.value
+            ).item(0)
         if (shareType != null && shareType.firstChild != null) {
             val value = shareType.firstChild.nodeValue.toInt()
             return ShareType.fromValue(value)
@@ -570,7 +573,10 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
      *
      * TODO: remove - only intended as a transitional aid
      */
-    private fun getDavProp(propSet: DavPropertySet, extendedProperty: ExtendedProperties): DavProperty<*>? {
+    private fun getDavProp(
+        propSet: DavPropertySet,
+        extendedProperty: ExtendedProperties
+    ): DavProperty<*>? {
         return propSet[extendedProperty.value, Namespace.getNamespace(extendedProperty.namespace)]
     }
 

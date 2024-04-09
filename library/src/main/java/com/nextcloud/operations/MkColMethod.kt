@@ -17,10 +17,14 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.internal.http.StatusLine
 
-class MkColMethod(httpUrl: HttpUrl) : DavMethod<DavResponse>(httpUrl){
+class MkColMethod(httpUrl: HttpUrl) : DavMethod<DavResponse>(httpUrl) {
     private val headers = mutableMapOf<String, String>()
 
-    override fun apply(client: OkHttpClient, httpUrl: HttpUrl, filesDavUri: Uri): DavResponse {
+    override fun apply(
+        client: OkHttpClient,
+        httpUrl: HttpUrl,
+        filesDavUri: Uri
+    ): DavResponse {
         val result = DavResponse()
 
         DavResource(client, httpUrl).mkCol(
@@ -35,7 +39,10 @@ class MkColMethod(httpUrl: HttpUrl) : DavMethod<DavResponse>(httpUrl){
         return result
     }
 
-    fun addRequestHeader(key: String, value: String) {
+    fun addRequestHeader(
+        key: String,
+        value: String
+    ) {
         headers[key] = value
     }
 }

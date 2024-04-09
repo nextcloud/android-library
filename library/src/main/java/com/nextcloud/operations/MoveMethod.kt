@@ -19,10 +19,14 @@ class MoveMethod(
     httpUrl: HttpUrl,
     private val destination: HttpUrl,
     private val forceOverwrite: Boolean = false
-): DavMethod<DavResponse>(httpUrl) {
+) : DavMethod<DavResponse>(httpUrl) {
     private val headers = mutableMapOf<String, String>()
 
-    override fun apply(client: OkHttpClient, httpUrl: HttpUrl, filesDavUri: Uri): DavResponse {
+    override fun apply(
+        client: OkHttpClient,
+        httpUrl: HttpUrl,
+        filesDavUri: Uri
+    ): DavResponse {
         val result = DavResponse()
 
         DavResource(client, httpUrl).move(
@@ -37,7 +41,10 @@ class MoveMethod(
         return result
     }
 
-    fun addRequestHeader(key: String, value: String) {
+    fun addRequestHeader(
+        key: String,
+        value: String
+    ) {
         headers[key] = value
     }
 }
