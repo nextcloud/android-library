@@ -15,9 +15,10 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.HttpStatus;
-
+import at.bitfire.dav4jvm.exception.ConflictException;
+import at.bitfire.dav4jvm.exception.HttpException;
 import okhttp3.HttpUrl;
+import okhttp3.internal.http.HttpStatusCodesKt;
 
 
 /**
@@ -59,17 +60,7 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
     @Override
     public RemoteOperationResult<String> run(NextcloudClient client) {
         RemoteOperationResult<String> result;
-
         result = createFolder(client);
-        if (!result.isSuccess() && createFullPath &&
-                RemoteOperationResult.ResultCode.CONFLICT == result.getCode() &&
-                !"/".equals(remotePath)) { // this must already exist
-            result = createParentFolder(FileUtils.getParentPath(remotePath), client);
-            if (result.isSuccess()) {
-                result = createFolder(client);    // second (and last) try
-            }
-        }
-
         return result;
     }
 
@@ -87,18 +78,25 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
 
             DavResponse response = client.execute(mkCol);
 
-            if (HttpStatus.SC_METHOD_NOT_ALLOWED == response.getStatusCode()) {
-                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
-            } else {
-                result = new RemoteOperationResult<>(response);
-                String fileIdHeader = response.getHeader("OC-FileId");
-                result.setResultData(fileIdHeader);
-            }
+            result = new RemoteOperationResult<>(response);
+            String fileIdHeader = response.getHeader("OC-FileId");
+            result.setResultData(fileIdHeader);
 
             Log_OC.d(TAG, "Create directory " + remotePath + ": " + result.getLogMessage());
         } catch (Exception e) {
-            result = new RemoteOperationResult<>(e);
-            Log_OC.e(TAG, "Create directory " + remotePath + ": " + result.getLogMessage(), e);
+            if (e instanceof ConflictException && !remotePath.equals("/")) {
+                result = createParentFolder(FileUtils.getParentPath(remotePath), client);
+                if (result.isSuccess()) {
+                    result = createFolder(client);    // second (and last) try
+                }
+            } else if (e instanceof HttpException httpException && httpException.getCode() == HttpStatusCodesKt.HTTP_BAD_METHOD) {
+                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
+            } else {
+                result = new RemoteOperationResult<>(e);
+                Log_OC.e(TAG, "Create directory " + remotePath + ": " + result.getLogMessage(), e);
+            }
+        } finally {
+
         }
 
         return result;

@@ -61,10 +61,9 @@ class PropFindMethod
                     WebDavFileUtils.parseResponse(response, filesDavUri)
                 )
 
-                Response.HrefRelation.SELF -> result.root =
+                Response.HrefRelation.SELF, Response.HrefRelation.OTHER -> result.root =
                     WebDavFileUtils.parseResponse(response, filesDavUri)
 
-                Response.HrefRelation.OTHER -> {}
                 else -> {}
             }
         }

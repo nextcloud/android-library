@@ -75,13 +75,13 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     public void testCreateDuplicateFolder() {
         String remotePath = mFullPath2FolderBase + "duplicateFolder";
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         // Create folder again
         remotePath = mFullPath2FolderBase + "duplicateFolder";
         mCreatedFolderPaths.add(remotePath);
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertFalse(result.isSuccess());
         assertEquals(FOLDER_ALREADY_EXISTS, result.getCode());
     }
@@ -93,10 +93,10 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
         RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
-        RemoteOperationResult readResult = new ReadFileRemoteOperation(remotePath).execute(nextcloudClient);
+        RemoteOperationResult<RemoteFile> readResult = new ReadFileRemoteOperation(remotePath).execute(nextcloudClient);
         assertTrue(readResult.isSuccess());
 
-        String remoteId = ((RemoteFile) readResult.getData().get(0)).getRemoteId();
+        String remoteId = readResult.getResultData().getRemoteId();
         assertEquals(result.getResultData(), remoteId);
     }
 

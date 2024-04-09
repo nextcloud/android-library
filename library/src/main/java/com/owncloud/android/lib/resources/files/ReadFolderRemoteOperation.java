@@ -53,8 +53,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation<List<RemoteFile>>
         try {
             // remote request
             HttpUrl url = HttpUrl.get(client.getFilesDavUri(mRemotePath));
-            propFind = new com.nextcloud.operations.PropFindMethod(url,
-                    WebdavUtils.PROPERTYSETS.INSTANCE.getALL(), 1);
+            propFind = new com.nextcloud.operations.PropFindMethod(url, WebdavUtils.PROPERTYSETS.INSTANCE.getALL(), 1);
             PropFindResult propFindResult = client.execute(propFind);
             result = new RemoteOperationResult<>(propFindResult.getDavResponse());
             result.setResultData(propFindResult.getChildren());
