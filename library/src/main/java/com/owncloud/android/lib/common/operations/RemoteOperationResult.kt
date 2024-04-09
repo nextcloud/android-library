@@ -280,6 +280,13 @@ class RemoteOperationResult<T> : Serializable {
         httpMethod.getResponseHeaders()
     )
 
+    /**
+     * Create RemoteOperationResult from given [DavResponse].
+     *
+     * Assumes "HTTP/1.1 200 OK" if status of [davResponse] is null.
+     *
+     * @param davResponse response received from remote dav operation
+     */
     constructor(davResponse: DavResponse) : this(
         davResponse.success,
         davResponse.getStatusCode(),
