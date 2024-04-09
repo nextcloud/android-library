@@ -4,22 +4,18 @@
  * SPDX-FileCopyrightText: 2015 ownCloud Inc.
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources.files;
+package com.owncloud.android.lib.resources.files
 
-import android.text.TextUtils;
-
-import com.nextcloud.common.DavResponse;
-import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.operations.MkColMethod;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-
-import at.bitfire.dav4jvm.exception.ConflictException;
-import at.bitfire.dav4jvm.exception.HttpException;
-import okhttp3.HttpUrl;
-import okhttp3.internal.http.HttpStatusCodesKt;
-
+import at.bitfire.dav4jvm.exception.ConflictException
+import at.bitfire.dav4jvm.exception.HttpException
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.operations.MkColMethod
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.internal.http.HTTP_BAD_METHOD
 
 /**
  * Remote operation performing the creation of a new folder in the ownCloud server.
@@ -27,85 +23,83 @@ import okhttp3.internal.http.HttpStatusCodesKt;
  * @author David A. Velasco
  * @author masensio
  */
-public class CreateFolderRemoteOperation extends RemoteOperation<String> {
-
-    private static final String TAG = CreateFolderRemoteOperation.class.getSimpleName();
-
-    private final boolean createFullPath;
-    private final String remotePath;
-    private String token;
-
-    /**
-     * Constructor
-     *
-     * @param remotePath     Full path to the new directory to create in the remote server.
-     * @param createFullPath 'True' means that all the ancestor folders should be created
-     *                       if don't exist yet.
-     */
-    public CreateFolderRemoteOperation(String remotePath, boolean createFullPath) {
-        this.remotePath = remotePath;
-        this.createFullPath = createFullPath;
-    }
-
-    public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, String token) {
-        this(remotePath, createFullPath);
-        this.token = token;
-    }
+class CreateFolderRemoteOperation
+/**
+ * Constructor
+ *
+ * @param remotePath     full path to folder on the remote
+ * @param createFullPath create higher level directories
+ */
+@JvmOverloads
+constructor(
+    private val remotePath: String,
+    private val createFullPath: Boolean,
+    private val token: String? = null
+ ) : RemoteOperation<String?>() {
 
     /**
      * Performs the operation
      *
      * @param client Client object to communicate with the remote ownCloud server.
      */
-    @Override
-    public RemoteOperationResult<String> run(NextcloudClient client) {
-        RemoteOperationResult<String> result;
-        result = createFolder(client);
-        return result;
+    override fun run(client: NextcloudClient): RemoteOperationResult<String?> {
+        return createFolder(client)
     }
 
-
-    private RemoteOperationResult<String> createFolder(NextcloudClient client) {
-        RemoteOperationResult<String> result;
-
+    private fun createFolder(client: NextcloudClient): RemoteOperationResult<String?> {
+        var result: RemoteOperationResult<String?>
         try {
-            HttpUrl url = HttpUrl.get(client.getFilesDavUri(remotePath));
-            com.nextcloud.operations.MkColMethod mkCol = new MkColMethod(url);
+            val url: HttpUrl = client.getFilesDavUri(remotePath).toHttpUrl()
+            val mkCol = MkColMethod(url)
 
-            if (!TextUtils.isEmpty(token)) {
-                mkCol.addRequestHeader(E2E_TOKEN, token);
+            if (token?.isNotEmpty() == true) {
+                mkCol.addRequestHeader(E2E_TOKEN, token)
             }
 
-            DavResponse response = client.execute(mkCol);
+            // will throw ConflictException if parent folder doesn't exist
+            // will throw HttpException if folder already exists
+            val response = client.execute(mkCol)
 
-            result = new RemoteOperationResult<>(response);
-            String fileIdHeader = response.getHeader("OC-FileId");
-            result.setResultData(fileIdHeader);
+            result = RemoteOperationResult(response)
 
-            Log_OC.d(TAG, "Create directory " + remotePath + ": " + result.getLogMessage());
-        } catch (Exception e) {
-            if (e instanceof ConflictException && !remotePath.equals("/")) {
-                result = createParentFolder(FileUtils.getParentPath(remotePath), client);
-                if (result.isSuccess()) {
-                    result = createFolder(client);    // second (and last) try
+            val fileIdHeader = response.getHeader("OC-FileId")
+            result.resultData = fileIdHeader
+
+            Log_OC.d(TAG, "Create directory " + remotePath + ": " + result.logMessage)
+
+        } catch (e: Exception) {
+            if (e is ConflictException && remotePath != "/") {
+                // parent directory doesn't exist - try to create it recursively
+                // do not attempt to create root
+                result = createParentFolder(remotePath, client)
+
+                // check if parent directory/directories was/were created
+                // and create actual directory
+                if (result.isSuccess) {
+                    result = createFolder(client)
                 }
-            } else if (e instanceof HttpException httpException && httpException.getCode() == HttpStatusCodesKt.HTTP_BAD_METHOD) {
-                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
+
+            } else if (e is HttpException && e.code == HTTP_BAD_METHOD) {
+                // specified directory already exists
+                result = RemoteOperationResult(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS)
+
             } else {
-                result = new RemoteOperationResult<>(e);
-                Log_OC.e(TAG, "Create directory " + remotePath + ": " + result.getLogMessage(), e);
+                result = RemoteOperationResult(e)
+                Log_OC.e(TAG, "Create directory " + remotePath + ": " + result.logMessage, e)
             }
-        } finally {
-
         }
-
-        return result;
+        return result
     }
 
-    private RemoteOperationResult<String> createParentFolder(String parentPath, NextcloudClient client) {
-        RemoteOperation<String> operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
-        return operation.execute(client);
+    private fun createParentFolder(
+        filePath: String,
+        client: NextcloudClient
+    ): RemoteOperationResult<String?> {
+        val parentPath = FileUtils.getParentPath(filePath)
+        return CreateFolderRemoteOperation(parentPath, createFullPath).execute(client)
     }
 
-
+    companion object {
+        private val TAG = CreateFolderRemoteOperation::class.java.getSimpleName()
+    }
 }
