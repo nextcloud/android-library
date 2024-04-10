@@ -112,7 +112,7 @@ public abstract class AbstractIT {
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
 
-        String userId2 = loginName; // for test same as userId
+        String userId2 = loginName2; // for test same as userId
         String credentials2 = Credentials.basic(loginName2, password2);
         nextcloudClient2 = new NextcloudClient(url, userId2, credentials2, context);
 
