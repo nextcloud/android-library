@@ -9,6 +9,7 @@ package com.nextcloud.android.lib.resources.dashboard
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
+import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation
 import com.owncloud.android.lib.resources.shares.OCShare
 import com.owncloud.android.lib.resources.shares.ShareType
@@ -22,11 +23,13 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
         // only on NC25+
         testOnlyOnServer(NextcloudVersion.nextcloud_25)
 
+        val folderPath = "/testFolder"
+
         // create folder to have some content
-        assertTrue(CreateFolderRemoteOperation("/testFolder", false).execute(nextcloudClient2).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(folderPath, false).execute(nextcloudClient2).isSuccess)
         assertTrue(
             CreateShareRemoteOperation(
-                "/testFolder",
+                folderPath,
                 ShareType.USER,
                 client.userId,
                 false,
@@ -37,8 +40,7 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
         )
 
         val widgetId = "activity"
-        val result =
-            DashboardGetWidgetItemsRemoteOperation(widgetId, LIMIT_SIZE).execute(nextcloudClient)
+        val result = DashboardGetWidgetItemsRemoteOperation(widgetId, LIMIT_SIZE).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertTrue(result.resultData?.get(widgetId)?.isNotEmpty() ?: false)
@@ -48,6 +50,9 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
         assertTrue(firstResult?.subtitle != null)
         assertTrue(firstResult?.link?.isNotEmpty() == true)
         assertTrue(firstResult?.iconUrl?.isNotEmpty() == true)
+
+        // remove folder
+        assertTrue(RemoveFileRemoteOperation(folderPath).execute(nextcloudClient2).isSuccess)
     }
 
     @Test
