@@ -67,7 +67,7 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         )
 
         // ReadFolderRemoteOperation
-        val resultFolder = ReadFolderRemoteOperation(remotePath).execute(client)
+        val resultFolder = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
         assertTrue(resultFolder.isSuccess)
 
         remoteFile = resultFolder.resultData?.get(0)
