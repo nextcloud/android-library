@@ -36,7 +36,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
                 .execute(client).isSuccess
         )
 
-        var result = ReadFolderRemoteOperation(remotePath).execute(client)
+        var result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertEquals(2, result.resultData?.size)
@@ -80,7 +80,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         )
 
         // check again
-        result = ReadFolderRemoteOperation(remotePath).execute(client)
+        result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertEquals(2, result.resultData?.size)

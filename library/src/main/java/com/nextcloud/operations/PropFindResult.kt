@@ -31,6 +31,7 @@ data class PropFindResult(
     val children: MutableList<RemoteFile> = mutableListOf()
 ) {
     fun getContent(): List<RemoteFile> {
-        return children + root
+        // return (children + root).asReversed()
+        return listOf(root) + children
     }
 }

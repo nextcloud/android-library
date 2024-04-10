@@ -56,7 +56,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation<List<RemoteFile>>
             propFind = new com.nextcloud.operations.PropFindMethod(url, WebdavUtils.PROPERTYSETS.INSTANCE.getALL(), 1);
             PropFindResult propFindResult = client.execute(propFind);
             result = new RemoteOperationResult<>(propFindResult.getDavResponse());
-            result.setResultData(propFindResult.getChildren());
+            result.setResultData(propFindResult.getContent());
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
         } finally {
