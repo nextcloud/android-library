@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCCommentsUnread private constructor(val commentsCount: Long) : Property {
+class OCCommentsUnread private constructor(val commentsCount: Int) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
@@ -44,7 +44,7 @@ class OCCommentsUnread private constructor(val commentsCount: Long) : Property {
             try {
                 val text = readText(parser)
                 if (!text.isNullOrEmpty()) {
-                    return OCCommentsUnread(text.toLong())
+                    return OCCommentsUnread(text.toInt())
                 }
             } catch (e: IOException) {
                 Log.e("OCCommentsUnread", "failed to create property", e)
