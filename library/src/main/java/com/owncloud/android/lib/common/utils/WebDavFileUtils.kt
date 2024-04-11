@@ -91,10 +91,7 @@ object WebDavFileUtils {
     ): RemoteFile {
         val remoteFile = RemoteFile()
 
-        // TODO: refactor
-        val path =
-            response.href.toString().split(filesDavUri.encodedPath!!.toRegex(), limit = 2)
-                .toTypedArray()[1].replace("//", "/")
+        val path = response.href.toString().substringAfter(filesDavUri.toString())
 
         for (property in response.properties) {
             when (property) {
