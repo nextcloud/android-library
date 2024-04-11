@@ -141,7 +141,7 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
             if (prop != null) {
                 val value = prop.value
                 if (value != null) {
-                    contentType = "DIR" // a specific attribute would be better,
+                    contentType = DIR_TYPE // a specific attribute would be better,
                     // but this is enough;
                     // unless while we have no reason to distinguish
                     // MIME types for folders

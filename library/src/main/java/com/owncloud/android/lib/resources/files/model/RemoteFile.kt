@@ -8,7 +8,8 @@ package com.owncloud.android.lib.resources.files.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.nextcloud.extensions.readParcelableArrayBridge
+import com.nextcloud.extensions.readParcelableArrayCompat
+import com.nextcloud.extensions.readSerializableCompat
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavEntry.MountType
 import com.owncloud.android.lib.resources.files.FileUtils
@@ -21,7 +22,7 @@ import java.io.Serializable
  *
  * @author masensio
  */
-class RemoteFile : Parcelable, Serializable {
+class RemoteFile() : Parcelable, Serializable {
     var remotePath: String? = null
     var mimeType: String? = null
     var length: Long = 0
@@ -30,18 +31,18 @@ class RemoteFile : Parcelable, Serializable {
     var uploadTimestamp: Long = 0
     var etag: String? = null
     var permissions: String? = null
-    var localId: Long = 0
+    var localId: Long = -1
     var remoteId: String? = null
     var size: Long = 0
     var isFavorite = false
     var isEncrypted = false
     var mountType: MountType? = null
-    var ownerId: String? = null
-    var ownerDisplayName: String? = null
+    var ownerId: String = ""
+    var ownerDisplayName: String = ""
     var unreadCommentsCount = 0
     var isHasPreview = false
-    var name: String? = null
-    var note: String? = null
+    var name: String = ""
+    var note: String = ""
     var sharees: Array<ShareeUser>? = null
     var richWorkspace: String? = null
     var isLocked = false
@@ -58,10 +59,6 @@ class RemoteFile : Parcelable, Serializable {
     var hidden = false
     var livePhoto: String? = null
 
-    constructor() {
-        resetData()
-    }
-
     /**
      * Create new [RemoteFile] with given path.
      *
@@ -70,8 +67,7 @@ class RemoteFile : Parcelable, Serializable {
      *
      * @param path The remote path of the file.
      */
-    constructor(path: String?) {
-        resetData()
+    constructor(path: String?) : this() {
         require(!(path.isNullOrEmpty() || !path.startsWith(FileUtils.PATH_SEPARATOR))) {
             "Trying to create a OCFile with a non valid remote path: $path"
         }
@@ -92,9 +88,9 @@ class RemoteFile : Parcelable, Serializable {
         isFavorite = we.isFavorite
         isEncrypted = we.isEncrypted
         mountType = we.mountType
-        ownerId = we.ownerId
-        ownerDisplayName = we.ownerDisplayName
-        name = we.name
+        ownerId = we.ownerId ?: ""
+        ownerDisplayName = we.ownerDisplayName ?: ""
+        name = we.name ?: ""
         note = we.note
         unreadCommentsCount = we.unreadCommentsCount
         isHasPreview = we.isHasPreview
@@ -116,77 +112,44 @@ class RemoteFile : Parcelable, Serializable {
     }
 
     /**
-     * Used internally. Reset all file properties
-     */
-    private fun resetData() {
-        remotePath = null
-        mimeType = null
-        length = 0
-        creationTimestamp = 0
-        modifiedTimestamp = 0
-        etag = null
-        permissions = null
-        localId = -1
-        remoteId = null
-        size = 0
-        isFavorite = false
-        isEncrypted = false
-        ownerId = ""
-        ownerDisplayName = ""
-        name = ""
-        note = ""
-        isLocked = false
-        lockOwner = null
-        lockType = null
-        lockOwnerDisplayName = null
-        lockOwnerEditor = null
-        lockTimestamp = 0
-        lockTimeout = 0
-        lockToken = null
-        tags = null
-        hidden = false
-        livePhoto = null
-    }
-
-    /**
      * Reconstruct from parcel
      *
      * @param source The source parcel
      */
-    private constructor(source: Parcel) {
+    private constructor(source: Parcel) : this() {
         readFromParcel(source)
     }
 
     private fun readFromParcel(source: Parcel) {
-        remotePath = source.readString()
-        mimeType = source.readString()
-        length = source.readLong()
         creationTimestamp = source.readLong()
-        modifiedTimestamp = source.readLong()
         etag = source.readString()
-        permissions = source.readString()
-        localId = source.readLong()
-        remoteId = source.readString()
-        size = source.readLong()
-        isFavorite = source.readString().toBoolean()
+        hidden = source.readInt() == 1
         isEncrypted = source.readString().toBoolean()
-        mountType = source.readSerializable() as MountType?
-        ownerId = source.readString()
-        ownerDisplayName = source.readString()
+        isFavorite = source.readString().toBoolean()
         isHasPreview = source.readString().toBoolean()
-        name = source.readString()
-        note = source.readString()
-        source.readParcelableArrayBridge(ShareeUser::class.java)
         isLocked = source.readInt() == 1
-        lockType = fromValue(source.readInt())
-        lockOwner = source.readString()
+        length = source.readLong()
+        livePhoto = source.readString()
+        localId = source.readLong()
         lockOwnerDisplayName = source.readString()
         lockOwnerEditor = source.readString()
-        lockTimestamp = source.readLong()
+        lockOwner = source.readString()
         lockTimeout = source.readLong()
+        lockTimestamp = source.readLong()
         lockToken = source.readString()
-        livePhoto = source.readString()
-        hidden = source.readInt() == 1
+        lockType = fromValue(source.readInt())
+        mimeType = source.readString()
+        modifiedTimestamp = source.readLong()
+        mountType = source.readSerializableCompat(MountType::class.java)
+        name = source.readString() ?: ""
+        note = source.readString() ?: ""
+        ownerDisplayName = source.readString() ?: ""
+        ownerId = source.readString() ?: ""
+        permissions = source.readString()
+        remoteId = source.readString()
+        remotePath = source.readString()
+        sharees = source.readParcelableArrayCompat(ShareeUser::class.java)
+        size = source.readLong()
     }
 
     override fun describeContents(): Int {
@@ -233,7 +196,7 @@ class RemoteFile : Parcelable, Serializable {
      *
      * @return `true`, iff RemoteFile is directory.
      */
-    fun isDirectory() = mimeType == "DIR"
+    fun isDirectory() = mimeType == WebdavEntry.DIR_TYPE
 
     companion object {
         /**
