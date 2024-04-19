@@ -6,5 +6,9 @@
 # SPDX-License-Identifier: MIT
 #
 
-php /var/www/html/occ list
-OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1
+apt-get update && apt-get install -y composer
+mkdir /var/www/.nvm /var/www/.npm
+touch /var/www/.bashrc
+chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
+
+/usr/local/bin/initnc.sh
