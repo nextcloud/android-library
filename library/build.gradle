@@ -71,7 +71,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.guava:guava:28.2-android'
 
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.75'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.78.1'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.6.4'
@@ -164,6 +164,14 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    packagingOptions {
+        resources {
+            excludes += 'META-INF/versions/9/OSGI-INF/MANIFEST*'
+            pickFirst 'MANIFEST.MF' // workaround for duplicated manifest on some dependencies
+        }
+    }
+
     namespace 'com.owncloud.android.lib'
 }
 

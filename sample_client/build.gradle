@@ -34,8 +34,12 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
+        resources {
+            excludes += 'META-INF/versions/9/OSGI-INF/MANIFEST*'
+            pickFirst 'MANIFEST.MF' // workaround for duplicated manifest on some dependencies
+        }
     }
+
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 34
