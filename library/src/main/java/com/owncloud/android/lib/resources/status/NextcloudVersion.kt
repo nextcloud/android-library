@@ -32,6 +32,12 @@ class NextcloudVersion : OwnCloudVersion {
 
         @JvmField
         val nextcloud_28 = NextcloudVersion(0x1C000000) // 28.0
+
+        @JvmField
+        val nextcloud_29 = NextcloudVersion(0x1D000000) // 29.0
+
+        @JvmField
+        val nextcloud_30 = NextcloudVersion(0x1E000000) // 30.0
     }
 
     constructor(string: String) : super(string)
