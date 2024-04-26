@@ -11,4 +11,8 @@ adb logcat > logcat.txt &
 ./gradlew jacocoTestDebugUnitTestReport
 ./gradlew installDebugAndroidTest
 ./gradlew createDebugCoverageReport
+stat=$?
+
 ./gradlew combinedTestReport
+
+exit $stat
