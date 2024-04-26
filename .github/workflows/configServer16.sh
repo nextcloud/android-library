@@ -8,4 +8,4 @@
 
 rm data -rf
 rm config/config.php
-BRANCH="$1" /initnc.sh
+BRANCH="stable16" /initnc.sh
