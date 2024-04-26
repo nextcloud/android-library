@@ -13,4 +13,4 @@ chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
 
 rm data -rf
 rm config/config.php
-BRANCH="stable27" /usr/local/bin/initnc.sh
+BRANCH="$1" /usr/local/bin/initnc.sh
