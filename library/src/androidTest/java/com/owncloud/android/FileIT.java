@@ -43,7 +43,7 @@ public class FileIT extends AbstractIT {
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
 
         // verify folder
-        assertFalse(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(path).execute(client).isSuccess());
