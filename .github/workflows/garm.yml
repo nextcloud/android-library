@@ -132,9 +132,9 @@ jobs:
 
             -   name: configure server
                 run: |
-                    docker cp .github/workflows/configServer.sh server:/tmp/
-                    docker exec server chmod +x /tmp/configServer.sh
-                    docker exec server /tmp/configServer.sh ${{ matrix.server }}
+                    docker cp .github/workflows/configServer16.sh server:/tmp/
+                    docker exec server chmod +x /tmp/configServer16.sh
+                    docker exec server /tmp/configServer16.sh ${{ matrix.server }}
                     docker cp .github/workflows/configNC_${{ matrix.server }}.sh server:/tmp/
                     docker exec server chmod +x /tmp/configNC_${{ matrix.server }}.sh
                     docker exec --user www-data server /tmp/configNC_${{ matrix.server }}.sh
