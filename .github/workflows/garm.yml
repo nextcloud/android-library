@@ -138,7 +138,6 @@ jobs:
                     docker cp .github/workflows/configNC_stable16.sh server:/tmp/
                     docker exec server chmod +x /tmp/configNC_stable16.sh
                     docker exec --user www-data server /tmp/configNC_stable16.sh
-                    docker exec server /usr/local/bin/run.sh
 
             -   name: Enable KVM group perms
                 run: |

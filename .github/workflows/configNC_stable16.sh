@@ -8,9 +8,6 @@
 
 SERVER_VERSION="stable16"
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-source ~/.bashrc; nvm install node
-
 php /var/www/html/occ log:manage --level warning
 
 OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1
@@ -39,6 +36,7 @@ php /var/www/html/occ app:enable groupfolders
 php /var/www/html/occ groupfolders:create groupfolder
 php /var/www/html/occ groupfolders:group 1 users
 
+git clone -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/
 php /var/www/html/occ app:enable notifications
 
 php /var/www/html/occ app:enable testing
