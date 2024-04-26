@@ -12,7 +12,7 @@ permissions:
     pull-requests: write
 
 jobs:
-    test-master:
+    test:
         runs-on: ubuntu-22.04 # our own GARM does not yet support it
         services:
             server:
@@ -24,9 +24,7 @@ jobs:
             fail-fast: false
             matrix:
                 server: [ master, stable27 ]
-                scheme: [ Light ]
-                color: [ blue ]
-                api-level: [ 27 ]
+                api-level: [ 27 ] # 15
         steps:
             -   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
@@ -106,6 +104,6 @@ jobs:
                 uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
                 if: ${{ always() }}
                 with:
-                    name: Report-${{ matrix.color }}-${{ matrix.scheme }}
+                    name: Report-${{ matrix.server }}-${{ matrix.api-level }}
                     path: app/build/reports
                     retention-days: 4
