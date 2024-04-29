@@ -12,10 +12,17 @@ import static org.junit.Assert.assertTrue;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
+    @BeforeClass
+    public static void beforeClass() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
+    }
+
     @Test
     public void createEmptyFile() {
         RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/test.md",
