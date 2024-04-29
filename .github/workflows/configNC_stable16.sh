@@ -21,12 +21,15 @@ php /var/www/html/occ group:adduser users user1
 php /var/www/html/occ group:adduser users user2
 php /var/www/html/occ group:adduser users test
 
+git clone --depth=1 -b $SERVER_VERSION https://github.com/nextcloud/activity.git /var/www/html/apps/activity/
 php /var/www/html/occ app:enable activity
 
+git clone --depth=1 -b $SERVER_VERSION https://github.com/nextcloud/text.git /var/www/html/apps/text/
 php /var/www/html/occ app:enable text
 
 php /var/www/html/occ app:enable end_to_end_encryption
 
+git clone --depth=1 -b $SERVER_VERSION https://github.com/nextcloud/password_policy/  /var/www/html/apps/password_policy/
 php /var/www/html/occ app:enable password_policy
 
 php /var/www/html/occ app:enable external
@@ -36,7 +39,7 @@ php /var/www/html/occ app:enable groupfolders
 php /var/www/html/occ groupfolders:create groupfolder
 php /var/www/html/occ groupfolders:group 1 users
 
-git clone -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/
+git clone --depth=1 -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/
 php /var/www/html/occ app:enable notifications
 
 php /var/www/html/occ app:enable testing
