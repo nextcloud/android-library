@@ -10,7 +10,9 @@ package com.nextcloud.android.lib.resources.directediting;
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.TemplateList;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -19,6 +21,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DirectEditingObtainListOfTemplatesRemoteOperationIT extends AbstractIT {
+    @BeforeClass
+    public static void beforeClass() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
+    }
 
     @Test
     public void testGetAll() {

@@ -9,6 +9,7 @@ package com.owncloud.android.lib.resources.users
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import okhttp3.Credentials.basic
@@ -57,6 +58,8 @@ class AppTokenRemoteOperationIT : AbstractIT() {
 
     @Test
     fun deleteAppPassword() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_17)
+
         val arguments = InstrumentationRegistry.getArguments()
         val username: String = arguments.getString("TEST_SERVER_USERNAME", "")
         val password: String = arguments.getString("TEST_SERVER_PASSWORD", "")
