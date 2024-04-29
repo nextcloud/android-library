@@ -314,7 +314,7 @@ public abstract class AbstractIT {
         }
     }
 
-    protected void testOnlyOnServer(OwnCloudVersion version) {
+    static protected void testOnlyOnServer(OwnCloudVersion version) {
         OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
             .execute(nextcloudClient)
             .getSingleData();

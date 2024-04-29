@@ -97,6 +97,8 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun testMetadata() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_27)
+
         val filePath = getFile("gps.jpg").absolutePath
         val remotePath = "/gps.jpg"
 
@@ -112,8 +114,6 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         @Suppress("Detekt.MagicNumber")
         assertEquals(ImageDimension(451f, 529f), remoteFile.imageDimension)
-
-        testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
         val ocCapability =
             GetCapabilitiesRemoteOperation()
