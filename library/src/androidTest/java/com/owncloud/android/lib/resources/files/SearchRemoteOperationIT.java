@@ -96,7 +96,8 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testFileSearchEverything() throws IOException {
         // on newer server we have Talk folder
         int offset = 0;
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
+            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_16.getMajorVersionNumber()) {
             offset = 1;
         }
 
@@ -225,7 +226,8 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testRecentlyModifiedSearch() throws IOException {
         // on newer server we have Talk folder
         int offset = 0;
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
+            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_16.getMajorVersionNumber()) {
             offset = 1;
         }
 
@@ -447,8 +449,10 @@ public class SearchRemoteOperationIT extends AbstractIT {
     @Test
     public void showOnlyFolders() throws IOException {
         // on newer server we have Talk folder
+        // on NC16 groupfolder is also returned
         int offset = 0;
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
+            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_16.getMajorVersionNumber()) {
             offset = 1;
         }
 
