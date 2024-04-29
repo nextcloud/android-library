@@ -25,6 +25,7 @@ import com.owncloud.android.lib.resources.shares.ShareeUser;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
 
@@ -146,6 +147,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testShareToGroupSharees() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -187,6 +190,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testOneSharees() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -222,6 +227,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testTwoShareesOnParent() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -270,6 +277,8 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testTwoSharees() {
+        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
+
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
