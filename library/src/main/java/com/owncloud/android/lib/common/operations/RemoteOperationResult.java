@@ -106,7 +106,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         LOCAL_STORAGE_NOT_REMOVED,
         FORBIDDEN,
         SHARE_FORBIDDEN,
-        OK_REDIRECT_TO_NON_SECURE_CONNECTION, 
+        OK_REDIRECT_TO_NON_SECURE_CONNECTION,
         INVALID_MOVE_INTO_DESCENDANT,
         INVALID_COPY_INTO_DESCENDANT,
         PARTIAL_MOVE_DONE,
@@ -129,7 +129,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         ETAG_UNCHANGED,
         VIRUS_DETECTED,
         FOLDER_ALREADY_EXISTS,
-        CANNOT_CREATE_FILE
+        CANNOT_CREATE_FILE,
+        LOCKED
     }
 
     private boolean mSuccess = false;
@@ -155,8 +156,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     public RemoteOperationResult(ResultCode code) {
         mCode = code;
         mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL || code == ResultCode.OK_NO_SSL ||
-                code == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION || code == ResultCode.ETAG_CHANGED ||
-                code == ResultCode.ETAG_UNCHANGED);
+            code == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION || code == ResultCode.ETAG_CHANGED ||
+            code == ResultCode.ETAG_UNCHANGED);
         mData = null;
     }
 
@@ -169,30 +170,33 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
         } else if (httpCode > 0) {
             switch (httpCode) {
-            case HttpStatus.SC_UNAUTHORIZED:
-                mCode = ResultCode.UNAUTHORIZED;
-                break;
-            case HttpStatus.SC_NOT_FOUND:
-                mCode = ResultCode.FILE_NOT_FOUND;
-                break;
-            case HttpStatus.SC_INTERNAL_SERVER_ERROR:
-                mCode = ResultCode.INSTANCE_NOT_CONFIGURED;
-                break;
-            case HttpStatus.SC_CONFLICT:
-                mCode = ResultCode.CONFLICT;
-                break;
-            case HttpStatus.SC_INSUFFICIENT_STORAGE:
-                mCode = ResultCode.QUOTA_EXCEEDED;
-                break;
-			case HttpStatus.SC_FORBIDDEN:
-				mCode = ResultCode.FORBIDDEN;
-                break;
-            case HttpStatus.SC_SERVICE_UNAVAILABLE:
-                mCode = ResultCode.MAINTENANCE_MODE;
-                break;
-            default:
-                mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " + httpCode);
+                case HttpStatus.SC_UNAUTHORIZED:
+                    mCode = ResultCode.UNAUTHORIZED;
+                    break;
+                case HttpStatus.SC_NOT_FOUND:
+                    mCode = ResultCode.FILE_NOT_FOUND;
+                    break;
+                case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+                    mCode = ResultCode.INSTANCE_NOT_CONFIGURED;
+                    break;
+                case HttpStatus.SC_CONFLICT:
+                    mCode = ResultCode.CONFLICT;
+                    break;
+                case HttpStatus.SC_INSUFFICIENT_STORAGE:
+                    mCode = ResultCode.QUOTA_EXCEEDED;
+                    break;
+                case HttpStatus.SC_FORBIDDEN:
+                    mCode = ResultCode.FORBIDDEN;
+                    break;
+                case HttpStatus.SC_SERVICE_UNAVAILABLE:
+                    mCode = ResultCode.MAINTENANCE_MODE;
+                    break;
+                case HttpStatus.SC_LOCKED:
+                    mCode = ResultCode.LOCKED;
+                    break;
+                default:
+                    mCode = ResultCode.UNHANDLED_HTTP_CODE;
+                    Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " + httpCode);
             }
         }
     }
@@ -244,9 +248,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     /**
      * Public constructor from exception.
-     *
+     * <p>
      * To be used when an exception prevented the end of the {@link RemoteOperation}.
-     *
+     * <p>
      * Determines a {@link ResultCode} depending on the type of the exception.
      *
      * @param e Exception that interrupted the {@link RemoteOperation}
@@ -306,9 +310,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     /**
      * Public constructor from separate elements of an HTTP or DAV response.
-     *
+     * <p>
      * To be used when the result needs to be interpreted from the response of an HTTP/DAV method.
-     *
+     * <p>
      * Determines a {@link ResultCode} from the already executed method received as a parameter. Generally,
      * will depend on the HTTP code and HTTP response headers received. In some cases will inspect also the
      * response body.
@@ -346,13 +350,13 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     /**
      * Public constructor from separate elements of an HTTP or DAV response.
-     *
+     * <p>
      * To be used when the result needs to be interpreted from HTTP response elements that could come from
      * different requests (WARNING: black magic, try to avoid).
-     *
+     * <p>
      * If all the fields come from the same HTTP/DAV response, {@link #RemoteOperationResult(boolean, HttpMethod)}
      * should be used instead.
-     *
+     * <p>
      * Determines a {@link ResultCode} depending on the HTTP code and HTTP response headers received.
      *
      * @param success     The operation was considered successful or not.
@@ -380,13 +384,13 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     /**
      * Public constructor from separate elements of an HTTP or DAV response.
-     *
+     * <p>
      * To be used when the result needs to be interpreted from HTTP response elements that could come from
      * different requests (WARNING: black magic, try to avoid).
-     *
+     * <p>
      * If all the fields come from the same HTTP/DAV response, {@link #RemoteOperationResult(boolean, HttpMethod)}
      * should be used instead.
-     *
+     * <p>
      * Determines a {@link ResultCode} depending on the HTTP code and HTTP response headers received.
      *
      * @param success     The operation was considered successful or not.
@@ -417,7 +421,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     /**
      * Private constructor for results built interpreting a HTTP or DAV response.
-     *
+     * <p>
      * Determines a {@link ResultCode} depending of the type of the exception.
      *
      * @param success    Operation was successful or not.
@@ -446,6 +450,9 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
                 case HttpStatus.SC_CONFLICT:                        // 409
                     mCode = ResultCode.CONFLICT;
                     break;
+                case HttpStatus.SC_LOCKED:                          // 423
+                    mCode = ResultCode.LOCKED;
+                    break;
                 case HttpStatus.SC_INTERNAL_SERVER_ERROR:           // 500
                     mCode = ResultCode.INSTANCE_NOT_CONFIGURED;     // assuming too much...
                     break;
@@ -458,8 +465,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
                 default:
                     mCode = ResultCode.UNHANDLED_HTTP_CODE;         // UNKNOWN ERROR
                     Log_OC.d(TAG,
-                            "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: "
-                                    + mHttpCode + " " + mHttpPhrase);
+                        "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: "
+                            + mHttpCode + " " + mHttpPhrase);
             }
         }
     }
@@ -559,7 +566,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         Throwable cause = mException.getCause();
         Throwable previousCause = null;
         while (cause != null && cause != previousCause &&
-                !(cause instanceof CertificateCombinedException)) {
+            !(cause instanceof CertificateCombinedException)) {
             previousCause = cause;
             cause = cause.getCause();
         }
@@ -610,10 +617,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
             } else if (mException instanceof AccountNotFoundException) {
                 Account failedAccount =
-                        ((AccountNotFoundException)mException).getFailedAccount();
+                    ((AccountNotFoundException) mException).getFailedAccount();
                 return mException.getMessage() + " (" +
-                        (failedAccount != null ? failedAccount.name : "NULL") + ")";
-                
+                    (failedAccount != null ? failedAccount.name : "NULL") + ")";
+
             } else if (mException instanceof AccountsException) {
                 return "Exception while using account";
 
@@ -647,17 +654,19 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             return "Authenticated with a different account than the one updating";
 
         } else if (mCode == ResultCode.INVALID_CHARACTER_IN_NAME) {
-                return "The file name contains an forbidden character";
+            return "The file name contains an forbidden character";
 
         } else if (mCode == ResultCode.FILE_NOT_FOUND) {
-	  	    return "Local file does not exist";
+            return "Local file does not exist";
 
- 	    } else if (mCode == ResultCode.SYNC_CONFLICT) {
+        } else if (mCode == ResultCode.SYNC_CONFLICT) {
             return "Synchronization conflict";
+        } else if (mCode == ResultCode.LOCKED) {
+            return "File is currently locked by another user or process";
         }
 
         return "Operation finished with HTTP status code " + mHttpCode + " (" +
-                (isSuccess() ? "success" : "fail") + ")";
+            (isSuccess() ? "success" : "fail") + ")";
 
     }
 
@@ -679,8 +688,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
     public final boolean isIdPRedirection() {
         return (mRedirectedLocation != null &&
-                (mRedirectedLocation.toUpperCase(Locale.US).contains("SAML") ||
-                        mRedirectedLocation.toLowerCase(Locale.US).contains("wayf")));
+            (mRedirectedLocation.toUpperCase(Locale.US).contains("SAML") ||
+                mRedirectedLocation.toLowerCase(Locale.US).contains("wayf")));
     }
 
     /**
@@ -703,13 +712,14 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     public void setLastPermanentLocation(String lastPermanentLocation) {
         mLastPermanentLocation = lastPermanentLocation;
     }
-    
+
     public void setMessage(String message) {
         this.message = message;
     }
 
     /**
      * Message that is returned by server, e.g. password policy violation on ocs share api
+     *
      * @return message that can be shown to user
      */
     public String getMessage() {
@@ -719,13 +729,13 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
     @Override
     public String toString() {
         return "RemoteOperationResult{" +
-                "mSuccess=" + mSuccess +
-                ", mHttpCode=" + mHttpCode +
-                ", mHttpPhrase='" + mHttpPhrase + '\'' +
-                ", mException=" + mException +
-                ", mCode=" + mCode +
-                ", message='" + message + '\'' +
-                ", getLogMessage='" + getLogMessage() + '\'' +
-                '}';
+            "mSuccess=" + mSuccess +
+            ", mHttpCode=" + mHttpCode +
+            ", mHttpPhrase='" + mHttpPhrase + '\'' +
+            ", mException=" + mException +
+            ", mCode=" + mCode +
+            ", message='" + message + '\'' +
+            ", getLogMessage='" + getLogMessage() + '\'' +
+            '}';
     }
 }
