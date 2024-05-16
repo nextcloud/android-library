@@ -116,7 +116,8 @@ class RemoteOperationResult<T> : Serializable {
         ETAG_UNCHANGED,
         VIRUS_DETECTED,
         FOLDER_ALREADY_EXISTS,
-        CANNOT_CREATE_FILE
+        CANNOT_CREATE_FILE,
+        LOCKED
     }
 
     var isSuccess = false
@@ -185,6 +186,7 @@ class RemoteOperationResult<T> : Serializable {
                     HttpStatus.SC_INSUFFICIENT_STORAGE -> ResultCode.QUOTA_EXCEEDED
                     HttpStatus.SC_FORBIDDEN -> ResultCode.FORBIDDEN
                     HttpStatus.SC_SERVICE_UNAVAILABLE -> ResultCode.MAINTENANCE_MODE
+                    HttpStatus.SC_LOCKED -> ResultCode.LOCKED
                     else -> {
                         Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: $httpCode")
                         ResultCode.UNHANDLED_HTTP_CODE
@@ -464,6 +466,9 @@ class RemoteOperationResult<T> : Serializable {
 
                 HttpStatus.SC_CONFLICT -> // 409
                     this.code = ResultCode.CONFLICT
+
+                HttpStatus.SC_LOCKED -> // 423
+                    this.code = ResultCode.LOCKED
 
                 HttpStatus.SC_INTERNAL_SERVER_ERROR -> // 500
                     this.code = ResultCode.INSTANCE_NOT_CONFIGURED
