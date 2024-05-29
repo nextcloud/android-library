@@ -97,16 +97,16 @@ class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
 
             while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                 if (eventType != XmlPullParser.TEXT) {
-                    when (parser.propertyName().name) {
-                        ExtendedProperties.SHAREES_ID.name -> {
+                    when (parser.propertyName()) {
+                        ExtendedProperties.SHAREES_ID.toPropertyName() -> {
                             userId = readText(parser)
                         }
 
-                        ExtendedProperties.SHAREES_DISPLAY_NAME.name -> {
+                        ExtendedProperties.SHAREES_DISPLAY_NAME.toPropertyName() -> {
                             displayName = readText(parser)
                         }
 
-                        ExtendedProperties.SHAREES_SHARE_TYPE.name -> {
+                        ExtendedProperties.SHAREES_SHARE_TYPE.toPropertyName() -> {
                             shareType = ShareType.fromValue(readText(parser)?.toInt() ?: 0)
                         }
                     }

@@ -30,6 +30,7 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -268,9 +269,7 @@ public class FileIT extends AbstractIT {
                 assertNotNull(remoteFile.getSharees());
                 assertEquals(2, remoteFile.getSharees().length);
 
-                for (ShareeUser user : remoteFile.getSharees()) {
-                    assertTrue(sharees.contains(user));
-                }
+                assertTrue(sharees.containsAll(Arrays.asList(remoteFile.getSharees())));
             }
         }
     }
