@@ -44,7 +44,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         var versionCount = 0
         val ocCapability =
             GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).singleData as OCCapability
+                .execute(nextcloudClient).resultData as OCCapability
         if (ocCapability.version.isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
             // with NC26+ we always have a starting version
             versionCount++

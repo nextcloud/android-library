@@ -158,8 +158,10 @@ public class FileIT extends AbstractIT {
         ShareeUser sharee = new ShareeUser("users", "", ShareType.GROUP);
 
         // only on NC26+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
+        OCCapability ocCapability = new GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData();
+
+        assertNotNull(ocCapability);
+
         if (ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
             sharee.setDisplayName("users");
         }

@@ -192,7 +192,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
                 Log_OC.d(TAG, "Capabilities not modified");
 
                 result = new RemoteOperationResult<>(true, get);
-                result.setSingleData(currentCapability);
+                result.setResultData(currentCapability);
 
                 Log_OC.d(TAG, "*** Get Capabilities completed ");
             } else if (isSuccess(status)) {
@@ -208,7 +208,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
 
                 // Result
                 result = new RemoteOperationResult<>(true, get);
-                result.setSingleData(capability);
+                result.setResultData(capability);
             } else {
                 result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();

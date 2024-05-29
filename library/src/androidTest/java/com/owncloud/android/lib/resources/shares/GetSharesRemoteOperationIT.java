@@ -285,8 +285,8 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void favorite() {
         // only on NC25+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
+        OCCapability ocCapability = new GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData();
+        assumeTrue(ocCapability != null);
         assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
 
         String path = "/shareToAdminFavorite/";

@@ -87,11 +87,12 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         OCCapability capability = result.getResultData();
 
-        RemoteOperationResult<OCCapability> resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> resultEtag = new GetCapabilitiesRemoteOperation(capability)
+            .execute(nextcloudClient);
         assertTrue(resultEtag.isSuccess());
-        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
 
-        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+        OCCapability sameCapability = resultEtag.getResultData();
+        assertNotNull(sameCapability);
 
         if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
             assertEquals(capability, sameCapability);

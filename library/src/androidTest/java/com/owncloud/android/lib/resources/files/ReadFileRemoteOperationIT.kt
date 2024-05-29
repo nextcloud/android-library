@@ -117,7 +117,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         val ocCapability =
             GetCapabilitiesRemoteOperation()
                 .execute(nextcloudClient)
-                .singleData as OCCapability
+                .resultData as OCCapability
 
         if (ocCapability.version.majorVersionNumber == NextcloudVersion.nextcloud_27.majorVersionNumber) {
             @Suppress("Detekt.MagicNumber")

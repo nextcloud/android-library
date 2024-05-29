@@ -151,7 +151,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
         val capabilityResult = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
         assertTrue(capabilityResult.isSuccess)
-        val capability = capabilityResult.singleData as OCCapability
+        val capability = capabilityResult.resultData as OCCapability
 
         when {
             capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_22) -> {
