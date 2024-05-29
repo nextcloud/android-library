@@ -8,14 +8,20 @@
 package com.owncloud.android.lib.common.accounts
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class ExternalLinksOperationIT : AbstractIT() {
     @Test
     fun retrieveExternalLinks() {
         val result = ExternalLinksOperation().execute(nextcloudClient)
+
+        // check if external sites app (external) is installed
+        assumeTrue(result.code != RemoteOperationResult.ResultCode.NOT_AVAILABLE)
+
         assertTrue(result.isSuccess)
 
         val data = result.resultData
