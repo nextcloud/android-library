@@ -118,7 +118,7 @@ object WebDavFileUtils {
 
         for (property in response.properties) {
             when (property) {
-                is DisplayName -> remoteFile.name = property.displayName?.apply { substring(1, length - 1) } ?: ""
+                is DisplayName -> remoteFile.name = property.displayName ?: ""
                 is GetContentLength -> remoteFile.length = property.contentLength
                 is GetContentType -> remoteFile.mimeType = (property.type ?: "").toString()
                 is ResourceType ->
