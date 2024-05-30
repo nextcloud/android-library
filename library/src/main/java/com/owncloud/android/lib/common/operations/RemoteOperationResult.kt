@@ -27,6 +27,8 @@ import com.owncloud.android.lib.common.network.CertificateCombinedException
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.CreateLocalFileException
 import okhttp3.Headers
+import okhttp3.internal.http.HTTP_MOVED_TEMP
+import okhttp3.internal.http.HTTP_TEMP_REDIRECT
 import org.apache.commons.httpclient.ConnectTimeoutException
 import org.apache.commons.httpclient.Header
 import org.apache.commons.httpclient.HttpException
@@ -589,7 +591,7 @@ class RemoteOperationResult<T> : Serializable {
 
     val isException = exception != null
 
-    val isTemporalRedirection = httpCode == 302 || httpCode == 307
+    val isTemporalRedirection = httpCode == HTTP_MOVED_TEMP || httpCode == HTTP_TEMP_REDIRECT
 
     val isIdPRedirection =
         redirectedLocation != null &&
