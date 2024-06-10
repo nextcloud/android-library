@@ -1,3 +1,10 @@
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2024 ZetaTom <70907959+zetatom@users.noreply.github.com>
+ * SPDX-License-Identifier: MIT
+ */
 package com.nextcloud.common
 
 import com.google.gson.Gson
