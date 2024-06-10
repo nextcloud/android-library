@@ -33,7 +33,7 @@ public class DeleteAllNotificationsRemoteOperation extends RemoteOperation<Void>
         String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
 
         try {
-            delete = new com.nextcloud.operations.DeleteMethod(url, true);
+            delete = new DeleteMethod(url, true);
 
             status = client.execute(delete);
             String response = delete.getResponseBodyAsString();

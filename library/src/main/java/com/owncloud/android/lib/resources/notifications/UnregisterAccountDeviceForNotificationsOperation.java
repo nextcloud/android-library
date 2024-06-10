@@ -30,8 +30,8 @@ public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOper
         DeleteMethod delete = null;
 
         try {
-            // Post Method
-            delete = new com.nextcloud.operations.DeleteMethod(client.getBaseUri() + OCS_ROUTE, true);
+            // Delete Method
+            delete = new DeleteMethod(client.getBaseUri() + OCS_ROUTE, true);
 
             status = client.execute(delete);
             String response = delete.getResponseBodyAsString();

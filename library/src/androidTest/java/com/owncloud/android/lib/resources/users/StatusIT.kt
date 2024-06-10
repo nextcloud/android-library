@@ -122,20 +122,20 @@ class StatusIT : AbstractIT() {
         val statusIcon = "☁"
         val clearAt = System.currentTimeMillis() / SECOND_IN_MILLIS + HOUR_IN_MINUTES
 
-        var result =
+        val resultSet =
             SetUserDefinedCustomStatusMessageRemoteOperation(message, statusIcon, clearAt)
                 .execute(nextcloudClient)
 
         assertTrue(
-            "SetUserDefinedCustomStatusMessageRemoteOperation failed: " + result.logMessage,
-            result.isSuccess
+            "SetUserDefinedCustomStatusMessageRemoteOperation failed: " + resultSet.logMessage,
+            resultSet.isSuccess
         )
 
         // verify
-        result = GetStatusRemoteOperation().run(nextcloudClient)
-        assertTrue("GetStatusRemoteOperation failed: " + result.logMessage, result.isSuccess)
+        val resultGet = GetStatusRemoteOperation().run(nextcloudClient)
+        assertTrue("GetStatusRemoteOperation failed: " + resultGet.logMessage, resultGet.isSuccess)
 
-        val status = result.resultData
+        val status = resultGet.resultData
         assertEquals(message, status.message)
         assertEquals(statusIcon, status.icon)
         assertEquals(clearAt, status.clearAt)

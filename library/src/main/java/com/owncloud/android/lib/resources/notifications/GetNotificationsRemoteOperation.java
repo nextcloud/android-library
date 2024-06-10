@@ -47,7 +47,7 @@ public class GetNotificationsRemoteOperation extends RemoteOperation<List<Notifi
     public RemoteOperationResult<List<Notification>> run(NextcloudClient client) {
         RemoteOperationResult<List<Notification>> result;
         int status;
-        com.nextcloud.operations.GetMethod get = null;
+        GetMethod get = null;
         List<Notification> notifications;
         String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
 

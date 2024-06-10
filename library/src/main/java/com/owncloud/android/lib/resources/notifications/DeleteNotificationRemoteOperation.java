@@ -35,7 +35,7 @@ public class DeleteNotificationRemoteOperation extends RemoteOperation<Void> {
     public RemoteOperationResult<Void> run(NextcloudClient client) {
         RemoteOperationResult<Void> result;
         int status;
-        com.nextcloud.operations.DeleteMethod delete = null;
+        DeleteMethod delete = null;
         String url = client.getBaseUri() + OCS_ROUTE_LIST_V12_AND_UP;
 
         try {

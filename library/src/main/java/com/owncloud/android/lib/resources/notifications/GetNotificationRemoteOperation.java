@@ -55,7 +55,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
 
         // get the notification
         try {
-            get = new com.nextcloud.operations.GetMethod(url, true);
+            get = new GetMethod(url, true);
 
             status = client.execute(get);
             String response = get.getResponseBodyAsString();
