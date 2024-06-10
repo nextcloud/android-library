@@ -28,7 +28,7 @@ public class DirectEditingObtainRemoteOperation extends OCSRemoteOperation<Direc
 
     public RemoteOperationResult<DirectEditing> run(NextcloudClient client) {
         RemoteOperationResult<DirectEditing> result;
-        com.nextcloud.operations.GetMethod getMethod = null;
+        GetMethod getMethod = null;
 
         try {
             getMethod = new GetMethod(client.getBaseUri() + DIRECT_ENDPOINT + JSON_FORMAT, true);

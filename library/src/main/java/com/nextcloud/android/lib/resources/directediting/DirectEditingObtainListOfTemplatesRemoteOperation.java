@@ -36,7 +36,7 @@ public class DirectEditingObtainListOfTemplatesRemoteOperation extends OCSRemote
 
     public RemoteOperationResult<TemplateList> run(NextcloudClient client) {
         RemoteOperationResult<TemplateList> result;
-        com.nextcloud.operations.GetMethod get = null;
+        GetMethod get = null;
 
         try {
             // get request
