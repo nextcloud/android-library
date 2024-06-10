@@ -13,8 +13,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 /**
  * Delete all notification, specified at 
  * {@link "https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md"}.
@@ -38,7 +36,7 @@ public class DeleteAllNotificationsRemoteOperation extends RemoteOperation<Void>
             status = client.execute(delete);
             String response = delete.getResponseBodyAsString();
 
-            if (status == HttpStatus.SC_OK) {
+            if (delete.isSuccess()) {
                 result = new RemoteOperationResult<>(true, delete);
                 Log_OC.d(this, "Successful response: " + response);
             } else {

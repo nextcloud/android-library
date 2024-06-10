@@ -12,7 +12,8 @@ import com.owncloud.android.lib.common.utils.HttpDeleteWithBody;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
+
+import java.net.HttpURLConnection;
 
 public class UnregisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
@@ -73,6 +74,6 @@ public class UnregisterAccountDeviceForProxyOperation {
     }
 
     private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK);
+        return (status == HttpURLConnection.HTTP_OK);
     }
 }

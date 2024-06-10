@@ -20,8 +20,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -58,7 +56,7 @@ public class GetNotificationsRemoteOperation extends RemoteOperation<List<Notifi
             status = client.execute(get);
             String response = get.getResponseBodyAsString();
 
-            if (isSuccess(status)) {
+            if (get.isSuccess()) {
                 result = new RemoteOperationResult<>(true, get);
                 Log_OC.d(TAG, "Successful response: " + response);
 
@@ -91,9 +89,5 @@ public class GetNotificationsRemoteOperation extends RemoteOperation<List<Notifi
         }.getType();
 
         return gson.fromJson(jsonDataArray, listType);
-    }
-
-    private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK);
     }
 }

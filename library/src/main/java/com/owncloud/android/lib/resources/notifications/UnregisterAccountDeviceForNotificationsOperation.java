@@ -13,13 +13,11 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOperation<Void> {
 
     // OCS Route
     private static final String OCS_ROUTE =
-            "/ocs/v2.php/apps/notifications/api/v2/push";
+        "/ocs/v2.php/apps/notifications/api/v2/push";
 
     private static final String TAG = UnregisterAccountDeviceForNotificationsOperation.class.getSimpleName();
 
@@ -33,10 +31,10 @@ public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOper
             // Delete Method
             delete = new DeleteMethod(client.getBaseUri() + OCS_ROUTE, true);
 
-            status = client.execute(delete);
+            client.execute(delete);
             String response = delete.getResponseBodyAsString();
 
-            if(status == HttpStatus.SC_OK) {
+            if (delete.isSuccess()) {
                 result = new RemoteOperationResult<>(true, delete);
                 Log_OC.d(TAG, "Successful response: " + response);
             } else {

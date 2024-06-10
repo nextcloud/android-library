@@ -20,9 +20,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 
 public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperation<PushResponse> {
     // OCS Route
@@ -115,7 +114,7 @@ public class RegisterAccountDeviceForNotificationsOperation extends RemoteOperat
     }
 
     private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED);
+        return (status == HttpURLConnection.HTTP_OK || status == HttpURLConnection.HTTP_CREATED);
     }
 
 }

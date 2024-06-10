@@ -11,9 +11,10 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.Utf8PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+
+import java.net.HttpURLConnection;
 
 public class RegisterAccountDeviceForProxyOperation {
     private static final String PROXY_ROUTE = "/devices";
@@ -83,6 +84,6 @@ public class RegisterAccountDeviceForProxyOperation {
     }
 
     private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK);
+        return (status == HttpURLConnection.HTTP_OK);
     }
 }

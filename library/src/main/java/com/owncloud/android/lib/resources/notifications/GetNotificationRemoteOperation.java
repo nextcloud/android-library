@@ -18,8 +18,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.notifications.models.Notification;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 import java.lang.reflect.Type;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -60,7 +58,7 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
             status = client.execute(get);
             String response = get.getResponseBodyAsString();
 
-            if (isSuccess(status)) {
+            if (get.isSuccess()) {
                 result = new RemoteOperationResult<>(true, get);
                 Log_OC.d(this, "Successful response: " + response);
 
@@ -93,9 +91,5 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
         }.getType();
 
         return gson.fromJson(jsonDataObject, type);
-    }
-
-    private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK);
     }
 }
