@@ -26,7 +26,7 @@ class UnlockFileV1RemoteOperation(
      */
     @Deprecated("Deprecated in Java")
     @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun run(client: OwnCloudClient): RemoteOperationResult<Void> {
+    fun run(client: OwnCloudClient): RemoteOperationResult<Void> {
         var result: RemoteOperationResult<Void>
         var deleteMethod: DeleteMethod? = null
         try {
