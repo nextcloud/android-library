@@ -134,19 +134,16 @@ public class FileIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         // verify
-        RemoteOperationResult<List<RemoteFile>> result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
+        RemoteOperationResult<List<RemoteFile>> result = new ReadFolderRemoteOperation(path).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         List<RemoteFile> resultData = result.getResultData();
         assertNotNull(resultData);
-        assertEquals("/", resultData.get(0).getRemotePath());
+        assertEquals(path, resultData.get(0).getRemotePath());
 
-        for (RemoteFile remoteFile : resultData) {
-            if (path.equals(remoteFile.getRemotePath())) {
-                assertNotNull(remoteFile.getSharees());
-                assertEquals(0, remoteFile.getSharees().length);
-            }
-        }
+        ShareeUser[] sharees = resultData.get(0).getSharees();
+        assertNotNull(sharees);
+        assertEquals(0, sharees.length);
     }
 
     @Test
