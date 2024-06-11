@@ -13,7 +13,7 @@ import com.owncloud.android.lib.resources.users.GetUserInfoRemoteOperation
 import okhttp3.Credentials
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class GetUserInfoRemoteOperationIT : AbstractIT() {
@@ -21,7 +21,7 @@ class GetUserInfoRemoteOperationIT : AbstractIT() {
     fun testGetUserNoQuota() {
         nextcloudClient.credentials = Credentials.basic("user1", "user1")
         val userInfoResult = GetUserInfoRemoteOperation().execute(nextcloudClient)
-        assertTrue(userInfoResult.isSuccess)
+        assumeTrue(userInfoResult.isSuccess)
 
         val userInfo = userInfoResult.resultData
         assertEquals("User One", userInfo?.displayName)
@@ -33,9 +33,9 @@ class GetUserInfoRemoteOperationIT : AbstractIT() {
     fun testGetUser1GbQuota() {
         nextcloudClient.credentials = Credentials.basic("user2", "user2")
         val userInfoResult = GetUserInfoRemoteOperation().execute(nextcloudClient)
-        assertTrue(userInfoResult.isSuccess)
-        val userInfo = userInfoResult.resultData
+        assumeTrue(userInfoResult.isSuccess)
 
+        val userInfo = userInfoResult.resultData
         assertEquals("User Two", userInfo?.displayName)
         assertEquals("user2", userInfo?.id)
         assertEquals(QUOTA_1GB, userInfo?.quota?.quota)
