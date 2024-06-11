@@ -136,8 +136,8 @@ class StatusIT : AbstractIT() {
         assertTrue("GetStatusRemoteOperation failed: " + resultGet.logMessage, resultGet.isSuccess)
 
         val status = resultGet.resultData
-        assertEquals(message, status.message)
-        assertEquals(statusIcon, status.icon)
-        assertEquals(clearAt, status.clearAt)
+        assertEquals(message, status?.message)
+        assertEquals(statusIcon, status?.icon)
+        assertEquals(clearAt, status?.clearAt)
     }
 }
