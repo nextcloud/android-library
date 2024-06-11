@@ -30,7 +30,7 @@ class StoreMetadataV2RemoteOperation(
      */
     @Deprecated("Deprecated in Java")
     @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun run(client: OwnCloudClient): RemoteOperationResult<String> {
+    fun run(client: OwnCloudClient): RemoteOperationResult<String> {
         var postMethod: Utf8PostMethod? = null
         var result: RemoteOperationResult<String>
         try {
