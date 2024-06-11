@@ -6,6 +6,7 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -75,8 +76,10 @@ public class RenameFileRemoteOperation extends RemoteOperation {
             }
 
             // check if a file with the new name already exists
+            NextcloudClient nextcloudClient = client.toNextcloudClient();
+            
             RemoteOperationResult existenceResult = new ExistenceCheckRemoteOperation(mNewRemotePath, false)
-                    .execute(client);
+                .execute(nextcloudClient);
             if (existenceResult.isSuccess()) {
                 return new RemoteOperationResult(ResultCode.INVALID_OVERWRITE);
             }
