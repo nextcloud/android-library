@@ -17,7 +17,7 @@ import org.junit.Test
 class DirectEditingObtainRemoteOperationIT : AbstractIT() {
     @Test
     fun testGetAll() {
-        val result = DirectEditingObtainRemoteOperation().execute(client)
+        val result = DirectEditingObtainRemoteOperation().run(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val (editors, creators) = result.resultData
