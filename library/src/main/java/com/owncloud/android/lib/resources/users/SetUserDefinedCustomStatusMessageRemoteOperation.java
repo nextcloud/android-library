@@ -7,6 +7,7 @@
  */
 package com.owncloud.android.lib.resources.users;
 
+import com.nextcloud.common.JSONRequestBody;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -15,13 +16,10 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-
 /**
  * Remote operation performing setting user defined custom status message
  */
-public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation {
+public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteOperation<Void> {
 
     private static final String TAG = SetUserDefinedCustomStatusMessageRemoteOperation.class.getSimpleName();
     private static final String SET_STATUS_URL = "/ocs/v2.php/apps/user_status/api/v1/user_status/message/custom";
@@ -40,31 +38,29 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
      * @param client Client object
      */
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<Void> run(NextcloudClient client) {
         PutMethod putMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<Void> result;
 
         try {
             // request body
-            MediaType json = MediaType.parse("application/json; charset=utf-8");
-            RequestBody requestBody = RequestBody.create(json,
-                    "{\"message\": \"" + message + "\", " +
-                            "\"statusIcon\": \"" + statusIcon + "\", " +
-                            "\"clearAt\": " + clearAt + "}");
+            JSONRequestBody jsonRequestBody = new JSONRequestBody("message", message);
+            jsonRequestBody.put("statusIcon", statusIcon);
+            jsonRequestBody.put("clearAt", clearAt.toString());
 
             // remote request
-            putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, requestBody);
+            putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, jsonRequestBody.get());
 
             int status = client.execute(putMethod);
 
             if (status == HttpStatus.SC_OK) {
-                result = new RemoteOperationResult(true, putMethod);
+                result = new RemoteOperationResult<>(true, putMethod);
             } else {
-                result = new RemoteOperationResult(false, putMethod);
+                result = new RemoteOperationResult<>(false, putMethod);
                 putMethod.releaseConnection();
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Setting of predefined custom status failed: " + result.getLogMessage(),
                     result.getException());
         } finally {

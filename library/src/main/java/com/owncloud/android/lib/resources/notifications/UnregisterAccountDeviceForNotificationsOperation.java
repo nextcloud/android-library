@@ -7,46 +7,42 @@
  */
 package com.owncloud.android.lib.resources.notifications;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.DeleteMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-
-public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOperation {
+public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOperation<Void> {
 
     // OCS Route
     private static final String OCS_ROUTE =
-            "/ocs/v2.php/apps/notifications/api/v2/push";
+        "/ocs/v2.php/apps/notifications/api/v2/push";
 
     private static final String TAG = UnregisterAccountDeviceForNotificationsOperation.class.getSimpleName();
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+    public RemoteOperationResult<Void> run(NextcloudClient client) {
+        RemoteOperationResult<Void> result;
+        int status;
         DeleteMethod delete = null;
 
         try {
-            // Post Method
-            delete = new DeleteMethod(client.getBaseUri() + OCS_ROUTE);
+            // Delete Method
+            delete = new DeleteMethod(client.getBaseUri() + OCS_ROUTE, true);
 
-            delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-
-            status = client.executeMethod(delete);
+            client.execute(delete);
             String response = delete.getResponseBodyAsString();
 
-            if(isSuccess(status)) {
-                result = new RemoteOperationResult(true, status, delete.getResponseHeaders());
+            if (delete.isSuccess()) {
+                result = new RemoteOperationResult<>(true, delete);
                 Log_OC.d(TAG, "Successful response: " + response);
             } else {
-                result = new RemoteOperationResult(false, status, delete.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, delete);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while registering device for notifications", e);
 
         } finally {
@@ -56,10 +52,4 @@ public class UnregisterAccountDeviceForNotificationsOperation extends RemoteOper
         }
         return result;
     }
-
-    private boolean isSuccess(int status) {
-        return (status == HttpStatus.SC_OK || status == HttpStatus.SC_ACCEPTED);
-    }
-
-
 }
