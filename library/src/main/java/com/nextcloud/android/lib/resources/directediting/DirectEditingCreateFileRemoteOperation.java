@@ -14,7 +14,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.json.JSONObject;
 
 /**
@@ -61,9 +60,9 @@ public class DirectEditingCreateFileRemoteOperation extends RemoteOperation<Stri
             // post request
             post = new PostMethod(client.getBaseUri() + DIRECT_ENDPOINT + JSON_FORMAT, true, jsonRequestBody.get());
 
-            int status = client.execute(post);
+            client.execute(post);
 
-            if (status == HttpStatus.SC_OK) {
+            if (post.isSuccess()) {
                 String response = post.getResponseBodyAsString();
 
                 // Parse the response

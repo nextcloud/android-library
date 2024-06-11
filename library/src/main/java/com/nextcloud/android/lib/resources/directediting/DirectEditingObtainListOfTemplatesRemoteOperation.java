@@ -16,8 +16,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
 import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 /**
  * Get templates for an editor
  */
@@ -42,9 +40,9 @@ public class DirectEditingObtainListOfTemplatesRemoteOperation extends OCSRemote
             // get request
             get = new GetMethod(client.getBaseUri() + DIRECT_ENDPOINT + editor + "/" + template + JSON_FORMAT, true);
 
-            int status = client.execute(get);
+            client.execute(get);
 
-            if (status == HttpStatus.SC_OK) {
+            if (get.isSuccess()) {
                 ServerResponse<TemplateList> serverResponse = getServerResponse(get, new TypeToken<>() {});
 
                 if (serverResponse != null) {

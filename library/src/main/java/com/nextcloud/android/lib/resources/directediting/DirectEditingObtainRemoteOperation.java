@@ -16,8 +16,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.ocs.ServerResponse;
 import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
-import org.apache.commons.httpclient.HttpStatus;
-
 /**
  * Get all editor details from direct editing
  */
@@ -33,9 +31,9 @@ public class DirectEditingObtainRemoteOperation extends OCSRemoteOperation<Direc
         try {
             getMethod = new GetMethod(client.getBaseUri() + DIRECT_ENDPOINT + JSON_FORMAT, true);
 
-            int status = client.execute(getMethod);
+            client.execute(getMethod);
 
-            if (status == HttpStatus.SC_OK) {
+            if (getMethod.isSuccess()) {
                 ServerResponse<DirectEditing> serverResponse = getServerResponse(getMethod,
                         new TypeToken<>() {
                         });
