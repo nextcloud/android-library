@@ -9,10 +9,12 @@
 package com.owncloud.android.lib.resources.assistant
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -20,6 +22,9 @@ class AssistantIT : AbstractIT() {
     @Before
     fun before() {
         testOnlyOnServer(NextcloudVersion.nextcloud_28)
+
+        val capability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData
+        assumeTrue(capability?.assistant?.isTrue == true)
     }
 
     @Test
