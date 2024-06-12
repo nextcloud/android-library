@@ -21,7 +21,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
 
     @Test
     fun list() {
-        var sut = GetTagsRemoteOperation().execute(client)
+        var sut = GetTagsRemoteOperation().execute(nextcloudClient)
         assertTrue(sut.isSuccess)
         assertNotNull(sut.resultData)
 
@@ -33,7 +33,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        sut = GetTagsRemoteOperation().execute(client)
+        sut = GetTagsRemoteOperation().execute(nextcloudClient)
         assertTrue(sut.isSuccess)
 
         assertEquals(count?.plus(1), sut.resultData?.size)

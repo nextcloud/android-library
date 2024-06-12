@@ -28,10 +28,10 @@ class CheckEtagRemoteOperationIT : AbstractIT() {
         val remoteFile = readResult.resultData
         val eTag = remoteFile?.etag
 
-        var eTagResult = CheckEtagRemoteOperation(remotePath, eTag).execute(client)
+        var eTagResult = CheckEtagRemoteOperation(remotePath, eTag).execute(nextcloudClient)
         assertEquals(RemoteOperationResult.ResultCode.ETAG_UNCHANGED, eTagResult.code)
 
-        eTagResult = CheckEtagRemoteOperation(remotePath, "wrongEtag").execute(client)
+        eTagResult = CheckEtagRemoteOperation(remotePath, "wrongEtag").execute(nextcloudClient)
         assertEquals(RemoteOperationResult.ResultCode.ETAG_CHANGED, eTagResult.code)
     }
 }

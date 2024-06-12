@@ -62,7 +62,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertTrue(CreateTagRemoteOperation(tag2).execute(nextcloudClient).isSuccess)
 
         // list tags
-        val tags = GetTagsRemoteOperation().execute(client).resultData
+        val tags = GetTagsRemoteOperation().execute(nextcloudClient).resultData
         assertNotNull(tags)
 
         // add tag
