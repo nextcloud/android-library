@@ -29,8 +29,6 @@ import java.util.List;
 public class ToggleEncryptionRemoteOperation extends RemoteOperation<Void> {
 
     private static final String TAG = ToggleEncryptionRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String ENCRYPTED_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/encrypted/";
 
     private final long localId;

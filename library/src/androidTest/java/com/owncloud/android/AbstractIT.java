@@ -283,7 +283,7 @@ public abstract class AbstractIT {
                         remoteFile.getLocalId(),
                         remoteFile.getRemotePath(),
                         false)
-                        .execute(client)
+                        .execute(nextcloudClient)
                         .isSuccess());
                 }
 

@@ -43,7 +43,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
                                                        remoteFolder.getRemotePath(),
                                                        true)
-                           .execute(client)
+                           .execute(nextcloudClient)
                            .isSuccess());
 
         // Lock 
@@ -111,7 +111,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
                                                        remoteFolder.getRemotePath(),
                                                        true)
-                           .execute(client)
+                           .execute(nextcloudClient)
                            .isSuccess());
 
         // Lock 
