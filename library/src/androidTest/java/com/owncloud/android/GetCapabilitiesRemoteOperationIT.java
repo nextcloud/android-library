@@ -145,7 +145,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
             if (userId.equals("test")) {
                 assertTrue(capability.getAssistant().isTrue());
             } else {
-                assertFalse(capability.getAssistant().isFalse());
+                assertTrue(capability.getAssistant().isFalse());
             }
         }
 
