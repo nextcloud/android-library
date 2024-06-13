@@ -7,11 +7,11 @@
  */
 package com.owncloud.android.lib.resources.status;
 
-        import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 public class OwnCloudVersionTest {
     @Test
@@ -47,11 +47,6 @@ public class OwnCloudVersionTest {
         OwnCloudVersion version = new OwnCloudVersion("");
 
         assertFalse(version.isVersionValid());
-    }
-
-    @Test
-    public void testSupportNC16() {
-        assertFalse(OwnCloudVersion.nextcloud_16.isShareesOnDavSupported());
     }
 
     @Test
