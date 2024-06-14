@@ -112,11 +112,15 @@ class NextcloudClient private constructor(
             } catch (ex: Exception) {
                 RemoteOperationResult(ex)
             }
-        if (result.httpCode == HttpStatus.SC_BAD_REQUEST) {
-            val url = remoteOperation.client.hostConfiguration.hostURL
+        val ownCloudClient = remoteOperation.client
+        if (ownCloudClient == null) {
+            Log_OC.e(TAG, "OwnCloudClient is null")
+        } else if (result.httpCode == HttpStatus.SC_BAD_REQUEST) {
+            val url = ownCloudClient.hostConfiguration.hostURL
             Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
             AdvancedX509KeyManager(context).removeKeys(url)
         }
+
         return result
     }
 
