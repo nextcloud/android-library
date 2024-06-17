@@ -58,7 +58,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true,
                 ""
-            ).execute(nextcloudClient)
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -67,10 +67,10 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setNote(note)
 
-        assertTrue(sut.execute(nextcloudClient).isSuccess)
+        assertTrue(sut.execute(client).isSuccess)
 
         // verify
-        val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(nextcloudClient)
+        val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
 
         val updatedShare = getShareOperationResult.resultData[0]
@@ -94,7 +94,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                 true,
                 "",
                 OCShare.READ_PERMISSION_FLAG
-            ).execute(nextcloudClient)
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -103,10 +103,10 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setLabel(label)
 
-        assertTrue(sut.execute(nextcloudClient).isSuccess)
+        assertTrue(sut.execute(client).isSuccess)
 
         // verify
-        val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(nextcloudClient)
+        val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
         assertTrue(getShareOperationResult.isSuccess)
 
         val updatedShare = getShareOperationResult.resultData[0]
@@ -131,7 +131,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                 true,
                 "",
                 OCShare.READ_PERMISSION_FLAG
-            ).execute(nextcloudClient)
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -140,7 +140,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("1")
 
-        val result = sut.execute(nextcloudClient)
+        val result = sut.execute(client)
         assertFalse(result.isSuccess)
 
         val capabilityResult = GetCapabilitiesRemoteOperation().execute(nextcloudClient)
@@ -181,7 +181,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                 true,
                 "",
                 OCShare.READ_PERMISSION_FLAG
-            ).execute(nextcloudClient)
+            ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
 
@@ -190,7 +190,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         val sut = UpdateShareRemoteOperation(share.remoteId)
         sut.setPassword("arnservcvcbtp234")
 
-        assertTrue(sut.execute(nextcloudClient).isSuccess)
+        assertTrue(sut.execute(client).isSuccess)
         assertTrue(RemoveFileRemoteOperation(folder).execute(client).isSuccess)
     }
 }

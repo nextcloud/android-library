@@ -70,7 +70,6 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
-    protected static NextcloudClient nextcloudClient2;
     protected static Context context;
     protected static Uri url;
 
@@ -110,10 +109,6 @@ public abstract class AbstractIT {
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
 
-        String userId2 = loginName; // for test same as userId
-        String credentials2 = Credentials.basic(loginName2, password2);
-        nextcloudClient2 = new NextcloudClient(url, userId2, credentials2, context);
-
         waitForServer(client, url);
         testConnection();
     }
@@ -149,7 +144,7 @@ public abstract class AbstractIT {
         InterruptedException {
         GetStatusRemoteOperation getStatus = new GetStatusRemoteOperation(context);
 
-        RemoteOperationResult result = getStatus.execute(nextcloudClient);
+        RemoteOperationResult result = getStatus.execute(client);
 
         if (result.isSuccess()) {
             Log_OC.d("AbstractIT", "Connection to server successful");

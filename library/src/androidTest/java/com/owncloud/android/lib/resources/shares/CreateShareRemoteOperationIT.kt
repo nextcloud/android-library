@@ -50,7 +50,7 @@ class CreateShareRemoteOperationIT : AbstractIT() {
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true,
                 note
-            ).execute(nextcloudClient)
+            ).execute(client)
 
         junit.framework.Assert.assertTrue(sut.isSuccess)
 
