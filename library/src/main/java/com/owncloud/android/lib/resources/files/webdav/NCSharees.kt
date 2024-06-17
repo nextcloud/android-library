@@ -59,7 +59,8 @@ class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
             var eventType = parser.eventType
             while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                 if (eventType == XmlPullParser.START_TAG && parser.depth == depth + 1) {
-                    list.add(readNCSharee(parser))
+                    // only add non-null users
+                    readNCSharee(parser)?.let { list.add(it) }
                 }
 
                 eventType = parser.next()
@@ -68,7 +69,7 @@ class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
             return list
         }
 
-        private fun readNCSharee(parser: XmlPullParser): ShareeUser {
+        private fun readNCSharee(parser: XmlPullParser): ShareeUser? {
             val depth = parser.depth
             var eventType = parser.eventType
 
@@ -96,7 +97,19 @@ class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
                 eventType = parser.next()
             }
 
-            return ShareeUser(userId, displayName, shareType)
+            // check that user is an actual sharee - e.g. exclude link shares
+
+            val isSupportedShareType =
+                ShareType.EMAIL == shareType ||
+                    ShareType.FEDERATED == shareType ||
+                    ShareType.GROUP == shareType ||
+                    ShareType.ROOM == shareType
+
+            return if (userId.isNullOrEmpty() || (displayName.isNullOrEmpty() && !isSupportedShareType)) {
+                null
+            } else {
+                ShareeUser(userId, displayName, shareType)
+            }
         }
     }
 
