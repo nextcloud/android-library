@@ -131,6 +131,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         // groupfolder
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_27)) {
+            // groupfolder only set up for user "test"
             if (userId.equals("test")) {
                 assertTrue(capability.getGroupfolders().isTrue());
             } else {
@@ -142,11 +143,8 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         // assistant
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_28)) {
-            if (userId.equals("test")) {
-                assertTrue(capability.getAssistant().isTrue());
-            } else {
-                assertTrue(capability.getAssistant().isFalse());
-            }
+            // Nextcloud assistant needs to be set up for this to work
+            assertTrue(capability.getAssistant().isTrue());
         }
 
         // e2e
