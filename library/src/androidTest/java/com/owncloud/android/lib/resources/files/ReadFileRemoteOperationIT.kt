@@ -56,14 +56,14 @@ class ReadFileRemoteOperationIT : AbstractIT() {
             LinkLivePhotoRemoteOperation(
                 livePhotoPath,
                 movieFilePath
-            ).execute(client).isSuccess
+            ).execute(nextcloudClient).isSuccess
         )
 
         assertTrue(
             LinkLivePhotoRemoteOperation(
                 movieFilePath,
                 livePhotoPath
-            ).execute(client).isSuccess
+            ).execute(nextcloudClient).isSuccess
         )
 
         val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(nextcloudClient)

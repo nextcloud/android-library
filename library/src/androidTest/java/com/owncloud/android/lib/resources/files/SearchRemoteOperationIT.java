@@ -8,6 +8,7 @@
 package com.owncloud.android.lib.resources.files;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
 import android.net.Uri;
@@ -58,19 +59,25 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testSearchByFileIdSuccess() {
         assertTrue(new CreateFolderRemoteOperation("/test/", true).execute(nextcloudClient).isSuccess());
 
-        RemoteOperationResult readFile = new ReadFileRemoteOperation("/test/").execute(nextcloudClient);
+        RemoteOperationResult<RemoteFile> readFile = new ReadFileRemoteOperation("/test/").execute(nextcloudClient);
         assertTrue(readFile.isSuccess());
 
-        RemoteFile remoteFile = ((RemoteFile) readFile.getSingleData());
+        RemoteFile remoteFile = readFile.getResultData();
+        assertNotNull(remoteFile);
+
         SearchRemoteOperation sut = new SearchRemoteOperation(String.valueOf(remoteFile.getLocalId()),
                 SearchRemoteOperation.SearchType.FILE_ID_SEARCH,
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
-        assertEquals("/test/", result.getResultData().get(0).getRemotePath());
+
+        List<RemoteFile> remoteFileList = result.getResultData();
+        assertNotNull(remoteFileList);
+
+        assertEquals(1, remoteFileList.size());
+        assertEquals("/test/", remoteFileList.get(0).getRemotePath());
     }
 
     @Test
@@ -457,16 +464,22 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 true,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
+
+        List<RemoteFile> remoteFileList = result.getResultData();
+        assertNotNull(remoteFileList);
+        assertEquals(1, remoteFileList.size());
 
         assertTrue(new CreateFolderRemoteOperation("/folder/", false).execute(nextcloudClient).isSuccess());
 
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertEquals(2, result.getResultData().size());
-        assertEquals("/folder/", result.getResultData().get(0).getRemotePath());
+
+        remoteFileList = result.getResultData();
+        assertNotNull(remoteFileList);
+        assertEquals(2, remoteFileList.size());
+        assertEquals("/folder/", remoteFileList.get(0).getRemotePath());
     }
 
     @Test
