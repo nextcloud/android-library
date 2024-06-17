@@ -10,6 +10,8 @@ import android.content.Context;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.HeadMethod;
+import com.owncloud.android.lib.common.OwnCloudAnonymousCredentials;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -23,6 +25,12 @@ import org.apache.commons.httpclient.HttpStatus;
  * @author David A. Velasco
  */
 public class ExistenceCheckRemoteOperation extends RemoteOperation<Void> {
+
+    /**
+     * Maximum time to wait for a response from the server in MILLISECONDs.
+     */
+    public static final int TIMEOUT = 50000;
+
     private static final String TAG = ExistenceCheckRemoteOperation.class.getSimpleName();
     
     private final String mPath;
@@ -55,6 +63,50 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation<Void> {
      */
     public ExistenceCheckRemoteOperation(String remotePath, Context context, boolean successIfAbsent) {
         this(remotePath, successIfAbsent);
+    }
+
+    @Override
+    protected RemoteOperationResult run(OwnCloudClient client) {
+        RemoteOperationResult result = null;
+        org.apache.commons.httpclient.methods.HeadMethod head = null;
+        boolean previousFollowRedirects = client.isFollowRedirects();
+        try {
+            if (client.getCredentials() instanceof OwnCloudAnonymousCredentials) {
+                head = new org.apache.commons.httpclient.methods.HeadMethod(client.getDavUri().toString());
+            } else {
+                head = new org.apache.commons.httpclient.methods.HeadMethod(client.getFilesDavUri(mPath));
+            }
+            client.setFollowRedirects(false);
+            int status = client.executeMethod(head, TIMEOUT, TIMEOUT);
+            if (previousFollowRedirects) {
+                mRedirectionPath = client.followRedirection(head);
+                status = mRedirectionPath.getLastStatus();
+            }
+            client.exhaustResponse(head.getResponseBodyAsStream());
+            boolean success = (status == HttpStatus.SC_OK && !mSuccessIfAbsent) ||
+                (status == HttpStatus.SC_NOT_FOUND && mSuccessIfAbsent);
+            result = new RemoteOperationResult(
+                success,
+                status,
+                head.getStatusText(),
+                head.getResponseHeaders()
+            );
+            Log_OC.d(TAG, "Existence check for " + client.getFilesDavUri(mPath) + " targeting for " +
+                (mSuccessIfAbsent ? " absence " : " existence ") +
+                "finished with HTTP status " + status + (!success ? "(FAIL)" : ""));
+
+        } catch (Exception e) {
+            result = new RemoteOperationResult(e);
+            Log_OC.e(TAG, "Existence check for " + client.getFilesDavUri(mPath) + " targeting for " +
+                (mSuccessIfAbsent ? " absence " : " existence ") + ": " +
+                result.getLogMessage(), result.getException());
+
+        } finally {
+            if (head != null)
+                head.releaseConnection();
+            client.setFollowRedirects(previousFollowRedirects);
+        }
+        return result;
     }
 
     @Override

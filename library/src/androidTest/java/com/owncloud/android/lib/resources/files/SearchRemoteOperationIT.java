@@ -7,8 +7,13 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
@@ -26,11 +31,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 
 public class SearchRemoteOperationIT extends AbstractIT {
     private static OCCapability capability;
@@ -177,7 +177,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 client.getUserId(),
                 false,
                 "",
-                31).execute(nextcloudClient2)
+            31).execute(client2)
                 .isSuccess()
         );
 

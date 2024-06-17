@@ -12,13 +12,13 @@ package com.owncloud.android.lib.resources.shares;
 
 import android.net.Uri;
 
-import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.operations.GetMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -103,7 +103,7 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
     }
 
     @Override
-    public RemoteOperationResult<ArrayList<JSONObject>> run(NextcloudClient client) {
+    protected RemoteOperationResult<ArrayList<JSONObject>> run(OwnCloudClient client) {
         RemoteOperationResult<ArrayList<JSONObject>> result;
         int status;
         GetMethod get = null;
@@ -120,9 +120,10 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
             uriBuilder.appendQueryParameter(PARAM_LOOKUP, VALUE_FALSE);
 
             // Get Method
-            get = new GetMethod(uriBuilder.build().toString(), true);
+            get = new GetMethod(uriBuilder.build().toString());
+            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            status = client.execute(get);
+            status = client.executeMethod(get);
 
             if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
@@ -204,7 +205,12 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
                 result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting users/groups from the server");
-                Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
+
+                if (response != null) {
+                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
+                } else {
+                    Log_OC.e(TAG, "*** status code: " + status);
+                }
             }
 
         } catch (Exception e) {

@@ -23,7 +23,7 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
         testOnlyOnServer(NextcloudVersion.nextcloud_25)
 
         // create folder to have some content
-        assertTrue(CreateFolderRemoteOperation("/testFolder", false).execute(nextcloudClient2).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/testFolder", false).execute(client2).isSuccess)
         assertTrue(
             CreateShareRemoteOperation(
                 "/testFolder",
@@ -32,7 +32,7 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
                 false,
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER
-            ).execute(nextcloudClient2)
+            ).execute(client2)
                 .isSuccess
         )
 

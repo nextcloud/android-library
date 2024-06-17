@@ -35,7 +35,7 @@ public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 
     @Override
     public String toOkHttpCredentials() {
-        return OkHttpCredentialsUtil.basic("", "");
+        return OkHttpCredentialsUtil.basic(getUsername(), getAuthToken());
     }
 
     @Override
