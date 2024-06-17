@@ -199,9 +199,9 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
                 put = new PutMethod(uriString);
                 put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
                 put.setRequestEntity(new StringRequestEntity(
-                        parameter.first + "=" + parameter.second,
-                        ENTITY_CONTENT_TYPE,
-                        ENTITY_CHARSET
+                    parameter.first + "=" + parameter.second,
+                    ENTITY_CONTENT_TYPE,
+                    ENTITY_CHARSET
                 ));
 
                 status = client.executeMethod(put);

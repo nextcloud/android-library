@@ -32,8 +32,8 @@ class RenameFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        assertFalse(ExistenceCheckRemoteOperation(oldRemotePath, false).execute(client).isSuccess)
-        assertTrue(ExistenceCheckRemoteOperation(newRemotePath, false).execute(client).isSuccess)
+        assertFalse(ExistenceCheckRemoteOperation(oldRemotePath, false).execute(nextcloudClient).isSuccess)
+        assertTrue(ExistenceCheckRemoteOperation(newRemotePath, false).execute(nextcloudClient).isSuccess)
     }
 
     @Test
