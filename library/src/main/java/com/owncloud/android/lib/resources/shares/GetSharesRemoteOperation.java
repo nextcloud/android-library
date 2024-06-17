@@ -10,8 +10,12 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
+import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
+import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS_OC;
+
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.GetMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -20,8 +24,6 @@ import org.apache.commons.httpclient.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
-
-import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 
 /**
  * Get the data from the server about ALL the known shares owned by the requester.
@@ -37,6 +39,51 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     public GetSharesRemoteOperation(boolean sharedWithMe) {
         this.sharedWithMe = sharedWithMe;
+    }
+
+    @Override
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
+        int status;
+
+        // Get Method
+        org.apache.commons.httpclient.methods.GetMethod get = null;
+
+        // Get the response
+        try {
+            get = new org.apache.commons.httpclient.methods.GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+            get.setQueryString(INCLUDE_TAGS_OC);
+            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            if (sharedWithMe) {
+                get.setQueryString("shared_with_me=true");
+            }
+
+            status = client.executeMethod(get);
+
+            if (isSuccess(status)) {
+                String response = get.getResponseBodyAsString();
+
+                // Parse xml response and obtain the list of shares
+                ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                    new ShareXMLParser()
+                );
+                parser.setServerBaseUri(client.getBaseUri());
+                result = parser.parse(response);
+            } else {
+                result = new RemoteOperationResult<>(false, get);
+            }
+
+        } catch (Exception e) {
+            result = new RemoteOperationResult<>(e);
+            Log_OC.e(TAG, "Exception while getting remote shares ", e);
+
+        } finally {
+            if (get != null) {
+                get.releaseConnection();
+            }
+        }
+        return result;
     }
 
     @Override

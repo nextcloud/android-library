@@ -16,11 +16,13 @@ import android.util.Pair;
 import com.nextcloud.common.JSONRequestBody;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PutMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -47,6 +49,8 @@ public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
     private static final String PARAM_LABEL = "label";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
+    private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private static final String ENTITY_CHARSET = "UTF-8";
 
 
     /**
@@ -137,6 +141,104 @@ public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Override
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result = null;
+        int status;
+
+        /// prepare array of parameters to update
+        List<Pair<String, String>> parametersToUpdate = new ArrayList<>();
+        if (password != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_PASSWORD, password));
+        }
+
+        if (expirationDateInMillis < 0) {
+            // clear expiration date
+            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
+        } else if (expirationDateInMillis > 0) {
+            // set expiration date
+            DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE, Locale.US);
+            Calendar expirationDate = Calendar.getInstance();
+            expirationDate.setTimeInMillis(expirationDateInMillis);
+            String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
+            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
+        }
+
+        if (permissions > 0) {
+            // set permissions
+            parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
+        }
+
+        if (hideFileDownload != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
+        }
+
+        if (note != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_NOTE, URLEncoder.encode(note)));
+        }
+
+        if (label != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label)));
+        }
+
+        /// perform required PUT requests
+        org.apache.commons.httpclient.methods.PutMethod put = null;
+        String uriString;
+
+        try {
+            Uri requestUri = client.getBaseUri();
+            Uri.Builder uriBuilder = requestUri.buildUpon();
+            uriBuilder.appendEncodedPath(ShareUtils.SHARING_API_PATH.substring(1));
+            uriBuilder.appendEncodedPath(Long.toString(remoteId));
+            uriString = uriBuilder.build().toString();
+
+            for (Pair<String, String> parameter : parametersToUpdate) {
+                if (put != null) {
+                    put.releaseConnection();
+                }
+                put = new org.apache.commons.httpclient.methods.PutMethod(uriString);
+                put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+                put.setRequestEntity(new StringRequestEntity(
+                    parameter.first + "=" + parameter.second,
+                    ENTITY_CONTENT_TYPE,
+                    ENTITY_CHARSET
+                ));
+
+                status = client.executeMethod(put);
+
+                if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
+                    String response = put.getResponseBodyAsString();
+
+                    // Parse xml response
+                    ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                        new ShareXMLParser()
+                    );
+                    parser.setServerBaseUri(client.getBaseUri());
+                    result = parser.parse(response);
+
+                } else {
+                    result = new RemoteOperationResult<>(false, put);
+                }
+                if (!result.isSuccess()) {
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            result = new RemoteOperationResult<>(e);
+            Log_OC.e(TAG, "Exception while updating remote share ", e);
+            if (put != null) {
+                put.releaseConnection();
+            }
+
+        } finally {
+            if (put != null) {
+                put.releaseConnection();
+            }
+        }
+        return result;
     }
 
     @Override

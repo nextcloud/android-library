@@ -15,11 +15,13 @@ import android.text.TextUtils;
 import com.nextcloud.common.JSONRequestBody;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PostMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 import java.io.IOException;
 import java.util.List;
@@ -129,6 +131,73 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
         getShareDetails = set;
     }
 
+    @Override
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
+        int status;
+
+        Utf8PostMethod post = null;
+
+        try {
+            // Post Method
+            post = new Utf8PostMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+
+            post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+
+            post.addParameter(PARAM_PATH, remoteFilePath);
+            post.addParameter(PARAM_SHARE_TYPE, Integer.toString(shareType.getValue()));
+            post.addParameter(PARAM_SHARE_WITH, shareWith);
+            if (publicUpload) {
+                post.addParameter(PARAM_PUBLIC_UPLOAD, Boolean.toString(true));
+            }
+            if (password != null && password.length() > 0) {
+                post.addParameter(PARAM_PASSWORD, password);
+            }
+            if (OCShare.NO_PERMISSION != permissions) {
+                post.addParameter(PARAM_PERMISSIONS, Integer.toString(permissions));
+            }
+
+            if (!TextUtils.isEmpty(note)) {
+                post.addParameter(PARAM_NOTE, note);
+            }
+
+            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            status = client.executeMethod(post);
+
+            if (isSuccess(status)) {
+                String response = post.getResponseBodyAsString();
+
+                ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                    new ShareXMLParser()
+                );
+                parser.setOneOrMoreSharesRequired(true);
+                parser.setServerBaseUri(client.getBaseUri());
+                result = parser.parse(response);
+
+                if (result.isSuccess() && getShareDetails) {
+                    // retrieve more info - POST only returns the index of the new share
+                    OCShare emptyShare = result.getResultData().get(0);
+                    GetShareRemoteOperation getInfo = new GetShareRemoteOperation(emptyShare.getRemoteId());
+                    result = getInfo.execute(client);
+                }
+
+            } else {
+                result = new RemoteOperationResult<>(false, post);
+            }
+
+        } catch (IOException e) {
+            result = new RemoteOperationResult<>(e);
+            Log_OC.e(TAG, "Exception while Creating New Share", e);
+
+        } finally {
+            if (post != null) {
+                post.releaseConnection();
+            }
+        }
+        return result;
+    }
+    
     @Override
     public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
         RemoteOperationResult<List<OCShare>> result;

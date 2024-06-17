@@ -12,6 +12,7 @@ package com.owncloud.android.lib.resources.shares;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.DeleteMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -39,6 +40,43 @@ public class RemoveShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     public RemoveShareRemoteOperation(long remoteShareId) {
         this.remoteShareId = remoteShareId;
 
+    }
+
+    @Override
+    protected RemoteOperationResult run(OwnCloudClient client) {
+        RemoteOperationResult result;
+        org.apache.jackrabbit.webdav.client.methods.DeleteMethod delete = null;
+
+        try {
+            delete = new org.apache.jackrabbit.webdav.client.methods.DeleteMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH + "/" + remoteShareId);
+
+            delete.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            int status = client.executeMethod(delete);
+
+            if (isSuccess(status)) {
+                String response = delete.getResponseBodyAsString();
+
+                // Parse xml response and obtain the list of shares
+                ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                    new ShareXMLParser()
+                );
+                result = parser.parse(response);
+
+                Log_OC.d(TAG, "Unshare " + remoteShareId + ": " + result.getLogMessage());
+
+            } else {
+                result = new RemoteOperationResult(false, delete);
+            }
+        } catch (Exception e) {
+            result = new RemoteOperationResult(e);
+            Log_OC.e(TAG, "Unshare Link Exception " + result.getLogMessage(), e);
+
+        } finally {
+            if (delete != null)
+                delete.releaseConnection();
+        }
+        return result;
     }
 
     @Override

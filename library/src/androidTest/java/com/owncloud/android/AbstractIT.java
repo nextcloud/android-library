@@ -149,7 +149,7 @@ public abstract class AbstractIT {
         InterruptedException {
         GetStatusRemoteOperation getStatus = new GetStatusRemoteOperation(context);
 
-        RemoteOperationResult result = getStatus.execute(nextcloudClient);
+        RemoteOperationResult result = getStatus.execute(client);
 
         if (result.isSuccess()) {
             Log_OC.d("AbstractIT", "Connection to server successful");

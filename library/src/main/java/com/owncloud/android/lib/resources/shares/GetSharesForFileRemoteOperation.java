@@ -12,11 +12,13 @@ package com.owncloud.android.lib.resources.shares;
 
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.GetMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,59 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation<List<OCShar
         mRemoteFilePath = remoteFilePath;
         mReshares = reshares;
         mSubfiles = subfiles;
+    }
+
+    @Override
+    protected RemoteOperationResult run(OwnCloudClient client) {
+        RemoteOperationResult result = null;
+        int status = -1;
+
+        org.apache.commons.httpclient.methods.GetMethod get = null;
+
+        try {
+            // Get Method
+            get = new org.apache.commons.httpclient.methods.GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
+
+            // Add Parameters to Get Method
+            get.setQueryString(new NameValuePair[]{
+                new NameValuePair(PARAM_PATH, mRemoteFilePath),
+                new NameValuePair(PARAM_RESHARES, String.valueOf(mReshares)),
+                new NameValuePair(PARAM_SUBFILES, String.valueOf(mSubfiles)) //,
+                //new NameValuePair("shared_with_me", "true")
+            });
+
+            get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            status = client.executeMethod(get);
+
+            if (isSuccess(status)) {
+                String response = get.getResponseBodyAsString();
+
+                // Parse xml response and obtain the list of shares
+                ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                    new ShareXMLParser()
+                );
+                parser.setServerBaseUri(client.getBaseUri());
+                result = parser.parse(response);
+
+                if (result.isSuccess()) {
+                    Log_OC.d(TAG, "Got " + result.getData().size() + " shares");
+                }
+
+            } else {
+                result = new RemoteOperationResult(false, get);
+            }
+
+        } catch (Exception e) {
+            result = new RemoteOperationResult(e);
+            Log_OC.e(TAG, "Exception while getting shares", e);
+
+        } finally {
+            if (get != null) {
+                get.releaseConnection();
+            }
+        }
+        return result;
     }
 
     @Override
