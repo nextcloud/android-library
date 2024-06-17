@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.common.operations;
 
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation;
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
@@ -19,8 +21,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 public class RemoveShareIT extends AbstractIT {
     private static final String FILE_TO_UNSHARE = "/fileToUnshare.txt";
@@ -42,7 +42,7 @@ public class RemoveShareIT extends AbstractIT {
                 ShareType.PUBLIC_LINK,
                 "",
                 false,
-                "", 1).execute(nextcloudClient);
+            "", 1).execute(client);
 
         assertTrue(result.isSuccess());
 

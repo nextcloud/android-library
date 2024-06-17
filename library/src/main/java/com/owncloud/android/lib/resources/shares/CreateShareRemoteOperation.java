@@ -12,14 +12,13 @@ package com.owncloud.android.lib.resources.shares;
 
 import android.text.TextUtils;
 
-import com.nextcloud.common.JSONRequestBody;
-import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.operations.PostMethod;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.Utf8PostMethod;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,7 +45,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private final String password;
     private final int permissions;
     private boolean getShareDetails;
-    private final String note;
+    private String note;
 
     /**
      * Constructor
@@ -130,44 +129,45 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     }
 
     @Override
-    public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
         RemoteOperationResult<List<OCShare>> result;
         int status;
 
-        PostMethod post = null;
+        Utf8PostMethod post = null;
 
         try {
-            // request body
-            JSONRequestBody jsonRequestBody = new JSONRequestBody();
+            // Post Method
+            post = new Utf8PostMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
 
-            jsonRequestBody.put(PARAM_PATH, remoteFilePath);
-            jsonRequestBody.put(PARAM_SHARE_TYPE, Integer.toString(shareType.getValue()));
-            jsonRequestBody.put(PARAM_SHARE_WITH, shareWith);
+            post.setRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+
+            post.addParameter(PARAM_PATH, remoteFilePath);
+            post.addParameter(PARAM_SHARE_TYPE, Integer.toString(shareType.getValue()));
+            post.addParameter(PARAM_SHARE_WITH, shareWith);
             if (publicUpload) {
-                jsonRequestBody.put(PARAM_PUBLIC_UPLOAD, Boolean.toString(true));
+                post.addParameter(PARAM_PUBLIC_UPLOAD, Boolean.toString(true));
             }
             if (password != null && password.length() > 0) {
-                jsonRequestBody.put(PARAM_PASSWORD, password);
+                post.addParameter(PARAM_PASSWORD, password);
             }
             if (OCShare.NO_PERMISSION != permissions) {
-                jsonRequestBody.put(PARAM_PERMISSIONS, Integer.toString(permissions));
+                post.addParameter(PARAM_PERMISSIONS, Integer.toString(permissions));
             }
 
             if (!TextUtils.isEmpty(note)) {
-                jsonRequestBody.put(PARAM_NOTE, note);
+                post.addParameter(PARAM_NOTE, note);
             }
 
-            // post method
-            post = new PostMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH, true, jsonRequestBody.get());
-            post.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+            post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            status = client.execute(post);
+            status = client.executeMethod(post);
 
             if (isSuccess(status)) {
                 String response = post.getResponseBodyAsString();
 
-                ShareToRemoteOperationResultParser parser =
-                        new ShareToRemoteOperationResultParser(new ShareXMLParser());
+                ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                    new ShareXMLParser()
+                );
                 parser.setOneOrMoreSharesRequired(true);
                 parser.setServerBaseUri(client.getBaseUri());
                 result = parser.parse(response);
