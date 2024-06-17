@@ -31,7 +31,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
     public static final int TIMEOUT = 50000;
     
     private static final String TAG = ExistenceCheckRemoteOperation.class.getSimpleName();
-
+    
     private String mPath;
     private boolean mSuccessIfAbsent;
 
