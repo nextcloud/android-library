@@ -177,7 +177,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 client.getUserId(),
                 false,
                 "",
-                31).execute(client2)
+            31).execute(client2)
                 .isSuccess()
         );
 
