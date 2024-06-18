@@ -47,6 +47,7 @@ import com.owncloud.android.lib.resources.files.webdav.NCTrashbinFilename
 import com.owncloud.android.lib.resources.files.webdav.NCTrashbinLocation
 import com.owncloud.android.lib.resources.files.webdav.NCUploadTime
 import com.owncloud.android.lib.resources.files.webdav.OCCommentsUnread
+import com.owncloud.android.lib.resources.files.webdav.OCDisplayName
 import com.owncloud.android.lib.resources.files.webdav.OCId
 import com.owncloud.android.lib.resources.files.webdav.OCLocalId
 import com.owncloud.android.lib.resources.files.webdav.OCOwnerDisplayName
@@ -273,6 +274,7 @@ object WebdavUtils {
                 NCTrashbinLocation.Factory(),
                 NCUploadTime.Factory(),
                 OCCommentsUnread.Factory(),
+                OCDisplayName.Factory(),
                 OCId.Factory(),
                 OCLocalId.Factory(),
                 OCOwnerDisplayName.Factory(),

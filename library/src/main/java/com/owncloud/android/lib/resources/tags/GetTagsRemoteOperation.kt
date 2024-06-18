@@ -22,7 +22,7 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
         val propertySet =
             arrayOf(
                 ExtendedProperties.NAME_REMOTE_ID.toPropertyName(),
-                ExtendedProperties.SHAREES_DISPLAY_NAME.toPropertyName()
+                ExtendedProperties.DISPLAY_NAME.toPropertyName()
             )
 
         val propFindMethod = com.nextcloud.operations.PropFindMethod(url, propertySet, 1)
@@ -30,11 +30,11 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
         val result = RemoteOperationResult<List<Tag>>(propFindResult.davResponse)
 
         val tags =
-            propFindResult.root.remoteId?.let { id ->
-                propFindResult.root.tags?.map {
-                    Tag(id, it)
+            propFindResult.children.mapNotNull { remoteFile ->
+                remoteFile.remoteId?.let { remoteId ->
+                    Tag(remoteId, remoteFile.name)
                 }
-            } ?: emptyList()
+            }
 
         result.resultData = tags
 

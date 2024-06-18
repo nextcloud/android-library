@@ -46,6 +46,7 @@ import com.owncloud.android.lib.resources.files.webdav.NCTrashbinFilename
 import com.owncloud.android.lib.resources.files.webdav.NCTrashbinLocation
 import com.owncloud.android.lib.resources.files.webdav.NCUploadTime
 import com.owncloud.android.lib.resources.files.webdav.OCCommentsUnread
+import com.owncloud.android.lib.resources.files.webdav.OCDisplayName
 import com.owncloud.android.lib.resources.files.webdav.OCId
 import com.owncloud.android.lib.resources.files.webdav.OCLocalId
 import com.owncloud.android.lib.resources.files.webdav.OCOwnerDisplayName
@@ -157,6 +158,7 @@ object WebDavFileUtils {
                 is NCTrashbinLocation -> { /* TODO */ }
                 is NCUploadTime -> remoteFile.uploadTimestamp = property.uploadTime
                 is OCCommentsUnread -> remoteFile.unreadCommentsCount = property.commentsCount
+                is OCDisplayName -> remoteFile.name = property.displayName
                 is OCId -> remoteFile.remoteId = property.id
                 is OCLocalId -> remoteFile.localId = property.localId
                 is OCOwnerDisplayName -> remoteFile.ownerDisplayName = property.ownerDisplayName ?: ""
