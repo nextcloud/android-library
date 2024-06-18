@@ -41,7 +41,7 @@ class ReadTrashbinFolderRemoteOperationIT : AbstractIT() {
         // delete file
         assertTrue(
             RemoveFileRemoteOperation(remotePath)
-                .execute(client)
+                .execute(nextcloudClient)
                 .isSuccess
         )
 
