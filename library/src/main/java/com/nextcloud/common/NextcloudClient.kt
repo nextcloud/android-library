@@ -60,7 +60,7 @@ class NextcloudClient private constructor(
 
     companion object {
         @JvmStatic
-        val TAG = NextcloudClient::class.java.simpleName
+        val TAG: String = NextcloudClient::class.java.simpleName
 
         private fun createDefaultClient(context: Context): OkHttpClient {
             val trustManager = AdvancedX509TrustManager(NetworkUtils.getKnownServersStore(context))
@@ -81,6 +81,8 @@ class NextcloudClient private constructor(
                 Log_OC.d(this, "Proxy settings: $proxyHost:$proxyPort")
             }
 
+            val userAgentInterceptor = UserAgentInterceptor()
+
             return OkHttpClient.Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
                 .connectTimeout(DEFAULT_CONNECTION_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
@@ -93,6 +95,7 @@ class NextcloudClient private constructor(
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .fastFallback(true)
                 .proxy(proxy)
+                .addInterceptor(userAgentInterceptor)
                 .build()
         }
     }
