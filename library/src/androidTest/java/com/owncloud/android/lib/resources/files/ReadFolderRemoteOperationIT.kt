@@ -56,25 +56,37 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertEquals(0, remoteFile?.tags?.size)
 
         // create tag
-        val tag1 = "a" + RandomStringGenerator.make(TAG_LENGTH)
-        val tag2 = "b" + RandomStringGenerator.make(TAG_LENGTH)
-        assertTrue(CreateTagRemoteOperation(tag1).execute(nextcloudClient).isSuccess)
-        assertTrue(CreateTagRemoteOperation(tag2).execute(nextcloudClient).isSuccess)
+        val tag1name = RandomStringGenerator.make(TAG_LENGTH)
+        val tag2name = RandomStringGenerator.make(TAG_LENGTH)
+        assertTrue(CreateTagRemoteOperation(tag1name).execute(nextcloudClient).isSuccess)
+        assertTrue(CreateTagRemoteOperation(tag2name).execute(nextcloudClient).isSuccess)
 
         // list tags
         val tags = GetTagsRemoteOperation().execute(nextcloudClient).resultData
         assertNotNull(tags)
 
+        // extract and check tags
+        val tag1 = tags?.firstOrNull { tag ->
+            tag.name == tag1name
+        }
+        assertNotNull(tag1)
+
+        val tag2 = tags?.firstOrNull { tag ->
+            tag.name == tag2name
+        }
+        assertNotNull(tag2)
+
         // add tag
         assertTrue(
             PutTagRemoteOperation(
-                tags!![0].id,
+                tag1!!.id,
                 remoteFile!!.localId
             ).execute(nextcloudClient).isSuccess
         )
+
         assertTrue(
             PutTagRemoteOperation(
-                tags[1].id,
+                tag2!!.id,
                 remoteFile.localId
             ).execute(nextcloudClient).isSuccess
         )
@@ -95,8 +107,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertEquals(remotePath + "1.txt", remoteFile?.remotePath)
         assertEquals(2, remoteFile?.tags?.size)
 
-        remoteFile?.tags?.sort()
-        assertEquals(tag1, remoteFile?.tags?.get(0))
-        assertEquals(tag2, remoteFile?.tags?.get(1))
+        // check that tags are set correctly
+        assertTrue(remoteFile?.tags?.contentEquals(arrayOf(tag1name, tag2name)) == true)
     }
 }
