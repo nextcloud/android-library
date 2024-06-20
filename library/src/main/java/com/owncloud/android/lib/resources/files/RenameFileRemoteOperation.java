@@ -76,7 +76,7 @@ public class RenameFileRemoteOperation extends RemoteOperation {
 
             // check if a file with the new name already exists
             RemoteOperationResult existenceResult = new ExistenceCheckRemoteOperation(mNewRemotePath, false)
-                .execute(client);
+                    .execute(client);
             if (existenceResult.isSuccess()) {
                 return new RemoteOperationResult(ResultCode.INVALID_OVERWRITE);
             }

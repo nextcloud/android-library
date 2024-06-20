@@ -55,7 +55,7 @@ public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
             int status = client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
             result = new RemoteOperationResult<>(status == HttpStatus.SC_OK, deleteMethod);
-
+            
             client.exhaustResponse(deleteMethod.getResponseBodyAsStream());
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
