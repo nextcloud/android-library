@@ -6,6 +6,7 @@
 # SPDX-License-Identifier: MIT
 #
 
+wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 apt-get update && apt-get install -y composer
 mkdir /var/www/.nvm /var/www/.npm
 touch /var/www/.bashrc
