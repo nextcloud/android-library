@@ -9,6 +9,9 @@
 
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 source ~/.bashrc; nvm install node
 
 php /var/www/html/occ log:manage --level warning
