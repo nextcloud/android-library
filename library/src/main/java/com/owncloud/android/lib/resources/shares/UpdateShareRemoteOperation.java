@@ -274,11 +274,11 @@ public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
         }
 
         if (note != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_NOTE, URLEncoder.encode(note)));
+            parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
         }
 
         if (label != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label)));
+            parametersToUpdate.add(new Pair<>(PARAM_LABEL, label));
         }
 
         /// perform required PUT requests
