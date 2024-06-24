@@ -36,7 +36,7 @@ class CreateShareRemoteOperationIT : AbstractIT() {
             CreateFolderRemoteOperation(
                 "/share/",
                 true
-            ).execute(client).isSuccess
+            ).execute(nextcloudClient).isSuccess
         )
 
         // share folder to user "admin"

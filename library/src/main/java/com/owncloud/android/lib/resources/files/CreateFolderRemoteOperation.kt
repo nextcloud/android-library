@@ -89,10 +89,10 @@ class CreateFolderRemoteOperation
 
         private fun createParentFolder(
             filePath: String,
-            client: NextcloudClient
+            nextcloudClient: NextcloudClient
         ): RemoteOperationResult<String?> {
             val parentPath = FileUtils.getParentPath(filePath)
-            return CreateFolderRemoteOperation(parentPath, createFullPath).execute(client)
+            return CreateFolderRemoteOperation(parentPath, createFullPath).execute(nextcloudClient)
         }
 
         companion object {
