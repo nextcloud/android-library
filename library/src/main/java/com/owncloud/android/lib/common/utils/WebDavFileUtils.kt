@@ -53,6 +53,7 @@ import com.owncloud.android.lib.resources.files.webdav.OCOwnerDisplayName
 import com.owncloud.android.lib.resources.files.webdav.OCOwnerId
 import com.owncloud.android.lib.resources.files.webdav.OCSize
 import org.apache.jackrabbit.webdav.MultiStatus
+import java.net.URLDecoder
 
 /**
  * WebDav helper.
@@ -115,7 +116,7 @@ object WebDavFileUtils {
     ): RemoteFile {
         val remoteFile = RemoteFile()
 
-        val path = response.href.toString().substringAfter(filesDavUri.toString())
+        val path = URLDecoder.decode(response.href.toString().substringAfter(filesDavUri.toString()), "UTF-8")
 
         for (property in response.properties) {
             when (property) {
