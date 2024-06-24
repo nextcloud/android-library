@@ -25,7 +25,7 @@ class NCHidden private constructor(val hidden: Boolean) : Property {
             try {
                 val text = XmlUtils.readText(parser)
                 if (!text.isNullOrEmpty()) {
-                    return NCHidden("1" == text)
+                    return NCHidden("true" == text)
                 }
             } catch (e: IOException) {
                 Log.e("NCEncrypted", "failed to create property", e)
