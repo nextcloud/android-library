@@ -9,6 +9,7 @@ package com.owncloud.android.lib.resources.files;
 
 import android.net.Uri;
 
+import com.nextcloud.common.DavResponse;
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -28,18 +29,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import at.bitfire.dav4jvm.DavResource;
 import at.bitfire.dav4jvm.Property;
 import okhttp3.HttpUrl;
 
 /**
  * Favorite or unfavorite a file.
  */
-public class ToggleFavoriteRemoteOperation extends RemoteOperation {
-    private boolean makeItFavorited;
-    private String filePath;
+public class ToggleFavoriteRemoteOperation extends RemoteOperation<Boolean> {
+    private final boolean makeItFavorited;
+    private final String filePath;
 
     public ToggleFavoriteRemoteOperation(boolean makeItFavorited, String filePath) {
         this.makeItFavorited = makeItFavorited;
@@ -47,8 +46,8 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<Boolean> run(OwnCloudClient client) {
+        RemoteOperationResult<Boolean> result;
         PropPatchMethod propPatchMethod = null;
 
         DavPropertySet newProps = new DavPropertySet();
@@ -73,13 +72,13 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
             boolean isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK);
 
             if (isSuccess) {
-                result = new RemoteOperationResult(true, status, propPatchMethod.getResponseHeaders());
+                result = new RemoteOperationResult<>(true, status, propPatchMethod.getResponseHeaders());
             } else {
                 client.exhaustResponse(propPatchMethod.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, status, propPatchMethod.getResponseHeaders());
+                result = new RemoteOperationResult<>(false, status, propPatchMethod.getResponseHeaders());
             }
         } catch (IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (propPatchMethod != null) {
                 propPatchMethod.releaseConnection();  // let the connection available for other methods
@@ -90,31 +89,26 @@ public class ToggleFavoriteRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
+    public RemoteOperationResult<Boolean> run(NextcloudClient client) {
         RemoteOperationResult<Boolean> result;
 
+        Map<Property.Name, String> setProperties = new HashMap<>();
         List<Property.Name> removeProperties = new ArrayList<>();
-        Map<Property.Name, String> newProperties = new HashMap<>();
 
         if (makeItFavorited) {
-            newProperties.put(NCFavorite.NAME, "1");
+            setProperties.put(NCFavorite.NAME, "1");
         } else {
             removeProperties.add(NCFavorite.NAME);
         }
 
-        String webDavUrl = client.getDavUri().toString();
-        String encodedPath = (client.getUserId() + Uri.encode(filePath)).replace("%2F", "/");
-        String fullFilePath = webDavUrl + "/files/" + encodedPath;
+        HttpUrl url = HttpUrl.get(client.getFilesDavUri(filePath));
 
-        AtomicBoolean resultCode = new AtomicBoolean(false);
+        com.nextcloud.operations.PropPatchMethod propPatchMethod = new com.nextcloud.operations.PropPatchMethod(url,
+            setProperties, removeProperties);
 
-        new DavResource(client.disabledRedirectClient(),
-                HttpUrl.get(fullFilePath))
-                .proppatch(newProperties, removeProperties, (response, hrefRelation) -> {
-                    resultCode.set(response.isSuccess());
-                });
+        DavResponse response = client.execute(propPatchMethod);
 
-        if (resultCode.get()) {
+        if (response.getSuccess()) {
             result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OK);
         } else {
             result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.WRONG_SERVER_RESPONSE);
