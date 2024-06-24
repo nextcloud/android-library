@@ -66,14 +66,16 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertNotNull(tags)
 
         // extract and check tags
-        val tag1 = tags?.firstOrNull { tag ->
-            tag.name == tag1name
-        }
+        val tag1 =
+            tags?.firstOrNull { tag ->
+                tag.name == tag1name
+            }
         assertNotNull(tag1)
 
-        val tag2 = tags?.firstOrNull { tag ->
-            tag.name == tag2name
-        }
+        val tag2 =
+            tags?.firstOrNull { tag ->
+                tag.name == tag2name
+            }
         assertNotNull(tag2)
 
         // add tag
