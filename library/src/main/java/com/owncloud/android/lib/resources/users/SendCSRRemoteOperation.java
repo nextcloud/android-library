@@ -7,6 +7,7 @@
  */
 package com.owncloud.android.lib.resources.users;
 
+import com.nextcloud.common.JSONRequestBody;
 import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.operations.PostMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -16,9 +17,6 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
-
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 
 
 /**
@@ -55,15 +53,12 @@ public class SendCSRRemoteOperation extends RemoteOperation<String> {
 
         try {
             // remote request
-            RequestBody body = new FormBody
-                    .Builder()
-                    .add(CSR, csr)
-                    .build();
+            JSONRequestBody jsonRequestBody = new JSONRequestBody(CSR, csr);
 
             postMethod = new PostMethod(
                     client.getBaseUri() + PUBLIC_KEY_URL + JSON_FORMAT,
                     true,
-                    body);
+                    jsonRequestBody.get());
 
             int status = client.execute(postMethod);
 
