@@ -42,7 +42,7 @@ public class RemoveShareIT extends AbstractIT {
                 ShareType.PUBLIC_LINK,
                 "",
                 false,
-                "", 1).execute(client);
+            "", 1).execute(client);
 
         assertTrue(result.isSuccess());
 
