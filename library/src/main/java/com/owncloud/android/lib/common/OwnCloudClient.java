@@ -73,6 +73,7 @@ public class OwnCloudClient extends HttpClient {
     /**
      * Constructor
      */
+    @SuppressFBWarnings("EI2")
     public OwnCloudClient(Uri baseUri, HttpConnectionManager connectionMgr, Context context) {
         super(connectionMgr);
 
@@ -454,6 +455,7 @@ public class OwnCloudClient extends HttpClient {
         this.followRedirects = followRedirects;
     }
 
+    @SuppressFBWarnings("EI")
     public Context getContext() {
         return context;
     }

@@ -25,6 +25,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Created by masensio on 08/10/2015.
  *
@@ -104,6 +106,7 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
     }
 
     @Override
+    @SuppressFBWarnings("EXS")
     protected RemoteOperationResult<ArrayList<JSONObject>> run(OwnCloudClient client) {
         RemoteOperationResult<ArrayList<JSONObject>> result;
         int status;
@@ -214,6 +217,8 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
                 }
             }
 
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting users/groups", e);
@@ -234,6 +239,10 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
 
         try {
             Uri requestUri = client.getBaseUri();
+            if (requestUri == null) {
+                throw new IllegalArgumentException("requestUri may not be null!");
+            }
+            
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(OCS_ROUTE);
             uriBuilder.appendQueryParameter(PARAM_FORMAT, VALUE_FORMAT);

@@ -287,6 +287,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
         try {
             Uri requestUri = client.getBaseUri();
+            if (requestUri == null) {
+                throw new IllegalArgumentException("requestUri may not be null!");
+            }
+            
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(ShareUtils.SHARING_API_PATH.substring(1));
             uriBuilder.appendEncodedPath(Long.toString(remoteId));
@@ -320,6 +324,8 @@ public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
                 }
             }
 
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while updating remote share ", e);
