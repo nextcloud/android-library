@@ -13,13 +13,15 @@ package com.owncloud.android.lib.resources.shares;
 import android.net.Uri;
 import android.util.Pair;
 
+import com.nextcloud.common.JSONRequestBody;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import java.net.URLEncoder;
@@ -36,7 +38,7 @@ import java.util.Locale;
  * 
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-public class UpdateShareRemoteOperation extends RemoteOperation {
+public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 
@@ -54,7 +56,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     /**
      * Identifier of the share to update
      */
-    private long remoteId;
+    private final long remoteId;
 
     /**
      * Password to set for the public link
@@ -163,7 +165,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
             parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
         }
-        
+
         if (permissions > 0) {
             // set permissions
             parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
@@ -182,7 +184,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         }
 
         /// perform required PUT requests
-        PutMethod put = null;
+        org.apache.commons.httpclient.methods.PutMethod put = null;
         String uriString;
 
         try {
@@ -196,15 +198,113 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
                 if (put != null) {
                     put.releaseConnection();
                 }
-                put = new PutMethod(uriString);
+                put = new org.apache.commons.httpclient.methods.PutMethod(uriString);
                 put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
                 put.setRequestEntity(new StringRequestEntity(
-                        parameter.first + "=" + parameter.second,
-                        ENTITY_CONTENT_TYPE,
-                        ENTITY_CHARSET
+                    parameter.first + "=" + parameter.second,
+                    ENTITY_CONTENT_TYPE,
+                    ENTITY_CHARSET
                 ));
 
                 status = client.executeMethod(put);
+
+                if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
+                    String response = put.getResponseBodyAsString();
+
+                    // Parse xml response
+                    ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
+                        new ShareXMLParser()
+                    );
+                    parser.setServerBaseUri(client.getBaseUri());
+                    result = parser.parse(response);
+
+                } else {
+                    result = new RemoteOperationResult<>(false, put);
+                }
+                if (!result.isSuccess()) {
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+            result = new RemoteOperationResult<>(e);
+            Log_OC.e(TAG, "Exception while updating remote share ", e);
+            if (put != null) {
+                put.releaseConnection();
+            }
+
+        } finally {
+            if (put != null) {
+                put.releaseConnection();
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public RemoteOperationResult<List<OCShare>> run(NextcloudClient client) {
+        RemoteOperationResult<List<OCShare>> result = null;
+        int status;
+
+        /// prepare array of parameters to update
+        List<Pair<String, String>> parametersToUpdate = new ArrayList<>();
+        if (password != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_PASSWORD, password));
+        }
+
+        if (expirationDateInMillis < 0) {
+            // clear expiration date
+            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
+        } else if (expirationDateInMillis > 0) {
+            // set expiration date
+            DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE, Locale.US);
+            Calendar expirationDate = Calendar.getInstance();
+            expirationDate.setTimeInMillis(expirationDateInMillis);
+            String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
+            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
+        }
+        
+        if (permissions > 0) {
+            // set permissions
+            parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
+        }
+
+        if (hideFileDownload != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
+        }
+
+        if (note != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_NOTE, note));
+        }
+
+        if (label != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_LABEL, label));
+        }
+
+        /// perform required PUT requests
+        com.nextcloud.operations.PutMethod put = null;
+        String uriString;
+
+        try {
+            Uri requestUri = client.getBaseUri();
+            if (requestUri == null) {
+                throw new IllegalArgumentException("requestUri may not be null!");
+            }
+            
+            Uri.Builder uriBuilder = requestUri.buildUpon();
+            uriBuilder.appendEncodedPath(ShareUtils.SHARING_API_PATH.substring(1));
+            uriBuilder.appendEncodedPath(Long.toString(remoteId));
+            uriString = uriBuilder.build().toString();
+
+            for (Pair<String, String> parameter : parametersToUpdate) {
+                if (put != null) {
+                    put.releaseConnection();
+                }
+                JSONRequestBody jsonRequestBody = new JSONRequestBody(parameter.first, parameter.second);
+
+                put = new PutMethod(uriString, true, jsonRequestBody.get());
+
+                status = client.execute(put);
 
                 if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
                     String response = put.getResponseBodyAsString();
@@ -224,6 +324,8 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
                 }
             }
 
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while updating remote share ", e);

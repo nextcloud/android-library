@@ -30,6 +30,9 @@ import org.apache.commons.httpclient.Cookie;
 
 import java.io.IOException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("FCCD")
 public class AccountUtils {
 
     private static final String TAG = AccountUtils.class.getSimpleName();

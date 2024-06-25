@@ -126,7 +126,7 @@ public class FileIT extends AbstractIT {
                                                   false,
                                                   "",
                                                   OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                           .execute(nextcloudClient).isSuccess());
 
         // verify
         RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
@@ -167,7 +167,7 @@ public class FileIT extends AbstractIT {
                 false,
                 "",
                 OCShare.NO_PERMISSION)
-                .execute(client).isSuccess());
+                .execute(nextcloudClient).isSuccess());
 
         // verify
         RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
@@ -202,7 +202,7 @@ public class FileIT extends AbstractIT {
                                                   false,
                                                   "",
                                                   OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                           .execute(nextcloudClient).isSuccess());
 
         // verify
         RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
@@ -239,7 +239,7 @@ public class FileIT extends AbstractIT {
                                                   false,
                                                   "",
                                                   OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                           .execute(nextcloudClient).isSuccess());
 
         assertTrue(new CreateShareRemoteOperation(path,
                                                   ShareType.USER,
@@ -247,7 +247,7 @@ public class FileIT extends AbstractIT {
                                                   false,
                                                   "",
                                                   OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                           .execute(nextcloudClient).isSuccess());
 
         // verify
         RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
@@ -287,7 +287,7 @@ public class FileIT extends AbstractIT {
                                                   false,
                                                   "",
                                                   OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                           .execute(nextcloudClient).isSuccess());
 
         assertTrue(new CreateShareRemoteOperation(path,
                                                   ShareType.USER,
@@ -295,7 +295,7 @@ public class FileIT extends AbstractIT {
                                                   false,
                                                   "",
                                                   OCShare.NO_PERMISSION)
-                           .execute(client).isSuccess());
+                           .execute(nextcloudClient).isSuccess());
 
         // verify
         RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(client);

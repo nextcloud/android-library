@@ -9,6 +9,8 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
+import java.util.Map;
+
 /**
  * Contains Constants for Share Operation
  *
@@ -21,7 +23,8 @@ public class ShareUtils {
     // OCS Route
     public static final String SHARING_API_PATH = "/ocs/v2.php/apps/files_sharing/api/v1/shares";
 
-    public static final String INCLUDE_TAGS = "include_tags=true";
+    public static final String INCLUDE_TAGS_OC = "include_tags=true";
+    public static final Map<String, String> INCLUDE_TAGS = Map.of("include_tags", "true");
 
     // String to build the link with the token of a share:
     public static final String SHARING_LINK_PATH_AFTER_VERSION_8 = "/index.php/s/";
