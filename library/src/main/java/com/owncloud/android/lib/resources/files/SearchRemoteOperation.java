@@ -26,7 +26,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -217,7 +216,9 @@ public class SearchRemoteOperation extends RemoteOperation<List<RemoteFile>> {
 
     public String transformDocumentToString(Document document) throws TransformerException {
         TransformerFactory tf = TransformerFactory.newInstance();
-        tf.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+        // java.lang.IllegalArgumentException: Not supported: http://javax.xml.XMLConstants/feature/secure-processing
+        //tf.setAttribute(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
         Transformer trans = tf.newTransformer();
         trans.setOutputProperty(OutputKeys.INDENT, "yes");
