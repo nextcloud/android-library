@@ -5,46 +5,41 @@
  * SPDX-FileCopyrightText: 2022 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
+package com.nextcloud.common
 
-package com.nextcloud.common;
+import okhttp3.Authenticator
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.Route
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class NextcloudAuthenticator(private val credentials: String) : Authenticator {
+    override fun authenticate(
+        route: Route?,
+        response: Response
+    ): Request? {
+        val authenticatorType = "Authorization"
 
-import okhttp3.Authenticator;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
-
-public class NextcloudAuthenticator implements Authenticator {
-    private final String credentials;
-
-    public NextcloudAuthenticator(@NonNull String credentials) {
-        this.credentials = credentials;
-    }
-
-    @Nullable
-    @Override
-    public Request authenticate(@Nullable Route route, @NonNull Response response) {
-        String authenticatorType = "Authorization";
-
-        if (response.request().header(authenticatorType) != null) {
-            return null;
+        if (response.request.header(authenticatorType) != null) {
+            return null
         }
 
-        Response countedResponse = response;
+        var countedResponse: Response? = response
 
-        int attemptsCount = 0;
+        var attemptsCount = 0
 
-        while ((countedResponse = countedResponse.priorResponse()) != null) {
-            attemptsCount++;
+        countedResponse = countedResponse?.priorResponse
+
+        while (countedResponse != null) {
+            attemptsCount++
             if (attemptsCount == 3) {
-                return null;
+                return null
             }
+
+            countedResponse = countedResponse.priorResponse
         }
 
-        return response.request().newBuilder()
-                .header(authenticatorType, credentials)
-                .build();
+        return response.request.newBuilder()
+            .header(authenticatorType, credentials)
+            .build()
     }
 }
