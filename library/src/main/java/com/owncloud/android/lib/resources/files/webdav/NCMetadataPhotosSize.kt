@@ -27,6 +27,7 @@ class NCMetadataPhotosSize private constructor(val imageDimension: ImageDimensio
             return NCMetadataPhotosSize(parseText(parser))
         }
 
+        @Suppress("NestedBlockDepth")
         private fun parseText(parser: XmlPullParser): ImageDimension {
             var width = 0.0f
             var height = 0.0f

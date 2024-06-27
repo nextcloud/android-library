@@ -13,6 +13,7 @@ import okhttp3.Response
 import okhttp3.Route
 
 class NextcloudAuthenticator(private val credentials: String) : Authenticator {
+    @Suppress("ReturnCount")
     override fun authenticate(
         route: Route?,
         response: Response
@@ -31,7 +32,7 @@ class NextcloudAuthenticator(private val credentials: String) : Authenticator {
 
         while (countedResponse != null) {
             attemptsCount++
-            if (attemptsCount == 3) {
+            if (attemptsCount == MAX_ATTEMPTS) {
                 return null
             }
 
@@ -41,5 +42,9 @@ class NextcloudAuthenticator(private val credentials: String) : Authenticator {
         return response.request.newBuilder()
             .header(authenticatorType, credentials)
             .build()
+    }
+
+    companion object {
+        const val MAX_ATTEMPTS = 3
     }
 }

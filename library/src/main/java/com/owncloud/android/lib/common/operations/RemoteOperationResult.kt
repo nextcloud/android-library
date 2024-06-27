@@ -143,6 +143,8 @@ class RemoteOperationResult<T> : Serializable {
         private set
     val authenticateHeaders = ArrayList<String>()
     private var mData: ArrayList<Any>? = null
+
+    @Suppress("TooGenericExceptionThrown")
     var resultData: T? = null
         get() {
             if (isSuccess) {
@@ -210,7 +212,7 @@ class RemoteOperationResult<T> : Serializable {
                     if (xmlParser.isInvalidCharacterException) {
                         this.code = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER
                     }
-                } catch (e: Exception) {
+                } catch (e: IOException) {
                     this.code = ResultCode.UNHANDLED_HTTP_CODE
                     Log_OC.e(TAG, "Exception reading exception from server", e)
                 }
@@ -337,7 +339,7 @@ class RemoteOperationResult<T> : Serializable {
                     }
                     httpPhrase = xmlParser.message
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 Log_OC.w(TAG, "Error reading exception from server: " + e.message)
                 // mCode stays as set in this(success, httpCode, headers)
             }
@@ -494,6 +496,7 @@ class RemoteOperationResult<T> : Serializable {
 
     @get:Deprecated("use getResultData() instead")
     @set:Deprecated("use setResultData() instead")
+    @Suppress("TooGenericExceptionThrown")
     var data: java.util.ArrayList<out Any>?
         get() {
             if (!isSuccess) {
@@ -513,6 +516,7 @@ class RemoteOperationResult<T> : Serializable {
 
     @get:Deprecated("use getResultData() instead")
     @set:Deprecated("use setResultData() instead")
+    @Suppress("TooGenericExceptionThrown")
     var singleData: Any
         get() {
             if (!isSuccess) {

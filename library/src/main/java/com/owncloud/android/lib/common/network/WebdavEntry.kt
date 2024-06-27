@@ -571,7 +571,7 @@ class WebdavEntry(ms: MultiStatusResponse, splitElement: String) {
     /**
      * Return dav property for given extended property via propSet.
      *
-     * TODO: remove - only intended as a transitional aid
+     * remove - only intended as a transitional aid
      */
     private fun getDavProp(
         propSet: DavPropertySet,

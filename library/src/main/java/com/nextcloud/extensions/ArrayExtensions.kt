@@ -15,7 +15,7 @@ import org.apache.jackrabbit.webdav.xml.Namespace
 /**
  * Returns DavPropertyNameSet for given array of Property.Name.
  *
- * TODO: remove - only intended as a transitional aid
+ * remove - only intended as a transitional aid
  */
 fun Array<Property.Name>.toLegacyPropset(): DavPropertyNameSet {
     val propertySet = DavPropertyNameSet()

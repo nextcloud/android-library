@@ -33,6 +33,7 @@ class PropFindMethod
         ): PropFindResult {
             val result = PropFindResult()
 
+            @Suppress("SpreadOperator")
             DavResource(client, httpUrl).propfind(
                 depth,
                 *propertySet

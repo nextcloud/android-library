@@ -26,7 +26,6 @@ class CheckEtagRemoteOperation(private val path: String, private val expectedEta
         val propFindMethod = com.nextcloud.operations.PropFindMethod(url, propertySet, 0)
         val propFindResult = client.execute(propFindMethod)
 
-        // TODO: refactor
         return if (propFindResult.davResponse.success) {
             val etag = propFindResult.root.etag
             if (etag == expectedEtag) {

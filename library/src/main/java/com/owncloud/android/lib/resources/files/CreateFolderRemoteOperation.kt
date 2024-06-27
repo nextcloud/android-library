@@ -45,6 +45,7 @@ class CreateFolderRemoteOperation
             return createFolder(client)
         }
 
+        @Suppress("TooGenericExceptionCaught")
         private fun createFolder(client: NextcloudClient): RemoteOperationResult<String?> {
             var result: RemoteOperationResult<String?>
             try {

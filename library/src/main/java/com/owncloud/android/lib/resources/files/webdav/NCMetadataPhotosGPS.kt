@@ -27,6 +27,7 @@ class NCMetadataPhotosGPS private constructor(val geoLocation: GeoLocation) : Pr
             return NCMetadataPhotosGPS(parseText(parser))
         }
 
+        @Suppress("NestedBlockDepth")
         private fun parseText(parser: XmlPullParser): GeoLocation {
             var latitude = 0.0
             var longitude = 0.0
