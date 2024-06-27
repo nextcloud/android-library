@@ -7,6 +7,9 @@
  */
 package com.nextcloud.android.lib.resources.directediting;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
@@ -18,9 +21,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
     @Test
     public void openFile() throws IOException {
@@ -31,7 +31,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
                 filePath,
                 remotePath,
                 "text/markdown",
-                1464818400
+            1464818400L
         ).execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
@@ -55,7 +55,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
                 filePath,
                 remotePath,
                 "text/markdown",
-                1464818400
+            1464818400L
         ).execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
@@ -79,7 +79,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
                 filePath,
                 remotePath,
                 "text/markdown",
-                1464818400
+            1464818400L
         ).execute(client).isSuccess());
 
         TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());

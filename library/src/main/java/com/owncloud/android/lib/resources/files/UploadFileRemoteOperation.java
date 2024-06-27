@@ -49,7 +49,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     protected String localPath;
     protected String remotePath;
     protected String mimeType;
-    protected long lastModificationTimestamp; // must be in seconds, according to UNIX time
+    protected Long lastModificationTimestamp = null; // must be in seconds, according to UNIX time
     protected Long creationTimestamp = null;
     protected boolean disableRetries = false;
     PutMethod putMethod = null;
@@ -79,7 +79,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     long lastModificationTimestamp,
+                                     Long lastModificationTimestamp,
                                      Long creationTimestamp,
                                      boolean disableRetries) {
         this(localPath,
@@ -95,14 +95,14 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     public UploadFileRemoteOperation(String localPath,
                                      String remotePath,
                                      String mimeType,
-                                     long lastModificationTimestamp) {
+                                     Long lastModificationTimestamp) {
         this(localPath, remotePath, mimeType, lastModificationTimestamp, true);
     }
 
     public UploadFileRemoteOperation(String localPath,
                                      String remotePath,
                                      String mimeType,
-                                     long lastModificationTimestamp,
+                                     Long lastModificationTimestamp,
                                      boolean disableRetries) {
         this.localPath = localPath;
         this.remotePath = remotePath;
@@ -115,7 +115,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     long lastModificationTimestamp,
+                                     Long lastModificationTimestamp,
                                      String token) {
         this(localPath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, null, token, true);
     }
@@ -124,7 +124,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String remotePath,
                                      String mimeType,
                                      String requiredEtag,
-                                     long lastModificationTimestamp,
+                                     Long lastModificationTimestamp,
                                      Long creationTimestamp,
                                      String token,
                                      boolean disableRetries) {
@@ -197,14 +197,13 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                 ((ProgressiveDataTransfer) entity)
                         .addDataTransferProgressListeners(dataTransferListeners);
             }
-            if (requiredEtag != null && requiredEtag.length() > 0) {
+            if (requiredEtag != null && !requiredEtag.isEmpty()) {
                 putMethod.addRequestHeader(IF_MATCH_HEADER, "\"" + requiredEtag + "\"");
             }
             putMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, String.valueOf(f.length()));
-            putMethod.addRequestHeader(
-                    OC_X_OC_MTIME_HEADER,
-                    String.valueOf(lastModificationTimestamp)
-            );
+            if (lastModificationTimestamp != null && lastModificationTimestamp > 0) {
+                putMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
+            }
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));

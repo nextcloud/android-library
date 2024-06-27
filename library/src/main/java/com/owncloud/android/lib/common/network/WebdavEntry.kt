@@ -164,7 +164,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
             prop = propSet[DavPropertyName.GETLASTMODIFIED]
             if (prop != null) {
                 val d = WebdavUtils.parseResponseDate(prop.value as String)
-                modifiedTimestamp = d?.time ?: 0
+                modifiedTimestamp = d?.time?.div(MILLI_TO_SECOND) ?: 0
             }
 
             // {NS:} creation_time
@@ -587,6 +587,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
 
     companion object {
         private val TAG = WebdavEntry::class.java.simpleName
+        const val MILLI_TO_SECOND: Int = 1000
         const val NAMESPACE_OC = "http://owncloud.org/ns"
         const val NAMESPACE_NC = "http://nextcloud.org/ns"
         const val EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions"

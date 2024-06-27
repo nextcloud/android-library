@@ -8,6 +8,8 @@ package com.owncloud.android.lib.resources.files;
 
 import android.text.TextUtils;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
@@ -33,8 +35,6 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.Objects;
-
-import androidx.annotation.VisibleForTesting;
 
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
@@ -214,7 +214,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             String originUri = uploadFolderUri + "/.file";
 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
-            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
+            if (lastModificationTimestamp != null && lastModificationTimestamp > 0) {
+                moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
+            }
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));

@@ -37,13 +37,14 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         val remotePath = "/test.md"
 
         val creationTimestamp = getCreationTimestamp(File(filePath))
+        val modificationTimestamp = getModificationTimestamp(File(filePath))
         val sut =
             UploadFileRemoteOperation(
                 filePath,
                 remotePath,
                 "text/markdown",
                 "",
-                RANDOM_MTIME,
+                modificationTimestamp,
                 creationTimestamp,
                 true
             )
@@ -60,6 +61,7 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
         assertEquals(remotePath, remoteFile.remotePath)
         assertEquals(creationTimestamp, remoteFile.creationTimestamp)
+        assertEquals(modificationTimestamp, remoteFile.modifiedTimestamp)
         assertEquals(uploadResult.resultData, remoteFile.etag)
         assertTrue(
             uploadTimestamp - TIME_OFFSET < remoteFile.uploadTimestamp ||
@@ -92,6 +94,24 @@ class UploadFileRemoteOperationIT : AbstractIT() {
                 Log_OC.e(
                     UploadFileRemoteOperation::class.java.simpleName,
                     "Failed to read creation timestamp for file: " + file.name
+                )
+                null
+            }
+        }
+    }
+
+    private fun getModificationTimestamp(file: File): Long? {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return null
+        } else {
+            try {
+                Files.readAttributes(file.toPath(), BasicFileAttributes::class.java)
+                    .lastModifiedTime()
+                    .to(TimeUnit.SECONDS)
+            } catch (e: IOException) {
+                Log_OC.e(
+                    UploadFileRemoteOperation::class.java.simpleName,
+                    "Failed to read modification timestamp for file: " + file.name
                 )
                 null
             }

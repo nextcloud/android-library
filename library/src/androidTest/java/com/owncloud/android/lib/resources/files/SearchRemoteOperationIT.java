@@ -280,7 +280,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                     filePath,
                     remotePath,
                     "image/jpg",
-                    100000 + i * 10000
+                100000 + i * 10000L
             ).execute(client).isSuccess());
         }
 
@@ -311,7 +311,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                     filePath,
                     remotePath,
                     "image/jpg",
-                    1464818400 + i
+                1464818400L + i
             ).execute(client).isSuccess());
         }
 
@@ -374,7 +374,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                     filePath,
                     remotePath,
                     "image/jpg",
-                    100000 + i * 10000
+                100000L + i * 10000
             ).execute(client).isSuccess());
         }
 
