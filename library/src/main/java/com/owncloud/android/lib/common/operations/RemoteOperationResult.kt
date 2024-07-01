@@ -132,6 +132,7 @@ class RemoteOperationResult<T> : Serializable {
         private set
     var code = ResultCode.UNKNOWN_ERROR
         private set
+    var lastPermanentLocation: String? = null
 
     /**
      * Message that is returned by server, e.g. password policy violation on ocs share api

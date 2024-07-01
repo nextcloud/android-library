@@ -8,8 +8,6 @@ package com.owncloud.android.lib.resources.files;
 
 import android.text.TextUtils;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.nextcloud.extensions.ArrayExtensionsKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
@@ -36,6 +34,8 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.Objects;
+
+import androidx.annotation.VisibleForTesting;
 
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
