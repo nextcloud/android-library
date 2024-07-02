@@ -34,8 +34,8 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
 
         // create folder
         String folder = "/" + RandomStringGenerator.make(20) + "/";
-        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
-        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
+        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
+        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(nextcloudClient).getResultData();
 
         assertNotNull(remoteFolder);
 
@@ -43,7 +43,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
                                                        remoteFolder.getRemotePath(),
                                                        true)
-                           .execute(client)
+                           .execute(nextcloudClient)
                            .isSuccess());
 
         // Lock 
@@ -102,8 +102,8 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
 
         // create folder
         String folder = "/" + RandomStringGenerator.make(20) + "/";
-        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
-        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
+        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
+        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(nextcloudClient).getSingleData();
 
         assertNotNull(remoteFolder);
 
@@ -111,7 +111,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
                                                        remoteFolder.getRemotePath(),
                                                        true)
-                           .execute(client)
+                           .execute(nextcloudClient)
                            .isSuccess());
 
         // Lock 

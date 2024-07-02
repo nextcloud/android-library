@@ -17,6 +17,7 @@ import android.os.Bundle;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -34,15 +35,15 @@ import org.junit.Test;
 
 import java.util.List;
 
+import okhttp3.Credentials;
+
 public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void searchSharedFiles() {
-        assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
-        assertTrue(new CreateFolderRemoteOperation("/shareToGroup/", true).execute(client).isSuccess());
-        assertTrue(new CreateFolderRemoteOperation("/shareViaLink/", true).execute(client).isSuccess());
-//        assertTrue(new CreateFolderRemoteOperation("/shareViaMail/", true).execute(client).isSuccess());
-        assertTrue(new CreateFolderRemoteOperation("/noShare/", true).execute(client).isSuccess());
-        //assertTrue(new CreateFolderRemoteOperation("/shareToCircle/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(nextcloudClient).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToGroup/", true).execute(nextcloudClient).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareViaLink/", true).execute(nextcloudClient).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/noShare/", true).execute(nextcloudClient).isSuccess());
 
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
 
@@ -167,7 +168,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 
 
         // share folder to user "admin"
-        assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdmin/", true).execute(nextcloudClient).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/shareToAdmin/",
                 ShareType.USER,
                 "admin",
@@ -193,8 +194,11 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         clientUser1.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         clientUser1.setUserId(loginName); // for test same as userId
 
+        String credentials = Credentials.basic(loginName, password);
+        NextcloudClient nextcloudClientUser1 = new NextcloudClient(url, loginName, credentials, context);
+
         // share folder to previous user
-        assertTrue(new CreateFolderRemoteOperation("/shareToUser/", true).execute(clientUser1).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToUser/", true).execute(nextcloudClientUser1).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/shareToUser/",
                 ShareType.USER,
                 client.getCredentials().getUsername(),
@@ -217,7 +221,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         testOnlyOnServer(NextcloudVersion.nextcloud_25);
 
         // share folder to user "admin"
-        assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(nextcloudClient).isSuccess());
         RemoteOperationResult<List<OCShare>> createResult = new CreateShareRemoteOperation("/shareToAdminNoFavorite/",
                 ShareType.USER,
                 "admin",
@@ -230,7 +234,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         assertTrue(createResult.isSuccess());
 
         String path = "/shareToAdminFavorite/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         // favorite it
         TestCase.assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(client).isSuccess());
@@ -259,7 +263,7 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
         // only on NC25+
         testOnlyOnServer(NextcloudVersion.nextcloud_25);
 
-        assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/shareToAdminNoFavorite/", true).execute(nextcloudClient).isSuccess());
 
         // share folder to user "admin"
         RemoteOperationResult<List<OCShare>> createResult = new CreateShareRemoteOperation("/shareToAdminNoFavorite/",
@@ -281,12 +285,12 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
     @Test
     public void favorite() {
         // only on NC25+
-        OCCapability ocCapability = (OCCapability) new GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).getSingleData();
+        OCCapability ocCapability = new GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData();
+        assumeTrue(ocCapability != null);
         assumeTrue(ocCapability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_25));
 
         String path = "/shareToAdminFavorite/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         // favorite it
         TestCase.assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(client).isSuccess());

@@ -19,13 +19,13 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 /**
  * Remote operation performing the removal of a file in trashbin.
  */
-public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
+public class RemoveTrashbinFileRemoteOperation extends RemoteOperation<Void> {
     private static final String TAG = RemoveTrashbinFileRemoteOperation.class.getSimpleName();
 
     private static final int REMOVE_READ_TIMEOUT = 30000;
     private static final int REMOVE_CONNECTION_TIMEOUT = 5000;
 
-    private String remotePath;
+    private final String remotePath;
 
     /**
      * Constructor
@@ -42,20 +42,20 @@ public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<Void> run(OwnCloudClient client) {
+        RemoteOperationResult<Void> result;
         DeleteMethod delete = null;
 
         try {
-            delete = new DeleteMethod(client.getDavUri() + WebdavUtils.encodePath(remotePath));
+            delete = new DeleteMethod(client.getDavUri() + WebdavUtils.INSTANCE.encodePath(remotePath));
             int status = client.executeMethod(delete, REMOVE_READ_TIMEOUT, REMOVE_CONNECTION_TIMEOUT);
 
             delete.getResponseBodyAsString();   // exhaust the response, although not interesting
-            result = new RemoteOperationResult((delete.succeeded() || status == HttpStatus.SC_NOT_FOUND), delete);
+            result = new RemoteOperationResult<>((delete.succeeded() || status == HttpStatus.SC_NOT_FOUND), delete);
             Log_OC.i(TAG, "Remove " + remotePath + ": " + result.getLogMessage());
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Remove " + remotePath + ": " + result.getLogMessage(), e);
 
         } finally {

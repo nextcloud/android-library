@@ -19,8 +19,9 @@ class DirectEditingObtainRemoteOperationIT : AbstractIT() {
     fun testGetAll() {
         val result = DirectEditingObtainRemoteOperation().run(nextcloudClient)
         assertTrue(result.isSuccess)
+        assertNotNull(result.resultData)
 
-        val (editors, creators) = result.resultData
+        val (editors, creators) = result.resultData!!
         assertTrue(editors.containsKey("text"))
 
         val textEditor = editors["text"]

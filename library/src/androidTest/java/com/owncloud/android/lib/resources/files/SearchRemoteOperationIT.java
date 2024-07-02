@@ -8,6 +8,7 @@
 package com.owncloud.android.lib.resources.files;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
 import android.net.Uri;
@@ -15,9 +16,9 @@ import android.os.Bundle;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.common.OkHttpCredentialsUtil;
 import com.owncloud.android.AbstractIT;
-import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
-import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
@@ -37,9 +38,9 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
     @BeforeClass
     public static void beforeClass() {
-        capability = (OCCapability) new GetCapabilitiesRemoteOperation(null)
-                .execute(client)
-                .getSingleData();
+        capability = new GetCapabilitiesRemoteOperation(null)
+                .execute(nextcloudClient)
+                .getResultData();
     }
 
     @Test
@@ -49,28 +50,34 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getResultData().size());
     }
 
     @Test
     public void testSearchByFileIdSuccess() {
-        assertTrue(new CreateFolderRemoteOperation("/test/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/test/", true).execute(nextcloudClient).isSuccess());
 
-        RemoteOperationResult readFile = new ReadFileRemoteOperation("/test/").execute(client);
+        RemoteOperationResult<RemoteFile> readFile = new ReadFileRemoteOperation("/test/").execute(nextcloudClient);
         assertTrue(readFile.isSuccess());
 
-        RemoteFile remoteFile = ((RemoteFile) readFile.getSingleData());
+        RemoteFile remoteFile = readFile.getResultData();
+        assertNotNull(remoteFile);
+
         SearchRemoteOperation sut = new SearchRemoteOperation(String.valueOf(remoteFile.getLocalId()),
                 SearchRemoteOperation.SearchType.FILE_ID_SEARCH,
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
-        assertEquals("/test/", result.getResultData().get(0).getRemotePath());
+
+        List<RemoteFile> remoteFileList = result.getResultData();
+        assertNotNull(remoteFileList);
+
+        assertEquals(1, remoteFileList.size());
+        assertEquals("/test/", remoteFileList.get(0).getRemotePath());
     }
 
     @Test
@@ -87,7 +94,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(0, result.getResultData().size());
     }
@@ -106,7 +113,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(11, result.getResultData().size());
     }
@@ -125,7 +132,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertEquals(1, result.getResultData().size());
         RemoteFile remoteFile = result.getResultData().get(0);
         assertEquals("/image5.jpg", remoteFile.getRemotePath());
@@ -137,7 +144,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
                 false,
                 capability);
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertTrue(result.getResultData().isEmpty());
     }
@@ -145,22 +152,43 @@ public class SearchRemoteOperationIT extends AbstractIT {
     @Test
     public void oneFavorite() {
         String path = "/testFolder/";
+        String path2 = "/testFolder2/";
 
         // create folder, make it favorite
-        new CreateFolderRemoteOperation(path, true).execute(client);
-        assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(client).isSuccess());
+        new CreateFolderRemoteOperation(path, true).execute(nextcloudClient);
+        new CreateFolderRemoteOperation(path2, true).execute(nextcloudClient);
+        assertTrue(new ToggleFavoriteRemoteOperation(true, path).execute(nextcloudClient).isSuccess());
+        assertTrue(new ToggleFavoriteRemoteOperation(true, path2).execute(nextcloudClient).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("",
                 SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
                 false,
                 capability);
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
 
         // test
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
+        assertEquals(2, result.getResultData().size());
+
         RemoteFile remoteFile = result.getResultData().get(0);
         assertEquals(path, remoteFile.getRemotePath());
+
+        RemoteFile remoteFile2 = result.getResultData().get(1);
+        assertEquals(path2, remoteFile2.getRemotePath());
+
+        // unfavorite
+        assertTrue(new ToggleFavoriteRemoteOperation(false, path).execute(nextcloudClient).isSuccess());
+        assertTrue(new ToggleFavoriteRemoteOperation(false, path2).execute(nextcloudClient).isSuccess());
+
+        // test
+        sut = new SearchRemoteOperation("",
+                SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
+                false,
+                capability);
+        result = sut.execute(nextcloudClient);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getResultData().size());
     }
 
     @Test
@@ -182,14 +210,14 @@ public class SearchRemoteOperationIT extends AbstractIT {
         );
 
         // test user: favorite it
-        assertTrue(new ToggleFavoriteRemoteOperation(true, sharedRemotePath).execute(client).isSuccess());
+        assertTrue(new ToggleFavoriteRemoteOperation(true, sharedRemotePath).execute(nextcloudClient).isSuccess());
 
         String filePath = createFile("favoriteImage.jpg");
         String remotePath = "/favoriteImage.jpg";
         assertTrue(new UploadFileRemoteOperation(filePath, remotePath, "image/jpg", RANDOM_MTIME)
                 .execute(client).isSuccess());
 
-        assertTrue(new ToggleFavoriteRemoteOperation(true, remotePath).execute(client).isSuccess());
+        assertTrue(new ToggleFavoriteRemoteOperation(true, remotePath).execute(nextcloudClient).isSuccess());
 
         SearchRemoteOperation sut = new SearchRemoteOperation("",
                 SearchRemoteOperation.SearchType.FAVORITE_SEARCH,
@@ -232,7 +260,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(4, result.getResultData().size());
 
@@ -247,7 +275,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertTrue(result.getResultData().isEmpty());
     }
@@ -266,7 +294,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(1, result.getResultData().size());
     }
@@ -290,14 +318,14 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(10, result.getResultData().size());
 
         // limit to 5
         sut.setLimit(5);
 
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(5, result.getResultData().size());
     }
@@ -321,13 +349,13 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 capability);
 
         // get all
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertEquals(10, result.getResultData().size());
 
         // limit to timestamp 5
         sut.setTimestamp(1464818405);
 
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(5, result.getResultData().size());
     }
@@ -353,14 +381,14 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 capability);
 
         // get all
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertEquals(10, result.getResultData().size());
 
         // limit to greater than start / less than end date
         sut.setStartDate(randomUnixTimestamp + 2L);
         sut.setEndDate(randomUnixTimestamp + 6L);
 
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(3, result.getResultData().size());
     }
@@ -384,7 +412,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(10, result.getResultData().size());
 
@@ -392,7 +420,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         sut.setLimit(5);
         sut.setTimestamp(120000);
 
-        result = sut.execute(client);
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(2, result.getResultData().size());
     }
@@ -418,7 +446,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 false,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
         assertEquals(11, result.getResultData().size());
     }
@@ -436,16 +464,22 @@ public class SearchRemoteOperationIT extends AbstractIT {
                 true,
                 capability);
 
-        RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
+        RemoteOperationResult<List<RemoteFile>> result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
 
-        assertTrue(new CreateFolderRemoteOperation("/folder/", false).execute(client).isSuccess());
+        List<RemoteFile> remoteFileList = result.getResultData();
+        assertNotNull(remoteFileList);
+        assertEquals(1, remoteFileList.size());
 
-        result = sut.execute(client);
+        assertTrue(new CreateFolderRemoteOperation("/folder/", false).execute(nextcloudClient).isSuccess());
+
+        result = sut.execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertEquals(2, result.getResultData().size());
-        assertEquals("/folder/", result.getResultData().get(0).getRemotePath());
+
+        remoteFileList = result.getResultData();
+        assertNotNull(remoteFileList);
+        assertEquals(2, remoteFileList.size());
+        assertEquals("/folder/", remoteFileList.get(0).getRemotePath());
     }
 
     @Test
@@ -453,9 +487,12 @@ public class SearchRemoteOperationIT extends AbstractIT {
         Bundle arguments = InstrumentationRegistry.getArguments();
         Uri url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
 
-        OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
-        client.setCredentials(new OwnCloudBasicCredentials("test@test", "test"));
-        client.setUserId("test@test"); // for test same as userId
+        NextcloudClient client = OwnCloudClientFactory.createNextcloudClient(
+            url,
+            "test@test",
+            OkHttpCredentialsUtil.basic("test@test", "test"),
+            context,
+            true);
 
         SearchRemoteOperation sut = new SearchRemoteOperation("",
                 SearchRemoteOperation.SearchType.FILE_SEARCH,

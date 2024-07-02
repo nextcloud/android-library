@@ -8,6 +8,7 @@ package com.owncloud.android.lib.resources.files;
 
 import android.text.TextUtils;
 
+import com.nextcloud.extensions.ArrayExtensionsKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
@@ -128,8 +129,8 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
         DefaultHttpMethodRetryHandler oldRetryHandler = (DefaultHttpMethodRetryHandler) client.getParams()
                 .getParameter(HttpMethodParams.RETRY_HANDLER);
         File file = new File(localPath);
@@ -151,7 +152,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             uploadFolderUri = client.getUploadUri() + "/" + client.getUserId() + "/" + FileUtils.md5Sum(file);
 
-            destinationUri = client.getDavUri() + "/files/" + client.getUserId() + WebdavUtils.encodePath(remotePath);
+            destinationUri = client.getDavUri() + "/files/" + client.getUserId() + WebdavUtils.INSTANCE.encodePath(remotePath);
 
             // create folder
             MkColMethod createFolder = new MkColMethod(uploadFolderUri);
@@ -161,14 +162,16 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             client.executeMethod(createFolder, 30000, 5000);
 
             // list chunks
-            PropFindMethod listChunks = new PropFindMethod(uploadFolderUri,
-                                                           WebdavUtils.getChunksPropSet(),
-                                                           DavConstants.DEPTH_1);
+            PropFindMethod listChunks = new PropFindMethod(
+                uploadFolderUri,
+                ArrayExtensionsKt.toLegacyPropset(WebdavUtils.PROPERTYSETS.INSTANCE.getCHUNK()),
+                DavConstants.DEPTH_1
+            );
 
             client.executeMethod(listChunks);
 
             if (!listChunks.succeeded()) {
-                return new RemoteOperationResult(listChunks.succeeded(), listChunks);
+                return new RemoteOperationResult<>(listChunks.succeeded(), listChunks);
             }
 
             MultiStatus dataInServer = listChunks.getResponseBodyAsMultiStatus();
@@ -198,13 +201,13 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 // determine size of next chunk
                 Chunk chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize);
 
-                RemoteOperationResult chunkResult = uploadChunk(client, chunk);
+                RemoteOperationResult<String> chunkResult = uploadChunk(client, chunk);
                 if (!chunkResult.isSuccess()) {
                     return chunkResult;
                 }
 
                 if (cancellationRequested.get()) {
-                    return new RemoteOperationResult(new OperationCancelledException());
+                    return new RemoteOperationResult<>(new OperationCancelledException());
                 }
 
                 nextByte += chunk.getLength();
@@ -227,22 +230,22 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             final int DO_NOT_CHANGE_DEFAULT = -1;
             int moveResult = client.executeMethod(moveMethod, calculateAssembleTimeout(file), DO_NOT_CHANGE_DEFAULT);
 
-            result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
+            result = new RemoteOperationResult<>(isSuccess(moveResult), moveMethod);
         } catch (Exception e) {
             if (putMethod != null && putMethod.isAborted()) {
                 if (cancellationRequested.get() && cancellationReason != null) {
-                    result = new RemoteOperationResult(cancellationReason);
+                    result = new RemoteOperationResult<>(cancellationReason);
                 } else {
-                    result = new RemoteOperationResult(new OperationCancelledException());
+                    result = new RemoteOperationResult<>(new OperationCancelledException());
                 }
             } else if (moveMethod != null && moveMethod.isAborted()) {
                 if (cancellationRequested.get() && cancellationReason != null) {
-                    result = new RemoteOperationResult(cancellationReason);
+                    result = new RemoteOperationResult<>(cancellationReason);
                 } else {
-                    result = new RemoteOperationResult(new OperationCancelledException());
+                    result = new RemoteOperationResult<>(new OperationCancelledException());
                 }
             } else {
-                result = new RemoteOperationResult(e);
+                result = new RemoteOperationResult<>(e);
             }
         } finally {
             if (disableRetries) {
@@ -253,9 +256,9 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
         return result;
     }
 
-    private RemoteOperationResult uploadChunk(OwnCloudClient client, Chunk chunk) throws IOException {
+    private RemoteOperationResult<String> uploadChunk(OwnCloudClient client, Chunk chunk) throws IOException {
         int status;
-        RemoteOperationResult result;
+        RemoteOperationResult<String> result;
 
         FileChannel channel = null;
         RandomAccessFile raf = null;
@@ -293,7 +296,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             status = client.executeMethod(putMethod);
 
-            result = new RemoteOperationResult(isSuccess(status), putMethod);
+            result = new RemoteOperationResult<>(isSuccess(status), putMethod);
 
             client.exhaustResponse(putMethod.getResponseBodyAsStream());
             Log_OC.d(TAG,

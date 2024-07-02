@@ -9,7 +9,6 @@
  */
 package com.nextcloud.common
 
-import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.Headers
@@ -30,7 +29,6 @@ abstract class OkHttpMethodBase(
 ) {
     companion object {
         const val UNKNOWN_STATUS_CODE: Int = -1
-        const val USER_AGENT = "User-Agent"
         const val AUTHORIZATION = "Authorization"
     }
 
@@ -123,7 +121,6 @@ abstract class OkHttpMethodBase(
         val temp = requestBuilder.url(buildQueryParameter())
 
         requestHeaders[AUTHORIZATION] = nextcloudClient.credentials
-        requestHeaders[USER_AGENT] = OwnCloudClientManagerFactory.getUserAgent()
         requestHeaders.forEach { (name, value) -> temp.header(name, value) }
 
         if (useOcsApiRequestHeader) {
@@ -150,7 +147,6 @@ abstract class OkHttpMethodBase(
     fun execute(client: PlainClient): Int {
         val temp = requestBuilder.url(buildQueryParameter())
 
-        requestHeaders[USER_AGENT] = OwnCloudClientManagerFactory.getUserAgent()
         requestHeaders.forEach { (name, value) -> temp.header(name, value) }
 
         applyType(temp)
