@@ -108,7 +108,6 @@ class OCCapability {
     var forbiddenFilenameCharacters = CapabilityBooleanType.UNKNOWN
     var forbiddenFilenames = CapabilityBooleanType.UNKNOWN
     var forbiddenFilenameExtension = CapabilityBooleanType.UNKNOWN
-    var forbiddenFilenameCharacterList: MutableSet<String> = mutableSetOf()
 
     // Etag for capabilities
     var etag: String? = ""

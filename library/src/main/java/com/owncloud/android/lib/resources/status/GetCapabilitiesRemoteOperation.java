@@ -28,8 +28,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Get the Capabilities from the server
@@ -447,13 +445,6 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
                     // region compatible file names
                     if (respFiles.has(FORBIDDEN_FILENAME_CHARACTERS)) {
-                        JSONArray forbiddenCharactersArray = respFiles.getJSONArray(FORBIDDEN_FILENAME_CHARACTERS);
-                        Set<String> forbiddenCharacterList = new HashSet<>();
-                        for (int i = 0; i < forbiddenCharactersArray.length(); i++) {
-                            String element = forbiddenCharactersArray.getString(i);
-                            forbiddenCharacterList.add(element);
-                        }
-                        capability.setForbiddenFilenameCharacterList(forbiddenCharacterList);
                         capability.setForbiddenFilenameCharacters(CapabilityBooleanType.TRUE);
                     }
 
