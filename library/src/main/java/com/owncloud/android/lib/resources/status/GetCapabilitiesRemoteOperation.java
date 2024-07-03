@@ -160,6 +160,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_SECURITY_GUARD = "security_guard";
     private static final String NODE_DIAGNOSTICS = "diagnostics";
 
+    // needed for checking compatible filenames
+    private static final String FORBIDDEN_FILENAME_CHARACTERS = "forbidden_filename_characters";
+    private static final String FORBIDDEN_FILENAMES = "forbidden_filenames";
+    private static final String FORBIDDEN_FILENAME_EXTENSIONS = "forbidden_filename_extensions";
+
     private OCCapability currentCapability = null;
 
     public GetCapabilitiesRemoteOperation() {
@@ -437,6 +442,26 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
                         capability.setDirectEditingEtag(respDirectEditing.getString("etag"));
                     }
+
+                    // region compatible file names
+                    if (respCapabilities.has(FORBIDDEN_FILENAME_CHARACTERS)) {
+                        boolean capabilityValue = respFiles.getBoolean(FORBIDDEN_FILENAME_CHARACTERS);
+                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(capabilityValue);
+                        capability.setForbiddenFilenameCharacters(result);
+                    }
+
+                    if (respCapabilities.has(FORBIDDEN_FILENAMES)) {
+                        boolean capabilityValue = respFiles.getBoolean(FORBIDDEN_FILENAMES);
+                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(capabilityValue);
+                        capability.setForbiddenFilenames(result);
+                    }
+
+                    if (respCapabilities.has(FORBIDDEN_FILENAME_EXTENSIONS)) {
+                        boolean capabilityValue = respFiles.getBoolean(FORBIDDEN_FILENAME_EXTENSIONS);
+                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(capabilityValue);
+                        capability.setForbiddenFilenameExtension(result);
+                    }
+                    // endregion
 
                     Log_OC.d(TAG, "*** Added " + NODE_FILES);
                 }
