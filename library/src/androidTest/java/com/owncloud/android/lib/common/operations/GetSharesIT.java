@@ -30,7 +30,7 @@ import java.util.List;
 public class GetSharesIT extends AbstractIT {
     @Test
     public void testGetShares() {
-        assertTrue(new CreateFolderRemoteOperation("/1/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/1/", true).execute(nextcloudClient).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/1/",
                 ShareType.PUBLIC_LINK,
                 "",
@@ -38,7 +38,7 @@ public class GetSharesIT extends AbstractIT {
                 "",
                 1).execute(client).isSuccess());
 
-        assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(nextcloudClient).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/2/",
                 ShareType.PUBLIC_LINK,
                 "",

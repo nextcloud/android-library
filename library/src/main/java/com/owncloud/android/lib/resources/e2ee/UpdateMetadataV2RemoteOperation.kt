@@ -74,7 +74,7 @@ class UpdateMetadataV2RemoteOperation(
                         .getJSONObject(NODE_DATA)
                         .getString(NODE_META_DATA)
                 result = RemoteOperationResult(true, putMethod)
-                result.setResultData(metadata)
+                result.resultData = metadata
             } else {
                 result = RemoteOperationResult(false, putMethod)
                 Log.e(

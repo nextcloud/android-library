@@ -52,7 +52,7 @@ class StoreMetadataV2RemoteOperation(
                         .getJSONObject(NODE_DATA)
                         .getString(NODE_META_DATA)
                 result = RemoteOperationResult(true, postMethod)
-                result.setResultData(metadata)
+                result.resultData = metadata
             } else {
                 result = RemoteOperationResult(false, postMethod)
                 Log.e(

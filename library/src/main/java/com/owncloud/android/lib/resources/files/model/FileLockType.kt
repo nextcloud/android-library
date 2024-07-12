@@ -14,6 +14,6 @@ enum class FileLockType(val value: Int) {
 
     companion object {
         @JvmStatic
-        fun fromValue(v: Int): FileLockType? = values().firstOrNull { it.value == v }
+        fun fromValue(v: Int): FileLockType? = entries.firstOrNull { it.value == v }
     }
 }

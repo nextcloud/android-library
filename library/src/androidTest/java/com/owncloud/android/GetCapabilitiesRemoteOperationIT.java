@@ -9,6 +9,13 @@
  */
 package com.owncloud.android;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.E2EVersion;
@@ -18,13 +25,6 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Class to test GetRemoteCapabilitiesOperation
@@ -36,28 +36,26 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     @Test
     public void testGetRemoteCapabilitiesOperation() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
-
-        OCCapability capability = (OCCapability) result.getData().get(0);
-        checkCapability(capability, client.getUserId());
+        assertNotNull(result.getResultData());
+        checkCapability(result.getResultData(), client.getUserId());
     }
 
     @Test
     public void testGetRemoteCapabilitiesOperationEtag() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
+        OCCapability capability = result.getResultData();
 
-        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(client);
+        RemoteOperationResult<OCCapability> resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
         assertTrue(resultEtag.isSuccess());
-        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
+        assertNotNull(resultEtag.getResultData());
 
-        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+        OCCapability sameCapability = resultEtag.getResultData();
 
         if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
             assertEquals(capability, sameCapability);
@@ -74,28 +72,27 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     @Test
     public void testGetRemoteCapabilitiesOperationWithNextcloudClient() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
-
-        OCCapability capability = (OCCapability) result.getData().get(0);
-        checkCapability(capability, client.getUserId());
+        assertNotNull(result.getResultData());
+        checkCapability(result.getResultData(), client.getUserId());
     }
 
     @Test
     public void testGetRemoteCapabilitiesOperationEtagWithNextcloudClient() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
+        OCCapability capability = result.getResultData();
 
-        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> resultEtag = new GetCapabilitiesRemoteOperation(capability)
+            .execute(nextcloudClient);
         assertTrue(resultEtag.isSuccess());
-        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
 
-        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+        OCCapability sameCapability = resultEtag.getResultData();
+        assertNotNull(sameCapability);
 
         if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
             assertEquals(capability, sameCapability);
@@ -134,6 +131,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         // groupfolder
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_27)) {
+            // groupfolder only set up for user "test"
             if (userId.equals("test")) {
                 assertTrue(capability.getGroupfolders().isTrue());
             } else {
@@ -145,11 +143,8 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         // assistant
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_28)) {
-            if (userId.equals("test")) {
-                assertTrue(capability.getAssistant().isTrue());
-            } else {
-                assertFalse(capability.getAssistant().isFalse());
-            }
+            // Nextcloud assistant needs to be set up for this to work
+            assertTrue(capability.getAssistant().isTrue());
         }
 
         // e2e

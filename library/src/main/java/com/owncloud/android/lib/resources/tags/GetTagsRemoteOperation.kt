@@ -2,67 +2,43 @@
  * Nextcloud Android Library
  *
  * SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2024 ZetaTom <70907959+ZetaTom@users.noreply.github.com>
  * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.resources.tags
 
-import com.owncloud.android.lib.common.OwnCloudClient
-import com.owncloud.android.lib.common.network.WebdavEntry.Companion.EXTENDED_PROPERTY_NAME_REMOTE_ID
-import com.owncloud.android.lib.common.network.WebdavEntry.Companion.NAMESPACE_OC
-import com.owncloud.android.lib.common.network.WebdavEntry.Companion.SHAREES_DISPLAY_NAME
+import com.nextcloud.common.NextcloudClient
+import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
-import org.apache.commons.httpclient.HttpStatus
-import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
-import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
-import org.apache.jackrabbit.webdav.xml.Namespace
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
     @Deprecated("Deprecated in Java")
-    override fun run(client: OwnCloudClient): RemoteOperationResult<List<Tag>> {
-        val ocNamespace = Namespace.getNamespace(NAMESPACE_OC)
+    override fun run(client: NextcloudClient): RemoteOperationResult<List<Tag>> {
+        val url = (client.baseUri.toString() + TAG_URL).toHttpUrl()
 
-        val propSet =
-            DavPropertyNameSet().apply {
-                add(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace)
-                add(SHAREES_DISPLAY_NAME, ocNamespace)
-            }
-
-        val propFindMethod =
-            PropFindMethod(
-                client.baseUri.toString() + TAG_URL,
-                propSet,
-                1
+        val propertySet =
+            arrayOf(
+                ExtendedProperties.NAME_REMOTE_ID.toPropertyName(),
+                ExtendedProperties.DISPLAY_NAME.toPropertyName()
             )
 
-        val status = client.executeMethod(propFindMethod)
+        val propFindMethod = com.nextcloud.operations.PropFindMethod(url, propertySet, 1)
+        val propFindResult = client.execute(propFindMethod)
+        val result = RemoteOperationResult<List<Tag>>(propFindResult.davResponse)
 
-        return if (status == HttpStatus.SC_MULTI_STATUS) {
-            val response = propFindMethod.responseBodyAsMultiStatus.responses
-
-            val result = mutableListOf<Tag>()
-            response.forEach {
-                if (it.getProperties(HttpStatus.SC_OK).contentSize > 0) {
-                    val id =
-                        it.getProperties(HttpStatus.SC_OK)
-                            .get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace).value as String
-                    val name =
-                        it.getProperties(HttpStatus.SC_OK)
-                            .get(SHAREES_DISPLAY_NAME, ocNamespace).value as String
-
-                    result.add(Tag(id, name))
+        val tags =
+            propFindResult.children.mapNotNull { remoteFile ->
+                remoteFile.remoteId?.let { remoteId ->
+                    Tag(remoteId, remoteFile.name)
                 }
             }
 
-            RemoteOperationResult<List<Tag>>(true, propFindMethod).apply {
-                resultData = result
-            }
-        } else {
-            RemoteOperationResult<List<Tag>>(false, propFindMethod).apply {
-                resultData = emptyList()
-            }
-        }
+        result.resultData = tags
+
+        return result
     }
 
     companion object {
