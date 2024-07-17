@@ -449,14 +449,14 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
 
                     if (respFiles.has(FORBIDDEN_FILENAMES)) {
-                        boolean capabilityValue = respFiles.getBoolean(FORBIDDEN_FILENAMES);
-                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(capabilityValue);
+                        JSONArray forbiddenFilenames = respFiles.getJSONArray(FORBIDDEN_FILENAMES);
+                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(forbiddenFilenames.length() > 0);
                         capability.setForbiddenFilenames(result);
                     }
 
                     if (respFiles.has(FORBIDDEN_FILENAME_EXTENSIONS)) {
-                        boolean capabilityValue = respFiles.getBoolean(FORBIDDEN_FILENAME_EXTENSIONS);
-                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(capabilityValue);
+                        JSONArray forbiddenFilenamesExtensions = respFiles.getJSONArray(FORBIDDEN_FILENAME_EXTENSIONS);
+                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(forbiddenFilenamesExtensions.length() > 0);
                         capability.setForbiddenFilenameExtension(result);
                     }
                     // endregion
