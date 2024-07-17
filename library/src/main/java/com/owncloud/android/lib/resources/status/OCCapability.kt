@@ -105,9 +105,9 @@ class OCCapability {
     var securityGuard = CapabilityBooleanType.UNKNOWN
 
     // needed for checking compatible filenames
-    var forbiddenFilenameCharacters = CapabilityBooleanType.UNKNOWN
-    var forbiddenFilenames = CapabilityBooleanType.UNKNOWN
-    var forbiddenFilenameExtension = CapabilityBooleanType.UNKNOWN
+    var forbiddenFilenameCharactersJson: String? = null
+    var forbiddenFilenamesJson: String? = null
+    var forbiddenFilenameExtensionJson: String? = null
 
     // Etag for capabilities
     var etag: String? = ""

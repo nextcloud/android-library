@@ -445,19 +445,18 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
                     // region compatible file names
                     if (respFiles.has(FORBIDDEN_FILENAME_CHARACTERS)) {
-                        capability.setForbiddenFilenameCharacters(CapabilityBooleanType.TRUE);
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_CHARACTERS);
+                        capability.setForbiddenFilenameCharactersJson(result.toString());
                     }
 
                     if (respFiles.has(FORBIDDEN_FILENAMES)) {
-                        JSONArray forbiddenFilenames = respFiles.getJSONArray(FORBIDDEN_FILENAMES);
-                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(forbiddenFilenames.length() > 0);
-                        capability.setForbiddenFilenames(result);
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAMES);
+                        capability.setForbiddenFilenamesJson(result.toString());
                     }
 
                     if (respFiles.has(FORBIDDEN_FILENAME_EXTENSIONS)) {
-                        JSONArray forbiddenFilenamesExtensions = respFiles.getJSONArray(FORBIDDEN_FILENAME_EXTENSIONS);
-                        CapabilityBooleanType result = CapabilityBooleanType.fromBooleanValue(forbiddenFilenamesExtensions.length() > 0);
-                        capability.setForbiddenFilenameExtension(result);
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_EXTENSIONS);
+                        capability.setForbiddenFilenameExtensionJson(result.toString());
                     }
                     // endregion
 
