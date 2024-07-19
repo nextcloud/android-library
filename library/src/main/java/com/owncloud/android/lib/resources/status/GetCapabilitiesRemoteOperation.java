@@ -164,6 +164,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String FORBIDDEN_FILENAME_CHARACTERS = "forbidden_filename_characters";
     private static final String FORBIDDEN_FILENAMES = "forbidden_filenames";
     private static final String FORBIDDEN_FILENAME_EXTENSIONS = "forbidden_filename_extensions";
+    private static final String FORBIDDEN_FILENAME_BASE_NAMES = "forbidden_filename_basenames";
 
     private OCCapability currentCapability = null;
 
@@ -457,6 +458,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     if (respFiles.has(FORBIDDEN_FILENAME_EXTENSIONS)) {
                         JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_EXTENSIONS);
                         capability.setForbiddenFilenameExtensionJson(result.toString());
+                    }
+
+                    if (respFiles.has(FORBIDDEN_FILENAME_BASE_NAMES)) {
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_BASE_NAMES);
+                        capability.setForbiddenFilenameBaseNames(result.toString());
                     }
                     // endregion
 
