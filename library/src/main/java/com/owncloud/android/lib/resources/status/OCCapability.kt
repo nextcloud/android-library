@@ -108,6 +108,7 @@ class OCCapability {
     var forbiddenFilenameCharactersJson: String? = null
     var forbiddenFilenamesJson: String? = null
     var forbiddenFilenameExtensionJson: String? = null
+    var forbiddenFilenameBaseNames: String? = null
 
     // Etag for capabilities
     var etag: String? = ""
