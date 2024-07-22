@@ -462,7 +462,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
                     if (respFiles.has(FORBIDDEN_FILENAME_BASE_NAMES)) {
                         JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_BASE_NAMES);
-                        capability.setForbiddenFilenameBaseNames(result.toString());
+                        capability.setForbiddenFilenameBaseNamesJson(result.toString());
                     }
                     // endregion
 
