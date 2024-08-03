@@ -14,13 +14,13 @@ v2 is using [OkHTTP](https://square.github.io/okhttp) and [DAV4jvm](https://gitl
 Needed changes for projects using this library are:
 - change build.gradle
   - add to android {…}: compileOptions {
-  ```
+  ```kts
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
   ```
     }
   -  add to dependencies {…}:
-  ```
+  ```kts
      implementation "commons-httpclient:commons-httpclient:3.1@jar" // remove after entire switch to lib v2
   ``` 
 
@@ -35,7 +35,7 @@ At the moment we do not have a publishing mechanism to a maven repository so the
 
 
 #### build via Groovy configuration
-```
+```kts
 repositories {
     ...
     maven { url "https://jitpack.io" }
@@ -49,7 +49,7 @@ dependencies {
 ####  build via Kotlin configuration
 
 in settings.gradle.kts
-``` 
+```kts
 dependencyResolutionManagement {
     ...
     repositories {
@@ -60,7 +60,7 @@ dependencyResolutionManagement {
 ```
 
 in build.gradle.kts
-``` 
+```kts
 dependencies {
     ...
     implementation("com.github.nextcloud:android-library:$androidLibraryVersion") {
