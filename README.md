@@ -121,7 +121,7 @@ Nextcloud Android library supports Nextcloud server from version 9+.
 
 When using newer libraries in your application that integrates with the Nextcloud Android library you could hit a conflict issue with the logging libraries used by our (outdated) HTTPClient. In order to mitigate the issues, please add the following in your build.gradle for the time being:
 
-```
+```kts
 configurations.all {
     exclude group: "org.slf4j", module: "slf4j-log4j12"
     exclude group: "log4j", module: "log4j"
