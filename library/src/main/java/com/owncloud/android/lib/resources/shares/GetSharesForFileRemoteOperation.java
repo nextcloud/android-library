@@ -19,12 +19,14 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import java.util.List;
+
 /**
  * Provide a list shares for a specific file.
  * The input is the full path of the desired file.
  * The output is a list of everyone who has the file shared with them.
  */
-public class GetSharesForFileRemoteOperation extends RemoteOperation {
+public class GetSharesForFileRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesForFileRemoteOperation.class.getSimpleName();
 
@@ -54,8 +56,8 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
         int status = -1;
 
         GetMethod get = null;
