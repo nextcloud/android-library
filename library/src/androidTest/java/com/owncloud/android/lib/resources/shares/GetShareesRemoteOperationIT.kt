@@ -14,7 +14,8 @@ import org.junit.Test
 class GetShareesRemoteOperationIT : AbstractIT() {
     companion object {
         const val PER_PAGE = 50
-    }    
+    }
+
     @Test
     fun getSharees() {
         val sut = GetShareesRemoteOperation("admin", 1, PER_PAGE).execute(client)
