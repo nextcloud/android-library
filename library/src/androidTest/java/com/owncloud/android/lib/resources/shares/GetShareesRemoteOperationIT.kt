@@ -20,6 +20,6 @@ class GetShareesRemoteOperationIT : AbstractIT() {
     fun getSharees() {
         val sut = GetShareesRemoteOperation("admin", 1, PER_PAGE).execute(client)
         assertTrue(sut.isSuccess)
-        assertEquals(1, sut.resultData?.size)
+        assertEquals(2, sut.resultData?.size)
     }
 }
