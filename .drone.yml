@@ -217,9 +217,9 @@ services:
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test test"
-      - su www-data -c "git clone --depth 1 https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
-      - su www-data -c "cd /var/www/html/apps/assistant; git checkout tags/v1.0.2; source ~/.bashrc; make"
-      - su www-data -c "php /var/www/html/occ app:enable -f assistant"
+      - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+      - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; make"
+      - su www-data -c "php /var/www/html/occ app:enable assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install"
@@ -235,6 +235,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 2c8cb534b0d423fcc1181a27dcb42c1c19f00ab1881b3bef5eb77602212f4eac
+hmac: 1c9fede0ba62faa206b26173fff20307527eb2bef82583554e952d8740a7acfb
 
 ...
