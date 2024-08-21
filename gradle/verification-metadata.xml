@@ -130,6 +130,7 @@
          </trusted-key>
          <trusted-key id="A5BD02B93E7A40482EB1D66A5F69AD087600B22C" group="org.ow2.asm"/>
          <trusted-key id="A5F483CD733A4EBAEA378B2AE88979FB9B30ACF2">
+            <trusting group="androidx.annotation"/>
             <trusting group="androidx.databinding"/>
             <trusting group="^com[.]android($|([.].*))" regex="true"/>
          </trusted-key>
