@@ -32,7 +32,7 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation<Strin
 
     public RemoteOperationResult<String> run(NextcloudClient client) {
         RemoteOperationResult<String> result;
-        com.nextcloud.operations.GetMethod getMethod = null;
+        GetMethod getMethod = null;
 
         try {
             getMethod = new GetMethod(client.getBaseUri() + DIRECT_ENDPOINT + JSON_FORMAT, true);
