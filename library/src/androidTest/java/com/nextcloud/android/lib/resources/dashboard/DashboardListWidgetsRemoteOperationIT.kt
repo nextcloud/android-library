@@ -22,14 +22,14 @@ class DashboardListWidgetsRemoteOperationIT : AbstractIT() {
         val result = DashboardListWidgetsRemoteOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        assertTrue(result.resultData.isNotEmpty())
+        assertTrue(result.resultData?.isNotEmpty() ?: false)
 
-        assertTrue(result.resultData["recommendations"]?.buttons?.getOrNull(0) == null)
+        assertTrue(result.resultData?.get("recommendations")?.buttons?.getOrNull(0) == null)
 
-        assertEquals(1, result.resultData["activity"]?.buttons?.size)
-        assertTrue(result.resultData["activity"]?.buttons?.getOrNull(0)?.type == DashBoardButtonType.MORE)
-        assertTrue(result.resultData["activity"]?.roundIcons == false)
+        assertEquals(1, result.resultData?.get("activity")?.buttons?.size)
+        assertTrue(result.resultData?.get("activity")?.buttons?.getOrNull(0)?.type == DashBoardButtonType.MORE)
+        assertTrue(result.resultData?.get("activity")?.roundIcons == false)
 
-        assertTrue(result.resultData["user_status"]?.roundIcons == true)
+        assertTrue(result.resultData?.get("user_status")?.roundIcons == true)
     }
 }

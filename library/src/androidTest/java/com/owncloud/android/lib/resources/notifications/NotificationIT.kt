@@ -9,6 +9,7 @@ package com.owncloud.android.lib.resources.notifications
 
 import com.owncloud.android.AbstractIT
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
@@ -18,18 +19,20 @@ class NotificationIT : AbstractIT() {
         // get all
         val all = GetNotificationsRemoteOperation().execute(nextcloudClient)
         assertTrue(all.isSuccess)
+        assertNotNull(all.resultData)
 
-        val count = all.resultData.size
+        val count = all.resultData!!.size
 
         // get one
-        val firstNotification = all.resultData[0]
-        val first = GetNotificationRemoteOperation(firstNotification.notificationId).execute(nextcloudClient)
+        val firstNotification = all.resultData?.get(0)
+        assertNotNull(firstNotification)
+        val first = GetNotificationRemoteOperation(firstNotification!!.notificationId).execute(nextcloudClient)
         assertTrue(first.isSuccess)
-        assertEquals(firstNotification.message, first.resultData.message)
+        assertEquals(firstNotification.message, first.resultData?.message)
 
         // delete one
         assertTrue(
-            DeleteNotificationRemoteOperation(first.resultData.notificationId)
+            DeleteNotificationRemoteOperation(first.resultData!!.notificationId)
                 .execute(nextcloudClient)
                 .isSuccess
         )
@@ -38,7 +41,7 @@ class NotificationIT : AbstractIT() {
         val all2 = GetNotificationsRemoteOperation().execute(nextcloudClient)
         assertTrue(all2.isSuccess)
 
-        assertEquals(count - 1, all2.resultData.size)
+        assertEquals(count - 1, all2.resultData?.size)
 
         // delete all
         assertTrue(DeleteAllNotificationsRemoteOperation().execute(nextcloudClient).isSuccess)
@@ -47,6 +50,6 @@ class NotificationIT : AbstractIT() {
         val all3 = GetNotificationsRemoteOperation().execute(nextcloudClient)
         assertTrue(all3.isSuccess)
 
-        assertEquals(0, all3.resultData.size)
+        assertEquals(0, all3.resultData?.size)
     }
 }

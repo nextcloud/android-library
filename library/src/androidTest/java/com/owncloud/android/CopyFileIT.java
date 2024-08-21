@@ -160,7 +160,7 @@ public class CopyFileIT extends AbstractIT {
 
         RemoteOperationResult result;
         for (String folderPath : FOLDERS_IN_FIXTURE) {
-            result = new CreateFolderRemoteOperation(folderPath, true).execute(client);
+            result = new CreateFolderRemoteOperation(folderPath, true).execute(nextcloudClient);
 
             assertTrue("Error creating folder" + folderPath + ": " + result, result.isSuccess());
         }
@@ -186,7 +186,7 @@ public class CopyFileIT extends AbstractIT {
         String[] folders = new String[]{SRC_BASE_FOLDER, TARGET_BASE_FOLDER};
 
         for (String folder : folders) {
-            RemoteOperationResult result = new RemoveFileRemoteOperation(folder).execute(client);
+            RemoteOperationResult result = new RemoveFileRemoteOperation(folder).execute(nextcloudClient);
 
             assertTrue("Error removing folder " + folder + ": " + result, result.isSuccess());
         }
