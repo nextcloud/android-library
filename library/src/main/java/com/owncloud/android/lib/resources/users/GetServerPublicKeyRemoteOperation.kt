@@ -21,6 +21,7 @@ class GetServerPublicKeyRemoteOperation : RemoteOperation<String>() {
         private const val ENDPOINT = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/server-key"
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<String> {
         var getMethod: GetMethod? = null
         var result: RemoteOperationResult<String>
