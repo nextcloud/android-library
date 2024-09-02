@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
+version = 1
+SPDX-PackageName = "android-library"
+SPDX-PackageSupplier = "Nextcloud Android team <android@nextcloud.com>"
+SPDX-PackageDownloadLocation = "https://github.com/nextcloud/android-library"
+
+[[annotations]]
+path = ["gradle/wrapper/gradle-wrapper.jar", "sample_client/gradle/wrapper/gradle-wrapper.jar"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015-2021 the original authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["gradle/verification-keyring.keys", "gradle/verification-metadata.xml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["renovate.json5", "**/.gitignore", ".library/src/androidTest/assets/**", ".idea/**", "library/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker", "sample_client/src/main/res/mipmap-**/**.png", "scripts/analysis/findbugs-results.txt", "sample_client/src/main/assets/nc_logo.png", "library/src/androidTest/assets/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Nextcloud GmbH and Nextcloud contributors"
+SPDX-License-Identifier = "MIT"
