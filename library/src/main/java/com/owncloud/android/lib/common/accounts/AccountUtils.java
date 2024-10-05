@@ -269,6 +269,7 @@ public class AccountUtils {
          *
          * @deprecated
          */
+        @Deprecated
         public static final String KEY_OC_URL = "oc_url";
         /**
          * Version should be 3 numbers separated by dot so it can be parsed by

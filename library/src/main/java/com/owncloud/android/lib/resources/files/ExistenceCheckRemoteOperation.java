@@ -58,6 +58,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
      *                          NOT exist in the remote server (HTTP 404).
      * @deprecated
      */
+    @Deprecated
     public ExistenceCheckRemoteOperation(String remotePath, Context context, boolean successIfAbsent) {
         this(remotePath, successIfAbsent);
     }
