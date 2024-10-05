@@ -74,7 +74,7 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk18on:1.78.1'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
-    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.6.4'
+    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.6.5'
 
     // dependencies for tests
     testImplementation "junit:junit:$junit_version"
