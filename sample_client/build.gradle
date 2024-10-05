@@ -11,7 +11,7 @@
 
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.1'
+        classpath 'com.android.tools.build:gradle:8.7.0'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.24'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.7"
