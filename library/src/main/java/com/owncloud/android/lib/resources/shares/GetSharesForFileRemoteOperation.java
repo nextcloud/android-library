@@ -93,11 +93,11 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation<List<OCShar
                 }
 
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting shares", e);
 
         } finally {
