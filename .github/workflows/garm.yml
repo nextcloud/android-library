@@ -13,7 +13,7 @@ permissions:
 
 jobs:
     test:
-        runs-on: ubuntu-22.04 # our own GARM does not yet support it
+        runs-on: ubuntu-latest
         services:
             server:
                 image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
@@ -109,7 +109,7 @@ jobs:
                     retention-days: 4
 
     stable16:
-        runs-on: ubuntu-22.04 # our own GARM does not yet support it
+        runs-on: ubuntu-latest
         services:
             server:
                 image: nextcloudci/server:server-13
