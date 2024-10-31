@@ -45,12 +45,6 @@ jobs:
                     docker exec --user www-data server /tmp/configNC_${{ matrix.server }}.sh
                     docker exec server /usr/local/bin/run.sh
 
-            -   name: Enable KVM group perms
-                run: |
-                    echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-                    sudo udevadm control --reload-rules
-                    sudo udevadm trigger --name-match=kvm
-
             -   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
                 with:
                     distribution: "temurin"
@@ -138,12 +132,6 @@ jobs:
                     docker cp .github/workflows/configNC_stable16.sh server:/tmp/
                     docker exec server chmod +x /tmp/configNC_stable16.sh
                     docker exec --user www-data server /tmp/configNC_stable16.sh
-
-            -   name: Enable KVM group perms
-                run: |
-                    echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-                    sudo udevadm control --reload-rules
-                    sudo udevadm trigger --name-match=kvm
 
             -   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
                 with:
