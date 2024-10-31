@@ -13,7 +13,7 @@ permissions:
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-latest-kvm
         services:
             server:
                 image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
@@ -109,7 +109,7 @@ jobs:
                     retention-days: 4
 
     stable16:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-latest-vkm
         services:
             server:
                 image: nextcloudci/server:server-13
