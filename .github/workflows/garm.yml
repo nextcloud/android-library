@@ -26,13 +26,6 @@ jobs:
         steps:
             -   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-            -   name: wait and ping server
-                run: |
-                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
-                        echo "wait…"
-                        sleep 5
-                    done
-
             -   name: configure server
                 run: |
                     ls -ahl /dev/kvm
