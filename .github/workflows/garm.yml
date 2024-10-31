@@ -11,20 +11,18 @@ permissions:
     contents: read
     pull-requests: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
     test:
         runs-on: ubuntu-latest-kvm
-        services:
-            server:
-                image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
-                options: --name server
-                ports:
-                    - 80:80
         strategy:
             fail-fast: false
             matrix:
-                server: [ master, stable29 ]
-                api-level: [ 18, 27 ]
+                server: [ master ]
+                api-level: [ 18 ]
         steps:
             -   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
@@ -37,13 +35,10 @@ jobs:
 
             -   name: configure server
                 run: |
-                    docker cp .github/workflows/configServer.sh server:/tmp/
-                    docker exec server chmod +x /tmp/configServer.sh
-                    docker exec server /tmp/configServer.sh ${{ matrix.server }}
-                    docker cp .github/workflows/configNC_${{ matrix.server }}.sh server:/tmp/
-                    docker exec server chmod +x /tmp/configNC_${{ matrix.server }}.sh
-                    docker exec --user www-data server /tmp/configNC_${{ matrix.server }}.sh
-                    docker exec server /usr/local/bin/run.sh
+                    ls -ahl /dev/kvm
+                    apt update && apt install unzip openjdk-21-jdk-headless cpu-checker qemu-kvm --yes
+                    kvm-ok
+                    chmod 666 /dev/kvm
 
             -   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
                 with:
