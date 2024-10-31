@@ -36,7 +36,7 @@ import java.util.Locale;
  * 
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
-public class UpdateShareRemoteOperation extends RemoteOperation {
+public class UpdateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetShareRemoteOperation.class.getSimpleName();
 

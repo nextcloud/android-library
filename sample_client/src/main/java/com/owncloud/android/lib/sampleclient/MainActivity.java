@@ -39,7 +39,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -198,7 +197,7 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
             Log.e(TAG, result.getLogMessage(), result.getException());
 
         } else if (operation instanceof ReadFolderRemoteOperation) {
-            onSuccessfulRefresh((ReadFolderRemoteOperation) operation, result);
+            onSuccessfulRefresh(result);
 
         } else if (operation instanceof UploadFileRemoteOperation) {
             onSuccessfulUpload((UploadFileRemoteOperation) operation, result);
@@ -214,14 +213,10 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
         }
     }
 
-	private void onSuccessfulRefresh(ReadFolderRemoteOperation operation, RemoteOperationResult result) {
+	private void onSuccessfulRefresh(RemoteOperationResult<List<RemoteFile>> result) {
 		mFilesAdapter.clear();
-		List<RemoteFile> files = new ArrayList<RemoteFile>();
-		for (Object obj : result.getData()) {
-			files.add((RemoteFile) obj);
-		}
-
-		Iterator<RemoteFile> it = files.iterator();
+		
+		Iterator<RemoteFile> it = result.getResultData().iterator();
 		while (it.hasNext()) {
 			mFilesAdapter.add(it.next());
 		}

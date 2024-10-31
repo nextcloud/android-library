@@ -89,7 +89,7 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation<List<OCShar
                 result = parser.parse(response);
 
                 if (result.isSuccess()) {
-                    Log_OC.d(TAG, "Got " + result.getData().size() + " shares");
+                    Log_OC.d(TAG, "Got " + result.getResultData().size() + " shares");
                 }
 
             } else {

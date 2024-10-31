@@ -495,26 +495,6 @@ class RemoteOperationResult<T> : Serializable {
         }
     }
 
-    @get:Deprecated("use getResultData() instead")
-    @set:Deprecated("use setResultData() instead")
-    @Suppress("TooGenericExceptionThrown")
-    var data: java.util.ArrayList<out Any>?
-        get() {
-            if (!isSuccess) {
-                throw RuntimeException("Accessing result data after operation failed!")
-            }
-            return if (mData != null) {
-                mData
-            } else if (resultData is ArrayList<*>) {
-                resultData as ArrayList<*>?
-            } else {
-                null
-            }
-        }
-        set(files) {
-            mData = files as ArrayList<Any>?
-        }
-
     val isCancelled = code == ResultCode.CANCELLED
 
     val isSslRecoverableException = code == ResultCode.SSL_RECOVERABLE_PEER_UNVERIFIED
