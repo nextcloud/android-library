@@ -18,12 +18,12 @@ concurrency:
 jobs:
     test:
         runs-on: ubuntu-latest-kvm
-#        services:
-#            server:
-#                image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
-#                options: --name server
-#                ports:
-#                    - 80:80
+        services:
+            server:
+                image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
+                options: --name server
+                ports:
+                    - 80:80
         strategy:
             fail-fast: false
             matrix:
@@ -32,52 +32,41 @@ jobs:
         steps:
             -   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-#            -   name: wait and ping server
-#                run: |
-#                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
-#                        echo "wait…"
-#                        sleep 5
-#                    done
-#
+            -   name: wait and ping server
+                run: |
+                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
+                        echo "wait…"
+                        sleep 5
+                    done
+
             -   name: configure server
                 run: |
                     sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-kvm --yes
                     sudo chmod 666 /dev/kvm
-                    echo $PATH
-                    echo $ANDROID_HOME
-                    echo $ANDROID_SDK_ROOT
-                    export ANDROID_NDK=/usr/local/lib/android/sdk/ndk/27.2.12479018
-                    export ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/27.2.12479018
-                    export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/27.2.12479018
-                    export ANDROID_HOME=/usr/local/lib/android/sdk
-                    export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-                    export ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.2.12479018
-#                    export PATH="/usr/local/lib/android/sdk/cmdline-tools/latest/bin:$PATH"
-#                    docker cp .github/workflows/configServer.sh server:/tmp/
-#                    docker exec server chmod +x /tmp/configServer.sh
-#                    docker exec server /tmp/configServer.sh ${{ matrix.server }}
-#                    docker cp .github/workflows/configNC_${{ matrix.server }}.sh server:/tmp/
-#                    docker exec server chmod +x /tmp/configNC_${{ matrix.server }}.sh
-#                    docker exec --user www-data server /tmp/configNC_${{ matrix.server }}.sh
-#                    docker exec server /usr/local/bin/run.sh
+                    docker cp .github/workflows/configServer.sh server:/tmp/
+                    docker exec server chmod +x /tmp/configServer.sh
+                    docker exec server /tmp/configServer.sh ${{ matrix.server }}
+                    docker cp .github/workflows/configNC_${{ matrix.server }}.sh server:/tmp/
+                    docker exec server chmod +x /tmp/configNC_${{ matrix.server }}.sh
+                    docker exec --user www-data server /tmp/configNC_${{ matrix.server }}.sh
+                    docker exec server /usr/local/bin/run.sh
 
+            -   name: set up JDK 17
+                uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
+                with:
+                    distribution: "temurin"
+                    java-version: 17
 
-#            -   name: set up JDK 17
-#                uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
-#                with:
-#                    distribution: "temurin"
-#                    java-version: 17
-
-#            -   name: create AVD and generate snapshot for caching
-#                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
-#                with:
-#                    api-level: ${{ matrix.api-level }}
-#                    force-avd-creation: false
-#                    arch: x86
-#                    sdcard-path-or-size: 100M
-#                    target: google_apis
-#                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
-#                    script: echo "Generated AVD snapshot for caching."
+            -   name: create AVD and generate snapshot for caching
+                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
+                with:
+                    api-level: ${{ matrix.api-level }}
+                    force-avd-creation: false
+                    arch: x86
+                    sdcard-path-or-size: 100M
+                    target: google_apis
+                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
+                    script: echo "Generated AVD snapshot for caching."
 
             -   name: Configure gradle daemon
                 run: |
