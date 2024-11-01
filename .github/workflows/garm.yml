@@ -44,6 +44,8 @@ jobs:
                     sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-kvm --yes
                     sudo chmod 666 /dev/kvm
                     echo $PATH
+                    echo $ANDROID_HOME
+                    echo $ANDROID_SDK_ROOT
                     export ANDROID_NDK=/usr/local/lib/android/sdk/ndk/27.2.12479018
                     export ANDROID_NDK_LATEST_HOME=/usr/local/lib/android/sdk/ndk/27.2.12479018
                     export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/27.2.12479018
