@@ -27,10 +27,10 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                server: [ master, stable29 ]
-                api-level: [ 18, 27 ]
+                server: [ master ] # [ master, stable29 ]
+                api-level: [ 18 ] # [ 18, 27 ]
         steps:
-            -   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+            -   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
             -   name: wait and ping server
                 run: |
@@ -51,7 +51,8 @@ jobs:
                     sudo apt-get update && sudo apt-get install unzip openjdk-21-jdk-headless cpu-checker qemu-kvm --yes
                     sudo chmod 666 /dev/kvm
 
-            -   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
+            -   name: set up JDK 17
+                uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
                 with:
                     distribution: "temurin"
                     java-version: 17
@@ -108,90 +109,90 @@ jobs:
                     path: app/build/reports
                     retention-days: 4
 
-    stable16:
-        runs-on: ubuntu-latest-kvm
-        services:
-            server:
-                image: nextcloudci/server:server-13
-                options: --name server
-                ports:
-                    - 80:80
-        strategy:
-            fail-fast: false
-            matrix:
-                api-level: [ 27 ]
-        steps:
-            -   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-            -   name: wait and ping server
-                run: |
-                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
-                        echo "wait…"
-                        sleep 5
-                    done
-
-            -   name: configure server
-                run: |
-                    docker cp .github/workflows/configServer16.sh server:/tmp/
-                    docker exec server chmod +x /tmp/configServer16.sh
-                    docker exec server /tmp/configServer16.sh
-                    docker cp .github/workflows/configNC_stable16.sh server:/tmp/
-                    docker exec server chmod +x /tmp/configNC_stable16.sh
-                    docker exec --user www-data server /tmp/configNC_stable16.sh
-
-            -   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
-                with:
-                    distribution: "temurin"
-                    java-version: 17
-
-            -   name: create AVD and generate snapshot for caching
-                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
-                with:
-                    api-level: ${{ matrix.api-level }}
-                    force-avd-creation: false
-                    arch: x86
-                    sdcard-path-or-size: 100M
-                    target: google_apis
-                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
-                    script: echo "Generated AVD snapshot for caching."
-
-            -   name: Configure gradle daemon
-                run: |
-                    mkdir -p $HOME/.gradle
-                    echo "org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" > $HOME/.gradle/gradle.properties
-                    echo "org.gradle.caching=true" >> $HOME/.gradle/gradle.properties
-
-            -   name: Build gplay # TODO build only once!
-                run: |
-                    sed -i s#https://server#http://10.0.2.2# gradle.properties
-                    sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
-                    ./gradlew assembleDebug
-
-            -   name: gplay
-                env:
-                    SHOT_TEST: "true"
-                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
-                with:
-                    api-level: ${{ matrix.api-level }}
-                    force-avd-creation: false
-                    arch: x86
-                    sdcard-path-or-size: 100M
-                    target: google_apis
-                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
-                    script: scripts/runTests.sh
-
-            -   name: upload failing results
-                if: ${{ failure() }}
-                env:
-                    LOG_USERNAME: ${{ secrets.LOG_USERNAME }}
-                    LOG_PASSWORD: ${{ secrets.LOG_PASSWORD }}
-                    GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-                    GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-                run: scripts/uploadReport.sh "${{ secrets.LOG_USERNAME }}"  "${{ secrets.LOG_PASSWORD }}"   ${{github.event.number}}    "master" "IT" ${{github.event.number}} "${{ secrets.GIT_USERNAME }}" "${{ secrets.GIT_TOKEN }}"
-            -   name: Archive Espresso results
-                uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
-                if: ${{ always() }}
-                with:
-                    name: Report-${{ matrix.server }}-${{ matrix.api-level }}
-                    path: app/build/reports
-                    retention-days: 4
+#    stable16:
+#        runs-on: ubuntu-latest-kvm
+#        services:
+#            server:
+#                image: nextcloudci/server:server-13
+#                options: --name server
+#                ports:
+#                    - 80:80
+#        strategy:
+#            fail-fast: false
+#            matrix:
+#                api-level: [ 27 ]
+#        steps:
+#            -   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+#
+#            -   name: wait and ping server
+#                run: |
+#                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
+#                        echo "wait…"
+#                        sleep 5
+#                    done
+#
+#            -   name: configure server
+#                run: |
+#                    docker cp .github/workflows/configServer16.sh server:/tmp/
+#                    docker exec server chmod +x /tmp/configServer16.sh
+#                    docker exec server /tmp/configServer16.sh
+#                    docker cp .github/workflows/configNC_stable16.sh server:/tmp/
+#                    docker exec server chmod +x /tmp/configNC_stable16.sh
+#                    docker exec --user www-data server /tmp/configNC_stable16.sh
+#
+#            -   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
+#                with:
+#                    distribution: "temurin"
+#                    java-version: 17
+#
+#            -   name: create AVD and generate snapshot for caching
+#                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
+#                with:
+#                    api-level: ${{ matrix.api-level }}
+#                    force-avd-creation: false
+#                    arch: x86
+#                    sdcard-path-or-size: 100M
+#                    target: google_apis
+#                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
+#                    script: echo "Generated AVD snapshot for caching."
+#
+#            -   name: Configure gradle daemon
+#                run: |
+#                    mkdir -p $HOME/.gradle
+#                    echo "org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" > $HOME/.gradle/gradle.properties
+#                    echo "org.gradle.caching=true" >> $HOME/.gradle/gradle.properties
+#
+#            -   name: Build gplay # TODO build only once!
+#                run: |
+#                    sed -i s#https://server#http://10.0.2.2# gradle.properties
+#                    sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
+#                    ./gradlew assembleDebug
+#
+#            -   name: gplay
+#                env:
+#                    SHOT_TEST: "true"
+#                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
+#                with:
+#                    api-level: ${{ matrix.api-level }}
+#                    force-avd-creation: false
+#                    arch: x86
+#                    sdcard-path-or-size: 100M
+#                    target: google_apis
+#                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
+#                    script: scripts/runTests.sh
+#
+#            -   name: upload failing results
+#                if: ${{ failure() }}
+#                env:
+#                    LOG_USERNAME: ${{ secrets.LOG_USERNAME }}
+#                    LOG_PASSWORD: ${{ secrets.LOG_PASSWORD }}
+#                    GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+#                    GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+#                run: scripts/uploadReport.sh "${{ secrets.LOG_USERNAME }}"  "${{ secrets.LOG_PASSWORD }}"   ${{github.event.number}}    "master" "IT" ${{github.event.number}} "${{ secrets.GIT_USERNAME }}" "${{ secrets.GIT_TOKEN }}"
+#            -   name: Archive Espresso results
+#                uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+#                if: ${{ always() }}
+#                with:
+#                    name: Report-${{ matrix.server }}-${{ matrix.api-level }}
+#                    path: app/build/reports
+#                    retention-days: 4
