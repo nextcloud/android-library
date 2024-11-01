@@ -58,17 +58,6 @@ jobs:
                     distribution: "temurin"
                     java-version: 17
 
-            -   name: create AVD and generate snapshot for caching
-                uses: reactivecircus/android-emulator-runner@62dbb605bba737720e10b196cb4220d374026a6d # v2.33.0
-                with:
-                    api-level: ${{ matrix.api-level }}
-                    force-avd-creation: false
-                    arch: x86
-                    sdcard-path-or-size: 100M
-                    target: google_apis
-                    emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -skin 500x833
-                    script: echo "Generated AVD snapshot for caching."
-
             -   name: Configure gradle daemon
                 run: |
                     mkdir -p $HOME/.gradle
