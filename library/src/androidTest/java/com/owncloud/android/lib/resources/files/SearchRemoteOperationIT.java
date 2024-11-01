@@ -452,7 +452,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         // on NC16 groupfolder is also returned
         int offset = 0;
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
-            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_16.getMajorVersionNumber()) {
+            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_17.getMajorVersionNumber()) {
             offset = 1;
         }
 
