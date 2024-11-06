@@ -32,13 +32,6 @@ jobs:
         steps:
             -   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-            -   name: wait and ping server
-                run: |
-                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
-                        echo "wait…"
-                        sleep 5
-                    done
-
             -   name: configure server
                 run: |
                     sudo apt-get update && sudo apt-get install unzip cpu-checker qemu-kvm --yes
@@ -79,6 +72,13 @@ jobs:
                     sed -i s#https://server#http://10.0.2.2# gradle.properties
                     sed -i s"#1#5#" ./library/src/androidTest/java/com/owncloud/android/RetryTestRule.kt
                     ./gradlew assembleDebug --info
+
+            -   name: wait and ping server
+                run: |
+                    while ! curl http://localhost/status.php 2>&1 | grep installed; do
+                        echo "wait…"
+                        sleep 5
+                    done
 
             -   name: gplay
                 env:
