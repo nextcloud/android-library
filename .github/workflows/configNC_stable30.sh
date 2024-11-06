@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: MIT
 #
 
-SERVER_VERSION="stable29"
+SERVER_VERSION="stable30"
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 source ~/.bashrc; nvm install node
