@@ -14,14 +14,18 @@ import com.owncloud.android.lib.resources.shares.OCShare
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
-    @Test
-    fun getItems() {
+    @Before
+    fun before() {
         // only on NC25+
         testOnlyOnServer(NextcloudVersion.nextcloud_25)
+    }
 
+    @Test
+    fun getItems() {
         // create folder to have some content
         assertTrue(CreateFolderRemoteOperation("/testFolder", false).execute(client2).isSuccess)
         assertTrue(
