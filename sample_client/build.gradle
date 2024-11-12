@@ -27,7 +27,7 @@ repositories {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     lintOptions {
         abortOnError false
@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 34
+        targetSdkVersion 35
 
         multiDexEnabled true
 
