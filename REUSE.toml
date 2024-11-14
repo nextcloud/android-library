@@ -22,3 +22,9 @@ path = ["renovate.json5", "**/.gitignore", ".library/src/androidTest/assets/**",
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2024 Nextcloud GmbH and Nextcloud contributors"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["library/src/main/res/values-**/strings.xml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Nextcloud GmbH and Nextcloud translators"
+SPDX-License-Identifier = "MIT"
