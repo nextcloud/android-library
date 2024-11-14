@@ -10,7 +10,9 @@ package com.owncloud.android.lib.common;
 
 import android.os.Parcel;
 
-import com.nextcloud.common.OkHttpCredentialsUtil;
+import java.nio.charset.StandardCharsets;
+
+import okhttp3.Credentials;
 
 public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 
@@ -35,7 +37,7 @@ public class OwnCloudAnonymousCredentials implements OwnCloudCredentials {
 
     @Override
     public String toOkHttpCredentials() {
-        return OkHttpCredentialsUtil.basic(getUsername(), getAuthToken());
+        return Credentials.basic(getUsername(), getAuthToken(), StandardCharsets.UTF_8);
     }
 
     @Override

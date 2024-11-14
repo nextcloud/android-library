@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.common.OkHttpCredentialsUtil;
 import com.nextcloud.common.User;
 import com.owncloud.android.lib.common.accounts.AccountTypeUtils;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
@@ -32,7 +31,10 @@ import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+
+import okhttp3.Credentials;
 
 public class OwnCloudClientFactory {
     
@@ -223,7 +225,7 @@ public class OwnCloudClientFactory {
 
         return createNextcloudClient(baseUri,
                                      userId,
-                                     OkHttpCredentialsUtil.basic(username, password),
+                                     Credentials.basic(username, password, StandardCharsets.UTF_8),
                                      appContext,
                                      true);
     }
