@@ -60,7 +60,7 @@ configurations {
 
 dependencies {
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
-    api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.12'
+    api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'com.github.bitfireAT:dav4jvm:2.2.1'
     // in transition phase, we use old and new libs
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
