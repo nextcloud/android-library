@@ -121,7 +121,7 @@ tasks.withType(SpotBugsTask){task ->
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     buildTypes {
         debug {
@@ -139,7 +139,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 34
+        targetSdkVersion 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
