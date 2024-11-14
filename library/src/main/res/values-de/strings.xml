@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- ~ Nextcloud Android Library
- ~
- ~ SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
- ~ SPDX-FileCopyrightText: 2015 ownCloud Inc.
- ~ SPDX-License-Identifier: MIT
--->
-<resources>
-    <string name="title_no_client_cert">Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="message_install_client_cert">Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="notification_channel_name">Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="notification_title_select_client_cert">Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="notification_message_select_client_cert">Benötigt keine Übersetzung. Hier wird nur die formelle Übersetzung verwendet (de_DE).%1$s%2$d</string>
+  <resources>
+    <string name="message_install_client_cert">Möchten Sie ein TLS-Client-Zertifikat installieren\?</string>
+    <string name="notification_message_select_client_cert">Client-Zertifikat auswählen für %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Client-Zertifikat auswählen</string>
+    <string name="title_no_client_cert">Es wurde kein Client-Zertifikat gefunden</string>
 </resources>
