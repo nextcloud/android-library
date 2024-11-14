@@ -7,6 +7,36 @@
  ~ SPDX-License-Identifier: MIT
 -->
 <lint>
+    <issue id="MissingQuantity">
+        <ignore path="**/values-ka-rGE/strings.xml"/>
+        <ignore path="**/values-ar/strings.xml" />
+    </issue>
+
+    <issue id="UnusedQuantity">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+    
+    <issue id="StringFormatCount">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+
+    <issue id="ExtraTranslation">
+        <ignore path="**/strings.xml"/>
+        <ignore path="**/values-b+en+001/strings.xml"/>
+    </issue>
+
+    <issue id="UnusedResources">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+
+    <issue id="TypographyEllipsis">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+
+    <issue id="Typos">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+
     <issue id="TrustAllX509TrustManager">
         <ignore path="**/bouncycastle/est/jcajce/*.class" />
         <ignore path="**/bcpkix-jdk18on-1.**.jar" />

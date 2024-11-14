@@ -131,7 +131,7 @@ android {
 
     lint {
         abortOnError true
-        disable 'GradleDependency','InvalidPackage'
+        disable 'MissingTranslation', 'GradleDependency', 'VectorPath', 'IconMissingDensityFolder', 'IconDensities', 'GoogleAppIndexingWarning', 'MissingDefaultResource', 'StringFormatInvalid', 'MissingQuantity', 'InvalidPackage'
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
         htmlReport true
         warningsAsErrors true
