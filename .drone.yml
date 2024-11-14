@@ -224,6 +224,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: dcec9c9731f4f85ed9e7e86627fdd45d867c533946509aa9aeb88cada2158f6e
+hmac: ccd6971703ea89bd1bd32ef62d995d2e5b5373eb009e98faea945df65397322a
 
 ...
