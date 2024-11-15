@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="message_install_client_cert">Vill du installera ett TLS-klientcertifikat\?</string>
+    <string name="notification_channel_name">Nextcloud-anslutning</string>
+    <string name="notification_message_select_client_cert">Välj klientcertifikat för %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Välj klientcertifikat</string>
+    <string name="operation_cancelled_by_the_caller">Åtgärden avbröts av anroparen</string>
+    <string name="title_no_client_cert">Inget klientcertifikat hittades</string>
+</resources>
