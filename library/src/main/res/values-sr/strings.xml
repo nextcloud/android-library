@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="message_install_client_cert">Да ли желите да инсталирате TLS клијентски сертификат\?</string>
+    <string name="notification_channel_name">NextCloud веза</string>
+    <string name="notification_message_select_client_cert">Изаберите клијентски сертификат за %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Изаберите клијентски сертификат</string>
+    <string name="operation_cancelled_by_the_caller">Операцију је отказао позивалац</string>
+    <string name="title_no_client_cert">Није пронађен ниједан клијентски сертификат</string>
+</resources>

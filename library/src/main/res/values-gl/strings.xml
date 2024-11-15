@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="message_install_client_cert">Confirma que quere instalar un certificado de cliente TLS?</string>
+    <string name="notification_channel_name">Conexión de Nextcloud</string>
+    <string name="notification_message_select_client_cert">Seleccionar o certificado de cliente para %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Seleccionar o certificado de cliente</string>
+    <string name="operation_cancelled_by_the_caller">Operación cancelada por quen chamou</string>
+    <string name="title_no_client_cert">Non se atopou ningún certificado de cliente</string>
+</resources>
