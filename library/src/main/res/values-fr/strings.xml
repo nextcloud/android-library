@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="message_install_client_cert">Souhaitez-vous installer un certificat client TLS \?</string>
+    <string name="notification_title_select_client_cert">Sélectionner un certificat client</string>
+    <string name="operation_cancelled_by_the_caller">Opération annulée par l\'appelant.</string>
+    <string name="title_no_client_cert">Aucun certificat client n\'a été trouvé</string>
+</resources>
