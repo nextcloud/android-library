@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="message_install_client_cert">你想安装 TLS 客户端证书吗？</string>
+    <string name="notification_channel_name">Nextcloud 连接</string>
+    <string name="notification_message_select_client_cert">选择 %1$s:%2$d 的客户端证书</string>
+    <string name="notification_title_select_client_cert">选择客户端证书</string>
+    <string name="operation_cancelled_by_the_caller">呼叫者取消操作</string>
+    <string name="title_no_client_cert">未找到客户端证书</string>
+</resources>
