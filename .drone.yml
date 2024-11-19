@@ -8,7 +8,7 @@ name: test-master
 
 steps:
 - name: test
-  image: ghcr.io/nextcloud/continuous-integration-android8:3
+  image: ghcr.io/nextcloud/continuous-integration-android8:4
   privileged: true
   environment:
     LOG_USERNAME:
@@ -125,7 +125,7 @@ name: test-stable
 
 steps:
   - name: test
-    image: ghcr.io/nextcloud/continuous-integration-android8:3
+    image: ghcr.io/nextcloud/continuous-integration-android8:4
     privileged: true
     environment:
       LOG_USERNAME:
@@ -235,6 +235,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 89e882ffda9050c5a514bfd3fa0e43bbf3e9acc83acaead0104d2570a66663ce
+hmac: 3e71a44f6f57a4d4d853c586c0c322bf0b718d96627906b92864e12353e5a014
 
 ...
