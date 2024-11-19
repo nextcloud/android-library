@@ -220,7 +220,7 @@ services:
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
-      - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+      - su www-data -c "git clone --depth 1 -b main https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
       - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; make"
       - su www-data -c "php /var/www/html/occ app:enable assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
