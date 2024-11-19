@@ -103,10 +103,10 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test -d test"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
-      - su www-data -c "cd /var/www/html/apps/photos; composer install"
+      - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
-      - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; make"
+      - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - /usr/local/bin/run.sh
@@ -218,10 +218,10 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test test"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
-      - su www-data -c "cd /var/www/html/apps/photos; composer install"
+      - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
       - su www-data -c "git clone --depth 1 -b main https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
-      - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; make"
+      - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - /usr/local/bin/run.sh
@@ -235,6 +235,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 91a609a07b9c68cd42117a3eb6f031926e4982dad144b5dfe5903ddbdd993987
+hmac: 89e882ffda9050c5a514bfd3fa0e43bbf3e9acc83acaead0104d2570a66663ce
 
 ...
