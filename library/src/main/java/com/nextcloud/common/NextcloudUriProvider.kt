@@ -13,7 +13,7 @@ interface NextcloudUriProvider {
     /**
      * Root URI of the Nextcloud server
      */
-    var baseUri: Uri?
+    var baseUri: Uri
     val filesDavUri: Uri
     val uploadUri: Uri
     val davUri: Uri
