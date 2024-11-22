@@ -172,9 +172,9 @@ public class GetStatusRemoteOperation extends RemoteOperation {
 
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) mContext
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+            .getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm != null && cm.getActiveNetworkInfo() != null
-                && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+            && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     @Override

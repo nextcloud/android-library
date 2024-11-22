@@ -36,7 +36,7 @@ public class GetSharesIT extends AbstractIT {
                 "",
                 false,
                 "",
-                1).execute(client).isSuccess());
+            1).execute(client).isSuccess());
 
         assertTrue(new CreateFolderRemoteOperation("/2/", true).execute(client).isSuccess());
         assertTrue(new CreateShareRemoteOperation("/2/",
@@ -44,7 +44,7 @@ public class GetSharesIT extends AbstractIT {
                 "",
                 false,
                 "",
-                1).execute(client).isSuccess());
+            1).execute(client).isSuccess());
 
         RemoteOperationResult<List<OCShare>> result = new GetSharesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());

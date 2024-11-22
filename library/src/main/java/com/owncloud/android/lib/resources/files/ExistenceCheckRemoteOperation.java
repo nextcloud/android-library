@@ -24,12 +24,14 @@ import org.apache.commons.httpclient.methods.HeadMethod;
  * @author David A. Velasco
  */
 public class ExistenceCheckRemoteOperation extends RemoteOperation {
-    
-    /** Maximum time to wait for a response from the server in MILLISECONDs.  */
+
+    /**
+     * Maximum time to wait for a response from the server in MILLISECONDs.
+     */
     public static final int TIMEOUT = 50000;
     
     private static final String TAG = ExistenceCheckRemoteOperation.class.getSimpleName();
-    
+
     private String mPath;
     private boolean mSuccessIfAbsent;
 
@@ -64,7 +66,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
     }
 
     @Override
-	protected RemoteOperationResult run(OwnCloudClient client) {
+    protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
         HeadMethod head = null;
         boolean previousFollowRedirects = client.isFollowRedirects();
