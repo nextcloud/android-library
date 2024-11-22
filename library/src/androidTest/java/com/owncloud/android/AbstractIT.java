@@ -72,6 +72,7 @@ public abstract class AbstractIT {
     protected static NextcloudClient nextcloudClient;
     protected static Context context;
     protected static Uri url;
+    protected static String password;
 
     protected String baseFolderPath = "/test_for_build/";
 
@@ -89,7 +90,7 @@ public abstract class AbstractIT {
 
         url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
         String loginName = arguments.getString("TEST_SERVER_USERNAME");
-        String password = arguments.getString("TEST_SERVER_PASSWORD");
+        password = arguments.getString("TEST_SERVER_PASSWORD");
 
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
