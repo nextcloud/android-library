@@ -47,7 +47,7 @@ public class StoreMetadataRemoteOperation extends RemoteOperation {
     public StoreMetadataRemoteOperation(long fileId, String encryptedMetadataJson) {
         this.fileId = fileId;
         this.encryptedMetadataJson = encryptedMetadataJson;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public StoreMetadataRemoteOperation(long fileId, String encryptedMetadataJson, SessionTimeOut sessionTimeOut) {

@@ -45,7 +45,7 @@ public class GetMetadataRemoteOperation extends RemoteOperation<MetadataResponse
      */
     public GetMetadataRemoteOperation(long fileId) {
         this.fileId = fileId;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public GetMetadataRemoteOperation(long fileId, SessionTimeOut sessionTimeOut) {

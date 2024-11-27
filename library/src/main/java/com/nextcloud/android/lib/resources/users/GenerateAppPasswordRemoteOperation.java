@@ -36,7 +36,7 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
     private final SessionTimeOut sessionTimeOut;
 
     public GenerateAppPasswordRemoteOperation() {
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public GenerateAppPasswordRemoteOperation(SessionTimeOut sessionTimeOut) {

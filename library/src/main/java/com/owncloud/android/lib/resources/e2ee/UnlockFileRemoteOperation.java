@@ -37,7 +37,7 @@ public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
     public UnlockFileRemoteOperation(long localId, String token) {
         this.localId = localId;
         this.token = token;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public UnlockFileRemoteOperation(long localId, String token, SessionTimeOut sessionTimeOut) {

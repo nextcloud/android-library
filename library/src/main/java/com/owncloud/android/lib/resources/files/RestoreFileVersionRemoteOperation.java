@@ -43,7 +43,7 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
     public RestoreFileVersionRemoteOperation(long fileId, String fileName) {
         this.fileId = fileId;
         this.fileName = fileName;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public RestoreFileVersionRemoteOperation(long fileId, String fileName, SessionTimeOut sessionTimeOut) {

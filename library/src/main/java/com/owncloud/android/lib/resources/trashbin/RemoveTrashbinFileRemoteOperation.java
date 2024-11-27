@@ -34,7 +34,7 @@ public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
      */
     public RemoveTrashbinFileRemoteOperation(String remotePath) {
         this.remotePath = remotePath;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public RemoveTrashbinFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {

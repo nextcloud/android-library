@@ -43,7 +43,7 @@ public class ToggleEncryptionRemoteOperation extends RemoteOperation<Void> {
         this.localId = localId;
         this.remotePath = remotePath;
         this.encryption = encryption;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public ToggleEncryptionRemoteOperation(long localId, String remotePath, boolean encryption, SessionTimeOut sessionTimeOut) {
