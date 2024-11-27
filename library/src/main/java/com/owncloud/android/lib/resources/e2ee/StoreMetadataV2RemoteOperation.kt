@@ -27,7 +27,6 @@ class StoreMetadataV2RemoteOperation(
     private val token: String,
     private val signature: String
 ) : RemoteOperation<String>() {
-
     private var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 
     constructor(
@@ -36,7 +35,7 @@ class StoreMetadataV2RemoteOperation(
         token: String,
         signature: String,
         sessionTimeOut: SessionTimeOut
-    ): this(remoteId, encryptedMetadataJson, token, signature) {
+    ) : this(remoteId, encryptedMetadataJson, token, signature) {
         this.sessionTimeOut = sessionTimeOut
     }
 

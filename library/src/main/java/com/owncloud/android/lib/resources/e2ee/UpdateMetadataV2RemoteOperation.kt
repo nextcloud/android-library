@@ -46,7 +46,7 @@ class UpdateMetadataV2RemoteOperation(
         token: String,
         signature: String,
         sessionTimeOut: SessionTimeOut
-    ) : this(remoteId,encryptedMetadataJson, token, signature) {
+    ) : this(remoteId, encryptedMetadataJson, token, signature) {
         this.sessionTimeOut = sessionTimeOut
     }
 
