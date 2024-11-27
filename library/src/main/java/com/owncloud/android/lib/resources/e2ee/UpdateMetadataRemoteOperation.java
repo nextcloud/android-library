@@ -52,7 +52,7 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
         this.fileId = fileId;
         this.encryptedMetadataJson = URLEncoder.encode(encryptedMetadataJson);
         this.token = token;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public UpdateMetadataRemoteOperation(long fileId, String encryptedMetadataJson, String token, SessionTimeOut sessionTimeOut) {

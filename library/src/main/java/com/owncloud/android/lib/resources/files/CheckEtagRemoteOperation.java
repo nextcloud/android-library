@@ -41,7 +41,7 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
     public CheckEtagRemoteOperation(String path, String expectedEtag) {
         this.path = path;
         this.expectedEtag = expectedEtag;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public CheckEtagRemoteOperation(String path, String expectedEtag, SessionTimeOut sessionTimeOut) {

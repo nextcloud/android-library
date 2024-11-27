@@ -44,12 +44,12 @@ public class LockFileRemoteOperation extends RemoteOperation<String> {
     public LockFileRemoteOperation(long localId, long counter) {
         this.localId = localId;
         this.counter = counter;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public LockFileRemoteOperation(long localId) {
         this.localId = localId;
-        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
     }
 
     public LockFileRemoteOperation(long localId, long counter, SessionTimeOut sessionTimeOut) {

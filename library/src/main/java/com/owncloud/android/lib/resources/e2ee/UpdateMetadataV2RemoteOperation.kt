@@ -27,10 +27,10 @@ class UpdateMetadataV2RemoteOperation(
     private val remoteId: String,
     encryptedMetadataJson: String,
     private val token: String,
-    private val signature: String,
-    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+    private val signature: String
 ) : RemoteOperation<String>() {
     private val encryptedMetadataJson: String
+    private var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 
     /**
      * Constructor
@@ -38,6 +38,16 @@ class UpdateMetadataV2RemoteOperation(
     init {
         this.encryptedMetadataJson = URLEncoder.encode(encryptedMetadataJson)
         // this.encryptedMetadataJson = encryptedMetadataJson;
+    }
+
+    constructor(
+        remoteId: String,
+        encryptedMetadataJson: String,
+        token: String,
+        signature: String,
+        sessionTimeOut: SessionTimeOut
+    ) : this(remoteId,encryptedMetadataJson, token, signature) {
+        this.sessionTimeOut = sessionTimeOut
     }
 
     /**
