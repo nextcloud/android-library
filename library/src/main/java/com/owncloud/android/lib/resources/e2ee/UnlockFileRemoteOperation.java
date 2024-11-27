@@ -7,13 +7,14 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.DeleteMethod;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.DeleteMethod;
 
 
 /**
@@ -43,11 +44,11 @@ public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
     @Override
     protected RemoteOperationResult<Void> run(OwnCloudClient client) {
         RemoteOperationResult<Void> result;
-        DeleteMethod deleteMethod = null;
+        org.apache.commons.httpclient.methods.DeleteMethod deleteMethod = null;
 
         try {
             // remote request
-            deleteMethod = new DeleteMethod(client.getBaseUri() + LOCK_FILE_URL + localId);
+            deleteMethod = new org.apache.commons.httpclient.methods.DeleteMethod(client.getBaseUri() + LOCK_FILE_URL + localId);
             deleteMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
             deleteMethod.addRequestHeader(E2E_TOKEN, token);
@@ -55,8 +56,36 @@ public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
             int status = client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
 
             result = new RemoteOperationResult<>(status == HttpStatus.SC_OK, deleteMethod);
-            
+
             client.exhaustResponse(deleteMethod.getResponseBodyAsStream());
+        } catch (Exception e) {
+            result = new RemoteOperationResult<>(e);
+            Log_OC.e(TAG, "Unlock file with id " + localId + " failed: " + result.getLogMessage(),
+                result.getException());
+        } finally {
+            if (deleteMethod != null)
+                deleteMethod.releaseConnection();
+        }
+        return result;
+    }
+
+    /**
+     * @param client Client object
+     */
+    @Override
+    public RemoteOperationResult<Void> run(NextcloudClient client) {
+        RemoteOperationResult<Void> result;
+        com.nextcloud.operations.DeleteMethod deleteMethod = null;
+
+        try {
+            // remote request
+            deleteMethod = new DeleteMethod(client.getBaseUri() + LOCK_FILE_URL + localId, true);
+            deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
+            deleteMethod.addRequestHeader(E2E_TOKEN, token);
+
+            int status = client.execute(deleteMethod);
+
+            result = new RemoteOperationResult<>(status == HttpStatus.SC_OK, deleteMethod);
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Unlock file with id " + localId + " failed: " + result.getLogMessage(),

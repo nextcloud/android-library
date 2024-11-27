@@ -166,7 +166,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
                 String response = post.getResponseBodyAsString();
 
                 ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
-                        new ShareXMLParser()
+                    new ShareXMLParser()
                 );
                 parser.setOneOrMoreSharesRequired(true);
                 parser.setServerBaseUri(client.getBaseUri());

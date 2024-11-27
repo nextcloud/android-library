@@ -10,6 +10,8 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
+import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -19,8 +21,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 import java.util.List;
-
-import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 
 /**
  * Get the data from the server about ALL the known shares owned by the requester.
