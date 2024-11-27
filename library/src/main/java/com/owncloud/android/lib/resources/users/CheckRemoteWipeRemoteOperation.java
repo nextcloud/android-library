@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.users;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -24,12 +26,19 @@ import org.json.JSONObject;
 public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
 
     private static final String TAG = CheckRemoteWipeRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String REMOTE_WIPE_URL = "/index.php/core/wipe/check";
 
     // JSON node names
     private static final String WIPE = "wipe";
+    private final SessionTimeOut sessionTimeOut;
+
+    public CheckRemoteWipeRemoteOperation() {
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public CheckRemoteWipeRemoteOperation(SessionTimeOut sessionTimeOut) {
+        this.sessionTimeOut = sessionTimeOut;
+    }
 
     /**
      * @param client Client object
@@ -44,7 +53,7 @@ public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
             postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
             postMethod.setParameter(REMOTE_WIPE_TOKEN, client.getCredentials().getAuthToken());
 
-            int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(postMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (HttpStatus.SC_OK == status) {
                 String response = postMethod.getResponseBodyAsString();
@@ -52,17 +61,17 @@ public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
                 JSONObject json = new JSONObject(response);
 
                 if (json.getBoolean(WIPE)) {
-                    result = new RemoteOperationResult(true, postMethod);
+                    result = new RemoteOperationResult<>(true, postMethod);
                 } else {
-                    result = new RemoteOperationResult(false, postMethod);
+                    result = new RemoteOperationResult<>(false, postMethod);
                 }
             } else {
-                result = new RemoteOperationResult(false, postMethod);
+                result = new RemoteOperationResult<>(false, postMethod);
             }
 
             client.exhaustResponse(postMethod.getResponseBodyAsStream());
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG,
                      "Getting remote wipe status failed: " + result.getLogMessage(),
                      result.getException());

@@ -8,6 +8,7 @@ package com.owncloud.android.lib.resources.files;
 
 import android.util.Log;
 
+import com.nextcloud.common.SessionTimeOut;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -34,13 +35,13 @@ public class CopyFileRemoteOperation extends RemoteOperation {
 
     private static final String TAG = CopyFileRemoteOperation.class.getSimpleName();
 
-    private static final int COPY_READ_TIMEOUT = 600000;
-    private static final int COPY_CONNECTION_TIMEOUT = 5000;
 
-    private String mSrcRemotePath;
-    private String mTargetRemotePath;
+    private final String mSrcRemotePath;
+    private final String mTargetRemotePath;
 
-    private boolean mOverwrite;
+    private final boolean mOverwrite;
+
+    private final SessionTimeOut sessionTimeOut;
 
 
     /**
@@ -51,13 +52,20 @@ public class CopyFileRemoteOperation extends RemoteOperation {
      * @param srcRemotePath    Remote path of the file/folder to move.
      * @param targetRemotePath Remove path desired for the file/folder after moving it.
      */
-    public CopyFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite
-    ) {
+    public CopyFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite) {
         mSrcRemotePath = srcRemotePath;
         mTargetRemotePath = targetRemotePath;
         mOverwrite = overwrite;
+        this.sessionTimeOut = new SessionTimeOut(600000, 5000);
     }
 
+
+    public CopyFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite, SessionTimeOut sessionTimeOut) {
+        mSrcRemotePath = srcRemotePath;
+        mTargetRemotePath = targetRemotePath;
+        mOverwrite = overwrite;
+        this.sessionTimeOut = sessionTimeOut;
+    }
 
     /**
      * Performs the rename operation.
@@ -70,11 +78,11 @@ public class CopyFileRemoteOperation extends RemoteOperation {
         /// check parameters
         if (mTargetRemotePath.equals(mSrcRemotePath)) {
             // nothing to do!
-            return new RemoteOperationResult(ResultCode.OK);
+            return new RemoteOperationResult<>(ResultCode.OK);
         }
 
         if (mTargetRemotePath.startsWith(mSrcRemotePath)) {
-            return new RemoteOperationResult(ResultCode.INVALID_COPY_INTO_DESCENDANT);
+            return new RemoteOperationResult<>(ResultCode.INVALID_COPY_INTO_DESCENDANT);
         }
 
         /// perform remote operation
@@ -86,7 +94,7 @@ public class CopyFileRemoteOperation extends RemoteOperation {
                     client.getFilesDavUri(mTargetRemotePath),
                     mOverwrite
             );
-            int status = client.executeMethod(copyMethod, COPY_READ_TIMEOUT, COPY_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(copyMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             /// process response
             if (status == HttpStatus.SC_MULTI_STATUS) {
@@ -94,7 +102,7 @@ public class CopyFileRemoteOperation extends RemoteOperation {
 
             } else if (status == HttpStatus.SC_PRECONDITION_FAILED && !mOverwrite) {
 
-                result = new RemoteOperationResult(ResultCode.INVALID_OVERWRITE);
+                result = new RemoteOperationResult<>(ResultCode.INVALID_OVERWRITE);
                 client.exhaustResponse(copyMethod.getResponseBodyAsStream());
 
 
@@ -102,14 +110,14 @@ public class CopyFileRemoteOperation extends RemoteOperation {
                 /// http://www.webdav.org/specs/rfc4918.html#rfc.section.9.9.4
 
             } else {
-                result = new RemoteOperationResult(isSuccess(status), copyMethod);
+                result = new RemoteOperationResult<>(isSuccess(status), copyMethod);
                 client.exhaustResponse(copyMethod.getResponseBodyAsStream());
             }
 
             Log.i(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage());
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log.e(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage(), e);
 
         } finally {
@@ -158,9 +166,9 @@ public class CopyFileRemoteOperation extends RemoteOperation {
 
         RemoteOperationResult result;
         if (failFound) {
-            result = new RemoteOperationResult(ResultCode.PARTIAL_COPY_DONE);
+            result = new RemoteOperationResult<>(ResultCode.PARTIAL_COPY_DONE);
         } else {
-            result = new RemoteOperationResult(true, copyMethod);
+            result = new RemoteOperationResult<>(true, copyMethod);
         }
 
         return result;

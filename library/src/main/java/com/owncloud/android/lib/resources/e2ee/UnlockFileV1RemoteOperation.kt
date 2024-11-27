@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.e2ee
 
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
@@ -19,11 +21,10 @@ import org.apache.commons.httpclient.methods.DeleteMethod
  */
 class UnlockFileV1RemoteOperation(
     private val localId: Long,
-    private val token: String
+    private val token: String,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<Void>() {
-    /**
-     * @param client Client object
-     */
+
     @Deprecated("Deprecated in Java")
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun run(client: OwnCloudClient): RemoteOperationResult<Void> {
@@ -36,7 +37,7 @@ class UnlockFileV1RemoteOperation(
             deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
             deleteMethod.addRequestHeader(E2E_TOKEN, token)
             val status =
-                client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT)
+                client.executeMethod(deleteMethod, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
             result = RemoteOperationResult(status == HttpStatus.SC_OK, deleteMethod)
             client.exhaustResponse(deleteMethod.responseBodyAsStream)
         } catch (e: Exception) {
@@ -54,8 +55,6 @@ class UnlockFileV1RemoteOperation(
 
     companion object {
         private val TAG = UnlockFileV1RemoteOperation::class.java.simpleName
-        private const val SYNC_READ_TIMEOUT = 40000
-        private const val SYNC_CONNECTION_TIMEOUT = 5000
         private const val LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/"
     }
 }

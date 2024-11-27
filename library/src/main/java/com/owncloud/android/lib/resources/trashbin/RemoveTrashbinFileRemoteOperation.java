@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.trashbin;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -22,10 +24,8 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
     private static final String TAG = RemoveTrashbinFileRemoteOperation.class.getSimpleName();
 
-    private static final int REMOVE_READ_TIMEOUT = 30000;
-    private static final int REMOVE_CONNECTION_TIMEOUT = 5000;
-
-    private String remotePath;
+    private final String remotePath;
+    private final SessionTimeOut sessionTimeOut;
 
     /**
      * Constructor
@@ -34,6 +34,12 @@ public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
      */
     public RemoveTrashbinFileRemoteOperation(String remotePath) {
         this.remotePath = remotePath;
+        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public RemoveTrashbinFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {
+        this.remotePath = remotePath;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -48,14 +54,14 @@ public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
 
         try {
             delete = new DeleteMethod(client.getDavUri() + WebdavUtils.encodePath(remotePath));
-            int status = client.executeMethod(delete, REMOVE_READ_TIMEOUT, REMOVE_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(delete, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             delete.getResponseBodyAsString();   // exhaust the response, although not interesting
-            result = new RemoteOperationResult((delete.succeeded() || status == HttpStatus.SC_NOT_FOUND), delete);
+            result = new RemoteOperationResult<>((delete.succeeded() || status == HttpStatus.SC_NOT_FOUND), delete);
             Log_OC.i(TAG, "Remove " + remotePath + ": " + result.getLogMessage());
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Remove " + remotePath + ": " + result.getLogMessage(), e);
 
         } finally {

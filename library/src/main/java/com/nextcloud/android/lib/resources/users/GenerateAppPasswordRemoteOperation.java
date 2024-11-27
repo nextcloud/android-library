@@ -7,6 +7,9 @@
  */
 package com.nextcloud.android.lib.resources.users;
 
+
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -23,14 +26,22 @@ import org.json.JSONObject;
 
 public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
     private static final String TAG = GenerateAppPasswordRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String DIRECT_ENDPOINT = "/ocs/v2.php/core/getapppassword";
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
     private static final String NODE_APPPASSWORD = "apppassword";
+
+    private final SessionTimeOut sessionTimeOut;
+
+    public GenerateAppPasswordRemoteOperation() {
+        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public GenerateAppPasswordRemoteOperation(SessionTimeOut sessionTimeOut) {
+        this.sessionTimeOut = sessionTimeOut;
+    }
 
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result;
@@ -42,7 +53,7 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
             // remote request
             getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            int status = client.executeMethod(getMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(getMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_OK) {
                 String response = getMethod.getResponseBodyAsString();

@@ -8,6 +8,8 @@
 package com.owncloud.android.lib.resources.e2ee
 
 import android.util.Log
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
@@ -25,7 +27,8 @@ class UpdateMetadataV2RemoteOperation(
     private val remoteId: String,
     encryptedMetadataJson: String,
     private val token: String,
-    private val signature: String
+    private val signature: String,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<String>() {
     private val encryptedMetadataJson: String
 
@@ -62,7 +65,7 @@ class UpdateMetadataV2RemoteOperation(
                     "UTF-8"
                 )
             putMethod.requestEntity = data
-            val status = client.executeMethod(putMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT)
+            val status = client.executeMethod(putMethod, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
             if (status == HttpStatus.SC_OK) {
                 val response = putMethod.responseBodyAsString
 
@@ -99,8 +102,6 @@ class UpdateMetadataV2RemoteOperation(
 
     companion object {
         private val TAG = UpdateMetadataV2RemoteOperation::class.java.simpleName
-        private const val SYNC_READ_TIMEOUT = 40000
-        private const val SYNC_CONNECTION_TIMEOUT = 5000
         private const val METADATA_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v2/meta-data/"
         private const val FORMAT = "format"
 

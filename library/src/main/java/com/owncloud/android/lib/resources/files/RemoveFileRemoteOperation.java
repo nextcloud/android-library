@@ -6,6 +6,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -23,10 +25,8 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 public class RemoveFileRemoteOperation extends RemoteOperation {
     private static final String TAG = RemoveFileRemoteOperation.class.getSimpleName();
 
-    private static final int REMOVE_READ_TIMEOUT = 30000;
-    private static final int REMOVE_CONNECTION_TIMEOUT = 5000;
-
-    private String mRemotePath;
+    private final String mRemotePath;
+    private final SessionTimeOut sessionTimeOut;
 
     /**
      * Constructor
@@ -35,6 +35,12 @@ public class RemoveFileRemoteOperation extends RemoteOperation {
      */
     public RemoveFileRemoteOperation(String remotePath) {
         mRemotePath = remotePath;
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public RemoveFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {
+        mRemotePath = remotePath;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -49,17 +55,17 @@ public class RemoveFileRemoteOperation extends RemoteOperation {
 
         try {
             delete = new DeleteMethod(client.getFilesDavUri(mRemotePath));
-            int status = client.executeMethod(delete, REMOVE_READ_TIMEOUT, REMOVE_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(delete, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             delete.getResponseBodyAsString();   // exhaust the response, although not interesting
-            result = new RemoteOperationResult(
+            result = new RemoteOperationResult<>(
                 (delete.succeeded() || status == HttpStatus.SC_NOT_FOUND),
                 delete
             );
             Log_OC.i(TAG, "Remove " + mRemotePath + ": " + result.getLogMessage());
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Remove " + mRemotePath + ": " + result.getLogMessage(), e);
 
         } finally {
@@ -69,5 +75,4 @@ public class RemoveFileRemoteOperation extends RemoteOperation {
 
         return result;
     }
-
 }
