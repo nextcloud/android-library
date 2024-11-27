@@ -6,6 +6,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
 import com.owncloud.android.lib.common.network.WebdavUtils;
@@ -32,10 +34,8 @@ import java.util.ArrayList;
 public class ReadFileRemoteOperation extends RemoteOperation {
 
     private static final String TAG = ReadFileRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
-
-    private String mRemotePath;
+    private final String mRemotePath;
+    private final SessionTimeOut sessionTimeOut;
 
 
     /**
@@ -45,6 +45,12 @@ public class ReadFileRemoteOperation extends RemoteOperation {
      */
     public ReadFileRemoteOperation(String remotePath) {
         mRemotePath = remotePath;
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public ReadFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {
+        mRemotePath = remotePath;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -64,7 +70,7 @@ public class ReadFileRemoteOperation extends RemoteOperation {
                     WebdavUtils.getFilePropSet(),    // PropFind Properties
                     DavConstants.DEPTH_0);
             int status;
-            status = client.executeMethod(propfind, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            status = client.executeMethod(propfind, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             boolean isSuccess = (
                 status == HttpStatus.SC_MULTI_STATUS ||
@@ -80,16 +86,16 @@ public class ReadFileRemoteOperation extends RemoteOperation {
                 files.add(remoteFile);
 
                 // Result of the operation
-                result = new RemoteOperationResult(true, propfind);
+                result = new RemoteOperationResult<>(true, propfind);
                 result.setData(files);
 
             } else {
-                result = new RemoteOperationResult(false, propfind);
+                result = new RemoteOperationResult<>(false, propfind);
                 client.exhaustResponse(propfind.getResponseBodyAsStream());
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Read file " + mRemotePath + " failed: " + result.getLogMessage(),
                 result.getException());
         } finally {
@@ -98,5 +104,4 @@ public class ReadFileRemoteOperation extends RemoteOperation {
         }
         return result;
     }
-
 }

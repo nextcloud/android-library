@@ -6,6 +6,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -27,13 +29,12 @@ public class RenameFileRemoteOperation extends RemoteOperation {
 
     private static final String TAG = RenameFileRemoteOperation.class.getSimpleName();
 
-    private static final int RENAME_READ_TIMEOUT = 600000;
-    private static final int RENAME_CONNECTION_TIMEOUT = 5000;
-
     private String mOldName;
     private String mOldRemotePath;
     private String mNewName;
     private String mNewRemotePath;
+
+    private final SessionTimeOut sessionTimeOut;
 
 
     /**
@@ -44,19 +45,23 @@ public class RenameFileRemoteOperation extends RemoteOperation {
      * @param newName       New name to set as the name of file.
      * @param isFolder      'true' for folder and 'false' for files
      */
-    public RenameFileRemoteOperation(String oldName, String oldRemotePath, String newName,
-                                     boolean isFolder) {
+    public RenameFileRemoteOperation(String oldName, String oldRemotePath, String newName, boolean isFolder) {
+        this(oldName, oldRemotePath, newName, isFolder, new SessionTimeOut(600000, 5000));
+    }
+
+    public RenameFileRemoteOperation(String oldName, String oldRemotePath, String newName, boolean isFolder, SessionTimeOut sessionTimeOut) {
         mOldName = oldName;
         mOldRemotePath = oldRemotePath;
         mNewName = newName;
 
         String parent = (new File(mOldRemotePath)).getParent();
-        parent = (parent.endsWith(FileUtils.PATH_SEPARATOR)) ? parent : parent +
-            FileUtils.PATH_SEPARATOR;
+        parent = (parent.endsWith(FileUtils.PATH_SEPARATOR)) ? parent : parent + FileUtils.PATH_SEPARATOR;
         mNewRemotePath = parent + mNewName;
         if (isFolder) {
             mNewRemotePath += FileUtils.PATH_SEPARATOR;
         }
+
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -71,27 +76,27 @@ public class RenameFileRemoteOperation extends RemoteOperation {
         MoveMethod move = null;
         try {
             if (mNewName.equals(mOldName)) {
-                return new RemoteOperationResult(ResultCode.OK);
+                return new RemoteOperationResult<>(ResultCode.OK);
             }
 
             // check if a file with the new name already exists
-            RemoteOperationResult existenceResult = new ExistenceCheckRemoteOperation(mNewRemotePath, false)
+            final var existenceResult = new ExistenceCheckRemoteOperation(mNewRemotePath, false)
                     .execute(client);
             if (existenceResult.isSuccess()) {
-                return new RemoteOperationResult(ResultCode.INVALID_OVERWRITE);
+                return new RemoteOperationResult<>(ResultCode.INVALID_OVERWRITE);
             }
 
             move = new MoveMethod(client.getFilesDavUri(mOldRemotePath),
                     client.getFilesDavUri(mNewRemotePath), true);
-            client.executeMethod(move, RENAME_READ_TIMEOUT, RENAME_CONNECTION_TIMEOUT);
-            result = new RemoteOperationResult(move.succeeded(), move);
+            client.executeMethod(move, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
+            result = new RemoteOperationResult<>(move.succeeded(), move);
             Log_OC.i(TAG, "Rename " + mOldRemotePath + " to " + mNewRemotePath + ": " +
                     result.getLogMessage()
             );
             client.exhaustResponse(move.getResponseBodyAsStream());
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Rename " + mOldRemotePath + " to " +
                     ((mNewRemotePath == null) ? mNewName : mNewRemotePath) + ": " +
                     result.getLogMessage(), e);

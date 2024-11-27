@@ -8,6 +8,8 @@
 package com.owncloud.android.lib.resources.e2ee
 
 import android.util.Log
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
@@ -23,7 +25,8 @@ class StoreMetadataV2RemoteOperation(
     private val remoteId: String,
     private val encryptedMetadataJson: String,
     private val token: String,
-    private val signature: String
+    private val signature: String,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<String>() {
     /**
      * @param client Client object
@@ -40,7 +43,7 @@ class StoreMetadataV2RemoteOperation(
             postMethod.addRequestHeader(E2E_TOKEN, token)
             postMethod.addRequestHeader(HEADER_SIGNATURE, signature)
             postMethod.setParameter(METADATA, encryptedMetadataJson)
-            val status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT)
+            val status = client.executeMethod(postMethod, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
             if (status == HttpStatus.SC_OK) {
                 val response = postMethod.responseBodyAsString
 
@@ -77,8 +80,6 @@ class StoreMetadataV2RemoteOperation(
 
     companion object {
         private val TAG = StoreMetadataV2RemoteOperation::class.java.simpleName
-        private const val SYNC_READ_TIMEOUT = 40000
-        private const val SYNC_CONNECTION_TIMEOUT = 5000
         private const val METADATA_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v2/meta-data/"
         private const val METADATA = "metaData"
         private const val HEADER_SIGNATURE = "X-NC-E2EE-SIGNATURE"

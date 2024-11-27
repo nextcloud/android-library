@@ -10,6 +10,8 @@ package com.owncloud.android.lib.resources.trashbin;
 import android.net.Uri;
 import android.util.Log;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -27,11 +29,10 @@ import java.io.IOException;
 public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
 
     private static final String TAG = RestoreTrashbinFileRemoteOperation.class.getSimpleName();
-    private static final int RESTORE_READ_TIMEOUT = 30000;
-    private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
-    private String sourcePath;
-    private String fileName;
+    private final String sourcePath;
+    private final String fileName;
+    private final SessionTimeOut sessionTimeOut;
 
     /**
      * Constructor
@@ -42,6 +43,13 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
     public RestoreTrashbinFileRemoteOperation(String sourcePath, String fileName) {
         this.sourcePath = sourcePath;
         this.fileName = fileName;
+        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public RestoreTrashbinFileRemoteOperation(String sourcePath, String fileName, SessionTimeOut sessionTimeOut) {
+        this.sourcePath = sourcePath;
+        this.fileName = fileName;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -60,13 +68,13 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
                     Uri.encode(fileName);
 
             move = new MoveMethod(source, target, true);
-            int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(move, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
-            result = new RemoteOperationResult(isSuccess(status), move);
+            result = new RemoteOperationResult<>(isSuccess(status), move);
 
             client.exhaustResponse(move.getResponseBodyAsStream());
         } catch (IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log.e(TAG, "Restore trashbin file " + sourcePath + " failed: " + result.getLogMessage(), e);
         } finally {
             if (move != null) {

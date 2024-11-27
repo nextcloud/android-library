@@ -10,6 +10,8 @@ package com.owncloud.android.lib.resources.files;
 import android.net.Uri;
 import android.util.Log;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -27,11 +29,10 @@ import java.io.IOException;
 public class RestoreFileVersionRemoteOperation extends RemoteOperation {
 
     private static final String TAG = RestoreFileVersionRemoteOperation.class.getSimpleName();
-    private static final int RESTORE_READ_TIMEOUT = 30000;
-    private static final int RESTORE_CONNECTION_TIMEOUT = 5000;
 
     private final long fileId;
     private final String fileName;
+    private final SessionTimeOut sessionTimeOut;
 
     /**
      * Constructor
@@ -42,6 +43,13 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
     public RestoreFileVersionRemoteOperation(long fileId, String fileName) {
         this.fileId = fileId;
         this.fileName = fileName;
+        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public RestoreFileVersionRemoteOperation(long fileId, String fileName, SessionTimeOut sessionTimeOut) {
+        this.fileId = fileId;
+        this.fileName = fileName;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -60,13 +68,13 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
             String target = client.getDavUri() + "/versions/" + client.getUserId() + "/restore/" + fileId;
 
             move = new MoveMethod(source, target, true);
-            int status = client.executeMethod(move, RESTORE_READ_TIMEOUT, RESTORE_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(move, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
-            result = new RemoteOperationResult(isSuccess(status), move);
+            result = new RemoteOperationResult<>(isSuccess(status), move);
 
             client.exhaustResponse(move.getResponseBodyAsStream());
         } catch (IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log.e(TAG, "Restore file version with id " + fileId + " failed: " + result.getLogMessage(), e);
         } finally {
             if (move != null) {

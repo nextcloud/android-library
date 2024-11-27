@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -22,12 +24,12 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
 
     private static final String TAG = UnlockFileRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v2/lock/";
 
     private final long localId;
     private final String token;
+
+    private final SessionTimeOut sessionTimeOut;
 
     /**
      * Constructor
@@ -35,6 +37,13 @@ public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
     public UnlockFileRemoteOperation(long localId, String token) {
         this.localId = localId;
         this.token = token;
+        this.sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+    }
+
+    public UnlockFileRemoteOperation(long localId, String token, SessionTimeOut sessionTimeOut) {
+        this.localId = localId;
+        this.token = token;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -52,7 +61,7 @@ public class UnlockFileRemoteOperation extends RemoteOperation<Void> {
             deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
             deleteMethod.addRequestHeader(E2E_TOKEN, token);
 
-            int status = client.executeMethod(deleteMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(deleteMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             result = new RemoteOperationResult<>(status == HttpStatus.SC_OK, deleteMethod);
             
