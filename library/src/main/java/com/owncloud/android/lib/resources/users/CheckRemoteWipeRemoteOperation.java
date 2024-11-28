@@ -33,7 +33,7 @@ public class CheckRemoteWipeRemoteOperation extends RemoteOperation {
     private final SessionTimeOut sessionTimeOut;
 
     public CheckRemoteWipeRemoteOperation() {
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public CheckRemoteWipeRemoteOperation(SessionTimeOut sessionTimeOut) {

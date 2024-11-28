@@ -30,7 +30,9 @@ public class LockFileRemoteOperation extends RemoteOperation<String> {
     private static final String COUNTER_HEADER = "X-NC-E2EE-COUNTER";
 
     private final long localId;
-    private long counter = -1;
+    private final long counter;
+
+    private static final long defaultCounter = -1;
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
@@ -42,24 +44,20 @@ public class LockFileRemoteOperation extends RemoteOperation<String> {
      * Constructor
      */
     public LockFileRemoteOperation(long localId, long counter) {
-        this.localId = localId;
-        this.counter = counter;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(localId, counter, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public LockFileRemoteOperation(long localId) {
-        this.localId = localId;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(localId, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public LockFileRemoteOperation(long localId, SessionTimeOut sessionTimeOut) {
+        this(localId, defaultCounter, sessionTimeOut);
     }
 
     public LockFileRemoteOperation(long localId, long counter, SessionTimeOut sessionTimeOut) {
         this.localId = localId;
         this.counter = counter;
-        this.sessionTimeOut = sessionTimeOut;
-    }
-
-    public LockFileRemoteOperation(long localId, SessionTimeOut sessionTimeOut) {
-        this.localId = localId;
         this.sessionTimeOut = sessionTimeOut;
     }
 

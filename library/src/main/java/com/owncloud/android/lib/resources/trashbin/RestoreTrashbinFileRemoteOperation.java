@@ -41,9 +41,7 @@ public class RestoreTrashbinFileRemoteOperation extends RemoteOperation {
      * @param fileName   original filename
      */
     public RestoreTrashbinFileRemoteOperation(String sourcePath, String fileName) {
-        this.sourcePath = sourcePath;
-        this.fileName = fileName;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(sourcePath, fileName, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RestoreTrashbinFileRemoteOperation(String sourcePath, String fileName, SessionTimeOut sessionTimeOut) {

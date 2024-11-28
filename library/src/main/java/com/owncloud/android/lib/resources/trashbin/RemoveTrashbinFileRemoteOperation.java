@@ -33,8 +33,7 @@ public class RemoveTrashbinFileRemoteOperation extends RemoteOperation {
      * @param remotePath RemotePath of the remote file or folder to remove from the server
      */
     public RemoveTrashbinFileRemoteOperation(String remotePath) {
-        this.remotePath = remotePath;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(remotePath, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RemoveTrashbinFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {
