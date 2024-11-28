@@ -49,10 +49,7 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
      * Constructor
      */
     public UpdateMetadataRemoteOperation(long fileId, String encryptedMetadataJson, String token) {
-        this.fileId = fileId;
-        this.encryptedMetadataJson = URLEncoder.encode(encryptedMetadataJson);
-        this.token = token;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(fileId, encryptedMetadataJson, token, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public UpdateMetadataRemoteOperation(long fileId, String encryptedMetadataJson, String token, SessionTimeOut sessionTimeOut) {

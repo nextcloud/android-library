@@ -33,15 +33,13 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
 
     private static final String TAG = CheckEtagRemoteOperation.class.getSimpleName();
 
-    private String path;
-    private String expectedEtag;
+    private final String path;
+    private final String expectedEtag;
 
     private final SessionTimeOut sessionTimeOut;
 
     public CheckEtagRemoteOperation(String path, String expectedEtag) {
-        this.path = path;
-        this.expectedEtag = expectedEtag;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(path, expectedEtag, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public CheckEtagRemoteOperation(String path, String expectedEtag, SessionTimeOut sessionTimeOut) {

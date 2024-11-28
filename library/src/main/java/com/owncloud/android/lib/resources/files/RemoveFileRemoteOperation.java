@@ -34,8 +34,7 @@ public class RemoveFileRemoteOperation extends RemoteOperation {
      * @param remotePath RemotePath of the remote file or folder to remove from the server
      */
     public RemoveFileRemoteOperation(String remotePath) {
-        mRemotePath = remotePath;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(remotePath, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RemoveFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {

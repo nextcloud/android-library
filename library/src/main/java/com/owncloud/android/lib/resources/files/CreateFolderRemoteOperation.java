@@ -33,7 +33,7 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
 
     private final boolean createFullPath;
     private final String remotePath;
-    private String token;
+    private final String token;
     private final SessionTimeOut sessionTimeOut;
 
     /**
@@ -44,20 +44,15 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
      *                       if don't exist yet.
      */
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath) {
-        this.remotePath = remotePath;
-        this.createFullPath = createFullPath;
-        this.sessionTimeOut = new SessionTimeOut(30000, 5000);
+        this(remotePath, createFullPath, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, String token) {
-        this(remotePath, createFullPath);
-        this.token = token;
+        this(remotePath, createFullPath, token, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, SessionTimeOut sessionTimeOut) {
-        this.remotePath = remotePath;
-        this.createFullPath = createFullPath;
-        this.sessionTimeOut = sessionTimeOut;
+        this(remotePath, createFullPath, "", sessionTimeOut);
     }
 
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, String token, SessionTimeOut sessionTimeOut) {

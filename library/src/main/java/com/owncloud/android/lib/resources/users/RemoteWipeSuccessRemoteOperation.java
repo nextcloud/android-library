@@ -31,8 +31,7 @@ public class RemoteWipeSuccessRemoteOperation extends RemoteOperation {
     private final SessionTimeOut sessionTimeOut;
 
     public RemoteWipeSuccessRemoteOperation(String appToken) {
-        this.appToken = appToken;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(appToken, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RemoteWipeSuccessRemoteOperation(String appToken, SessionTimeOut sessionTimeOut) {

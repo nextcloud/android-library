@@ -36,8 +36,7 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
     private final String path;
 
     public RichWorkspaceDirectEditingRemoteOperation(String path) {
-        this.path = path;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(path, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RichWorkspaceDirectEditingRemoteOperation(String path, SessionTimeOut sessionTimeOut) {

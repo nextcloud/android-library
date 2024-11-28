@@ -46,7 +46,7 @@ public class RenameFileRemoteOperation extends RemoteOperation {
      * @param isFolder      'true' for folder and 'false' for files
      */
     public RenameFileRemoteOperation(String oldName, String oldRemotePath, String newName, boolean isFolder) {
-        this(oldName, oldRemotePath, newName, isFolder, new SessionTimeOut(600000, 5000));
+        this(oldName, oldRemotePath, newName, isFolder, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RenameFileRemoteOperation(String oldName, String oldRemotePath, String newName, boolean isFolder, SessionTimeOut sessionTimeOut) {

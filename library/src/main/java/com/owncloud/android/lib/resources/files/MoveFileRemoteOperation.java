@@ -51,10 +51,7 @@ public class MoveFileRemoteOperation extends RemoteOperation {
      * @param targetRemotePath Remove path desired for the file/folder after moving it.
      */
     public MoveFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite) {
-        mSrcRemotePath = srcRemotePath;
-        mTargetRemotePath = targetRemotePath;
-        mOverwrite = overwrite;
-        sessionTimeOut = new SessionTimeOut(600000, 5000);
+        this(srcRemotePath, targetRemotePath, overwrite, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public MoveFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite, SessionTimeOut sessionTimeOut) {

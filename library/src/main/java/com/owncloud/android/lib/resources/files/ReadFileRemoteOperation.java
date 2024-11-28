@@ -44,8 +44,7 @@ public class ReadFileRemoteOperation extends RemoteOperation {
      * @param remotePath Remote path of the file.
      */
     public ReadFileRemoteOperation(String remotePath) {
-        mRemotePath = remotePath;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(remotePath, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public ReadFileRemoteOperation(String remotePath, SessionTimeOut sessionTimeOut) {

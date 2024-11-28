@@ -41,9 +41,7 @@ public class RestoreFileVersionRemoteOperation extends RemoteOperation {
      * @param fileName version date in unixtime
      */
     public RestoreFileVersionRemoteOperation(long fileId, String fileName) {
-        this.fileId = fileId;
-        this.fileName = fileName;
-        sessionTimeOut = SessionTimeOutKt.getDefaultSessionTimeOut();
+        this(fileId, fileName, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public RestoreFileVersionRemoteOperation(long fileId, String fileName, SessionTimeOut sessionTimeOut) {
