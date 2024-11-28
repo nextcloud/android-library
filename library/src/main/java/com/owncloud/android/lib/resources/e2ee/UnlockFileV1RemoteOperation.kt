@@ -22,7 +22,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod
 class UnlockFileV1RemoteOperation @JvmOverloads constructor(
     private val localId: Long,
     private val token: String,
-    var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<Void>() {
 
     @Deprecated("Deprecated in Java")

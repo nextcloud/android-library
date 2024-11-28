@@ -28,7 +28,7 @@ class UpdateMetadataV2RemoteOperation @JvmOverloads constructor(
     encryptedMetadataJson: String,
     private val token: String,
     private val signature: String,
-    var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<String>() {
     private val encryptedMetadataJson: String = URLEncoder.encode(encryptedMetadataJson)
 
