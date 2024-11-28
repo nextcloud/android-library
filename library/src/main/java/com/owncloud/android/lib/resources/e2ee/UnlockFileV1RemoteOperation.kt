@@ -19,15 +19,11 @@ import org.apache.commons.httpclient.methods.DeleteMethod
 /**
  * Unlock a file
  */
-class UnlockFileV1RemoteOperation(
+class UnlockFileV1RemoteOperation @JvmOverloads constructor(
     private val localId: Long,
-    private val token: String
+    private val token: String,
+    var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<Void>() {
-    private var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
-
-    constructor(localId: Long, token: String, sessionTimeOut: SessionTimeOut) : this(localId, token) {
-        this.sessionTimeOut = sessionTimeOut
-    }
 
     @Deprecated("Deprecated in Java")
     @Suppress("Detekt.TooGenericExceptionCaught")

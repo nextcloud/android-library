@@ -21,23 +21,13 @@ import org.json.JSONObject
 /**
  * Remote operation to store the folder metadata
  */
-class StoreMetadataV2RemoteOperation(
+class StoreMetadataV2RemoteOperation @JvmOverloads constructor(
     private val remoteId: String,
     private val encryptedMetadataJson: String,
     private val token: String,
-    private val signature: String
+    private val signature: String,
+    var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<String>() {
-    private var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
-
-    constructor(
-        remoteId: String,
-        encryptedMetadataJson: String,
-        token: String,
-        signature: String,
-        sessionTimeOut: SessionTimeOut
-    ) : this(remoteId, encryptedMetadataJson, token, signature) {
-        this.sessionTimeOut = sessionTimeOut
-    }
 
     /**
      * @param client Client object
