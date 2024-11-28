@@ -23,32 +23,14 @@ import java.net.URLEncoder
 /**
  * Remote operation to update the folder metadata
  */
-class UpdateMetadataV2RemoteOperation(
+class UpdateMetadataV2RemoteOperation @JvmOverloads constructor(
     private val remoteId: String,
     encryptedMetadataJson: String,
     private val token: String,
-    private val signature: String
+    private val signature: String,
+    var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<String>() {
-    private val encryptedMetadataJson: String
-    private var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
-
-    /**
-     * Constructor
-     */
-    init {
-        this.encryptedMetadataJson = URLEncoder.encode(encryptedMetadataJson)
-        // this.encryptedMetadataJson = encryptedMetadataJson;
-    }
-
-    constructor(
-        remoteId: String,
-        encryptedMetadataJson: String,
-        token: String,
-        signature: String,
-        sessionTimeOut: SessionTimeOut
-    ) : this(remoteId, encryptedMetadataJson, token, signature) {
-        this.sessionTimeOut = sessionTimeOut
-    }
+    private val encryptedMetadataJson: String = URLEncoder.encode(encryptedMetadataJson)
 
     /**
      * @param client Client object
