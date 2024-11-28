@@ -26,7 +26,7 @@ class StoreMetadataV2RemoteOperation @JvmOverloads constructor(
     private val encryptedMetadataJson: String,
     private val token: String,
     private val signature: String,
-    var sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<String>() {
 
     /**
