@@ -19,42 +19,43 @@ import org.apache.commons.httpclient.methods.DeleteMethod
 /**
  * Unlock a file
  */
-class UnlockFileV1RemoteOperation @JvmOverloads constructor(
-    private val localId: Long,
-    private val token: String,
-    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
-) : RemoteOperation<Void>() {
-
-    @Deprecated("Deprecated in Java")
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun run(client: OwnCloudClient): RemoteOperationResult<Void> {
-        var result: RemoteOperationResult<Void>
-        var deleteMethod: DeleteMethod? = null
-        try {
-            // remote request
-            deleteMethod = DeleteMethod(client.baseUri.toString() + LOCK_FILE_URL + localId)
-            deleteMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
-            deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
-            deleteMethod.addRequestHeader(E2E_TOKEN, token)
-            val status =
-                client.executeMethod(deleteMethod, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
-            result = RemoteOperationResult(status == HttpStatus.SC_OK, deleteMethod)
-            client.exhaustResponse(deleteMethod.responseBodyAsStream)
-        } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(
-                TAG,
-                "Unlock file with id " + localId + " failed: " + result.logMessage,
-                result.exception
-            )
-        } finally {
-            deleteMethod?.releaseConnection()
+class UnlockFileV1RemoteOperation
+    @JvmOverloads
+    constructor(
+        private val localId: Long,
+        private val token: String,
+        private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+    ) : RemoteOperation<Void>() {
+        @Deprecated("Deprecated in Java")
+        @Suppress("Detekt.TooGenericExceptionCaught")
+        override fun run(client: OwnCloudClient): RemoteOperationResult<Void> {
+            var result: RemoteOperationResult<Void>
+            var deleteMethod: DeleteMethod? = null
+            try {
+                // remote request
+                deleteMethod = DeleteMethod(client.baseUri.toString() + LOCK_FILE_URL + localId)
+                deleteMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
+                deleteMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
+                deleteMethod.addRequestHeader(E2E_TOKEN, token)
+                val status =
+                    client.executeMethod(deleteMethod, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
+                result = RemoteOperationResult(status == HttpStatus.SC_OK, deleteMethod)
+                client.exhaustResponse(deleteMethod.responseBodyAsStream)
+            } catch (e: Exception) {
+                result = RemoteOperationResult(e)
+                Log_OC.e(
+                    TAG,
+                    "Unlock file with id " + localId + " failed: " + result.logMessage,
+                    result.exception
+                )
+            } finally {
+                deleteMethod?.releaseConnection()
+            }
+            return result
         }
-        return result
-    }
 
-    companion object {
-        private val TAG = UnlockFileV1RemoteOperation::class.java.simpleName
-        private const val LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/"
+        companion object {
+            private val TAG = UnlockFileV1RemoteOperation::class.java.simpleName
+            private const val LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/"
+        }
     }
-}
