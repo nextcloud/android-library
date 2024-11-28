@@ -9,6 +9,7 @@ package com.owncloud.android.lib.resources.files;
 import android.util.Log;
 
 import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -53,7 +54,7 @@ public class CopyFileRemoteOperation extends RemoteOperation {
      * @param targetRemotePath Remove path desired for the file/folder after moving it.
      */
     public CopyFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite) {
-        this(srcRemotePath, targetRemotePath, overwrite, new SessionTimeOut(600000, 5000));
+        this(srcRemotePath, targetRemotePath, overwrite, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
 
