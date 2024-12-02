@@ -7,16 +7,19 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.common.OkHttpMethodBase;
+import com.nextcloud.operations.DeleteMethod;
+import com.nextcloud.operations.PutMethod;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
+import com.owncloud.android.lib.resources.files.model.RemoteFile;
 
-import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
+
+import java.util.List;
 
 
 /**
@@ -26,8 +29,6 @@ import org.apache.commons.httpclient.methods.PutMethod;
 public class ToggleEncryptionRemoteOperation extends RemoteOperation<Void> {
 
     private static final String TAG = ToggleEncryptionRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String ENCRYPTED_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/encrypted/";
 
     private final long localId;
@@ -47,38 +48,36 @@ public class ToggleEncryptionRemoteOperation extends RemoteOperation<Void> {
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult<Void> run(OwnCloudClient client) {
+    public RemoteOperationResult<Void> run(NextcloudClient client) {
         RemoteOperationResult<Void> result;
-        HttpMethodBase method = null;
+        OkHttpMethodBase method = null;
 
         ReadFolderRemoteOperation remoteFolderOperation = new ReadFolderRemoteOperation(remotePath);
-        RemoteOperationResult remoteFolderOperationResult = remoteFolderOperation.execute(client);
+        RemoteOperationResult<List<RemoteFile>> remoteFolderOperationResult = remoteFolderOperation.execute(client);
 
         // Abort if not empty
         // Result has always the folder and maybe children, so size == 1 is ok
-        if (remoteFolderOperationResult.isSuccess() && remoteFolderOperationResult.getData().size() > 1) {
+        if (remoteFolderOperationResult.isSuccess() && remoteFolderOperationResult.getResultData() != null && remoteFolderOperationResult.getResultData().size() > 1) {
             return new RemoteOperationResult<>(false, "Non empty", HttpStatus.SC_FORBIDDEN);
         }
 
         try {
             String url = client.getBaseUri() + ENCRYPTED_URL + localId;
             if (encryption) {
-                method = new PutMethod(url);
+                method = new PutMethod(url, true, null);
             } else {
-                method = new DeleteMethod(url);
+                method = new DeleteMethod(url, true);
             }
 
             // remote request
-            method.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             method.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
-            int status = client.executeMethod(method, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.execute(method);
 
             if (status == HttpStatus.SC_OK) {
                 result = new RemoteOperationResult<>(true, method);
             } else {
                 result = new RemoteOperationResult<>(false, method);
-                client.exhaustResponse(method.getResponseBodyAsStream());
             }
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);

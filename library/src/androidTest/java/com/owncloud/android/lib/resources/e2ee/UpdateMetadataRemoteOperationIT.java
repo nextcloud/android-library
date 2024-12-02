@@ -7,11 +7,6 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 import android.text.TextUtils;
 
 import com.nextcloud.test.RandomStringGenerator;
@@ -21,6 +16,11 @@ import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation;
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class UpdateMetadataRemoteOperationIT extends AbstractIT {
     //@Test
@@ -34,8 +34,8 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
 
         // create folder
         String folder = "/" + RandomStringGenerator.make(20) + "/";
-        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
-        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
+        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
+        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(nextcloudClient).getResultData();
 
         assertNotNull(remoteFolder);
 
@@ -43,7 +43,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
                                                        remoteFolder.getRemotePath(),
                                                        true)
-                           .execute(client)
+                           .execute(nextcloudClient)
                            .isSuccess());
 
         // Lock 
@@ -84,11 +84,11 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new UnlockFileRemoteOperation(remoteFolder.getLocalId(), token).execute(client).isSuccess());
 
         // verify metadata
-        String retrievedMetadata2 = (String) new GetMetadataRemoteOperation(remoteFolder.getLocalId())
+        MetadataResponse retrievedMetadata2 = new GetMetadataRemoteOperation(remoteFolder.getLocalId())
                 .execute(client)
-                .getSingleData();
+                .getResultData();
 
-        assertEquals(updatedMetadata, retrievedMetadata2);
+        assertEquals(updatedMetadata, retrievedMetadata2.getMetadata());
     }
 
     //@Test
@@ -102,8 +102,8 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
 
         // create folder
         String folder = "/" + RandomStringGenerator.make(20) + "/";
-        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
-        RemoteFile remoteFolder = (RemoteFile) new ReadFileRemoteOperation(folder).execute(client).getSingleData();
+        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
+        RemoteFile remoteFolder = new ReadFileRemoteOperation(folder).execute(nextcloudClient).getResultData();
 
         assertNotNull(remoteFolder);
 
@@ -111,7 +111,7 @@ public class UpdateMetadataRemoteOperationIT extends AbstractIT {
         assertTrue(new ToggleEncryptionRemoteOperation(remoteFolder.getLocalId(),
                                                        remoteFolder.getRemotePath(),
                                                        true)
-                           .execute(client)
+                           .execute(nextcloudClient)
                            .isSuccess());
 
         // Lock 

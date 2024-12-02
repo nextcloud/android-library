@@ -14,36 +14,35 @@ import static org.junit.Assert.assertNotEquals;
 import android.text.TextUtils;
 
 import com.owncloud.android.AbstractIT;
-import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
-import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
 
 import org.junit.Test;
+
+import okhttp3.Credentials;
 
 public class GenerateAppPasswordRemoteOperationIT extends AbstractIT {
 
     @Test
     public void generateAppPassword() {
         GenerateAppPasswordRemoteOperation sut = new GenerateAppPasswordRemoteOperation();
-        RemoteOperationResult result = sut.execute(client);
+        RemoteOperationResult<String> result = sut.execute(nextcloudClient);
 
         assertTrue(result.isSuccess());
 
-        String appPassword = (String) result.getSingleData();
+        String appPassword = result.getResultData();
         assertFalse(TextUtils.isEmpty(appPassword));
 
-        OwnCloudCredentials oldOwnCloudCredentials = client.getCredentials();
-        OwnCloudCredentials newOwnCloudCredentials = new OwnCloudBasicCredentials(oldOwnCloudCredentials.getUsername(),
-                appPassword);
+        String clientCredentials = nextcloudClient.getCredentials();
+        String newClientCredentials = Credentials.basic(nextcloudClient.getUserId(), appPassword);
 
-        assertNotEquals(oldOwnCloudCredentials, newOwnCloudCredentials);
+        assertNotEquals(clientCredentials, newClientCredentials);
 
-        client.setCredentials(newOwnCloudCredentials);
+        nextcloudClient.setCredentials(newClientCredentials);
 
-        assertTrue(new ReadFolderRemoteOperation("/").execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation("/").execute(nextcloudClient).isSuccess());
 
         // using app password to generate new password should fail
-        assertFalse(new GenerateAppPasswordRemoteOperation().execute(client).isSuccess());
+        assertFalse(new GenerateAppPasswordRemoteOperation().execute(nextcloudClient).isSuccess());
     }
 }

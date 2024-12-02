@@ -10,7 +10,6 @@ package com.nextcloud.android.lib.resources.search
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -36,28 +35,25 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
     fun filesSearchEmptyResult() {
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
-
-        val data = result.resultData
-        assertTrue(data.entries.isEmpty())
+        assertNotNull(result.resultData)
+        assertTrue(result.resultData?.entries?.isEmpty() == true)
     }
 
     @Test
     fun filesSearch() {
         val remotePath = "/testFolder"
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
-        val remoteFile =
-            ReadFileRemoteOperation(remotePath)
-                .execute(client).data[0] as RemoteFile
-        val fileId = remoteFile.localId
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
+        val remoteFile = ReadFileRemoteOperation(remotePath).execute(nextcloudClient).resultData
+        val fileId = remoteFile?.localId
 
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val data = result.resultData
-        assertEquals("Files", data.name)
-        assertTrue(data.entries.isNotEmpty())
+        assertEquals("Files", data?.name)
+        assertTrue(data?.entries?.isNotEmpty() == true)
 
-        val firstResult = data.entries.find { it.title == "testFolder" }
+        val firstResult = data?.entries?.find { it.title == "testFolder" }
 
         assertNotNull(firstResult)
         assertEquals(remotePath, firstResult?.remotePath())
@@ -66,14 +62,14 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
 
     @Test
     fun filesSearchWhitespace() {
-        assertTrue(CreateFolderRemoteOperation("/test Folder/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/test Folder/", true).execute(nextcloudClient).isSuccess)
 
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val data = result.resultData
-        assertTrue(data.name == "Files")
-        assertTrue(data.entries.isNotEmpty())
-        assertNotNull(data.entries.find { it.title == "test Folder" })
+        assertTrue(data?.name == "Files")
+        assertTrue(data?.entries?.isNotEmpty() == true)
+        assertNotNull(data?.entries?.find { it.title == "test Folder" })
     }
 }

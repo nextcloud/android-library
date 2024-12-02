@@ -7,9 +7,6 @@
  */
 package com.nextcloud.android.lib.richWorkspace;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import android.webkit.URLUtil;
 
 import com.owncloud.android.AbstractIT;
@@ -22,15 +19,18 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
 
     @Test
     public void getEditLinkForRoot() {
-        RemoteOperationResult result = new RichWorkspaceDirectEditingRemoteOperation("/").execute(client);
+        RemoteOperationResult<String> result = new RichWorkspaceDirectEditingRemoteOperation("/").execute(client);
         assertTrue(result.isSuccess());
-        assertNotNull(result.getSingleData());
+        assertNotNull(result.getResultData());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertTrue(URLUtil.isValidUrl(url));
     }
@@ -39,13 +39,13 @@ public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
     public void getEditLinkForFolder() {
         String path = "/workspace/sub1/";
 
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
-        RemoteOperationResult result = new RichWorkspaceDirectEditingRemoteOperation(path).execute(client);
+        RemoteOperationResult<String> result = new RichWorkspaceDirectEditingRemoteOperation(path).execute(client);
         assertTrue(result.isSuccess());
-        assertNotNull(result.getSingleData());
+        assertNotNull(result.getResultData());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertTrue(URLUtil.isValidUrl(url));
     }
@@ -56,9 +56,9 @@ public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
         String filePath = folder + "Readme.md";
         File txtFile = getFile(ASSETS__TEXT_FILE_NAME);
 
-        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess());
 
-        RemoteOperationResult uploadResult = new UploadFileRemoteOperation(
+        RemoteOperationResult<String> uploadResult = new UploadFileRemoteOperation(
                 txtFile.getAbsolutePath(),
                 filePath,
                 "txt/plain",
@@ -67,11 +67,11 @@ public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
 
         assertTrue("Error uploading file " + filePath + ": " + uploadResult, uploadResult.isSuccess());
 
-        RemoteOperationResult result = new RichWorkspaceDirectEditingRemoteOperation(folder).execute(client);
+        RemoteOperationResult<String> result = new RichWorkspaceDirectEditingRemoteOperation(folder).execute(client);
         assertTrue(result.isSuccess());
-        assertNotNull(result.getSingleData());
+        assertNotNull(result.getResultData());
 
-        String url = (String) result.getSingleData();
+        String url = result.getResultData();
 
         assertTrue(URLUtil.isValidUrl(url));
     }

@@ -7,6 +7,9 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import static com.owncloud.android.lib.common.network.WebdavUtils.NAMESPACE_NC;
+import static com.owncloud.android.lib.common.network.WebdavUtils.NAMESPACE_OC;
+
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
@@ -26,11 +29,7 @@ import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED;
-import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_NC;
-import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
-
-public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
+public class NCSearchMethod extends org.apache.jackrabbit.webdav.client.methods.SearchMethod {
     private static final String HEADER_CONTENT_TYPE_VALUE = "text/xml";
     private static final String DAV_NAMESPACE = "DAV:";
 
@@ -44,7 +43,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
     private final Long endDate;
 
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    public NcSearchMethod(String uri, 
+    public NCSearchMethod(String uri,
                           SearchInfo searchInfo,
                           SearchRemoteOperation.SearchType searchType,
                           String userId,
@@ -66,6 +65,10 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
 
         setRequestHeader(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
         setRequestBody(createQuery(searchInfo.getQuery()));
+    }
+
+    public Document getDocumentQuery(SearchInfo searchInfo) {
+        return createQuery(searchInfo.getQuery());
     }
 
     private Document createQuery(String searchQuery) {
@@ -103,7 +106,7 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         Element sizeElement = query.createElementNS(NAMESPACE_OC, "oc:size");
         Element favoriteElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
         Element previewElement = query.createElementNS(NAMESPACE_OC, "nc:has-preview");
-        Element encryptedElement = query.createElementNS(NAMESPACE_NC, EXTENDED_PROPERTY_IS_ENCRYPTED);
+        Element encryptedElement = query.createElementNS(NAMESPACE_NC, "nc:is-encrypted");
 
         if (searchType != SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
             selectPropsElement.appendChild(displayNameElement);
@@ -133,26 +136,12 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         Text depthTextElement = query.createTextNode("infinity");
         Element whereElement = query.createElementNS(DAV_NAMESPACE, "d:where");
         Element folderElement;
-        Element equalsElement;
-
-        switch (searchType) {
-            case FAVORITE_SEARCH:
-            case FILE_ID_SEARCH:
-                equalsElement = query.createElementNS(DAV_NAMESPACE, "d:eq");
-                break;
-
-            case RECENTLY_MODIFIED_SEARCH:
-                equalsElement = query.createElementNS(DAV_NAMESPACE, "d:gt");
-                break;
-
-            case GALLERY_SEARCH:
-                equalsElement = query.createElementNS(DAV_NAMESPACE, "d:or");
-                break;
-
-            default:
-                equalsElement = query.createElementNS(DAV_NAMESPACE, "d:like");
-                break;
-        }
+        Element equalsElement = switch (searchType) {
+            case FAVORITE_SEARCH, FILE_ID_SEARCH -> query.createElementNS(DAV_NAMESPACE, "d:eq");
+            case RECENTLY_MODIFIED_SEARCH -> query.createElementNS(DAV_NAMESPACE, "d:gt");
+            case GALLERY_SEARCH -> query.createElementNS(DAV_NAMESPACE, "d:or");
+            default -> query.createElementNS(DAV_NAMESPACE, "d:like");
+        };
 
         Element propElement = null;
         Element queryElement = null;
@@ -165,29 +154,19 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
             propElement = query.createElementNS(DAV_NAMESPACE, "d:prop");
 
             switch (searchType) {
-                case PHOTO_SEARCH:
-                    queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
-                    break;
-
-                case FILE_SEARCH:
-                    queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
-                    break;
-
-                case FAVORITE_SEARCH:
-                    queryElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
-                    break;
-
-                case RECENTLY_MODIFIED_SEARCH:
-                    queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
-                    break;
-
-                case FILE_ID_SEARCH:
-                    queryElement = query.createElementNS(NAMESPACE_OC, "oc:fileid");
-                    break;
-
-                default:
-                    // no default
-                    break;
+                case PHOTO_SEARCH ->
+                        queryElement = query.createElementNS(DAV_NAMESPACE, "d:getcontenttype");
+                case FILE_SEARCH ->
+                        queryElement = query.createElementNS(DAV_NAMESPACE, "d:displayname");
+                case FAVORITE_SEARCH ->
+                        queryElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
+                case RECENTLY_MODIFIED_SEARCH ->
+                        queryElement = query.createElementNS(DAV_NAMESPACE, "d:getlastmodified");
+                case FILE_ID_SEARCH ->
+                        queryElement = query.createElementNS(NAMESPACE_OC, "oc:fileid");
+                default -> {
+                }
+                // no default
             }
 
             literalElement = query.createElementNS(DAV_NAMESPACE, "d:literal");

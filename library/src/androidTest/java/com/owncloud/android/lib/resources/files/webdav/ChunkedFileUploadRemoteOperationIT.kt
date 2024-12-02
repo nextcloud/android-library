@@ -7,6 +7,7 @@
  */
 package com.owncloud.android.lib.resources.files.webdav
 
+import com.nextcloud.extensions.toLegacyPropset
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavUtils
@@ -139,7 +140,7 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
 
     private fun getRemoteSize(remotePath: String): Long {
         val davPath = client.filesDavUri.toString() + "/" + WebdavUtils.encodePath(remotePath)
-        val propFindMethod = PropFindMethod(davPath, WebdavUtils.getFilePropSet(), 0)
+        val propFindMethod = PropFindMethod(davPath, WebdavUtils.PROPERTYSETS.FILE.toLegacyPropset(), 0)
         client.executeMethod(propFindMethod)
         assert(propFindMethod.succeeded())
 

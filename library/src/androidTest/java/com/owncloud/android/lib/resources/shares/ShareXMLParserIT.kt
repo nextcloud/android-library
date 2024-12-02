@@ -73,8 +73,8 @@ class ShareXMLParserIT {
         val sut = ShareToRemoteOperationResultParser(ShareXMLParser())
         val shares = sut.parse(xml)
 
-        assertEquals(1, shares.resultData.size)
-        assertTrue(shares.resultData[0].isFavorite)
+        assertEquals(1, shares.resultData?.size)
+        assertTrue(shares.resultData?.get(0)?.isFavorite == true)
     }
 
     @Test
@@ -7375,7 +7375,7 @@ class ShareXMLParserIT {
         val sut = ShareToRemoteOperationResultParser(ShareXMLParser())
         val shares = sut.parse(xml)
 
-        assertEquals(201, shares.resultData.size)
-        assertEquals(21, shares.resultData.count { ocShare -> ocShare.isFavorite })
+        assertEquals(201, shares.resultData?.size)
+        assertEquals(21, shares.resultData?.count { ocShare -> ocShare.isFavorite })
     }
 }

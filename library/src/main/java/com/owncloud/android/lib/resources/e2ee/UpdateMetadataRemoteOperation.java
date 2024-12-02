@@ -19,14 +19,13 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 
 /**
  * Remote operation to update the folder metadata
  */
 
-public class UpdateMetadataRemoteOperation extends RemoteOperation {
+public class UpdateMetadataRemoteOperation extends RemoteOperation<String> {
 
     private static final String TAG = UpdateMetadataRemoteOperation.class.getSimpleName();
     private static final int SYNC_READ_TIMEOUT = 40000;
@@ -56,9 +55,9 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
      * @param client Client object
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
         PutMethod putMethod = null;
-        RemoteOperationResult result;
+        RemoteOperationResult<String> result;
 
         try {
             // remote request
@@ -85,16 +84,14 @@ public class UpdateMetadataRemoteOperation extends RemoteOperation {
                 String metadata = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA)
                         .get(NODE_META_DATA);
 
-                result = new RemoteOperationResult(true, putMethod);
-                ArrayList<Object> keys = new ArrayList<>();
-                keys.add(metadata);
-                result.setData(keys);
+                result = new RemoteOperationResult<>(true, putMethod);
+                result.setResultData(metadata);
             } else {
-                result = new RemoteOperationResult(false, putMethod);
+                result = new RemoteOperationResult<>(false, putMethod);
                 client.exhaustResponse(putMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Storing of metadata for folder " + fileId + " failed: " + result.getLogMessage(),
                      result.getException());
         } finally {

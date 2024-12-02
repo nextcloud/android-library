@@ -142,13 +142,13 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                         modificationTime = getMethod.getResponseHeader("last-modified");
                     }
                     if (modificationTime != null) {
-                        Date d = WebdavUtils.parseResponseDate(modificationTime.getValue());
+                        Date d = WebdavUtils.INSTANCE.parseResponseDate(modificationTime.getValue());
                         modificationTimestamp = (d != null) ? d.getTime() : 0;
                     } else {
                         Log_OC.e(TAG, "Could not read modification time from response downloading " + remotePath);
                     }
 
-                    eTag = WebdavUtils.getEtagFromResponse(getMethod);
+                    eTag = WebdavUtils.INSTANCE.getEtagFromResponse(getMethod);
                     if (eTag.length() == 0) {
                         Log_OC.e(TAG, "Could not read eTag from response downloading " + remotePath);
                     }

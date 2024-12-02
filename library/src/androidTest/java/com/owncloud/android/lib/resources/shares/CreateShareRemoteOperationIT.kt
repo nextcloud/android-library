@@ -11,10 +11,10 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.status.GetStatusRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
-import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.junit.Assume
+import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -22,10 +22,11 @@ class CreateShareRemoteOperationIT : AbstractIT() {
     @Before
     fun before() {
         val result = GetStatusRemoteOperation(context).execute(client)
-        Assert.assertTrue(result.isSuccess)
-        val data = result.data as ArrayList<Any>
-        val ownCloudVersion = data[0] as OwnCloudVersion
-        Assume.assumeTrue(ownCloudVersion.isNewerOrEqual(NextcloudVersion.nextcloud_24))
+        assertTrue(result.isSuccess)
+        
+        val data = result.resultData
+        val ownCloudVersion = data?.first
+        assumeTrue(ownCloudVersion?.isNewerOrEqual(NextcloudVersion.nextcloud_24) == true)
     }
 
     @Test
@@ -36,7 +37,7 @@ class CreateShareRemoteOperationIT : AbstractIT() {
             CreateFolderRemoteOperation(
                 "/share/",
                 true
-            ).execute(client).isSuccess
+            ).execute(nextcloudClient).isSuccess
         )
 
         // share folder to user "admin"
@@ -54,8 +55,8 @@ class CreateShareRemoteOperationIT : AbstractIT() {
 
         junit.framework.Assert.assertTrue(sut.isSuccess)
 
-        val share = sut.resultData[0]
+        val share = sut.resultData?.get(0)
 
-        assertEquals(note, share.note)
+        assertEquals(note, share?.note)
     }
 }

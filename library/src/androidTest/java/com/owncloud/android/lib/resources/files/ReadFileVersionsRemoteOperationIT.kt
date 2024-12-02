@@ -8,11 +8,11 @@
 package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.FileWriter
@@ -34,21 +34,22 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
-        var remoteFile = ReadFileRemoteOperation(filePath).execute(client).data[0] as RemoteFile
+        var remoteFile = ReadFileRemoteOperation(filePath).execute(nextcloudClient).resultData
+        assertNotNull(remoteFile)
 
-        var sutResult = ReadFileVersionsRemoteOperation(remoteFile.localId).execute(client)
+        var sutResult = ReadFileVersionsRemoteOperation(remoteFile!!.localId).execute(client)
 
         assertTrue(sutResult.isSuccess)
 
         var versionCount = 0
         val ocCapability =
             GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).singleData as OCCapability
+                .execute(nextcloudClient).resultData as OCCapability
         if (ocCapability.version.isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
             // with NC26+ we always have a starting version
             versionCount++
         }
-        assertEquals(versionCount, sutResult.data.size)
+        assertEquals(versionCount, sutResult.resultData?.size)
 
         // modify file to have a version
         FileWriter(txtFile).apply {
@@ -68,13 +69,14 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
-        remoteFile = ReadFileRemoteOperation(filePath).execute(client).data[0] as RemoteFile
+        remoteFile = ReadFileRemoteOperation(filePath).execute(nextcloudClient).resultData
+        assertNotNull(remoteFile)
 
-        sutResult = ReadFileVersionsRemoteOperation(remoteFile.localId).execute(client)
+        sutResult = ReadFileVersionsRemoteOperation(remoteFile!!.localId).execute(client)
 
         assertTrue(sutResult.isSuccess)
 
         versionCount++
-        assertEquals(versionCount, sutResult.data.size)
+        assertEquals(versionCount, sutResult.resultData?.size)
     }
 }

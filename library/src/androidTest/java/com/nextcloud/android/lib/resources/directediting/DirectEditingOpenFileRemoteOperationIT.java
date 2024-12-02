@@ -34,7 +34,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
                 1464818400
         ).execute(client).isSuccess());
 
-        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(nextcloudClient).isSuccess());
 
         // open file
         RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
@@ -58,7 +58,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
                 1464818400
         ).execute(client).isSuccess());
 
-        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(nextcloudClient).isSuccess());
 
         // open file
         RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
@@ -82,7 +82,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
                 1464818400
         ).execute(client).isSuccess());
 
-        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+        TestCase.assertTrue(new ReadFileRemoteOperation(remotePath).execute(nextcloudClient).isSuccess());
 
         // open file
         RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
@@ -98,7 +98,7 @@ public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
     public void openNonExistingFile() {
         String remotePath = "/nonExisting.md";
 
-        TestCase.assertFalse(new ReadFileRemoteOperation(remotePath).execute(client).isSuccess());
+        TestCase.assertFalse(new ReadFileRemoteOperation(remotePath).execute(nextcloudClient).isSuccess());
 
         // open file
         RemoteOperationResult<String> result = new DirectEditingOpenFileRemoteOperation(remotePath, "text")
