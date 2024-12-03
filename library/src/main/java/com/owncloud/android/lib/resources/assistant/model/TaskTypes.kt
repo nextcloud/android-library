@@ -23,10 +23,6 @@ data class TaskType(
     val coreText2textSummary: CoreText2textSummary,
     @SerializedName("core:text2text:translate")
     val coreText2textTranslate: CoreText2textTranslate,
-    @SerializedName("core:text2image")
-    val coreText2image: CoreText2image,
-    @SerializedName("core:audio2text")
-    val coreAudio2text: CoreAudio2text,
     @SerializedName("core:contextwrite")
     val coreContextwrite: CoreContextwrite,
     @SerializedName("context_chat:context_chat")
@@ -38,7 +34,5 @@ data class CoreText2textTopics(val name: String, val description: String)
 data class CoreText2textHeadline(val name: String, val description: String)
 data class CoreText2textSummary(val name: String, val description: String)
 data class CoreText2textTranslate(val name: String, val description: String)
-data class CoreText2image(val name: String, val description: String)
-data class CoreAudio2text(val name: String, val description: String)
 data class CoreContextwrite(val name: String, val description: String)
 data class ContextChatContextChat(val name: String, val description: String)
