@@ -15,11 +15,22 @@ data class TaskList(
 data class Task(
     val id: Long,
     val type: String?,
-    val status: Long?,
+    val status: String?,
     val userId: String?,
     val appId: String?,
-    val input: String?,
-    val output: String?,
-    val identifier: String?,
-    val completionExpectedAt: String? = null
+    val input: TaskInput?,
+    val output: TaskOutput?,
+    val completionExpectedAt: Int? = null,
+    var progress: Int? = null,
+    val lastUpdated: Int? = null,
+    val scheduledAt: Int? = null,
+    val endedAt: Int? = null
+)
+
+data class TaskInput (
+    var input: String? = null
+)
+
+data class TaskOutput (
+   var output : String? = null
 )

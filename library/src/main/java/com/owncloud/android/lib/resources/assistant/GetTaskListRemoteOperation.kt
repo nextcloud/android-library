@@ -25,7 +25,7 @@ class GetTaskListRemoteOperation(private val appId: String) : OCSRemoteOperation
         var getMethod: GetMethod? = null
         try {
             getMethod =
-                GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + appId + JSON_FORMAT, true)
+                GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
                 val taskTypes: TaskList? =
@@ -53,6 +53,6 @@ class GetTaskListRemoteOperation(private val appId: String) : OCSRemoteOperation
 
     companion object {
         private val TAG = GetTaskTypesRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT = "/ocs/v2.php/textprocessing/tasks/app/"
+        private const val DIRECT_ENDPOINT = "/ocs/v2.php/apps/assistant/api/v1/tasks"
     }
 }
