@@ -27,10 +27,10 @@ data class Task(
     val endedAt: Int? = null
 )
 
-data class TaskInput (
+data class TaskInput(
     var input: String? = null
 )
 
-data class TaskOutput (
-   var output : String? = null
+data class TaskOutput(
+    var output: String? = null
 )

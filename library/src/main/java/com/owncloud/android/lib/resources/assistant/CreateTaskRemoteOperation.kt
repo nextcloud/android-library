@@ -18,7 +18,6 @@ import org.apache.commons.httpclient.HttpStatus
 
 class CreateTaskRemoteOperation(private val input: String, private val type: String) :
     RemoteOperation<Void>() {
-
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val inputField = hashMapOf("input" to input)
 

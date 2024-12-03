@@ -14,7 +14,7 @@ enum class TaskIds(val id: String) {
     GenerateText("core:text2text"),
     ExtractTopics("core:text2text:topics"),
     GenerateHeadline("core:text2text:headline"),
-    Summarize("core:text2text:summary"),
+    Summarize("core:text2text:summary")
 }
 
 data class TaskTypes(val types: TaskType)
@@ -31,6 +31,9 @@ data class TaskType(
 )
 
 data class GenerateText(val name: String, val description: String)
+
 data class ExtractTopics(val name: String, val description: String)
+
 data class GenerateHeadline(val name: String, val description: String)
+
 data class Summarize(val name: String, val description: String)
