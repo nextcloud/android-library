@@ -53,6 +53,6 @@ class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
 
     companion object {
         private val TAG = GetTaskTypesRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT = "/ocs/v2.php/textprocessing/tasktypes"
+        private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/tasktypes"
     }
 }
