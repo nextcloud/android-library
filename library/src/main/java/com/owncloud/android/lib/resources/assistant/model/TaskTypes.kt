@@ -9,6 +9,7 @@
 package com.owncloud.android.lib.resources.assistant.model
 
 import com.google.gson.annotations.SerializedName
+
 data class TaskTypes(val types: TaskType)
 
 data class TaskType(
