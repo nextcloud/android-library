@@ -41,7 +41,6 @@ class DeleteTaskRemoteOperation(private val appId: Long) : RemoteOperation<Void>
 
     companion object {
         private val TAG = DeletePrivateKeyRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT =
-            "/ocs/v2.php/textprocessing/task/"
+        private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/task/"
     }
 }
