@@ -10,29 +10,27 @@ package com.owncloud.android.lib.resources.assistant.model
 
 import com.google.gson.annotations.SerializedName
 
+enum class TaskIds(val id: String) {
+    GenerateText("core:text2text"),
+    ExtractTopics("core:text2text:topics"),
+    GenerateHeadline("core:text2text:headline"),
+    Summarize("core:text2text:summary"),
+}
+
 data class TaskTypes(val types: TaskType)
 
 data class TaskType(
     @SerializedName("core:text2text")
-    val coreText2text: CoreText2text,
+    val generateText: GenerateText,
     @SerializedName("core:text2text:topics")
-    val coreText2textTopics: CoreText2textTopics,
+    val extractTopics: ExtractTopics,
     @SerializedName("core:text2text:headline")
-    val coreText2textHeadline: CoreText2textHeadline,
+    val generateHeadline: GenerateHeadline,
     @SerializedName("core:text2text:summary")
-    val coreText2textSummary: CoreText2textSummary,
-    @SerializedName("core:text2text:translate")
-    val coreText2textTranslate: CoreText2textTranslate,
-    @SerializedName("core:contextwrite")
-    val coreContextwrite: CoreContextwrite,
-    @SerializedName("context_chat:context_chat")
-    val contextChatContextChat: ContextChatContextChat
+    val summarize: Summarize
 )
 
-data class CoreText2text(val name: String, val description: String)
-data class CoreText2textTopics(val name: String, val description: String)
-data class CoreText2textHeadline(val name: String, val description: String)
-data class CoreText2textSummary(val name: String, val description: String)
-data class CoreText2textTranslate(val name: String, val description: String)
-data class CoreContextwrite(val name: String, val description: String)
-data class ContextChatContextChat(val name: String, val description: String)
+data class GenerateText(val name: String, val description: String)
+data class ExtractTopics(val name: String, val description: String)
+data class GenerateHeadline(val name: String, val description: String)
+data class Summarize(val name: String, val description: String)
