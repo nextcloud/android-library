@@ -43,6 +43,6 @@ class CreateTaskRemoteOperation(private val input: String, private val type: Str
     }
 
     companion object {
-        const val TAG_URL = "/ocs/v2.php/textprocessing/schedule"
+        const val TAG_URL = "/ocs/v2.php/taskprocessing/schedule"
     }
 }
