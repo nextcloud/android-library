@@ -12,11 +12,12 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PostMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.resources.assistant.model.TaskTypeData
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
 
-class CreateTaskRemoteOperation(private val input: String, private val type: String) :
+class CreateTaskRemoteOperation(private val input: String, private val taskType: TaskTypeData) :
     RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val inputField = hashMapOf("input" to input)
@@ -24,7 +25,7 @@ class CreateTaskRemoteOperation(private val input: String, private val type: Str
         val requestBody =
             hashMapOf(
                 "input" to inputField,
-                "type" to type,
+                "type" to taskType.id,
                 "appId" to "assistant",
                 "customId" to ""
             )
