@@ -8,33 +8,24 @@
 
 package com.owncloud.android.lib.resources.assistant.model
 
-import com.google.gson.annotations.SerializedName
+data class TaskTypes(val types:  Map<String, TaskTypeData>)
 
-private const val generateTextId = "core:text2text"
-private const val extractTopicsId = "core:text2text:topics"
-private const val generateHeadlineId = "core:text2text:headline"
-private const val summarizeId = "core:text2text:summary"
-
-data class TaskTypes(val types: TaskType)
-
-data class TaskType(
-    @SerializedName(generateTextId)
-    val generateText: TaskTypeData,
-    @SerializedName(extractTopicsId)
-    val extractTopics: TaskTypeData,
-    @SerializedName(generateHeadlineId)
-    val generateHeadline: TaskTypeData,
-    @SerializedName(summarizeId)
-    val summarize: TaskTypeData
+data class TaskTypeData(
+    val id: String?,
+    val name: String?,
+    val description: String?,
+    val inputShape: List<TaskInputShape>?,
+    val outputShape: List<TaskOutputShape>?
 )
 
-data class TaskTypeData(val id: String?, val name: String?, val description: String?)
+data class TaskInputShape(
+    val name: String?,
+    val description: String?,
+    val type: String?,
+)
 
-fun TaskTypes.toTaskTypeDataList(): List<TaskTypeData> {
-    return listOf(
-        types.generateText to generateTextId,
-        types.extractTopics to extractTopicsId,
-        types.generateHeadline to generateHeadlineId,
-        types.summarize to summarizeId
-    ).map { (taskData, id) -> taskData.copy(id = taskData.id ?: id) }
-}
+data class TaskOutputShape(
+    val name: String?,
+    val description: String?,
+    val type: String?,
+)

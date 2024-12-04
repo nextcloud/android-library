@@ -15,26 +15,44 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
+import com.owncloud.android.lib.resources.assistant.model.TaskTypeData
 import com.owncloud.android.lib.resources.assistant.model.TaskTypes
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
+class GetTaskTypesRemoteOperation : OCSRemoteOperation<List<TaskTypeData>>() {
+
+    private val supportedTaskType = "Text"
+
     @Suppress("TooGenericExceptionCaught")
-    override fun run(client: NextcloudClient): RemoteOperationResult<TaskTypes> {
-        var result: RemoteOperationResult<TaskTypes>
+    override fun run(client: NextcloudClient): RemoteOperationResult<List<TaskTypeData>> {
+        var result: RemoteOperationResult<List<TaskTypeData>>
         var getMethod: GetMethod? = null
+
         try {
             getMethod =
                 GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val taskTypes: TaskTypes? =
+                val response =
                     getServerResponse(
                         getMethod,
                         object : TypeToken<ServerResponse<TaskTypes>>() {}
-                    )?.ocs?.data
+                    )?.ocs?.data?.types
+
+                val taskTypeList = response?.map { (key, value) ->
+                    value.copy(id = value.id ?: key)
+                }
+
+                val supportedTaskTypeList = taskTypeList?.filter { taskType ->
+                    taskType.inputShape?.any { inputShape ->
+                        inputShape.type == supportedTaskType
+                    } == true && taskType.outputShape?.any { outputShape ->
+                        outputShape.type == supportedTaskType
+                    } == true
+                }
+
                 result = RemoteOperationResult(true, getMethod)
-                result.setResultData(taskTypes)
+                result.setResultData(supportedTaskTypeList)
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }
