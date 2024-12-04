@@ -12,6 +12,8 @@ package com.owncloud.android.lib.resources.shares
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.nextcloud.android.lib.resources.files.FileDownloadLimit
+import com.nextcloud.extensions.readSerializableCompat
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.FileUtils
 import java.io.Serializable
@@ -70,6 +72,7 @@ class OCShare :
     var mimetype: String? = null
     var ownerDisplayName: String? = null
     var isFavorite = false
+    var fileDownloadLimit: FileDownloadLimit? = null
 
     constructor() : super() {
         resetData()
@@ -110,6 +113,7 @@ class OCShare :
         isHasPreview = false
         mimetype = ""
         ownerDisplayName = ""
+        fileDownloadLimit = null
     }
 
     /**
@@ -149,6 +153,7 @@ class OCShare :
         isHasPreview = source.readInt() == 1
         mimetype = source.readString()
         ownerDisplayName = source.readString()
+        fileDownloadLimit = source.readSerializableCompat()
     }
 
     override fun describeContents(): Int = this.hashCode()
@@ -178,6 +183,7 @@ class OCShare :
         dest.writeInt(if (isHasPreview) 1 else 0)
         dest.writeString(mimetype)
         dest.writeString(ownerDisplayName)
+        dest.writeSerializable(fileDownloadLimit)
     }
 
     companion object {
