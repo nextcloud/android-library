@@ -8,6 +8,7 @@ package com.owncloud.android.lib.resources.files.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.nextcloud.android.lib.resources.files.FileDownloadLimit
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavEntry.MountType
 import com.owncloud.android.lib.resources.files.FileUtils
@@ -57,6 +58,7 @@ class RemoteFile :
     var geoLocation: GeoLocation? = null
     var hidden = false
     var livePhoto: String? = null
+    var fileDownloadLimit: List<FileDownloadLimit> = emptyList()
 
     constructor() {
         resetData()
@@ -112,6 +114,7 @@ class RemoteFile :
         geoLocation = we.geoLocation
         livePhoto = we.livePhoto
         hidden = we.hidden
+        fileDownloadLimit = we.fileDownloadLimit
     }
 
     /**
@@ -144,6 +147,7 @@ class RemoteFile :
         tags = null
         hidden = false
         livePhoto = null
+        fileDownloadLimit = emptyList()
     }
 
     /**

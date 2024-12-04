@@ -11,6 +11,7 @@ package com.owncloud.android.lib.common.network
 
 import android.net.Uri
 import com.google.gson.Gson
+import com.nextcloud.android.lib.resources.files.FileDownloadLimit
 import com.nextcloud.extensions.fromDavProperty
 import com.nextcloud.extensions.processXmlData
 import com.owncloud.android.lib.common.utils.Log_OC
@@ -96,6 +97,7 @@ class WebdavEntry constructor(
         private set
     var livePhoto: String? = null
         private set
+    var fileDownloadLimit = emptyList<FileDownloadLimit>()
 
     private val gson = Gson()
 
@@ -114,7 +116,7 @@ class WebdavEntry constructor(
             path =
                 uri!!.split(splitElement.toRegex(), limit = 2).toTypedArray()[1].replace("//", "/")
             var status = ms.status[0].statusCode
-            if (status == CODE_PROP_NOT_FOUND) {
+            if (status == CODE_PROP_NOT_FOUND && ms.status.size > 1) {
                 status = ms.status[1].statusCode
             }
             val propSet = ms.getProperties(status)
@@ -464,6 +466,19 @@ class WebdavEntry constructor(
                     false
                 }
 
+            // NC files download limits property: <nc:share-download-limits>
+            prop = propSet[EXTENDED_PROPERTY_FILE_DOWNLOAD_LIMITS, ncNamespace]
+            if (prop != null && prop.value != null) {
+                if (prop.value is ArrayList<*>) {
+                    val list = prop.value as ArrayList<*>
+                    fileDownloadLimit = list.mapNotNull { extractFileDownloadLimit(it as Element) }
+                } else {
+                    extractFileDownloadLimit(prop.value as Element)?.let {
+                        fileDownloadLimit = listOf(it)
+                    }
+                }
+            }
+
             parseLockProperties(ncNamespace, propSet)
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
@@ -564,6 +579,35 @@ class WebdavEntry constructor(
         return ShareType.NO_SHARED
     }
 
+    private fun extractFileDownloadLimit(element: Element): FileDownloadLimit? {
+        val token =
+            element
+                .getElementsByTagNameNS(NAMESPACE_NC, "token")
+                ?.item(0)
+                ?.firstChild
+                ?.nodeValue
+        val limit =
+            element
+                .getElementsByTagNameNS(NAMESPACE_NC, "limit")
+                ?.item(0)
+                ?.firstChild
+                ?.nodeValue
+                ?.toIntOrNull()
+        val count =
+            element
+                .getElementsByTagNameNS(NAMESPACE_NC, "count")
+                ?.item(0)
+                ?.firstChild
+                ?.nodeValue
+                ?.toIntOrNull()
+
+        return if (token != null && limit != null && count != null) {
+            FileDownloadLimit(token, limit, count)
+        } else {
+            null
+        }
+    }
+
     fun decodedPath(): String = Uri.decode(path)
 
     val isDirectory: Boolean
@@ -622,6 +666,8 @@ class WebdavEntry constructor(
 
         const val EXTENDED_PROPERTY_HIDDEN = "hidden"
         const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
+
+        const val EXTENDED_PROPERTY_FILE_DOWNLOAD_LIMITS = "share-download-limits"
 
         const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
         const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"
