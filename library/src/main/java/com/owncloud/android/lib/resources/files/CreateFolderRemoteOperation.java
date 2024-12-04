@@ -8,6 +8,8 @@ package com.owncloud.android.lib.resources.files;
 
 import android.text.TextUtils;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -28,13 +30,11 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
 
     private static final String TAG = CreateFolderRemoteOperation.class.getSimpleName();
 
-    private static final int READ_TIMEOUT = 30000;
-    private static final int CONNECTION_TIMEOUT = 5000;
 
-
-    private boolean createFullPath;
-    private String remotePath;
-    private String token;
+    private final boolean createFullPath;
+    private final String remotePath;
+    private final String token;
+    private final SessionTimeOut sessionTimeOut;
 
     /**
      * Constructor
@@ -44,13 +44,22 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
      *                       if don't exist yet.
      */
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath) {
-        this.remotePath = remotePath;
-        this.createFullPath = createFullPath;
+        this(remotePath, createFullPath, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, String token) {
-        this(remotePath, createFullPath);
+        this(remotePath, createFullPath, token, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, SessionTimeOut sessionTimeOut) {
+        this(remotePath, createFullPath, "", sessionTimeOut);
+    }
+
+    public CreateFolderRemoteOperation(String remotePath, boolean createFullPath, String token, SessionTimeOut sessionTimeOut) {
+        this.remotePath = remotePath;
+        this.createFullPath = createFullPath;
         this.token = token;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -86,7 +95,7 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
                 mkCol.addRequestHeader(E2E_TOKEN, token);
             }
 
-            client.executeMethod(mkCol, READ_TIMEOUT, CONNECTION_TIMEOUT);
+            client.executeMethod(mkCol, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (HttpStatus.SC_METHOD_NOT_ALLOWED == mkCol.getStatusCode()) {
                 result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
@@ -120,6 +129,4 @@ public class CreateFolderRemoteOperation extends RemoteOperation<String> {
         RemoteOperation<String> operation = new CreateFolderRemoteOperation(parentPath, createFullPath);
         return operation.execute(client);
     }
-
-
 }

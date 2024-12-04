@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -23,29 +25,40 @@ import org.json.JSONObject;
 public class LockFileRemoteOperation extends RemoteOperation<String> {
 
     private static final String TAG = LockFileRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
 
     private static final String COUNTER_HEADER = "X-NC-E2EE-COUNTER";
 
     private final long localId;
-    private long counter = -1;
+    private final long counter;
+
+    private static final long defaultCounter = -1;
 
     // JSON node names
     private static final String NODE_OCS = "ocs";
     private static final String NODE_DATA = "data";
 
+    private final SessionTimeOut sessionTimeOut;
+
     /**
      * Constructor
      */
     public LockFileRemoteOperation(long localId, long counter) {
-        this.localId = localId;
-        this.counter = counter;
+        this(localId, counter, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public LockFileRemoteOperation(long localId) {
+        this(localId, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public LockFileRemoteOperation(long localId, SessionTimeOut sessionTimeOut) {
+        this(localId, defaultCounter, sessionTimeOut);
+    }
+
+    public LockFileRemoteOperation(long localId, long counter, SessionTimeOut sessionTimeOut) {
         this.localId = localId;
+        this.counter = counter;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -67,7 +80,7 @@ public class LockFileRemoteOperation extends RemoteOperation<String> {
                 postMethod.addRequestHeader(COUNTER_HEADER, String.valueOf(counter));
             }
 
-            int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(postMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_OK) {
                 String response = postMethod.getResponseBodyAsString();

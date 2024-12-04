@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -26,8 +28,6 @@ import java.util.ArrayList;
 public class StoreMetadataRemoteOperation extends RemoteOperation {
 
     private static final String TAG = StoreMetadataRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String METADATA_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/meta-data/";
     private static final String METADATA = "metaData";
 
@@ -39,12 +39,19 @@ public class StoreMetadataRemoteOperation extends RemoteOperation {
     private final long fileId;
     private final String encryptedMetadataJson;
 
+    private final SessionTimeOut sessionTimeOut;
+
     /**
      * Constructor
      */
     public StoreMetadataRemoteOperation(long fileId, String encryptedMetadataJson) {
+        this(fileId, encryptedMetadataJson, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public StoreMetadataRemoteOperation(long fileId, String encryptedMetadataJson, SessionTimeOut sessionTimeOut) {
         this.fileId = fileId;
         this.encryptedMetadataJson = encryptedMetadataJson;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -61,7 +68,7 @@ public class StoreMetadataRemoteOperation extends RemoteOperation {
             postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             postMethod.setParameter(METADATA, encryptedMetadataJson);
 
-            int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(postMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_OK) {
                 String response = postMethod.getResponseBodyAsString();
@@ -71,16 +78,16 @@ public class StoreMetadataRemoteOperation extends RemoteOperation {
                 String metadata = (String) respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA)
                         .get(NODE_META_DATA);
 
-                result = new RemoteOperationResult(true, postMethod);
+                result = new RemoteOperationResult<>(true, postMethod);
                 ArrayList<Object> keys = new ArrayList<>();
                 keys.add(metadata);
                 result.setData(keys);
             } else {
-                result = new RemoteOperationResult(false, postMethod);
+                result = new RemoteOperationResult<>(false, postMethod);
                 client.exhaustResponse(postMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Storing of metadata for folder " + fileId + " failed: " + result.getLogMessage(),
                      result.getException());
         } finally {
