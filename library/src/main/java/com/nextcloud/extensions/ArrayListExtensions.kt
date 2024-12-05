@@ -16,17 +16,14 @@ inline fun <reified T> ArrayList<*>.processXmlData(tagName: String): T? {
         val element = it as? Element
         if (element != null && element.tagName == tagName) {
             val textContent = element.firstChild.textContent
-
             return when (T::class) {
                 Float::class -> {
-                    val floatValue = textContent.toFloatOrNull()
-                    if (floatValue != null) floatValue as T else null
+                    textContent.toFloatOrNull() as? T
                 }
                 Double::class -> {
-                    val doubleValue = textContent.toDoubleOrNull()
-                    if (doubleValue != null) doubleValue as T else null
+                    textContent.toDoubleOrNull() as? T
                 }
-                else -> return null
+                else -> textContent as? T
             }
         }
     }
