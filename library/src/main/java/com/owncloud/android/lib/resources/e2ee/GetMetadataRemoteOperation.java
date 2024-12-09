@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -25,8 +27,6 @@ import org.json.JSONObject;
 public class GetMetadataRemoteOperation extends RemoteOperation<MetadataResponse> {
 
     private static final String TAG = GetMetadataRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String METADATA_V1_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/meta-data/";
     private static final String METADATA_V2_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v2/meta-data/";
 
@@ -38,11 +38,18 @@ public class GetMetadataRemoteOperation extends RemoteOperation<MetadataResponse
 
     private final long fileId;
 
+    private final SessionTimeOut sessionTimeOut;
+
     /**
      * Constructor
      */
     public GetMetadataRemoteOperation(long fileId) {
+        this(fileId, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public GetMetadataRemoteOperation(long fileId, SessionTimeOut sessionTimeOut) {
         this.fileId = fileId;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -58,14 +65,14 @@ public class GetMetadataRemoteOperation extends RemoteOperation<MetadataResponse
             getMethod = new GetMethod(client.getBaseUri() + METADATA_V2_URL + fileId + JSON_FORMAT);
             getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            int status = client.executeMethod(getMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(getMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_NOT_FOUND || status == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                 // retry with v1
                 getMethod = new GetMethod(client.getBaseUri() + METADATA_V1_URL + fileId + JSON_FORMAT);
                 getMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-                status = client.executeMethod(getMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+                status = client.executeMethod(getMethod,  sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
             }
 
             if (status == HttpStatus.SC_OK) {
@@ -102,5 +109,4 @@ public class GetMetadataRemoteOperation extends RemoteOperation<MetadataResponse
         }
         return result;
     }
-
 }
