@@ -81,7 +81,7 @@ public class ExistenceCheckRemoteOperation extends RemoteOperation {
                 status = mRedirectionPath.getLastStatus();
             }
             client.exhaustResponse(head.getResponseBodyAsStream());
-            boolean success = (status == HttpStatus.SC_OK && !mSuccessIfAbsent) ||
+            boolean success = ((status == HttpStatus.SC_OK || status == HttpStatus.SC_UNAUTHORIZED || status == HttpStatus.SC_FORBIDDEN) && !mSuccessIfAbsent) ||
                     (status == HttpStatus.SC_NOT_FOUND && mSuccessIfAbsent);
             result = new RemoteOperationResult(
                 success,
