@@ -18,14 +18,14 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.assistant.model.TaskList
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskListRemoteOperation(private val appId: String) : OCSRemoteOperation<TaskList>() {
+class GetTaskListRemoteOperation(private val taskType: String) : OCSRemoteOperation<TaskList>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<TaskList> {
         var result: RemoteOperationResult<TaskList>
         var getMethod: GetMethod? = null
         try {
             getMethod =
-                GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + appId + JSON_FORMAT, true)
+                GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + taskType + "&format=json", true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
                 val taskTypes: TaskList? =
@@ -53,6 +53,6 @@ class GetTaskListRemoteOperation(private val appId: String) : OCSRemoteOperation
 
     companion object {
         private val TAG = GetTaskTypesRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT = "/ocs/v2.php/textprocessing/tasks/app/"
+        private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/tasks?taskType="
     }
 }
