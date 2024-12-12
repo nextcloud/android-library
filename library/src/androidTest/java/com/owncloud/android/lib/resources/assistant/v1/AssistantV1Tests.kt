@@ -15,7 +15,7 @@ import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class AssistantITV1 : AbstractIT() {
+class AssistantV1Tests : AbstractIT() {
     @Before
     fun before() {
         testOnlyOnServer(NextcloudVersion.nextcloud_28)
