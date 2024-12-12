@@ -2,23 +2,23 @@
  * Nextcloud Android Library
  *
  * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2024 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2024 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.assistant
+package com.owncloud.android.lib.resources.assistant.v2
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.assistant.model.TaskInputShape
-import com.owncloud.android.lib.resources.assistant.model.TaskOutputShape
-import com.owncloud.android.lib.resources.assistant.model.TaskTypeData
+import com.owncloud.android.lib.resources.assistant.v2.model.TaskInputShape
+import com.owncloud.android.lib.resources.assistant.v2.model.TaskOutputShape
+import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class AssistantIT : AbstractIT() {
+class AssistantITV2 : AbstractIT() {
     @Before
     fun before() {
         testOnlyOnServer(NextcloudVersion.nextcloud_30)
@@ -50,7 +50,7 @@ class AssistantIT : AbstractIT() {
 
     @Test
     fun testGetTaskTypes() {
-        val result = GetTaskTypesRemoteOperation().execute(nextcloudClient)
+        val result = GetTaskTypesRemoteOperationV2().execute(nextcloudClient)
         assertTrue(result.isSuccess)
     }
 
@@ -59,15 +59,15 @@ class AssistantIT : AbstractIT() {
         val taskType = getTaskType()
         val selectedTaskType = getSelectedTaskType()
 
-        var result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
+        var result = GetTaskListRemoteOperationV2(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
         assertTrue(result.resultData.tasks.isEmpty())
 
         // create one task
         val input = "Give me some random output for test purpose"
-        assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
+        assertTrue(CreateTaskRemoteOperationV2(input, taskType).execute(nextcloudClient).isSuccess)
 
-        result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
+        result = GetTaskListRemoteOperationV2(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val taskList = result.resultData.tasks
@@ -81,18 +81,18 @@ class AssistantIT : AbstractIT() {
         val taskType = getTaskType()
         val selectedTaskType = getSelectedTaskType()
 
-        assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
+        assertTrue(CreateTaskRemoteOperationV2(input, taskType).execute(nextcloudClient).isSuccess)
 
-        var result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
+        var result = GetTaskListRemoteOperationV2(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val tasks = result.resultData.tasks
         val countBefore = tasks.size
 
         // delete
-        assertTrue(DeleteTaskRemoteOperation(tasks.first().id).execute(nextcloudClient).isSuccess)
+        assertTrue(DeleteTaskRemoteOperationV2(tasks.first().id).execute(nextcloudClient).isSuccess)
 
-        result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
+        result = GetTaskListRemoteOperationV2(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         assertEquals(countBefore - 1, result.resultData.tasks.size)

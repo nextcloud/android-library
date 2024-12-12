@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.assistant
+package com.owncloud.android.lib.resources.assistant.v2
 
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
@@ -15,10 +15,10 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
-import com.owncloud.android.lib.resources.assistant.model.TaskList
+import com.owncloud.android.lib.resources.assistant.v2.model.TaskList
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskListRemoteOperation(private val taskType: String) : OCSRemoteOperation<TaskList>() {
+class GetTaskListRemoteOperationV2(private val taskType: String) : OCSRemoteOperation<TaskList>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<TaskList> {
         var result: RemoteOperationResult<TaskList>
@@ -52,7 +52,7 @@ class GetTaskListRemoteOperation(private val taskType: String) : OCSRemoteOperat
     }
 
     companion object {
-        private val TAG = GetTaskTypesRemoteOperation::class.java.simpleName
+        private val TAG = GetTaskTypesRemoteOperationV2::class.java.simpleName
         private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/tasks?taskType="
     }
 }

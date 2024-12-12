@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.assistant
+package com.owncloud.android.lib.resources.assistant.v1
 
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.DeleteMethod
@@ -17,7 +17,7 @@ import com.owncloud.android.lib.resources.users.DeletePrivateKeyRemoteOperation
 import java.io.IOException
 import java.net.HttpURLConnection
 
-class DeleteTaskRemoteOperation(private val appId: Long) : RemoteOperation<Void>() {
+class DeleteTaskRemoteOperationV1(private val appId: Long) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var postMethod: DeleteMethod? = null
         var result: RemoteOperationResult<Void>
@@ -41,6 +41,7 @@ class DeleteTaskRemoteOperation(private val appId: Long) : RemoteOperation<Void>
 
     companion object {
         private val TAG = DeletePrivateKeyRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/task/"
+        private const val DIRECT_ENDPOINT =
+            "/ocs/v2.php/textprocessing/task/"
     }
 }
