@@ -8,4 +8,8 @@
 
 package com.nextcloud.android.lib.resources.tos
 
-data class Terms(val terms: List<Term>, val hasSigned: Boolean)
+data class Terms(
+    val terms: List<Term>,
+    val hasSigned: Boolean,
+    val languages: Map<String, String>
+)
