@@ -20,7 +20,6 @@ import com.owncloud.android.lib.resources.assistant.model.TaskTypes
 import org.apache.commons.httpclient.HttpStatus
 
 class GetTaskTypesRemoteOperation : OCSRemoteOperation<List<TaskTypeData>>() {
-
     private val supportedTaskType = "Text"
 
     @Suppress("TooGenericExceptionCaught")
@@ -39,17 +38,19 @@ class GetTaskTypesRemoteOperation : OCSRemoteOperation<List<TaskTypeData>>() {
                         object : TypeToken<ServerResponse<TaskTypes>>() {}
                     )?.ocs?.data?.types
 
-                val taskTypeList = response?.map { (key, value) ->
-                    value.copy(id = value.id ?: key)
-                }
+                val taskTypeList =
+                    response?.map { (key, value) ->
+                        value.copy(id = value.id ?: key)
+                    }
 
-                val supportedTaskTypeList = taskTypeList?.filter { taskType ->
-                    taskType.inputShape?.any { inputShape ->
-                        inputShape.type == supportedTaskType
-                    } == true && taskType.outputShape?.any { outputShape ->
-                        outputShape.type == supportedTaskType
-                    } == true
-                }
+                val supportedTaskTypeList =
+                    taskTypeList?.filter { taskType ->
+                        taskType.inputShape?.any { inputShape ->
+                            inputShape.type == supportedTaskType
+                        } == true && taskType.outputShape?.any { outputShape ->
+                            outputShape.type == supportedTaskType
+                        } == true
+                    }
 
                 result = RemoteOperationResult(true, getMethod)
                 result.setResultData(supportedTaskTypeList)

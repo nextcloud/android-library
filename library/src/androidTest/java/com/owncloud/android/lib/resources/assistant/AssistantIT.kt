@@ -9,6 +9,9 @@
 package com.owncloud.android.lib.resources.assistant
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.assistant.model.TaskInputShape
+import com.owncloud.android.lib.resources.assistant.model.TaskOutputShape
+import com.owncloud.android.lib.resources.assistant.model.TaskTypeData
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -21,12 +24,34 @@ class AssistantIT : AbstractIT() {
         testOnlyOnServer(NextcloudVersion.nextcloud_28)
     }
 
+    private fun getTaskType(): TaskTypeData {
+        return TaskTypeData(
+            "core:text2text",
+            "Free text to text prompt",
+            "Runs an arbitrary prompt through a language model that returns a reply",
+            listOf(
+                TaskInputShape(
+                    "Prompt",
+                    "Describe a task that you want the assistant to do or ask a question",
+                    "Text"
+                )
+            ),
+            listOf(
+                TaskOutputShape(
+                    "Generated reply",
+                    "The generated text from the assistant",
+                    "Text"
+                )
+            )
+        )
+    }
+
     @Test
     fun testGetTaskTypes() {
         val result = GetTaskTypesRemoteOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        val taskTypes = result.resultData.types
+        val taskTypes = result.resultData
         assertTrue(taskTypes.isNotEmpty())
     }
 
@@ -38,8 +63,8 @@ class AssistantIT : AbstractIT() {
 
         // create one task
         val input = "Give me some random output for test purpose"
-        val type = "OCP\\TextProcessing\\FreePromptTaskType"
-        assertTrue(CreateTaskRemoteOperation(input, type).execute(nextcloudClient).isSuccess)
+        val taskType = getTaskType()
+        assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
 
         result = GetTaskListRemoteOperation("assistant").execute(nextcloudClient)
         assertTrue(result.isSuccess)
@@ -52,8 +77,8 @@ class AssistantIT : AbstractIT() {
     fun testDeleteTask() {
         // create one task
         val input = "Give me some random output for test purpose"
-        val type = "OCP\\TextProcessing\\FreePromptTaskType"
-        assertTrue(CreateTaskRemoteOperation(input, type).execute(nextcloudClient).isSuccess)
+        val taskType = getTaskType()
+        assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
 
         var result = GetTaskListRemoteOperation("assistant").execute(nextcloudClient)
         assertTrue(result.isSuccess)
