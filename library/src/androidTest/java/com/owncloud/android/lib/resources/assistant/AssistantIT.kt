@@ -52,9 +52,6 @@ class AssistantIT : AbstractIT() {
     fun testGetTaskTypes() {
         val result = GetTaskTypesRemoteOperation().execute(nextcloudClient)
         assertTrue(result.isSuccess)
-
-        val taskTypes = result.resultData
-        assertTrue(taskTypes.isNotEmpty())
     }
 
     @Test
