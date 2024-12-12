@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.assistant
+package com.owncloud.android.lib.resources.assistant.v1
 
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
@@ -15,45 +15,26 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
-import com.owncloud.android.lib.resources.assistant.model.TaskTypeData
-import com.owncloud.android.lib.resources.assistant.model.TaskTypes
+import com.owncloud.android.lib.resources.assistant.v1.model.TaskTypes
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskTypesRemoteOperation : OCSRemoteOperation<List<TaskTypeData>>() {
-    private val supportedTaskType = "Text"
-
+class GetTaskTypesRemoteOperationV1 : OCSRemoteOperation<TaskTypes>() {
     @Suppress("TooGenericExceptionCaught")
-    override fun run(client: NextcloudClient): RemoteOperationResult<List<TaskTypeData>> {
-        var result: RemoteOperationResult<List<TaskTypeData>>
+    override fun run(client: NextcloudClient): RemoteOperationResult<TaskTypes> {
+        var result: RemoteOperationResult<TaskTypes>
         var getMethod: GetMethod? = null
-
         try {
             getMethod =
                 GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val response =
+                val taskTypes: TaskTypes? =
                     getServerResponse(
                         getMethod,
                         object : TypeToken<ServerResponse<TaskTypes>>() {}
-                    )?.ocs?.data?.types
-
-                val taskTypeList =
-                    response?.map { (key, value) ->
-                        value.copy(id = value.id ?: key)
-                    }
-
-                val supportedTaskTypeList =
-                    taskTypeList?.filter { taskType ->
-                        taskType.inputShape?.any { inputShape ->
-                            inputShape.type == supportedTaskType
-                        } == true && taskType.outputShape?.any { outputShape ->
-                            outputShape.type == supportedTaskType
-                        } == true
-                    }
-
+                    )?.ocs?.data
                 result = RemoteOperationResult(true, getMethod)
-                result.setResultData(supportedTaskTypeList)
+                result.setResultData(taskTypes)
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }
@@ -71,7 +52,7 @@ class GetTaskTypesRemoteOperation : OCSRemoteOperation<List<TaskTypeData>>() {
     }
 
     companion object {
-        private val TAG = GetTaskTypesRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/tasktypes"
+        private val TAG = GetTaskTypesRemoteOperationV1::class.java.simpleName
+        private const val DIRECT_ENDPOINT = "/ocs/v2.php/textprocessing/tasktypes"
     }
 }
