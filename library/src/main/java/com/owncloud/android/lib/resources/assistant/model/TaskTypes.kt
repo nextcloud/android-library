@@ -8,7 +8,7 @@
 
 package com.owncloud.android.lib.resources.assistant.model
 
-data class TaskTypes(val types:  Map<String, TaskTypeData>)
+data class TaskTypes(val types: Map<String, TaskTypeData>)
 
 data class TaskTypeData(
     val id: String?,
@@ -21,11 +21,11 @@ data class TaskTypeData(
 data class TaskInputShape(
     val name: String?,
     val description: String?,
-    val type: String?,
+    val type: String?
 )
 
 data class TaskOutputShape(
     val name: String?,
     val description: String?,
-    val type: String?,
+    val type: String?
 )
