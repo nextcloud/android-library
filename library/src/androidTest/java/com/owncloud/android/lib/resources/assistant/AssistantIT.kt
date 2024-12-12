@@ -57,7 +57,8 @@ class AssistantIT : AbstractIT() {
 
     @Test
     fun testGetTaskList() {
-        var result = GetTaskListRemoteOperation("assistant").execute(nextcloudClient)
+        val selectedTaskType = "core:text2text"
+        var result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
         assertTrue(result.resultData.tasks.isEmpty())
 
@@ -66,7 +67,7 @@ class AssistantIT : AbstractIT() {
         val taskType = getTaskType()
         assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
 
-        result = GetTaskListRemoteOperation("assistant").execute(nextcloudClient)
+        result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val taskList = result.resultData.tasks
@@ -78,9 +79,10 @@ class AssistantIT : AbstractIT() {
         // create one task
         val input = "Give me some random output for test purpose"
         val taskType = getTaskType()
+        val selectedTaskType = "core:text2text"
         assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
 
-        var result = GetTaskListRemoteOperation("assistant").execute(nextcloudClient)
+        var result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         val tasks = result.resultData.tasks
@@ -89,7 +91,7 @@ class AssistantIT : AbstractIT() {
         // delete
         assertTrue(DeleteTaskRemoteOperation(tasks.first().id).execute(nextcloudClient).isSuccess)
 
-        result = GetTaskListRemoteOperation("assistant").execute(nextcloudClient)
+        result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
         assertEquals(countBefore - 1, result.resultData.tasks.size)
