@@ -21,7 +21,7 @@ import org.junit.Test
 class AssistantIT : AbstractIT() {
     @Before
     fun before() {
-        testOnlyOnServer(NextcloudVersion.nextcloud_28)
+        testOnlyOnServer(NextcloudVersion.nextcloud_30)
     }
 
     private fun getTaskType(): TaskTypeData {
