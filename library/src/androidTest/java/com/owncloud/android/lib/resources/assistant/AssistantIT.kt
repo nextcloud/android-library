@@ -46,6 +46,8 @@ class AssistantIT : AbstractIT() {
         )
     }
 
+    private fun getSelectedTaskType(): String = "core:text2text"
+
     @Test
     fun testGetTaskTypes() {
         val result = GetTaskTypesRemoteOperation().execute(nextcloudClient)
@@ -57,14 +59,15 @@ class AssistantIT : AbstractIT() {
 
     @Test
     fun testGetTaskList() {
-        val selectedTaskType = "core:text2text"
+        val taskType = getTaskType()
+        val selectedTaskType = getSelectedTaskType()
+
         var result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
         assertTrue(result.resultData.tasks.isEmpty())
 
         // create one task
         val input = "Give me some random output for test purpose"
-        val taskType = getTaskType()
         assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
 
         result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
@@ -79,7 +82,8 @@ class AssistantIT : AbstractIT() {
         // create one task
         val input = "Give me some random output for test purpose"
         val taskType = getTaskType()
-        val selectedTaskType = "core:text2text"
+        val selectedTaskType = getSelectedTaskType()
+
         assertTrue(CreateTaskRemoteOperation(input, taskType).execute(nextcloudClient).isSuccess)
 
         var result = GetTaskListRemoteOperation(selectedTaskType).execute(nextcloudClient)
