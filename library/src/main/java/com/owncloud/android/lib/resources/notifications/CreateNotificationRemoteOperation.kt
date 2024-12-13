@@ -52,10 +52,11 @@ class CreateNotificationRemoteOperation(private val userId: String, private val 
             client.baseUri.toString() + "/ocs/v2.php/apps/notifications/api/v2/admin_notifications/"
 
         try {
-            val bodyRequest = FormBody
-                .Builder()
-                .add("shortMessage", message)
-                .build()
+            val bodyRequest =
+                FormBody
+                    .Builder()
+                    .add("shortMessage", message)
+                    .build()
 
             post = PostMethod(url + userId, true, bodyRequest)
             status = client.execute(post)

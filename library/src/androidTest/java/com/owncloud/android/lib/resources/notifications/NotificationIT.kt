@@ -22,6 +22,7 @@ class NotificationIT : AbstractIT() {
         val count = all.resultData.size
 
         // get one
+        assertTrue(count > 0)
         val firstNotification = all.resultData[0]
         val first = GetNotificationRemoteOperation(firstNotification.notificationId).execute(nextcloudClient)
         assertTrue(first.isSuccess)

@@ -16,7 +16,7 @@ import okhttp3.RequestBody
  * HTTP POST method that uses OkHttp with new NextcloudClient
  * UTF8 by default
  */
-class PostMethod(
+open class PostMethod(
     uri: String,
     useOcsApiRequestHeader: Boolean,
     val body: RequestBody?

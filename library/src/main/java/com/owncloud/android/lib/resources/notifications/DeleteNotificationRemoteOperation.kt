@@ -5,13 +5,14 @@
  * SPDX-FileCopyrightText: 2019 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources.notifications;
+package com.owncloud.android.lib.resources.notifications
 
-import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.operations.DeleteMethod;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.operations.DeleteMethod
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import java.io.IOException
 
 /**
  *  Delete a notification, specified at
@@ -46,13 +47,8 @@ class DeleteNotificationRemoteOperation(private val id: Int) : RemoteOperation<V
         return result
     }
 
-    private fun isSuccess(status: Int): Boolean {
-        return status == HttpStatus.SC_OK
-    }
-
     companion object {
         // OCS Route
-        private const val OCS_ROUTE_LIST_V12_AND_UP =
-            "/ocs/v2.php/apps/notifications/api/v2/notifications/"
+        private const val OCS_ROUTE_LIST_V12_AND_UP = "/ocs/v2.php/apps/notifications/api/v2/notifications/"
     }
 }

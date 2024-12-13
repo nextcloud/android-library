@@ -5,13 +5,14 @@
  * SPDX-FileCopyrightText: 2019 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources.notifications;
+package com.owncloud.android.lib.resources.notifications
 
-import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.operations.DeleteMethod;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.operations.DeleteMethod
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import java.io.IOException
 
 /**
  * Delete all notification, specified at
@@ -24,17 +25,17 @@ class DeleteAllNotificationsRemoteOperation : RemoteOperation<Void>() {
         var delete: DeleteMethod? = null
         val url = client.baseUri.toString() + OCS_ROUTE_LIST_V12_AND_UP
         try {
-            delete = new DeleteMethod(url, true)
+            delete = DeleteMethod(url, true)
 
-            status = client.execute(delete);
-            String response = delete.getResponseBodyAsString()
+            status = client.execute(delete)
+            val response = delete.getResponseBodyAsString()
 
             if (delete.isSuccess()) {
-                result = new RemoteOperationResult<>(true, delete)
-                Log_OC.d(this, "Successful response: " + response)
+                result = RemoteOperationResult(true, delete)
+                Log_OC.d(this, "Successful response: $response")
             } else {
-                result = new RemoteOperationResult<>(false, delete)
-                Log_OC.e(this, "Failed response while deleting user notifications ")
+                result = RemoteOperationResult(false, delete)
+                Log_OC.e(this, "Failed response while deleting all user notifications")
                 Log_OC.e(this, "*** status code: $status ;response message: $response")
             }
         } catch (e: IOException) {
