@@ -267,7 +267,7 @@ public abstract class AbstractIT {
     @After
     public void after() {
         removeOnClient(client);
-        // removeOnClient(client2);
+        removeOnClient(client2);
     }
 
     private void removeOnClient(OwnCloudClient client) {
