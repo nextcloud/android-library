@@ -23,3 +23,31 @@ data class Task(
     val identifier: String?,
     val completionExpectedAt: String? = null
 )
+
+fun TaskList.toV2(): com.owncloud.android.lib.resources.assistant.v2.model.TaskList {
+    return com.owncloud.android.lib.resources.assistant.v2.model.TaskList(
+        tasks =
+            tasks.map { task ->
+                com.owncloud.android.lib.resources.assistant.v2.model.Task(
+                    id = task.id,
+                    type = task.type,
+                    status = task.status?.toString(),
+                    userId = task.userId,
+                    appId = task.appId,
+                    input =
+                        task.input?.let {
+                            com.owncloud.android.lib.resources.assistant.v2.model.TaskInput(input = it)
+                        },
+                    output =
+                        task.output?.let {
+                            com.owncloud.android.lib.resources.assistant.v2.model.TaskOutput(output = it)
+                        },
+                    completionExpectedAt = task.completionExpectedAt?.toIntOrNull(),
+                    progress = null,
+                    lastUpdated = null,
+                    scheduledAt = null,
+                    endedAt = null
+                )
+            }
+    )
+}
