@@ -6,25 +6,28 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.assistant
+package com.owncloud.android.lib.resources.assistant.v2
 
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PostMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
 
-class CreateTaskRemoteOperation(private val input: String, private val type: String) :
+class CreateTaskRemoteOperationV2(private val input: String, private val taskType: TaskTypeData) :
     RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+        val inputField = hashMapOf("input" to input)
+
         val requestBody =
             hashMapOf(
-                "input" to input,
-                "type" to type,
+                "input" to inputField,
+                "type" to taskType.id,
                 "appId" to "assistant",
-                "identifier" to ""
+                "customId" to ""
             )
 
         val json = gson.toJson(requestBody)
@@ -43,6 +46,6 @@ class CreateTaskRemoteOperation(private val input: String, private val type: Str
     }
 
     companion object {
-        const val TAG_URL = "/ocs/v2.php/textprocessing/schedule"
+        const val TAG_URL = "/ocs/v2.php/taskprocessing/schedule"
     }
 }

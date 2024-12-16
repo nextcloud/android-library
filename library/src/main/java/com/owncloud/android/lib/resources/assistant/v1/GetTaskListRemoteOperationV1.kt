@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.assistant
+package com.owncloud.android.lib.resources.assistant.v1
 
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
@@ -15,23 +15,23 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
-import com.owncloud.android.lib.resources.assistant.model.TaskTypes
+import com.owncloud.android.lib.resources.assistant.v1.model.TaskList
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
+class GetTaskListRemoteOperationV1(private val appId: String) : OCSRemoteOperation<TaskList>() {
     @Suppress("TooGenericExceptionCaught")
-    override fun run(client: NextcloudClient): RemoteOperationResult<TaskTypes> {
-        var result: RemoteOperationResult<TaskTypes>
+    override fun run(client: NextcloudClient): RemoteOperationResult<TaskList> {
+        var result: RemoteOperationResult<TaskList>
         var getMethod: GetMethod? = null
         try {
             getMethod =
-                GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + JSON_FORMAT, true)
+                GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + appId + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val taskTypes: TaskTypes? =
+                val taskTypes: TaskList? =
                     getServerResponse(
                         getMethod,
-                        object : TypeToken<ServerResponse<TaskTypes>>() {}
+                        object : TypeToken<ServerResponse<TaskList>>() {}
                     )?.ocs?.data
                 result = RemoteOperationResult(true, getMethod)
                 result.setResultData(taskTypes)
@@ -42,7 +42,7 @@ class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
             result = RemoteOperationResult(e)
             Log_OC.e(
                 TAG,
-                "Get task types for user " + " failed: " + result.logMessage,
+                "Get task list for user " + " failed: " + result.logMessage,
                 result.exception
             )
         } finally {
@@ -52,7 +52,7 @@ class GetTaskTypesRemoteOperation : OCSRemoteOperation<TaskTypes>() {
     }
 
     companion object {
-        private val TAG = GetTaskTypesRemoteOperation::class.java.simpleName
-        private const val DIRECT_ENDPOINT = "/ocs/v2.php/textprocessing/tasktypes"
+        private val TAG = GetTaskListRemoteOperationV1::class.java.simpleName
+        private const val DIRECT_ENDPOINT = "/ocs/v2.php/textprocessing/tasks/app/"
     }
 }
