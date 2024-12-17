@@ -99,9 +99,9 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
-      - su www-data -c "git clone --depth 1 https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
+      - su www-data -c "git clone --depth 1 -b master https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
-      - su www-data -c "php /var/www/html/occ notification:generate test -d test"
+      - su www-data -c "php /var/www/html/occ notification:generate 'test' 'test message'"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
@@ -216,7 +216,7 @@ services:
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
-      - su www-data -c "php /var/www/html/occ notification:generate test test"
+      - su www-data -c "php /var/www/html/occ notification:generate 'test' 'test message'"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
@@ -235,6 +235,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 3e71a44f6f57a4d4d853c586c0c322bf0b718d96627906b92864e12353e5a014
+hmac: 889fb47b6c7f4ba0f7b0297f697e29152099b18b6f5073ad02a503ab9046fbcd
 
 ...
