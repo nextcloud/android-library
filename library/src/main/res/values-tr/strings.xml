@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="message_install_client_cert">TLS istemci sertifikası kurmak ister misiniz\?</string>
+    <string name="message_install_client_cert">Bir TLS istemci sertifikası kurmak ister misiniz\?</string>
     <string name="notification_channel_name">Nextcloud bağlantısı</string>
     <string name="notification_message_select_client_cert">%1$s:%2$d için istemci sertifikası seçin</string>
     <string name="notification_title_select_client_cert">İstemci sertifikası seçin</string>
