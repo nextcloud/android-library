@@ -7,7 +7,9 @@
  */
 package com.owncloud.android;
 
+import static com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.nextcloud.test.RandomStringGenerator;
@@ -64,6 +66,23 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
         mCreatedFolderPaths.add(remotePath);
         result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue(result.isSuccess());
+    }
+
+    /**
+     * Test duplicate Folder
+     */
+    @Test
+    public void testCreateDuplicateFolder() {
+        String remotePath = mFullPath2FolderBase + "duplicateFolder";
+        mCreatedFolderPaths.add(remotePath);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        assertTrue(result.isSuccess());
+
+        // Create folder again
+        mCreatedFolderPaths.add(remotePath);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        assertFalse(result.isSuccess());
+        assertEquals(FOLDER_ALREADY_EXISTS, result.getCode());
     }
 
     @Test
