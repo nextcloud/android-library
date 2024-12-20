@@ -24,7 +24,7 @@ import org.json.JSONObject;
  */
 
 
-public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
+public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation<String> {
     private static final String TAG = GenerateAppPasswordRemoteOperation.class.getSimpleName();
     private static final String DIRECT_ENDPOINT = "/ocs/v2.php/core/getapppassword";
 
@@ -43,8 +43,8 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
         this.sessionTimeOut = sessionTimeOut;
     }
 
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<String> run(OwnCloudClient client) {
+        RemoteOperationResult<String> result;
         GetMethod getMethod = null;
 
         try {
@@ -61,14 +61,14 @@ public class GenerateAppPasswordRemoteOperation extends OCSRemoteOperation {
                 JSONObject respJSON = new JSONObject(response);
                 String password = respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).getString(NODE_APPPASSWORD);
 
-                result = new RemoteOperationResult(true, getMethod);
-                result.setSingleData(password);
+                result = new RemoteOperationResult<>(true, getMethod);
+                result.setResultData(password);
             } else {
-                result = new RemoteOperationResult(false, getMethod);
+                result = new RemoteOperationResult<>(false, getMethod);
                 client.exhaustResponse(getMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Generate app password failed: " + result.getLogMessage(),
                     result.getException());
         } finally {
