@@ -18,6 +18,16 @@ import org.junit.Test
 class GetNotificationRemoteOperationIT : AbstractIT() {
     @Test
     fun testSingleNotification() {
+        // create one notification
+        assertTrue(
+            nextcloudClientAdmin.execute(
+                CreateNotificationRemoteOperation(
+                    nextcloudClient.userId,
+                    "test"
+                )
+            ).isSuccess
+        )
+
         // get all notifications
         val resultAll = nextcloudClient.execute(GetNotificationsRemoteOperation())
         assertTrue(resultAll.isSuccess)
