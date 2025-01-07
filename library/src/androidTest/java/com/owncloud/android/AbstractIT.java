@@ -3,6 +3,7 @@
  *
  * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2018-2023 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android;
@@ -265,7 +266,7 @@ public abstract class AbstractIT {
 
     private void removeOnClient(OwnCloudClient client) {
         RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
-        assertTrue(result.getLogMessage(), result.isSuccess());
+        assertTrue(result.getLogMessage(context), result.isSuccess());
 
         for (Object object : result.getData()) {
             RemoteFile remoteFile = (RemoteFile) object;
