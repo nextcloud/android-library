@@ -5,6 +5,7 @@
  * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-FileCopyrightText: 2015 ownCloud Inc.
  * SPDX-FileCopyrightText: 2015 David A. Velasco <dvelasco@solidgear.es>
+ * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.sampleclient;
@@ -195,7 +196,7 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
         if (!result.isSuccess()) {
             Toast.makeText(this, R.string.todo_operation_finished_in_fail, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, result.getLogMessage(), result.getException());
+            Log.e(TAG, result.getLogMessage(this), result.getException());
 
         } else if (operation instanceof ReadFolderRemoteOperation) {
             onSuccessfulRefresh((ReadFolderRemoteOperation) operation, result);
