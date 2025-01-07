@@ -4,6 +4,7 @@
  ~
  ~ SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  ~ SPDX-FileCopyrightText: 2015 ownCloud Inc.
+ ~ SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  ~ SPDX-License-Identifier: MIT
 -->
 <resources>
@@ -13,4 +14,30 @@
     <string name="notification_title_select_client_cert">Select client certificate</string>
     <string name="notification_message_select_client_cert">Select client certificate for %1$s:%2$d</string>
     <string name="operation_cancelled_by_the_caller">Operation cancelled by the caller</string>
+    <string name="operation_cancelled">Operation cancelled by the caller</string>
+    <string name="socket_exception">Socket exception</string>
+    <string name="socket_timeout_exception">Socket timeout exception</string>
+    <string name="connect_timeout_exception">Connect timeout exception</string>
+    <string name="malformed_url_exception">Malformed URL exception</string>
+    <string name="unknown_host_exception">Unknown host exception</string>
+    <string name="ssl_recoverable_exception">SSL recoverable exception</string>
+    <string name="ssl_exception">SSL exception</string>
+    <string name="unexpected_webdav_exception">Unexpected WebDAV exception</string>
+    <string name="http_violation">HTTP violation</string>
+    <string name="unrecovered_transport_exception">Unrecovered transport exception</string>
+    <string name="exception_using_account">Exception while using account</string>
+    <string name="json_exception">JSON exception</string>
+    <string name="unexpected_exception">Unexpected exception</string>
+    <string name="instance_not_configured">The Nextcloud server is not configured!</string>
+    <string name="no_network_connection">No network connection</string>
+    <string name="bad_oc_version">No valid Nextcloud version was found at the server</string>
+    <string name="local_storage_full">Local storage full</string>
+    <string name="local_storage_not_moved">Error while moving file to final directory</string>
+    <string name="account_not_new">Account already existing when creating a new one</string>
+    <string name="account_not_the_same">Authenticated with a different account than the one updating</string>
+    <string name="invalid_character_in_name">The file name contains a forbidden character</string>
+    <string name="file_not_found">Local file does not exist</string>
+    <string name="sync_conflict">Synchronization conflict</string>
+    <string name="file_locked">File is currently locked by another user or process</string>
+    <string name="operation_finished_http_code">Operation finished with HTTP status code %1$d (%2$s)</string>
 </resources>
