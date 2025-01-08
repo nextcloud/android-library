@@ -21,6 +21,7 @@ import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
+import com.owncloud.android.lib.resources.systemTag.SystemTag
 import org.apache.jackrabbit.webdav.MultiStatusResponse
 import org.apache.jackrabbit.webdav.property.DavProperty
 import org.apache.jackrabbit.webdav.property.DavPropertyName
@@ -90,7 +91,7 @@ class WebdavEntry constructor(
         private set
     var lockToken: String? = null
         private set
-    var tags = arrayOfNulls<Tag>(0)
+    var tags = arrayOfNulls<SystemTag>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
@@ -482,10 +483,10 @@ class WebdavEntry constructor(
         }
     }
 
-    private fun parseTag(element: Element): Tag {
+    private fun parseTag(element: Element): SystemTag {
         val name = element.firstChild.textContent
-        val color = element.getAttribute("nc:color")
-        return Tag(name, color)
+        val color = "#" + element.getAttribute("nc:color")
+        return SystemTag(name, color)
     }
 
     private fun parseLockProperties(
