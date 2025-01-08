@@ -28,8 +28,7 @@ class UnifiedSearchRemoteOperation(
     val query: String,
     val cursor: Int? = null,
     val limit: Int = 5
-) :
-    OCSRemoteOperation<SearchResult>() {
+) : OCSRemoteOperation<SearchResult>() {
     companion object {
         private val TAG = UnifiedSearchRemoteOperation::class.java.simpleName
         private const val ENDPOINT = "/ocs/v2.php/search/providers/"

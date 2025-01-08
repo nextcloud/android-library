@@ -7,8 +7,10 @@
  */
 package com.owncloud.android.lib.resources.status
 
-data class Problem(val type: String, val count: Int, val oldestTimestamp: Long) {
-    fun toJsonWithTypeString(): String {
-        return """"$type": {"count": $count, "oldest": $oldestTimestamp}"""
-    }
+data class Problem(
+    val type: String,
+    val count: Int,
+    val oldestTimestamp: Long
+) {
+    fun toJsonWithTypeString(): String = """"$type": {"count": $count, "oldest": $oldestTimestamp}"""
 }

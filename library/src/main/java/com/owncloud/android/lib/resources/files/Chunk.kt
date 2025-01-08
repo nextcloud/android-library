@@ -7,4 +7,8 @@
  */
 package com.owncloud.android.lib.resources.files
 
-data class Chunk(val id: Int, val start: Long, val length: Long)
+data class Chunk(
+    val id: Int,
+    val start: Long,
+    val length: Long
+)

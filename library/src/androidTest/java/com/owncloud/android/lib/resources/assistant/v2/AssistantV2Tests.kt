@@ -24,8 +24,8 @@ class AssistantV2Tests : AbstractIT() {
         testOnlyOnServer(NextcloudVersion.nextcloud_30)
     }
 
-    private fun getTaskType(): TaskTypeData {
-        return TaskTypeData(
+    private fun getTaskType(): TaskTypeData =
+        TaskTypeData(
             "core:text2text",
             "Free text to text prompt",
             "Runs an arbitrary prompt through a language model that returns a reply",
@@ -44,7 +44,6 @@ class AssistantV2Tests : AbstractIT() {
                 )
             )
         )
-    }
 
     private fun getSelectedTaskType(): String = "core:text2text"
 

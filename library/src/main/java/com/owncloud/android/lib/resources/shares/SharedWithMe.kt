@@ -7,4 +7,8 @@
  */
 package com.owncloud.android.lib.resources.shares
 
-class SharedWithMe(val ownerUID: String?, val ownerDisplayName: String?, val note: String?)
+class SharedWithMe(
+    val ownerUID: String?,
+    val ownerDisplayName: String?,
+    val note: String?
+)

@@ -10,4 +10,7 @@ package com.owncloud.android.lib.common
 /**
  * Search providers for unified search
  */
-data class SearchProviders(var eTag: String = "", var providers: List<SearchProvider> = emptyList())
+data class SearchProviders(
+    var eTag: String = "",
+    var providers: List<SearchProvider> = emptyList()
+)

@@ -21,7 +21,8 @@ class CommentFileRemoteOperationIT : AbstractIT() {
         val remotePath = "/commentFile.txt"
         assertTrue(
             UploadFileRemoteOperation(filePath, remotePath, "image/jpg", RANDOM_MTIME)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         val readResult = ReadFileRemoteOperation(remotePath).execute(client)

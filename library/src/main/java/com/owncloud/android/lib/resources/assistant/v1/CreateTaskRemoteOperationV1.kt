@@ -16,8 +16,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
 
-class CreateTaskRemoteOperationV1(private val input: String, private val type: String) :
-    RemoteOperation<Void>() {
+class CreateTaskRemoteOperationV1(
+    private val input: String,
+    private val type: String
+) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val requestBody =
             hashMapOf(

@@ -9,7 +9,9 @@ package com.owncloud.android.lib.resources.users
 
 import com.google.gson.annotations.SerializedName
 
-enum class StatusType(val string: String) {
+enum class StatusType(
+    val string: String
+) {
     @SerializedName("online")
     ONLINE("online"),
 

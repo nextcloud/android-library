@@ -31,13 +31,9 @@ data class SearchResultEntry(
     val isFile: Boolean
         get() = fileId() != null || listOf(PARAM_DIR, PARAM_FILE).all { resourceUrl.contains(it) }
 
-    fun fileId(): String? {
-        return attributes["fileId"]
-    }
+    fun fileId(): String? = attributes["fileId"]
 
-    fun remotePath(): String {
-        return attributes["path"] ?: parseRemotePath()
-    }
+    fun remotePath(): String = attributes["path"] ?: parseRemotePath()
 
     private fun parseRemotePath(): String {
         val sanitizer =

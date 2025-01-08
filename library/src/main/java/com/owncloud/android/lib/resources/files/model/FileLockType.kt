@@ -7,7 +7,9 @@
  */
 package com.owncloud.android.lib.resources.files.model
 
-enum class FileLockType(val value: Int) {
+enum class FileLockType(
+    val value: Int
+) {
     MANUAL(0),
     COLLABORATIVE(1),
     TOKEN(2);

@@ -43,8 +43,7 @@ class UnifiedSearchProvidersRemoteOperation : OCSRemoteOperation<SearchProviders
                     getServerResponse(
                         getMethod,
                         object : TypeToken<ServerResponse<ArrayList<SearchProvider>?>?>() {}
-                    )
-                        ?.ocs
+                    )?.ocs
                         ?.data
                         ?: ArrayList()
 

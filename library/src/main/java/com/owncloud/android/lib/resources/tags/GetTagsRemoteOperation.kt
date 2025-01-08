@@ -45,11 +45,15 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
             response.forEach {
                 if (it.getProperties(HttpStatus.SC_OK).contentSize > 0) {
                     val id =
-                        it.getProperties(HttpStatus.SC_OK)
-                            .get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace).value as String
+                        it
+                            .getProperties(HttpStatus.SC_OK)
+                            .get(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace)
+                            .value as String
                     val name =
-                        it.getProperties(HttpStatus.SC_OK)
-                            .get(SHAREES_DISPLAY_NAME, ocNamespace).value as String
+                        it
+                            .getProperties(HttpStatus.SC_OK)
+                            .get(SHAREES_DISPLAY_NAME, ocNamespace)
+                            .value as String
 
                     result.add(Tag(id, name))
                 }

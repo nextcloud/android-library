@@ -22,7 +22,8 @@ class CheckEtagRemoteOperationIT : AbstractIT() {
         assertTrue(
             @Suppress("Detekt.MagicNumber")
             UploadFileRemoteOperation(filePath, remotePath, "image/jpg", 1464818400)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         val readResult = ReadFileRemoteOperation(remotePath).execute(client)

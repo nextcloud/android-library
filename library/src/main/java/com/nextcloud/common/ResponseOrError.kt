@@ -9,7 +9,10 @@ package com.nextcloud.common
 
 import okhttp3.Response
 
-internal data class ResponseOrError private constructor(val result: Response?, val error: Exception?) {
+internal data class ResponseOrError private constructor(
+    val result: Response?,
+    val error: Exception?
+) {
     constructor(result: Response) : this(result, null)
     constructor(error: Exception) : this(null, error)
 }

@@ -15,7 +15,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class UsernameVariationsIT(private val username: String) : AbstractIT() {
+class UsernameVariationsIT(
+    private val username: String
+) : AbstractIT() {
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic

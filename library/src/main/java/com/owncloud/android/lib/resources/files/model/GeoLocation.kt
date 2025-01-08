@@ -7,4 +7,7 @@
  */
 package com.owncloud.android.lib.resources.files.model
 
-data class GeoLocation(var latitude: Double = -1.0, var longitude: Double = -1.0)
+data class GeoLocation(
+    var latitude: Double = -1.0,
+    var longitude: Double = -1.0
+)

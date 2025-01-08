@@ -31,9 +31,7 @@ class JSONRequestBody() {
         return json.toRequestBody(JSON_MEDIATYPE)
     }
 
-    override fun toString(): String {
-        return content.toString()
-    }
+    override fun toString(): String = content.toString()
 
     companion object {
         private val JSON_MEDIATYPE = "application/json; charset=utf-8".toMediaType()

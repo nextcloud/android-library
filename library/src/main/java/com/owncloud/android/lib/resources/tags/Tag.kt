@@ -7,4 +7,7 @@
  */
 package com.owncloud.android.lib.resources.tags
 
-data class Tag(val id: String, val name: String)
+data class Tag(
+    val id: String,
+    val name: String
+)

@@ -20,7 +20,9 @@ import java.io.Serializable
  *
  * @author masensio
  */
-class RemoteFile : Parcelable, Serializable {
+class RemoteFile :
+    Parcelable,
+    Serializable {
     var remotePath: String? = null
     var mimeType: String? = null
     var length: Long = 0
@@ -184,9 +186,7 @@ class RemoteFile : Parcelable, Serializable {
         hidden = source.readInt() == 1
     }
 
-    override fun describeContents(): Int {
-        return this.hashCode()
-    }
+    override fun describeContents(): Int = this.hashCode()
 
     override fun writeToParcel(
         dest: Parcel,
@@ -234,13 +234,9 @@ class RemoteFile : Parcelable, Serializable {
         @JvmField
         val CREATOR: Parcelable.Creator<RemoteFile> =
             object : Parcelable.Creator<RemoteFile> {
-                override fun createFromParcel(source: Parcel): RemoteFile {
-                    return RemoteFile(source)
-                }
+                override fun createFromParcel(source: Parcel): RemoteFile = RemoteFile(source)
 
-                override fun newArray(size: Int): Array<RemoteFile?> {
-                    return arrayOfNulls(size)
-                }
+                override fun newArray(size: Int): Array<RemoteFile?> = arrayOfNulls(size)
             }
     }
 }

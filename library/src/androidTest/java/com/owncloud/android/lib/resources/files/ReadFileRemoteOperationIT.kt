@@ -42,14 +42,16 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         val movieFilePath = "/sampleMovie.mov"
         assertTrue(
             UploadFileRemoteOperation(movieFile, movieFilePath, "video/mov", RANDOM_MTIME)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         val livePhoto = createFile("sample")
         val livePhotoPath = "/samplePic.jpg"
         assertTrue(
             UploadFileRemoteOperation(livePhoto, livePhotoPath, "image/jpeg", RANDOM_MTIME)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         // link them
@@ -86,7 +88,8 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         val remotePath = "/test.md"
         assertTrue(
             UploadFileRemoteOperation(filePath, remotePath, "text/markdown", RANDOM_MTIME)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         val result = ReadFileRemoteOperation(remotePath).execute(client)
@@ -102,7 +105,8 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(
             UploadFileRemoteOperation(filePath, remotePath, "image/jpg", RANDOM_MTIME)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         val result = ReadFileRemoteOperation(remotePath).execute(client)
@@ -152,8 +156,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 remoteFile.localId,
                 remotePath,
                 true
-            )
-                .execute(client)
+            ).execute(client)
                 .isSuccess
         )
 

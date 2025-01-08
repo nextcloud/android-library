@@ -7,7 +7,9 @@
  */
 package com.owncloud.android.lib.resources.status
 
-enum class E2EVersion(val value: String) {
+enum class E2EVersion(
+    val value: String
+) {
     V1_0("1.0"),
     V1_1("1.1"),
     V1_2("1.2"),

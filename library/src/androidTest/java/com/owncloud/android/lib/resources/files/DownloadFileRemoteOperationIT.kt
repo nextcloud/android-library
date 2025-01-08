@@ -21,7 +21,8 @@ class DownloadFileRemoteOperationIT : AbstractIT() {
         assertTrue(
             @Suppress("Detekt.MagicNumber")
             UploadFileRemoteOperation(filePath, remotePath, "image/jpg", 1464818400)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         assertTrue(

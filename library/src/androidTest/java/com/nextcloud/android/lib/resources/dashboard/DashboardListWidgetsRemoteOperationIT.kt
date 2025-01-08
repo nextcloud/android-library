@@ -27,7 +27,12 @@ class DashboardListWidgetsRemoteOperationIT : AbstractIT() {
         assertTrue(result.resultData["recommendations"]?.buttons?.getOrNull(0) == null)
 
         assertEquals(1, result.resultData["activity"]?.buttons?.size)
-        assertTrue(result.resultData["activity"]?.buttons?.getOrNull(0)?.type == DashBoardButtonType.MORE)
+        assertTrue(
+            result.resultData["activity"]
+                ?.buttons
+                ?.getOrNull(0)
+                ?.type == DashBoardButtonType.MORE
+        )
         assertTrue(result.resultData["activity"]?.roundIcons == false)
 
         assertTrue(result.resultData["user_status"]?.roundIcons == true)

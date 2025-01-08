@@ -81,15 +81,15 @@ class NextcloudClient private constructor(
                 Log_OC.d(this, "Proxy settings: $proxyHost:$proxyPort")
             }
 
-            return OkHttpClient.Builder()
+            return OkHttpClient
+                .Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
                 .connectTimeout(DEFAULT_CONNECTION_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .readTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .callTimeout(
                     DEFAULT_CONNECTION_TIMEOUT_LONG + DEFAULT_DATA_TIMEOUT_LONG,
                     TimeUnit.MILLISECONDS
-                )
-                .sslSocketFactory(sslSocketFactory, trustManager)
+                ).sslSocketFactory(sslSocketFactory, trustManager)
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .fastFallback(true)
                 .proxy(proxy)
@@ -135,8 +135,8 @@ class NextcloudClient private constructor(
         return httpStatus
     }
 
-    internal fun execute(request: Request): ResponseOrError {
-        return try {
+    internal fun execute(request: Request): ResponseOrError =
+        try {
             val response = client.newCall(request).execute()
             if (response.code == HttpStatus.SC_BAD_REQUEST) {
                 val url = request.url
@@ -147,7 +147,6 @@ class NextcloudClient private constructor(
         } catch (ex: IOException) {
             ResponseOrError(ex)
         }
-    }
 
     @Throws(IOException::class)
     fun followRedirection(method: OkHttpMethodBase): RedirectionPath {
@@ -208,11 +207,7 @@ class NextcloudClient private constructor(
         }
     }
 
-    fun getUserIdEncoded(): String {
-        return delegate.userIdEncoded!!
-    }
+    fun getUserIdEncoded(): String = delegate.userIdEncoded!!
 
-    fun getUserIdPlain(): String {
-        return delegate.userId!!
-    }
+    fun getUserIdPlain(): String = delegate.userId!!
 }

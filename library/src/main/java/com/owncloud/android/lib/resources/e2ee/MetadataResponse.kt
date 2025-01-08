@@ -7,4 +7,7 @@
  */
 package com.owncloud.android.lib.resources.e2ee
 
-data class MetadataResponse(val signature: String, val metadata: String)
+data class MetadataResponse(
+    val signature: String,
+    val metadata: String
+)

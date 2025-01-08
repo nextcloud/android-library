@@ -18,7 +18,9 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.assistant.v1.model.TaskList
 import org.apache.commons.httpclient.HttpStatus
 
-class GetTaskListRemoteOperationV1(private val appId: String) : OCSRemoteOperation<TaskList>() {
+class GetTaskListRemoteOperationV1(
+    private val appId: String
+) : OCSRemoteOperation<TaskList>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<TaskList> {
         var result: RemoteOperationResult<TaskList>

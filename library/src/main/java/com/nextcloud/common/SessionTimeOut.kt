@@ -7,7 +7,10 @@
 
 package com.nextcloud.common
 
-data class SessionTimeOut(val readTimeOut: Int, val connectionTimeOut: Int)
+data class SessionTimeOut(
+    val readTimeOut: Int,
+    val connectionTimeOut: Int
+)
 
 @Suppress("Detekt.MagicNumber")
 val defaultSessionTimeOut = SessionTimeOut(60000, 15000)

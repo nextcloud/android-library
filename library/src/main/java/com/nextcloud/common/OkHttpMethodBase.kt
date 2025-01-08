@@ -82,37 +82,23 @@ abstract class OkHttpMethodBase(
         queryMap = params
     }
 
-    fun getResponseBodyAsString(): String {
-        return response?.body?.string() ?: ""
-    }
+    fun getResponseBodyAsString(): String = response?.body?.string() ?: ""
 
-    fun getResponseContentLength(): Long {
-        return response?.body?.contentLength() ?: -1
-    }
+    fun getResponseContentLength(): Long = response?.body?.contentLength() ?: -1
 
     fun releaseConnection() {
         response?.body?.close()
     }
 
-    fun getStatusCode(): Int {
-        return response?.code ?: UNKNOWN_STATUS_CODE
-    }
+    fun getStatusCode(): Int = response?.code ?: UNKNOWN_STATUS_CODE
 
-    fun getStatusText(): String {
-        return response?.message ?: ""
-    }
+    fun getStatusText(): String = response?.message ?: ""
 
-    fun getResponseHeaders(): Headers {
-        return response?.headers ?: Headers.Builder().build()
-    }
+    fun getResponseHeaders(): Headers = response?.headers ?: Headers.Builder().build()
 
-    fun getResponseHeader(name: String): String? {
-        return response?.header(name)
-    }
+    fun getResponseHeader(name: String): String? = response?.header(name)
 
-    fun getRequestHeader(name: String): String? {
-        return request?.header(name)
-    }
+    fun getRequestHeader(name: String): String? = request?.header(name)
 
     /**
      * Execute operation using nextcloud client.
@@ -168,7 +154,5 @@ abstract class OkHttpMethodBase(
 
     abstract fun applyType(temp: Request.Builder)
 
-    fun isSuccess(): Boolean {
-        return getStatusCode() == HttpURLConnection.HTTP_OK
-    }
+    fun isSuccess(): Boolean = getStatusCode() == HttpURLConnection.HTTP_OK
 }

@@ -75,9 +75,7 @@ class WebdavEntryTest {
             return document.documentElement
         }
 
-        private fun getMultiStatus(): MultiStatus {
-            return MultiStatus.createFromXml(getElement())
-        }
+        private fun getMultiStatus(): MultiStatus = MultiStatus.createFromXml(getElement())
     }
 
     @Test
