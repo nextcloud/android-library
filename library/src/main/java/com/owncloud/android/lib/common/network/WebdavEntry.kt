@@ -90,7 +90,7 @@ class WebdavEntry constructor(
         private set
     var lockToken: String? = null
         private set
-    var tags = arrayOfNulls<String>(0)
+    var tags = arrayOfNulls<Tag>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
@@ -659,6 +659,7 @@ class WebdavEntry constructor(
         const val EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout"
         const val EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token"
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
+        const val EXTENDED_PROPERTY_SYSTEM_TAGS_COLOR = "color"
 
         // v27
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"
