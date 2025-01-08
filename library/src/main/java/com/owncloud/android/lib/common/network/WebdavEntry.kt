@@ -393,23 +393,20 @@ class WebdavEntry constructor(
             }
 
             prop = propSet[EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace]
-            if (prop != null && prop.value != null) {
-                if (prop.value is ArrayList<*>) {
-                    val list = prop.value as ArrayList<*>
-                    val tempList: MutableList<String> = ArrayList(list.size)
-                    for (i in list.indices) {
-                        val element = list[i] as Element
-                        tempList.add(element.firstChild.textContent)
-                    }
-                    tags = tempList.toTypedArray()
-                } else {
-                    // single item or empty
-                    val element = prop.value as Element
-                    val value = element.firstChild.textContent
+            if (prop?.value != null) {
+                tags = when (prop.value) {
+                    is ArrayList<*> -> (prop.value as ArrayList<*>)
+                        .filterIsInstance<Element>()
+                        .map { parseTag(it) }
+                        .toTypedArray()
 
-                    if (value != null) {
-                        tags = arrayOf(value)
+                    is Element -> {
+                        val element = (prop.value as Element)
+                        val tag = parseTag(element)
+                        arrayOf(tag)
                     }
+
+                    else -> emptyArray()
                 }
             }
 
@@ -483,6 +480,12 @@ class WebdavEntry constructor(
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
         }
+    }
+
+    private fun parseTag(element: Element): Tag {
+        val name = element.firstChild.textContent
+        val color = element.getAttribute("nc:color")
+        return Tag(name, color)
     }
 
     private fun parseLockProperties(
