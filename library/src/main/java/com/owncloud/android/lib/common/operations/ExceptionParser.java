@@ -30,6 +30,8 @@ public class ExceptionParser {
     private static final String INVALID_PATH_EXCEPTION_STRING = "OC\\Connector\\Sabre\\Exception\\InvalidPath";
     private static final String INVALID_PATH_EXCEPTION_UPLOAD_STRING = "OCP\\Files\\InvalidPathException";
     private static final String VIRUS_EXCEPTION_STRING = "OCA\\DAV\\Connector\\Sabre\\Exception\\UnsupportedMediaType";
+    private static final String USER_DISABLED_MESSAGE = "OC\\User\\LoginException: Account disabled";
+    private static final String SERVICE_UNAVAILABLE_STRING = "Sabre\\DAV\\Exception\\ServiceUnavailable";
 
     // No namespaces
     private static final String ns = null;
@@ -74,6 +76,10 @@ public class ExceptionParser {
 
     public boolean isVirusException() {
         return VIRUS_EXCEPTION_STRING.equalsIgnoreCase(exception) && message.startsWith("Virus");
+    }
+
+    public boolean isUserDisabledException() {
+        return SERVICE_UNAVAILABLE_STRING.equals(exception) && USER_DISABLED_MESSAGE.equalsIgnoreCase(message);
     }
 
     /**
