@@ -19,7 +19,9 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Get hoverCard of an user
  */
-class GetHoverCardRemoteOperation(private val userId: String) : OCSRemoteOperation<HoverCard?>() {
+class GetHoverCardRemoteOperation(
+    private val userId: String
+) : OCSRemoteOperation<HoverCard?>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<HoverCard?> {
         var result: RemoteOperationResult<HoverCard?>

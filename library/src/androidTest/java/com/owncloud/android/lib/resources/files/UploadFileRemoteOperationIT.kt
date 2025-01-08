@@ -85,7 +85,8 @@ class UploadFileRemoteOperationIT : AbstractIT() {
             return null
         } else {
             try {
-                Files.readAttributes(file.toPath(), BasicFileAttributes::class.java)
+                Files
+                    .readAttributes(file.toPath(), BasicFileAttributes::class.java)
                     .creationTime()
                     .to(TimeUnit.SECONDS)
             } catch (e: IOException) {

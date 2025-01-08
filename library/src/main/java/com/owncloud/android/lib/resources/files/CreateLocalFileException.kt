@@ -9,7 +9,10 @@ package com.owncloud.android.lib.resources.files
 
 import java.io.IOException
 
-class CreateLocalFileException(val path: String, cause: Throwable) : Exception(cause) {
+class CreateLocalFileException(
+    val path: String,
+    cause: Throwable
+) : Exception(cause) {
     override val message: String = "File could not be created"
 
     /**
@@ -17,9 +20,14 @@ class CreateLocalFileException(val path: String, cause: Throwable) : Exception(c
      * There is no better way to check this, as `Paths` is not available in API < 26, and since this lib has a very low
      * minSdk, that can't even be worked around with an `if` block.
      */
-    fun isCausedByInvalidPath(): Boolean {
-        return cause is IOException && (path.isEmpty() || INVALID_CHARS.any { path.contains(it) })
-    }
+    fun isCausedByInvalidPath(): Boolean =
+        cause is IOException &&
+            (
+                path.isEmpty() ||
+                    INVALID_CHARS.any {
+                        path.contains(it)
+                    }
+            )
 
     companion object {
         private const val INVALID_CHARS = "\\:*?\"<>|"

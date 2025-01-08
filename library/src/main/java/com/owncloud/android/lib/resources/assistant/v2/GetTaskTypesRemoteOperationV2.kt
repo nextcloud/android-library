@@ -47,9 +47,10 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
                     taskTypeList?.filter { taskType ->
                         taskType.inputShape?.any { inputShape ->
                             inputShape.type == supportedTaskType
-                        } == true && taskType.outputShape?.any { outputShape ->
-                            outputShape.type == supportedTaskType
-                        } == true
+                        } == true &&
+                            taskType.outputShape?.any { outputShape ->
+                                outputShape.type == supportedTaskType
+                            } == true
                     }
 
                 result = RemoteOperationResult(true, getMethod)

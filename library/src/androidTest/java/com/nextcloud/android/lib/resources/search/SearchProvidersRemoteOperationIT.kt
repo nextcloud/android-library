@@ -40,7 +40,8 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
         // only on < NC20
         val ocCapability =
             GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).singleData as OCCapability
+                .execute(nextcloudClient)
+                .singleData as OCCapability
         assumeTrue(
             ocCapability.version.isOlderThan(OwnCloudVersion.nextcloud_20)
         )

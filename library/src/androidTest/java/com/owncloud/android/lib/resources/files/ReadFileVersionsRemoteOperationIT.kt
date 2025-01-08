@@ -30,8 +30,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
                 filePath,
                 mimetype,
                 System.currentTimeMillis() / MILLI_TO_SECOND
-            )
-                .execute(client)
+            ).execute(client)
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
@@ -44,7 +43,8 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
         var versionCount = 0
         val ocCapability =
             GetCapabilitiesRemoteOperation()
-                .execute(nextcloudClient).singleData as OCCapability
+                .execute(nextcloudClient)
+                .singleData as OCCapability
         if (ocCapability.version.isNewerOrEqual(NextcloudVersion.nextcloud_26)) {
             // with NC26+ we always have a starting version
             versionCount++
@@ -64,8 +64,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
                 filePath,
                 mimetype,
                 System.currentTimeMillis() / MILLI_TO_SECOND
-            )
-                .execute(client)
+            ).execute(client)
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 

@@ -10,4 +10,8 @@ package com.owncloud.android.lib.common
 /**
  * Search provider for unified search
  */
-data class SearchProvider(var id: String, var name: String, var order: Int)
+data class SearchProvider(
+    var id: String,
+    var name: String,
+    var order: Int
+)

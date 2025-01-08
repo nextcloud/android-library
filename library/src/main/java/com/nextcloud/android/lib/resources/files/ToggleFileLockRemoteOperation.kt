@@ -21,8 +21,10 @@ import org.apache.commons.httpclient.HttpStatus
  *
  * @param toLock `true` if file is to be locked, `false` if it is to be unlocked
  */
-class ToggleFileLockRemoteOperation(private val toLock: Boolean, private val filePath: String) :
-    RemoteOperation<Void>() {
+class ToggleFileLockRemoteOperation(
+    private val toLock: Boolean,
+    private val filePath: String
+) : RemoteOperation<Void>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var method: OkHttpMethodBase? = null

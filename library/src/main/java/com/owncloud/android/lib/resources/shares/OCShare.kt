@@ -22,7 +22,9 @@ import java.io.Serializable
  * @author masensio
  */
 @Suppress("Detekt.TooManyFunctions") // legacy code
-class OCShare : Parcelable, Serializable {
+class OCShare :
+    Parcelable,
+    Serializable {
     var id: Long = 0
     var fileSource: Long = 0
     var itemSource: Long = 0
@@ -149,9 +151,7 @@ class OCShare : Parcelable, Serializable {
         ownerDisplayName = source.readString()
     }
 
-    override fun describeContents(): Int {
-        return this.hashCode()
-    }
+    override fun describeContents(): Int = this.hashCode()
 
     override fun writeToParcel(
         dest: Parcel,
@@ -219,13 +219,9 @@ class OCShare : Parcelable, Serializable {
         @JvmField
         val CREATOR: Parcelable.Creator<OCShare> =
             object : Parcelable.Creator<OCShare> {
-                override fun createFromParcel(source: Parcel): OCShare {
-                    return OCShare(source)
-                }
+                override fun createFromParcel(source: Parcel): OCShare = OCShare(source)
 
-                override fun newArray(size: Int): Array<OCShare?> {
-                    return arrayOfNulls(size)
-                }
+                override fun newArray(size: Int): Array<OCShare?> = arrayOfNulls(size)
             }
     }
 }

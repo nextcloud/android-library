@@ -19,8 +19,7 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Get groupfolders of an user
  */
-class GetGroupfoldersRemoteOperation :
-    OCSRemoteOperation<Map<String, Groupfolder>>() {
+class GetGroupfoldersRemoteOperation : OCSRemoteOperation<Map<String, Groupfolder>>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Map<String, Groupfolder>> {
         var result: RemoteOperationResult<Map<String, Groupfolder>>

@@ -7,4 +7,7 @@
  */
 package com.owncloud.android.lib.resources.files.model
 
-data class ImageDimension(var width: Float = -1f, var height: Float = -1f)
+data class ImageDimension(
+    var width: Float = -1f,
+    var height: Float = -1f
+)

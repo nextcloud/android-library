@@ -28,7 +28,9 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLSession
 import javax.net.ssl.TrustManager
 
-class PlainClient(context: Context) {
+class PlainClient(
+    context: Context
+) {
     var followRedirects = true
     var client: OkHttpClient = createDefaultClient(context)
 
@@ -55,7 +57,8 @@ class PlainClient(context: Context) {
                 Log_OC.d(this, "Proxy settings: $proxyHost:$proxyPort")
             }
 
-            return OkHttpClient.Builder()
+            return OkHttpClient
+                .Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
                 .callTimeout(DEFAULT_DATA_TIMEOUT_LONG, TimeUnit.MILLISECONDS)
                 .sslSocketFactory(sslSocketFactory, trustManager)
@@ -67,16 +70,13 @@ class PlainClient(context: Context) {
     }
 
     @Throws(Exception::class)
-    fun execute(method: OkHttpMethodBase): Int {
-        return method.execute(this)
-    }
+    fun execute(method: OkHttpMethodBase): Int = method.execute(this)
 
-    internal fun execute(request: Request): ResponseOrError {
-        return try {
+    internal fun execute(request: Request): ResponseOrError =
+        try {
             val response = client.newCall(request).execute()
             ResponseOrError(response)
         } catch (ex: IOException) {
             ResponseOrError(ex)
         }
-    }
 }

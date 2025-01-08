@@ -16,7 +16,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.apache.commons.httpclient.HttpStatus
 
-class CreateTagRemoteOperation(val name: String) : RemoteOperation<Void>() {
+class CreateTagRemoteOperation(
+    val name: String
+) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val map = HashMap<String, String>()
         map["name"] = name

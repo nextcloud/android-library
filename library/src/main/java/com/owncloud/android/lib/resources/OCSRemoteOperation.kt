@@ -27,8 +27,8 @@ abstract class OCSRemoteOperation<T> : RemoteOperation<T>() {
     fun <T> getServerResponse(
         method: HttpMethodBase,
         type: TypeToken<T>
-    ): T? {
-        return try {
+    ): T? =
+        try {
             val response = method.responseBodyAsString
             val element: JsonElement = JsonParser.parseString(response)
             gson.fromJson(element, type.type)
@@ -37,18 +37,16 @@ abstract class OCSRemoteOperation<T> : RemoteOperation<T>() {
         } catch (syntaxException: JsonSyntaxException) {
             null
         }
-    }
 
     fun <T> getServerResponse(
         method: OkHttpMethodBase,
         type: TypeToken<T>
-    ): T? {
-        return try {
+    ): T? =
+        try {
             val response = method.getResponseBodyAsString()
             val element: JsonElement = JsonParser.parseString(response)
             gson.fromJson(element, type.type)
         } catch (syntaxException: JsonSyntaxException) {
             null
         }
-    }
 }

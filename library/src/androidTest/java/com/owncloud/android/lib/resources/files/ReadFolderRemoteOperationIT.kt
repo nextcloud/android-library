@@ -33,7 +33,8 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         val filePath = createFile("text")
         assertTrue(
             UploadFileRemoteOperation(filePath, remotePath + "1.txt", "text/markdown", RANDOM_MTIME)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
 
         var result = ReadFolderRemoteOperation(remotePath).execute(client)

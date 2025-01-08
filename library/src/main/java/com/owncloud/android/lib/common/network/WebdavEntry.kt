@@ -29,7 +29,10 @@ import org.w3c.dom.Element
 import java.math.BigDecimal
 
 @Suppress("Detekt.TooGenericExceptionCaught") // legacy code
-class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
+class WebdavEntry constructor(
+    ms: MultiStatusResponse,
+    splitElement: String
+) {
     var name: String? = null
         private set
     var path: String? = null
@@ -561,9 +564,7 @@ class WebdavEntry constructor(ms: MultiStatusResponse, splitElement: String) {
         return ShareType.NO_SHARED
     }
 
-    fun decodedPath(): String {
-        return Uri.decode(path)
-    }
+    fun decodedPath(): String = Uri.decode(path)
 
     val isDirectory: Boolean
         get() = "DIR" == contentType

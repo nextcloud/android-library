@@ -17,7 +17,9 @@ import com.owncloud.android.lib.resources.users.DeletePrivateKeyRemoteOperation
 import java.io.IOException
 import java.net.HttpURLConnection
 
-class DeleteTaskRemoteOperationV1(private val appId: Long) : RemoteOperation<Void>() {
+class DeleteTaskRemoteOperationV1(
+    private val appId: Long
+) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var postMethod: DeleteMethod? = null
         var result: RemoteOperationResult<Void>

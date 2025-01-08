@@ -16,7 +16,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.EMPTY_BYTE_ARRAY
 import org.apache.commons.httpclient.HttpStatus
 
-class PutTagRemoteOperation(val id: String, val fileId: Long) : RemoteOperation<Void>() {
+class PutTagRemoteOperation(
+    val id: String,
+    val fileId: Long
+) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val empty: RequestBody = EMPTY_BYTE_ARRAY.toRequestBody()
         val putMethod =

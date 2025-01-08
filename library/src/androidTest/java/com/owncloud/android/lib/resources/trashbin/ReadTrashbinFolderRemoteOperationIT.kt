@@ -34,8 +34,8 @@ class ReadTrashbinFolderRemoteOperationIT : AbstractIT() {
                 remotePath,
                 "image/jpg",
                 1464818400
-            )
-                .execute(client).isSuccess
+            ).execute(client)
+                .isSuccess
         )
 
         // delete file

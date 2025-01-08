@@ -18,7 +18,10 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 
 class DavPropertyProcessorTest {
-    data class TestData(val name: String, val age: Int)
+    data class TestData(
+        val name: String,
+        val age: Int
+    )
 
     private val gson = Gson()
 
@@ -27,21 +30,13 @@ class DavPropertyProcessorTest {
         val result =
             gson.fromDavProperty<TestData>(
                 object : DavProperty<String> {
-                    override fun toXml(document: Document?): Element {
-                        return createElement("TestData", value)
-                    }
+                    override fun toXml(document: Document?): Element = createElement("TestData", value)
 
-                    override fun getName(): DavPropertyName {
-                        return DavPropertyName.DISPLAYNAME
-                    }
+                    override fun getName(): DavPropertyName = DavPropertyName.DISPLAYNAME
 
-                    override fun getValue(): String {
-                        return "{\"name\":\"John\",\"age\":55}"
-                    }
+                    override fun getValue(): String = "{\"name\":\"John\",\"age\":55}"
 
-                    override fun isInvisibleInAllprop(): Boolean {
-                        return true
-                    }
+                    override fun isInvisibleInAllprop(): Boolean = true
                 }
             )
         val expected = TestData("John", 55)
@@ -53,21 +48,13 @@ class DavPropertyProcessorTest {
         val result =
             gson.fromDavProperty<ArrayList<String>>(
                 object : DavProperty<String> {
-                    override fun toXml(document: Document?): Element {
-                        return createElement("TestData", value)
-                    }
+                    override fun toXml(document: Document?): Element = createElement("TestData", value)
 
-                    override fun getName(): DavPropertyName {
-                        return DavPropertyName.DISPLAYNAME
-                    }
+                    override fun getName(): DavPropertyName = DavPropertyName.DISPLAYNAME
 
-                    override fun getValue(): String {
-                        return "{\"name\":\"John\",\"age\":55}"
-                    }
+                    override fun getValue(): String = "{\"name\":\"John\",\"age\":55}"
 
-                    override fun isInvisibleInAllprop(): Boolean {
-                        return true
-                    }
+                    override fun isInvisibleInAllprop(): Boolean = true
                 }
             )
         assertNull(result)
@@ -78,21 +65,13 @@ class DavPropertyProcessorTest {
         val result =
             gson.fromDavProperty<TestData>(
                 object : DavProperty<String?> {
-                    override fun toXml(document: Document?): Element {
-                        return createElement("TestData", "")
-                    }
+                    override fun toXml(document: Document?): Element = createElement("TestData", "")
 
-                    override fun getName(): DavPropertyName {
-                        return DavPropertyName.DISPLAYNAME
-                    }
+                    override fun getName(): DavPropertyName = DavPropertyName.DISPLAYNAME
 
-                    override fun getValue(): String? {
-                        return null
-                    }
+                    override fun getValue(): String? = null
 
-                    override fun isInvisibleInAllprop(): Boolean {
-                        return true
-                    }
+                    override fun isInvisibleInAllprop(): Boolean = true
                 }
             )
         assertNull(result)

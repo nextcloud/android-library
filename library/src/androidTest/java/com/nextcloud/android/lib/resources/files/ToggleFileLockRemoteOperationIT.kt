@@ -30,7 +30,8 @@ class ToggleFileLockRemoteOperationIT : AbstractIT() {
         assertTrue(
             @Suppress("Detekt.MagicNumber")
             UploadFileRemoteOperation(filePath, remotePath, "text/markdown", 1464818400)
-                .execute(client).isSuccess
+                .execute(client)
+                .isSuccess
         )
         val initialFile =
             ReadFileRemoteOperation(remotePath).execute(client).singleData as RemoteFile

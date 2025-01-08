@@ -15,7 +15,9 @@ package com.owncloud.android.lib.resources.status
  * 0 - False
  * 1 - True
  */
-enum class CapabilityBooleanType(val value: Int) {
+enum class CapabilityBooleanType(
+    val value: Int
+) {
     UNKNOWN(-1),
     FALSE(0),
     TRUE(1);

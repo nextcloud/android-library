@@ -24,8 +24,8 @@ data class Task(
     val completionExpectedAt: String? = null
 )
 
-fun TaskList.toV2(): com.owncloud.android.lib.resources.assistant.v2.model.TaskList {
-    return com.owncloud.android.lib.resources.assistant.v2.model.TaskList(
+fun TaskList.toV2(): com.owncloud.android.lib.resources.assistant.v2.model.TaskList =
+    com.owncloud.android.lib.resources.assistant.v2.model.TaskList(
         tasks =
             tasks.map { task ->
                 com.owncloud.android.lib.resources.assistant.v2.model.Task(
@@ -36,11 +36,13 @@ fun TaskList.toV2(): com.owncloud.android.lib.resources.assistant.v2.model.TaskL
                     appId = task.appId,
                     input =
                         task.input?.let {
-                            com.owncloud.android.lib.resources.assistant.v2.model.TaskInput(input = it)
+                            com.owncloud.android.lib.resources.assistant.v2.model
+                                .TaskInput(input = it)
                         },
                     output =
                         task.output?.let {
-                            com.owncloud.android.lib.resources.assistant.v2.model.TaskOutput(output = it)
+                            com.owncloud.android.lib.resources.assistant.v2.model
+                                .TaskOutput(output = it)
                         },
                     completionExpectedAt = task.completionExpectedAt?.toIntOrNull(),
                     progress = null,
@@ -50,4 +52,3 @@ fun TaskList.toV2(): com.owncloud.android.lib.resources.assistant.v2.model.TaskL
                 )
             }
     )
-}

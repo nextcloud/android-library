@@ -9,7 +9,9 @@ package com.nextcloud.common
 
 import com.nextcloud.android.lib.core.Clock
 
-class ClockStub(private val currentTimeValue: Long) : Clock {
+class ClockStub(
+    private val currentTimeValue: Long
+) : Clock {
     override val currentTimeMillis: Long
         get() = currentTimeValue
 }

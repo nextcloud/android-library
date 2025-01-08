@@ -7,4 +7,7 @@
  */
 package com.owncloud.android.lib.resources.users
 
-class ClearAt(val type: String, val time: String)
+class ClearAt(
+    val type: String,
+    val time: String
+)

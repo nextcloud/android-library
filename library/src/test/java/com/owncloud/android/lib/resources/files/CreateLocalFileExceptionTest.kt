@@ -15,9 +15,7 @@ class CreateLocalFileExceptionTest {
     private fun buildException(
         path: String,
         cause: Throwable = IOException()
-    ): CreateLocalFileException {
-        return CreateLocalFileException(path, cause)
-    }
+    ): CreateLocalFileException = CreateLocalFileException(path, cause)
 
     @Test
     fun `causedByInvalidPath should be false if cause is not IOException`() {

@@ -10,8 +10,12 @@ package com.owncloud.android.lib.resources.users
 import android.os.Parcel
 import android.os.Parcelable
 
-class Status(val status: StatusType, val message: String?, val icon: String, val clearAt: Long) :
-    Parcelable {
+class Status(
+    val status: StatusType,
+    val message: String?,
+    val icon: String,
+    val clearAt: Long
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         StatusType.valueOf(parcel.readString().orEmpty()),
         parcel.readString(),
@@ -29,17 +33,11 @@ class Status(val status: StatusType, val message: String?, val icon: String, val
         parcel.writeLong(clearAt)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<Status> {
-        override fun createFromParcel(parcel: Parcel): Status {
-            return Status(parcel)
-        }
+        override fun createFromParcel(parcel: Parcel): Status = Status(parcel)
 
-        override fun newArray(size: Int): Array<Status?> {
-            return arrayOfNulls(size)
-        }
+        override fun newArray(size: Int): Array<Status?> = arrayOfNulls(size)
     }
 }

@@ -20,8 +20,8 @@ data class TaskType(
     val description: String?
 )
 
-fun TaskTypes.toV2(): List<TaskTypeData> {
-    return types.map { taskType ->
+fun TaskTypes.toV2(): List<TaskTypeData> =
+    types.map { taskType ->
         TaskTypeData(
             id = taskType.id,
             name = taskType.name,
@@ -30,4 +30,3 @@ fun TaskTypes.toV2(): List<TaskTypeData> {
             outputShape = null
         )
     }
-}

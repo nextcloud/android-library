@@ -18,7 +18,10 @@ import com.owncloud.android.lib.common.network.WebdavUtils
  * When finally getting rid of [com.owncloud.android.lib.common.OwnCloudClient],
  * this should be separate from the client.
  */
-class NextcloudUriDelegate(override var baseUri: Uri, var userId: String?) : NextcloudUriProvider {
+class NextcloudUriDelegate(
+    override var baseUri: Uri,
+    var userId: String?
+) : NextcloudUriProvider {
     constructor(baseUri: Uri) : this(baseUri, null)
 
     val userIdEncoded: String?
@@ -36,7 +39,5 @@ class NextcloudUriDelegate(override var baseUri: Uri, var userId: String?) : Nex
         return "$filesDavUri${WebdavUtils.encodePath(path)}"
     }
 
-    override fun getCommentsUri(fileId: Long): String {
-        return "$davUri/comments/files/$fileId"
-    }
+    override fun getCommentsUri(fileId: Long): String = "$davUri/comments/files/$fileId"
 }

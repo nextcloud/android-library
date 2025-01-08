@@ -13,9 +13,8 @@ object RandomStringGenerator {
 
     @JvmOverloads
     @JvmStatic
-    fun make(length: Int = DEFAULT_LENGTH): String {
-        return (1..length)
+    fun make(length: Int = DEFAULT_LENGTH): String =
+        (1..length)
             .map { ALLOWED_CHARACTERS.random() }
             .joinToString("")
-    }
 }

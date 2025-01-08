@@ -16,9 +16,9 @@ object UserIdEncoder {
     private const val ALLOWED_USERID_CHARACTERS = "@+"
 
     @JvmStatic
-    fun encode(userId: String): String {
-        return Uri.encode(userId, ALLOWED_USERID_CHARACTERS)
+    fun encode(userId: String): String =
+        Uri
+            .encode(userId, ALLOWED_USERID_CHARACTERS)
             // single quote is not automatically encoded by Uri but is encoded in NC server
             .replace("'", "%27")
-    }
 }
