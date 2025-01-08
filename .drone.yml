@@ -109,6 +109,8 @@ services:
       - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
+      - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/recommendations.git /var/www/html/apps/recommendations/"
+      - su www-data -c "php /var/www/html/occ app:enable -f recommendations"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -224,6 +226,7 @@ services:
       - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
+      - su www-data -c "php /var/www/html/occ app:enable recommendations"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -235,6 +238,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 3e71a44f6f57a4d4d853c586c0c322bf0b718d96627906b92864e12353e5a014
+hmac: 9f5b7b3acf359f9304dc3b55e95fd5d7f6e1732811438952fefb503f313e74c3
 
 ...
