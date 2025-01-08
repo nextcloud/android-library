@@ -8,6 +8,7 @@ package com.owncloud.android.lib.resources.files.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.owncloud.android.lib.common.network.Tag
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavEntry.MountType
 import com.owncloud.android.lib.resources.files.FileUtils
@@ -50,7 +51,7 @@ class RemoteFile : Parcelable, Serializable {
     var lockOwnerEditor: String? = null
     var lockTimeout: Long = 0
     var lockToken: String? = null
-    var tags: Array<String?>? = null
+    var tags: Array<Tag?>? = null
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
