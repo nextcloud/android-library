@@ -27,12 +27,12 @@ import java.util.ArrayList;
  * Remote operation performing the read of remote versions on Nextcloud server.
  */
 
-public class ReadFileVersionsRemoteOperation extends RemoteOperation {
+public class ReadFileVersionsRemoteOperation extends RemoteOperation<ArrayList<FileVersion>> {
 
     private static final String TAG = ReadFileVersionsRemoteOperation.class.getSimpleName();
 
     private final long localId;
-    private ArrayList<Object> versions;
+    private ArrayList<FileVersion> versions;
 
     /**
      * Constructor
@@ -49,8 +49,8 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
+    protected RemoteOperationResult<ArrayList<FileVersion>> run(OwnCloudClient client) {
+        RemoteOperationResult<ArrayList<FileVersion>> result = null;
         PropFindMethod query = null;
 
         try {
@@ -69,34 +69,34 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
                 readData(dataInServer, client);
 
                 // Result of the operation
-                result = new RemoteOperationResult(true, query);
+                result = new RemoteOperationResult<>(true, query);
                 // Add data to the result
                 if (result.isSuccess()) {
-                    result.setData(versions);
+                    result.setResultData(versions);
                 }
             } else {
                 // synchronization failed
                 client.exhaustResponse(query.getResponseBodyAsStream());
-                result = new RemoteOperationResult(false, query);
+                result = new RemoteOperationResult<>(false, query);
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
         } finally {
             if (query != null)
                 query.releaseConnection();  // let the connection available for other methods
 
             if (result == null) {
-                result = new RemoteOperationResult(new Exception("unknown error"));
-                Log_OC.e(TAG, "Synchronized file with id " + localId + ": failed");
+                result = new RemoteOperationResult<>(new Exception("unknown error"));
+                Log_OC.e(TAG, "Read file version for " + localId + ": failed");
             } else {
                 if (result.isSuccess()) {
-                    Log_OC.i(TAG, "Synchronized file with id " + localId + ": " + result.getLogMessage());
+                    Log_OC.i(TAG, "Read file version for " + localId + ": " + result.getLogMessage());
                 } else {
                     if (result.isException()) {
-                        Log_OC.e(TAG, "Synchronized with id " + localId + ": " + result.getLogMessage(),
-                                 result.getException());
+                        Log_OC.e(TAG, "Read file version for " + localId + ": " + result.getLogMessage(),
+                                result.getException());
                     } else {
-                        Log_OC.w(TAG, "Synchronized with id " + localId + ": " + result.getLogMessage());
+                        Log_OC.w(TAG, "Read file version for " + localId + ": " + result.getLogMessage());
                     }
                 }
             }
@@ -119,7 +119,10 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation {
 
         // loop to update every child
         for (int i = 1; i < remoteData.getResponses().length; ++i) {
-            versions.add(new FileVersion(localId, new WebdavEntry(remoteData.getResponses()[i], splitElement)));
+            versions.add(new FileVersion(
+                    localId,
+                    new WebdavEntry(remoteData.getResponses()[i], splitElement))
+            );
         }
     }
 }

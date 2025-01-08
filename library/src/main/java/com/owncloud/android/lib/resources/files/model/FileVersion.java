@@ -71,7 +71,7 @@ public class FileVersion implements Parcelable, ServerFileInterface {
 
     @Override
     public long getFileLength() {
-        return 0;
+        return fileLength;
     }
 
     public void setMimeType(String mimeType) {
