@@ -20,6 +20,7 @@ import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
+import com.owncloud.android.lib.resources.systemTag.SystemTag
 import org.apache.jackrabbit.webdav.MultiStatusResponse
 import org.apache.jackrabbit.webdav.property.DavProperty
 import org.apache.jackrabbit.webdav.property.DavPropertyName
@@ -89,7 +90,7 @@ class WebdavEntry constructor(
         private set
     var lockToken: String? = null
         private set
-    var tags = arrayOfNulls<String>(0)
+    var tags = arrayOfNulls<SystemTag>(0)
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
@@ -391,23 +392,20 @@ class WebdavEntry constructor(
             }
 
             prop = propSet[EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace]
-            if (prop != null && prop.value != null) {
-                if (prop.value is ArrayList<*>) {
-                    val list = prop.value as ArrayList<*>
-                    val tempList: MutableList<String> = ArrayList(list.size)
-                    for (i in list.indices) {
-                        val element = list[i] as Element
-                        tempList.add(element.firstChild.textContent)
-                    }
-                    tags = tempList.toTypedArray()
-                } else {
-                    // single item or empty
-                    val element = prop.value as Element
-                    val value = element.firstChild.textContent
+            if (prop?.value != null) {
+                tags = when (prop.value) {
+                    is ArrayList<*> -> (prop.value as ArrayList<*>)
+                        .filterIsInstance<Element>()
+                        .map { parseTag(it) }
+                        .toTypedArray()
 
-                    if (value != null) {
-                        tags = arrayOf(value)
+                    is Element -> {
+                        val element = (prop.value as Element)
+                        val tag = parseTag(element)
+                        arrayOf(tag)
                     }
+
+                    else -> emptyArray()
                 }
             }
 
@@ -468,6 +466,12 @@ class WebdavEntry constructor(
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
         }
+    }
+
+    private fun parseTag(element: Element): SystemTag {
+        val name = element.firstChild.textContent
+        val color = "#" + element.getAttribute("nc:color")
+        return SystemTag(name, color)
     }
 
     private fun parseLockProperties(
@@ -615,6 +619,7 @@ class WebdavEntry constructor(
         const val EXTENDED_PROPERTY_LOCK_TIMEOUT = "lock-timeout"
         const val EXTENDED_PROPERTY_LOCK_TOKEN = "lock-token"
         const val EXTENDED_PROPERTY_SYSTEM_TAGS = "system-tags"
+        const val EXTENDED_PROPERTY_SYSTEM_TAGS_COLOR = "color"
 
         // v27
         const val EXTENDED_PROPERTY_METADATA_SIZE = "file-metadata-size"

@@ -13,6 +13,7 @@ import com.owncloud.android.lib.common.network.WebdavEntry.MountType
 import com.owncloud.android.lib.resources.files.FileUtils
 import com.owncloud.android.lib.resources.files.model.FileLockType.Companion.fromValue
 import com.owncloud.android.lib.resources.shares.ShareeUser
+import com.owncloud.android.lib.resources.systemTag.SystemTag
 import java.io.Serializable
 
 /**
@@ -52,7 +53,7 @@ class RemoteFile :
     var lockOwnerEditor: String? = null
     var lockTimeout: Long = 0
     var lockToken: String? = null
-    var tags: Array<String?>? = null
+    var tags: Array<SystemTag?>? = null
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
