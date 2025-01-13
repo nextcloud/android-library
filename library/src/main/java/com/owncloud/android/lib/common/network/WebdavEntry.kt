@@ -395,20 +395,22 @@ class WebdavEntry constructor(
 
             prop = propSet[EXTENDED_PROPERTY_SYSTEM_TAGS, ncNamespace]
             if (prop?.value != null) {
-                tags = when (prop.value) {
-                    is ArrayList<*> -> (prop.value as ArrayList<*>)
-                        .filterIsInstance<Element>()
-                        .map { parseTag(it) }
-                        .toTypedArray()
+                tags =
+                    when (prop.value) {
+                        is ArrayList<*> ->
+                            (prop.value as ArrayList<*>)
+                                .filterIsInstance<Element>()
+                                .map { parseTag(it) }
+                                .toTypedArray()
 
-                    is Element -> {
-                        val element = (prop.value as Element)
-                        val tag = parseTag(element)
-                        arrayOf(tag)
+                        is Element -> {
+                            val element = (prop.value as Element)
+                            val tag = parseTag(element)
+                            arrayOf(tag)
+                        }
+
+                        else -> emptyArray()
                     }
-
-                    else -> emptyArray()
-                }
             }
 
             // NC metadata size property <nc:file-metadata-size>

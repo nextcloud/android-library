@@ -7,4 +7,7 @@
 
 package com.owncloud.android.lib.resources.systemTag
 
-data class SystemTag(val name: String, val color: String?)
+data class SystemTag(
+    val name: String,
+    val color: String?
+)
