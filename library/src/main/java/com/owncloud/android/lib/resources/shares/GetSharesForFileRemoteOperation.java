@@ -19,12 +19,14 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import java.util.List;
+
 /**
  * Provide a list shares for a specific file.
  * The input is the full path of the desired file.
  * The output is a list of everyone who has the file shared with them.
  */
-public class GetSharesForFileRemoteOperation extends RemoteOperation {
+public class GetSharesForFileRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesForFileRemoteOperation.class.getSimpleName();
 
@@ -32,9 +34,9 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation {
     private static final String PARAM_RESHARES = "reshares";
     private static final String PARAM_SUBFILES = "subfiles";
 
-    private String mRemoteFilePath;
-    private boolean mReshares;
-    private boolean mSubfiles;
+    private final String mRemoteFilePath;
+    private final boolean mReshares;
+    private final boolean mSubfiles;
 
     /**
      * Constructor
@@ -46,17 +48,15 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation {
      * @param subfiles       If set to false (default), lists only the folder being shared
      *                       If set to true, all shared files within the folder are returned.
      */
-    public GetSharesForFileRemoteOperation(String remoteFilePath, boolean reshares,
-                                           boolean subfiles) {
+    public GetSharesForFileRemoteOperation(String remoteFilePath, boolean reshares, boolean subfiles) {
         mRemoteFilePath = remoteFilePath;
         mReshares = reshares;
         mSubfiles = subfiles;
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        int status = -1;
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
 
         GetMethod get = null;
 
@@ -68,13 +68,12 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation {
             get.setQueryString(new NameValuePair[]{
                 new NameValuePair(PARAM_PATH, mRemoteFilePath),
                 new NameValuePair(PARAM_RESHARES, String.valueOf(mReshares)),
-                    new NameValuePair(PARAM_SUBFILES, String.valueOf(mSubfiles)) //,
-                    //new NameValuePair("shared_with_me", "true")
+                    new NameValuePair(PARAM_SUBFILES, String.valueOf(mSubfiles))
             });
 
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
 
-            status = client.executeMethod(get);
+            int status = client.executeMethod(get);
 
             if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
@@ -91,11 +90,11 @@ public class GetSharesForFileRemoteOperation extends RemoteOperation {
                 }
 
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
             }
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting shares", e);
 
         } finally {
