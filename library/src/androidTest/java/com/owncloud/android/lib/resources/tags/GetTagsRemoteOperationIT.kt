@@ -74,7 +74,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         assertEquals(colorWithHex, sut.resultData.find { it.id == tag.id }?.color)
 
         // add colored tag to file
-        val tagFolder = "/coloredFolder"
+        val tagFolder = "/coloredFolder/"
         assertTrue(CreateFolderRemoteOperation(tagFolder, true).execute(client).isSuccess)
         val folderMetadata = ReadFileRemoteOperation(tagFolder).execute(client)
         assertTrue(
