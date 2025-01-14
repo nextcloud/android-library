@@ -15,6 +15,7 @@ import com.owncloud.android.lib.common.network.WebdavUtils
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode
 import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
@@ -65,6 +66,8 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
 
     @Test
     fun uploadWithDisabledUser() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_31)
+
         // use disabled user
         val client3 = OwnCloudClientFactory.createOwnCloudClient(url, context, true)
         client3.credentials = OwnCloudBasicCredentials("disabled", "disabled")

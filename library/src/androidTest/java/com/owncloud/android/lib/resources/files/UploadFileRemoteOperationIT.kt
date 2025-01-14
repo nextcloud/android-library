@@ -14,6 +14,7 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -89,6 +90,8 @@ class UploadFileRemoteOperationIT : AbstractIT() {
     @Throws(IOException::class)
     @Test
     fun uploadWithDisabledUser() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_31)
+
         // use disabled user
         val client3 = OwnCloudClientFactory.createOwnCloudClient(url, context, true)
         client3.credentials = OwnCloudBasicCredentials("disabled", "disabled")
