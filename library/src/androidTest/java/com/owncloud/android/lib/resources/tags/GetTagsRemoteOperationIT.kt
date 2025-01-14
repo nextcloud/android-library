@@ -14,6 +14,7 @@ import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.apache.commons.httpclient.HttpStatus
@@ -31,6 +32,8 @@ class GetTagsRemoteOperationIT : AbstractIT() {
 
     @Test
     fun list() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_31)
+
         var sut = GetTagsRemoteOperation().execute(client)
         assertTrue(sut.isSuccess)
 
