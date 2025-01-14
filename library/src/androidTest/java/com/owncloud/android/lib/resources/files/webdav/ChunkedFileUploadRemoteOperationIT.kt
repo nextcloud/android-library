@@ -8,12 +8,17 @@
 package com.owncloud.android.lib.resources.files.webdav
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.common.OwnCloudBasicCredentials
+import com.owncloud.android.lib.common.OwnCloudClientFactory
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavUtils
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode
 import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNotNull
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 import org.junit.Test
@@ -57,6 +62,21 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         assertNotNull(uploadResult)
         TestCase.assertFalse(uploadResult?.isSuccess == true)
         TestCase.assertSame(ResultCode.CANCELLED, uploadResult?.code)
+    }
+
+    @Test
+    fun uploadWithDisabledUser() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_31)
+
+        // use disabled user
+        val client3 = OwnCloudClientFactory.createOwnCloudClient(url, context, true)
+        client3.credentials = OwnCloudBasicCredentials("disabled", "disabled")
+
+        val sut = genLargeUpload(true)
+        val uploadResult = sut.execute(client3)
+
+        assertFalse(uploadResult.isSuccess)
+        assertEquals(ResultCode.USER_DISABLED, uploadResult.code)
     }
 
     @Test

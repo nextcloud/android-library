@@ -70,12 +70,15 @@ services:
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - /usr/local/bin/initnc.sh
+      - sed -i "3i'auth.bruteforce.protection.enabled' => false," /var/www/html/config/config.php
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
       - su www-data -c "OC_PASS=user2 php /var/www/html/occ user:add --password-from-env --display-name='User Two' user2"
       - su www-data -c "OC_PASS=user3 php /var/www/html/occ user:add --password-from-env --display-name='User Three' user3"
       - su www-data -c "OC_PASS=test php /var/www/html/occ user:add --password-from-env --display-name='Test@Test' test@test"
       - su www-data -c "OC_PASS=test php /var/www/html/occ user:add --password-from-env --display-name='Test Spaces' 'test test'"
+      - su www-data -c "OC_PASS=disabled php /var/www/html/occ user:add --password-from-env --display-name='Disabled' 'disabled'"
+      - su www-data -c "php /var/www/html/occ user:disable disabled"
       - su www-data -c "php /var/www/html/occ user:setting user2 files quota 1G"
       - su www-data -c "php /var/www/html/occ group:add users"
       - su www-data -c "php /var/www/html/occ group:adduser users user1"
@@ -187,12 +190,15 @@ services:
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
+      - sed -i "3i'auth.bruteforce.protection.enabled' => false," /var/www/html/config/config.php
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
       - su www-data -c "OC_PASS=user2 php /var/www/html/occ user:add --password-from-env --display-name='User Two' user2"
       - su www-data -c "OC_PASS=user3 php /var/www/html/occ user:add --password-from-env --display-name='User Three' user3"
       - su www-data -c "OC_PASS=test php /var/www/html/occ user:add --password-from-env --display-name='Test@Test' test@test"
       - su www-data -c "OC_PASS=test php /var/www/html/occ user:add --password-from-env --display-name='Test Spaces' 'test test'"
+      - su www-data -c "OC_PASS=disabled php /var/www/html/occ user:add --password-from-env --display-name='Disabled' 'disabled'"
+      - su www-data -c "php /var/www/html/occ user:disable disabled"
       - su www-data -c "php /var/www/html/occ user:setting user2 files quota 1G"
       - su www-data -c "php /var/www/html/occ group:add users"
       - su www-data -c "php /var/www/html/occ group:adduser users user1"
@@ -235,6 +241,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 3e71a44f6f57a4d4d853c586c0c322bf0b718d96627906b92864e12353e5a014
+hmac: e1e69dd987460a8794e6923b226173da09dc90d855e1dd4d7a6cc0d4b1580ecf
 
 ...
