@@ -70,6 +70,7 @@ services:
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - /usr/local/bin/initnc.sh
+      - sed -i "3i'auth.bruteforce.protection.enabled' => false," config/config.php
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
       - su www-data -c "OC_PASS=user2 php /var/www/html/occ user:add --password-from-env --display-name='User Two' user2"
@@ -187,6 +188,7 @@ services:
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
       - su www-data -c "source ~/.bashrc; nvm install node"
       - BRANCH="$SERVER_VERSION" /usr/local/bin/initnc.sh
+      - sed -i "3i'auth.bruteforce.protection.enabled' => false," config/config.php
       - su www-data -c "php /var/www/html/occ log:manage --level warning"
       - su www-data -c "OC_PASS=user1 php /var/www/html/occ user:add --password-from-env --display-name='User One' user1"
       - su www-data -c "OC_PASS=user2 php /var/www/html/occ user:add --password-from-env --display-name='User Two' user2"
@@ -235,6 +237,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 3e71a44f6f57a4d4d853c586c0c322bf0b718d96627906b92864e12353e5a014
+hmac: 16bfb471ab277c0a835cec54323e774e681796a57a9b1bd623945e9e4ea602a2
 
 ...
