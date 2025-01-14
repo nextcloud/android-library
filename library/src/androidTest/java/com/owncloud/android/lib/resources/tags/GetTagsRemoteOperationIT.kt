@@ -31,6 +31,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun list() {
         testOnlyOnServer(NextcloudVersion.nextcloud_31)
 
@@ -45,14 +46,21 @@ class GetTagsRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
+        assertTrue(
+            CreateTagRemoteOperation(RandomStringGenerator.make(TAG_LENGTH))
+                .execute(nextcloudClient)
+                .isSuccess
+        )
+
         sut = GetTagsRemoteOperation().execute(client)
         assertTrue(sut.isSuccess)
-        assertEquals(count + 1, sut.resultData.size)
+        assertEquals(count + 2, sut.resultData.size)
 
         // add color to one tag
         val plainColor = "ff00ff"
         val colorWithHex = "#$plainColor"
-        val tag = sut.resultData.first()
+        val tag1 = sut.resultData.first()
+        val tag2 = sut.resultData[1]
         val newProps = DavPropertySet()
         newProps.add(
             DefaultDavProperty(
@@ -63,7 +71,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         )
         val propPatchMethod =
             PropPatchMethod(
-                client.baseUri.toString() + "/remote.php/dav/systemtags/" + tag.id,
+                client.baseUri.toString() + "/remote.php/dav/systemtags/" + tag1.id,
                 newProps,
                 DavPropertyNameSet()
             )
@@ -71,7 +79,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
 
         sut = GetTagsRemoteOperation().execute(client)
 
-        assertEquals(colorWithHex, sut.resultData.find { it.id == tag.id }?.color)
+        assertEquals(colorWithHex, sut.resultData.find { it.id == tag1.id }?.color)
 
         // add colored tag to file
         val tagFolder = "/coloredFolder/"
@@ -79,20 +87,25 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         val folderMetadata = ReadFileRemoteOperation(tagFolder).execute(client)
         assertTrue(
             PutTagRemoteOperation(
-                tag.id,
+                tag1.id,
+                (folderMetadata.data[0] as RemoteFile).localId
+            ).execute(nextcloudClient).isSuccess
+        )
+        assertTrue(
+            PutTagRemoteOperation(
+                tag2.id,
                 (folderMetadata.data[0] as RemoteFile).localId
             ).execute(nextcloudClient).isSuccess
         )
 
         // read metadata
         val rootMetadata = ReadFolderRemoteOperation("/").execute(client)
-        assertEquals(
-            colorWithHex,
+        val tags =
             (rootMetadata.data as ArrayList<RemoteFile>)
                 .find { it.remotePath == tagFolder }
                 ?.tags
-                ?.first()
-                ?.color
-        )
+        assertEquals(2, tags?.size)
+        assertEquals(colorWithHex, tags?.first()?.color)
+        assertEquals(null, tags?.get(1)?.color)
     }
 }

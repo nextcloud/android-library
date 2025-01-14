@@ -487,7 +487,13 @@ class WebdavEntry constructor(
 
     private fun parseTag(element: Element): SystemTag {
         val name = element.firstChild.textContent
-        val color = "#" + element.getAttribute("nc:color")
+
+        val color =
+            if (element.getAttribute("nc:color").isNotEmpty()) {
+                "#" + element.getAttribute("nc:color")
+            } else {
+                null
+            }
         return SystemTag(name, color)
     }
 
