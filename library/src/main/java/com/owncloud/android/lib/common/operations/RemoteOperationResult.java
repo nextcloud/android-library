@@ -11,17 +11,22 @@
  * SPDX-FileCopyrightText: 2014 Jorge Antonio Diaz-Benito Soriano <jorge.diazbenitosoriano@gmail.com>
  * SPDX-FileCopyrightText: 2014-2016 Juan Carlos González Cabrero <malkomich@gmail.com>
  * SPDX-FileCopyrightText: 2014 jabarros <jabarros@solidgear.es>
+ * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.common.operations;
 
 import android.accounts.Account;
 import android.accounts.AccountsException;
+import android.content.Context;
 import android.os.Build;
 import android.system.ErrnoException;
 import android.system.OsConstants;
 
+import androidx.annotation.NonNull;
+
 import com.nextcloud.common.OkHttpMethodBase;
+import com.owncloud.android.lib.R;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -576,6 +581,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         return result;
     }
 
+    // use getLogMessage(Context)
+    @Deprecated
     public String getLogMessage() {
 
         if (mException != null) {
@@ -669,6 +676,100 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             (isSuccess() ? "success" : "fail") + ")";
 
     }
+
+    public String getLogMessage(@NonNull Context context) {
+
+        if (mException != null) {
+            if (mException instanceof OperationCancelledException) {
+                return context.getString(R.string.operation_cancelled);
+
+            } else if (mException instanceof SocketException) {
+                return context.getString(R.string.socket_exception);
+
+            } else if (mException instanceof SocketTimeoutException) {
+                return context.getString(R.string.socket_timeout_exception);
+
+            } else if (mException instanceof ConnectTimeoutException) {
+                return context.getString(R.string.connect_timeout_exception);
+
+            } else if (mException instanceof MalformedURLException) {
+                return context.getString(R.string.malformed_url_exception);
+
+            } else if (mException instanceof UnknownHostException) {
+                return context.getString(R.string.unknown_host_exception);
+
+            } else if (mException instanceof CertificateCombinedException) {
+                if (((CertificateCombinedException) mException).isRecoverable()) {
+                    return context.getString(R.string.ssl_recoverable_exception);
+                } else {
+                    return context.getString(R.string.ssl_exception);
+                }
+
+            } else if (mException instanceof SSLException) {
+                return context.getString(R.string.ssl_exception);
+
+            } else if (mException instanceof DavException) {
+                return context.getString(R.string.unexpected_webdav_exception);
+
+            } else if (mException instanceof HttpException) {
+                return context.getString(R.string.http_violation);
+
+            } else if (mException instanceof IOException) {
+                return context.getString(R.string.unrecovered_transport_exception);
+
+            } else if (mException instanceof AccountNotFoundException) {
+                Account failedAccount = ((AccountNotFoundException) mException).getFailedAccount();
+                return mException.getMessage() + " (" +
+                    (failedAccount != null ? failedAccount.name : "NULL") + ")";
+
+            } else if (mException instanceof AccountsException) {
+                return context.getString(R.string.exception_using_account);
+
+            } else if (mException instanceof JSONException) {
+                return context.getString(R.string.json_exception);
+
+            } else {
+                return context.getString(R.string.unexpected_exception);
+            }
+        }
+
+        if (mCode == ResultCode.INSTANCE_NOT_CONFIGURED) {
+            return context.getString(R.string.instance_not_configured);
+
+        } else if (mCode == ResultCode.NO_NETWORK_CONNECTION) {
+            return context.getString(R.string.no_network_connection);
+
+        } else if (mCode == ResultCode.BAD_OC_VERSION) {
+            return context.getString(R.string.bad_oc_version);
+
+        } else if (mCode == ResultCode.LOCAL_STORAGE_FULL) {
+            return context.getString(R.string.local_storage_full);
+
+        } else if (mCode == ResultCode.LOCAL_STORAGE_NOT_MOVED) {
+            return context.getString(R.string.local_storage_not_moved);
+
+        } else if (mCode == ResultCode.ACCOUNT_NOT_NEW) {
+            return context.getString(R.string.account_not_new);
+
+        } else if (mCode == ResultCode.ACCOUNT_NOT_THE_SAME) {
+            return context.getString(R.string.account_not_the_same);
+
+        } else if (mCode == ResultCode.INVALID_CHARACTER_IN_NAME) {
+            return context.getString(R.string.invalid_character_in_name);
+
+        } else if (mCode == ResultCode.FILE_NOT_FOUND) {
+            return context.getString(R.string.file_not_found);
+
+        } else if (mCode == ResultCode.SYNC_CONFLICT) {
+            return context.getString(R.string.sync_conflict);
+
+        } else if (mCode == ResultCode.LOCKED) {
+            return context.getString(R.string.file_locked);
+        }
+
+        return context.getString(R.string.operation_finished_http_code, mHttpCode, isSuccess() ? "success" : "fail");
+    }
+
 
     public boolean isServerFail() {
         return (mHttpCode >= HttpStatus.SC_INTERNAL_SERVER_ERROR);
