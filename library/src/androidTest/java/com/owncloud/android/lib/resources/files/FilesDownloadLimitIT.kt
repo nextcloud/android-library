@@ -35,6 +35,7 @@ class FilesDownloadLimitIT : AbstractIT() {
     }
 
     @Test
+    @Suppress("Detekt.MagicNumber")
     fun downloadLimit() {
         val share = createTestShare()
         val limit = 5

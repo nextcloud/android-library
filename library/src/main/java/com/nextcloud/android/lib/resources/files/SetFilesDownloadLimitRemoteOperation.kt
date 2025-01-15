@@ -20,29 +20,23 @@ class SetFilesDownloadLimitRemoteOperation(
     val limit: Int
 ) : OCSRemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        var result: RemoteOperationResult<Void>
-        var putMethod: PutMethod? = null
+        val result: RemoteOperationResult<Void>
 
-        try {
-            val url = client.baseUri.toString() + String.format(FILES_DOWNLOAD_LIMIT_ENDPOINT, token)
-            val jsonRequestBody = JSONRequestBody("limit", limit.toString())
-            putMethod = PutMethod(url, true, jsonRequestBody.get())
+        val url = client.baseUri.toString() + String.format(FILES_DOWNLOAD_LIMIT_ENDPOINT, token)
+        val jsonRequestBody = JSONRequestBody("limit", limit.toString())
+        val putMethod = PutMethod(url, true, jsonRequestBody.get())
 
-            val status = putMethod.execute(client)
+        val status = putMethod.execute(client)
 
-            if (status == HttpStatus.SC_OK) {
-                result = RemoteOperationResult(true, putMethod)
-            } else {
-                result = RemoteOperationResult(false, putMethod)
-                Log_OC.e(TAG, "Failed to set download limit")
-                Log_OC.e(TAG, "*** status code: " + status + "; response: " + putMethod.getResponseBodyAsString())
-            }
-        } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(TAG, "Exception while setting download limit", e)
-        } finally {
-            putMethod?.releaseConnection()
+        if (status == HttpStatus.SC_OK) {
+            result = RemoteOperationResult(true, putMethod)
+        } else {
+            result = RemoteOperationResult(false, putMethod)
+            Log_OC.e(TAG, "Failed to set download limit")
+            Log_OC.e(TAG, "*** status code: " + status + "; response: " + putMethod.getResponseBodyAsString())
         }
+
+        putMethod.releaseConnection()
 
         return result
     }

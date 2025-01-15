@@ -26,8 +26,7 @@ class GetFilesDownloadLimitRemoteOperation
     ) : OCSRemoteOperation<List<FileDownloadLimit>>() {
         @Deprecated("Deprecated in Java")
         override fun run(client: OwnCloudClient): RemoteOperationResult<List<FileDownloadLimit>> {
-            var result: RemoteOperationResult<List<FileDownloadLimit>>
-            var propFindMethod: PropFindMethod? = null
+            val result: RemoteOperationResult<List<FileDownloadLimit>>
             val propSet = DavPropertyNameSet()
             val depth = if (subfiles) DavConstants.DEPTH_1 else DavConstants.DEPTH_0
 
@@ -36,32 +35,28 @@ class GetFilesDownloadLimitRemoteOperation
                 Namespace.getNamespace(WebdavEntry.NAMESPACE_NC)
             )
 
-            try {
-                propFindMethod = PropFindMethod(client.getFilesDavUri(remotePath), propSet, depth)
+            val propFindMethod = PropFindMethod(client.getFilesDavUri(remotePath), propSet, depth)
 
-                val status = client.executeMethod(propFindMethod)
+            val status = client.executeMethod(propFindMethod)
 
-                if (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK) {
-                    val response = propFindMethod.responseBodyAsMultiStatus
+            if (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK) {
+                val response = propFindMethod.responseBodyAsMultiStatus
 
-                    val fileDownloadLimits =
-                        response.responses.flatMap {
-                            val webdavEntry = WebdavEntry(it, client.filesDavUri.encodedPath!!)
-                            webdavEntry.fileDownloadLimit
-                        }
+                val fileDownloadLimits =
+                    response.responses.flatMap {
+                        val webdavEntry = WebdavEntry(it, client.filesDavUri.encodedPath!!)
+                        webdavEntry.fileDownloadLimit
+                    }
 
-                    result = RemoteOperationResult(true, propFindMethod)
-                    result.resultData = fileDownloadLimits
-                } else {
-                    result = RemoteOperationResult(false, propFindMethod)
-                    client.exhaustResponse(propFindMethod.responseBodyAsStream)
-                }
-            } catch (e: Exception) {
-                result = RemoteOperationResult(e)
-                Log_OC.e(TAG, "Exception while reading download limit", e)
-            } finally {
-                propFindMethod?.releaseConnection()
+                result = RemoteOperationResult(true, propFindMethod)
+                result.resultData = fileDownloadLimits
+            } else {
+                Log_OC.e(TAG, "Failed to get download limit")
+                result = RemoteOperationResult(false, propFindMethod)
+                client.exhaustResponse(propFindMethod.responseBodyAsStream)
             }
+
+            propFindMethod.releaseConnection()
 
             return result
         }

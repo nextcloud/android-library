@@ -18,28 +18,22 @@ class RemoveFilesDownloadLimitRemoteOperation(
     val token: String
 ) : OCSRemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        var result: RemoteOperationResult<Void>
-        var deleteMethod: DeleteMethod? = null
+        val result: RemoteOperationResult<Void>
 
-        try {
-            val url = client.baseUri.toString() + String.format(FILES_DOWNLOAD_LIMIT_ENDPOINT, token) + JSON_FORMAT
-            deleteMethod = DeleteMethod(url, true)
+        val url = client.baseUri.toString() + String.format(FILES_DOWNLOAD_LIMIT_ENDPOINT, token) + JSON_FORMAT
+        val deleteMethod = DeleteMethod(url, true)
 
-            val status = deleteMethod.execute(client)
+        val status = deleteMethod.execute(client)
 
-            if (status == HttpStatus.SC_OK) {
-                result = RemoteOperationResult(true, deleteMethod)
-            } else {
-                result = RemoteOperationResult(false, deleteMethod)
-                Log_OC.e(TAG, "Failed to remove download limit")
-                Log_OC.e(TAG, "*** status code: " + status + "; response: " + deleteMethod.getResponseBodyAsString())
-            }
-        } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(TAG, "Exception while removing download limit", e)
-        } finally {
-            deleteMethod?.releaseConnection()
+        if (status == HttpStatus.SC_OK) {
+            result = RemoteOperationResult(true, deleteMethod)
+        } else {
+            result = RemoteOperationResult(false, deleteMethod)
+            Log_OC.e(TAG, "Failed to remove download limit")
+            Log_OC.e(TAG, "*** status code: " + status + "; response: " + deleteMethod.getResponseBodyAsString())
         }
+
+        deleteMethod.releaseConnection()
 
         return result
     }
