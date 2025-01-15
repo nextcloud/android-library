@@ -6,4 +6,4 @@
     <string name="notification_title_select_client_cert">Vybrat klientský certifikát</string>
     <string name="operation_cancelled_by_the_caller">Operace zrušena volajícím</string>
     <string name="title_no_client_cert">Nenalezen žádný klientský certifikát</string>
-</resources>
+    </resources>

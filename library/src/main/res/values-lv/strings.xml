@@ -6,4 +6,4 @@
     <string name="notification_title_select_client_cert">Atlasīt klienta sertifikātu</string>
     <string name="operation_cancelled_by_the_caller">Darbību atcēla tās veicējs</string>
     <string name="title_no_client_cert">Netika atrasts neviens klienta sertifikāts</string>
-</resources>
+    </resources>

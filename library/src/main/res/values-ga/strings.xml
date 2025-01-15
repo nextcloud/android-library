@@ -6,4 +6,4 @@
     <string name="notification_title_select_client_cert">Roghnaigh teastas cliant</string>
     <string name="operation_cancelled_by_the_caller">Oibríocht curtha ar ceal ag an nglaoiteoir</string>
     <string name="title_no_client_cert">Níor aimsíodh teastas cliant</string>
-</resources>
+    </resources>

@@ -6,4 +6,4 @@
     <string name="notification_title_select_client_cert">클라이언트 인증서 선택</string>
     <string name="operation_cancelled_by_the_caller">호출자에 의해서 작업 취소됨</string>
     <string name="title_no_client_cert">클라이언트 인증서를 찾을 수 없음</string>
-</resources>
+    </resources>

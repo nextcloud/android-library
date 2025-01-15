@@ -6,4 +6,4 @@
     <string name="notification_title_select_client_cert">Hautatu bezero-ziurtagiria</string>
     <string name="operation_cancelled_by_the_caller">Eragiketa bertan behera utzi du deitzaileak</string>
     <string name="title_no_client_cert">Ez da bezero-ziurtagiririk aurkitu</string>
-</resources>
+    </resources>

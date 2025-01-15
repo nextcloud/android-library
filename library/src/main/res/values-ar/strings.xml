@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-  <resources>
-    <string name="message_install_client_cert">هل ترغب بتثبيت شهادة المصادقة TLS للعميل؟</string>
-    <string name="notification_channel_name">الاتصال بنكست كلاود</string>
-    <string name="notification_message_select_client_cert">حدِّد شهادة مصادقة العميل لـ %1$s:%2$d</string>
-    <string name="notification_title_select_client_cert">حدِّد شهادة مصادقة العميل</string>
-    <string name="operation_cancelled_by_the_caller">تمّ إلغاء العملية من قِبَل المُتّصِل</string>
-    <string name="title_no_client_cert">لم يتم العثور على أي شهادة مصادقة للعميل</string>
-</resources>

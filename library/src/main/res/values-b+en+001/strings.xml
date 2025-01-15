@@ -6,4 +6,4 @@
     <string name="notification_title_select_client_cert">Select client certificate</string>
     <string name="operation_cancelled_by_the_caller">Operation cancelled by the caller</string>
     <string name="title_no_client_cert">No client certificate was found</string>
-</resources>
+    </resources>

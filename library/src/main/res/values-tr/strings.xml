@@ -4,6 +4,7 @@
     <string name="notification_channel_name">Nextcloud bağlantısı</string>
     <string name="notification_message_select_client_cert">%1$s:%2$d için istemci sertifikası seçin</string>
     <string name="notification_title_select_client_cert">İstemci sertifikası seçin</string>
+    <string name="operation_cancelled">İşlem çağıran tarafından iptal edildi</string>
     <string name="operation_cancelled_by_the_caller">İşlem çağıran tarafından iptal edildi</string>
     <string name="title_no_client_cert">İstemci sertifikası bulunamadı</string>
-</resources>
+    </resources>
