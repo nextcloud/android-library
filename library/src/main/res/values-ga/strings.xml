@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Cuntas ann cheana agus ceann nua á chruthú</string>
+    <string name="account_not_the_same">Fíordheimhnithe le cuntas eile seachas an ceann atá á nuashonrú</string>
+    <string name="bad_oc_version">Níor aimsíodh leagan bailí Nextcloud ar an bhfreastalaí</string>
+    <string name="connect_timeout_exception">Ceangail eisceacht am istigh</string>
+    <string name="exception_using_account">Eisceacht agus cuntas á úsáid</string>
+    <string name="file_locked">Tá an comhad faoi ghlas faoi láthair ag úsáideoir nó próiseas eile</string>
+    <string name="file_not_found">Níl an comhad áitiúil ann</string>
+    <string name="http_violation">Sárú HTTP</string>
+    <string name="instance_not_configured">Níl an freastalaí Nextcloud cumraithe!</string>
+    <string name="invalid_character_in_name">Tá carachtar toirmiscthe san ainm comhaid</string>
+    <string name="json_exception">Eisceacht JSON</string>
+    <string name="local_storage_full">Stóráil áitiúil lán</string>
+    <string name="local_storage_not_moved">Earráid agus an comhad á bhogadh go dtí an eolaire deiridh</string>
+    <string name="malformed_url_exception">Eisceacht URL míchumtha</string>
     <string name="message_install_client_cert">Ar mhaith leat teastas cliant TLS a shuiteáil\?</string>
+    <string name="no_network_connection">Gan nasc líonra</string>
     <string name="notification_channel_name">Nasc Nextcloud</string>
     <string name="notification_message_select_client_cert">Roghnaigh teastas cliaint le haghaidh %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Roghnaigh teastas cliant</string>
+    <string name="operation_cancelled">Oibríocht curtha ar ceal ag an nglaoiteoir</string>
     <string name="operation_cancelled_by_the_caller">Oibríocht curtha ar ceal ag an nglaoiteoir</string>
+    <string name="operation_finished_http_code">Críochnaíodh an oibríocht le cód stádais HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Eisceacht soicéad</string>
+    <string name="socket_timeout_exception">Eisceacht teorainn ama soicéad</string>
+    <string name="ssl_exception">Eisceacht SSL</string>
+    <string name="ssl_recoverable_exception">Eisceacht in-aisghabhála SSL</string>
+    <string name="sync_conflict">Coinbhleacht sioncrónaithe</string>
     <string name="title_no_client_cert">Níor aimsíodh teastas cliant</string>
+    <string name="unexpected_exception">Eisceacht gan choinne</string>
+    <string name="unexpected_webdav_exception">Eisceacht WebDAV gan choinne</string>
+    <string name="unknown_host_exception">Eisceacht óstaigh anaithnid</string>
+    <string name="unrecovered_transport_exception">Eisceacht iompair neamhghnóthaithe</string>
 </resources>
