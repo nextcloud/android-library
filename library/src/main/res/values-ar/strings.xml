@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">الحساب كان موجود سلفاً عند إنشاء حساب جديد</string>
+    <string name="account_not_the_same">المصادقة للدخول تمت على حساب مختلف عن الحساب الذي يتم يتحديثه</string>
+    <string name="bad_oc_version">تعذر العثور على نسخة صالحة من نكست كلاود على الخادوم</string>
+    <string name="connect_timeout_exception">إستثناء مهلة الاتصال</string>
+    <string name="exception_using_account">الاستثناء إثناء استخدام الحساب</string>
+    <string name="file_locked">الملف مقفول حاليّاً من قِبَل مستخدِم أو عملية أخرى</string>
+    <string name="file_not_found">الملف المحلي غير موجود</string>
+    <string name="http_violation">إنتهاك HTTP</string>
+    <string name="instance_not_configured">خادوم نكست كلاود غير مُهيّأ!</string>
+    <string name="invalid_character_in_name">اسم الملف يحوي حروفاً محظورة</string>
+    <string name="json_exception">إستثناء JSON</string>
+    <string name="local_storage_full">وحدة التخزين المحلية ممتلئة</string>
+    <string name="local_storage_not_moved">خطأ أثناء نقل الملف إلى الدليل النهائي</string>
+    <string name="malformed_url_exception">إستثناء بسبب عنوان URL مُشوَّه التكوين</string>
+    <string name="message_install_client_cert">هل ترغب بتثبيت شهادة المصادقة TLS للعميل؟</string>
+    <string name="no_network_connection">لا يتوفر اتصال</string>
+    <string name="notification_channel_name">الاتصال بنكست كلاود</string>
+    <string name="notification_message_select_client_cert">حدِّد شهادة مصادقة العميل لـ %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">حدِّد شهادة مصادقة العميل</string>
+    <string name="operation_cancelled">تمّ إلغاء العملية من قِبَل المُتّصِل</string>
+    <string name="operation_cancelled_by_the_caller">تمّ إلغاء العملية من قِبَل المُتّصِل</string>
+    <string name="operation_finished_http_code">العملية إنتهت بكود حالة HTTP : %1$d (%2$s)</string>
+    <string name="socket_exception">إستثناء مَقبَس socket</string>
+    <string name="socket_timeout_exception">إستثناء مُهلة مَقبَس socket timeout </string>
+    <string name="ssl_exception">إستثناء SSL</string>
+    <string name="ssl_recoverable_exception">إستثناء SSL قابل للإصلاح</string>
+    <string name="sync_conflict">تعارض في المزامنة</string>
+    <string name="title_no_client_cert">لم يتم العثور على أي شهادة مصادقة للعميل</string>
+    <string name="unexpected_exception">إستثناء غير مُتوَقَّع</string>
+    <string name="unexpected_webdav_exception">إستثناء WebDav غير مُتوَقَّع</string>
+    <string name="unknown_host_exception">إستثناء مُضِيف host غير معروف</string>
+    <string name="unrecovered_transport_exception">إستثناء نقل transport غير ممكن إصلاحه</string>
+</resources>

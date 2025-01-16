@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">建立新帳號時，帳號已存在</string>
+    <string name="account_not_the_same">使用與更新帳號不同的帳號進行驗證</string>
+    <string name="bad_oc_version">伺服器上找不到有效的 Nextcloud 版本</string>
+    <string name="connect_timeout_exception">連線逾時例外</string>
+    <string name="exception_using_account">使用帳號時發生錯誤</string>
+    <string name="file_locked">檔案目前被其他使用者或處理程序鎖定</string>
+    <string name="file_not_found">本機檔案不存在</string>
+    <string name="http_violation">HTTP 違規</string>
+    <string name="instance_not_configured">未設定 Nextcloud 伺服器！</string>
+    <string name="invalid_character_in_name">檔案名稱包含禁止使用的字元</string>
+    <string name="json_exception">JSON 例外</string>
+    <string name="local_storage_full">本機儲存空間已滿</string>
+    <string name="local_storage_not_moved">移動檔案到最終目錄時發生錯誤</string>
+    <string name="malformed_url_exception">URL 格式錯誤例外</string>
     <string name="message_install_client_cert">您是否要安裝 TLS 客戶端憑證？</string>
+    <string name="no_network_connection">沒有網路連線</string>
     <string name="notification_channel_name">Nextcloud 連線</string>
     <string name="notification_message_select_client_cert">選取 %1$s 的客戶端憑證：%2$d</string>
     <string name="notification_title_select_client_cert">選取客戶端憑證</string>
     <string name="operation_cancelled">呼叫者取消操作</string>
     <string name="operation_cancelled_by_the_caller">呼叫者取消操作</string>
+    <string name="operation_finished_http_code">操作完成，HTTP 狀態碼為 %1$d (%2$s)</string>
+    <string name="socket_exception">Socket 例外</string>
+    <string name="socket_timeout_exception">Socket 逾時例外</string>
+    <string name="ssl_exception">SSL 例外</string>
+    <string name="ssl_recoverable_exception">SSL 可復原例外</string>
+    <string name="sync_conflict">同步衝突</string>
     <string name="title_no_client_cert">找不到客戶端憑證</string>
-    </resources>
+    <string name="unexpected_exception">非預期的例外</string>
+    <string name="unexpected_webdav_exception">非預期的 WebDAV 例外</string>
+    <string name="unknown_host_exception">未知的主機例外</string>
+    <string name="unrecovered_transport_exception">無法復原的傳輸例外</string>
+</resources>

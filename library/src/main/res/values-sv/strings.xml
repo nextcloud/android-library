@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Kontot finns redan vid skapandet av ett nytt</string>
+    <string name="account_not_the_same">Autentiserad med ett annat konto än det som uppdaterar</string>
+    <string name="bad_oc_version">Ingen giltig Nextcloud-version hittades på servern</string>
+    <string name="connect_timeout_exception">Tidsgräns för anslutning överskriden</string>
+    <string name="exception_using_account">Fel vid användning av konto</string>
+    <string name="file_locked">Filen är för närvarande låst av en annan användare eller process</string>
+    <string name="file_not_found">Den lokala filen finns inte</string>
+    <string name="http_violation">HTTP-fel</string>
+    <string name="instance_not_configured">Nextcloud-servern är inte konfigurerad!</string>
+    <string name="invalid_character_in_name">Filnamnet innehåller ett förbjudet tecken</string>
+    <string name="json_exception">JSON-fel</string>
+    <string name="local_storage_full">Lokal lagring full</string>
+    <string name="local_storage_not_moved">Fel vid flytt av fil till slutlig katalog</string>
+    <string name="malformed_url_exception">Felaktig URL</string>
     <string name="message_install_client_cert">Vill du installera ett TLS-klientcertifikat\?</string>
+    <string name="no_network_connection">Ingen nätverksanslutning</string>
     <string name="notification_channel_name">Nextcloud-anslutning</string>
     <string name="notification_message_select_client_cert">Välj klientcertifikat för %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Välj klientcertifikat</string>
     <string name="operation_cancelled">Åtgärden avbröts av anroparen</string>
     <string name="operation_cancelled_by_the_caller">Åtgärden avbröts av anroparen</string>
+    <string name="operation_finished_http_code">Operation avslutad med HTTP-statuskod %1$d (%2$s)</string>
+    <string name="socket_exception">Socket-fel</string>
+    <string name="socket_timeout_exception">Tidsgräns överskriden för socket</string>
+    <string name="ssl_exception">SSL-fel</string>
+    <string name="ssl_recoverable_exception">Återställbart SSL-fel</string>
+    <string name="sync_conflict">Synkroniseringskonflikt</string>
     <string name="title_no_client_cert">Inget klientcertifikat hittades</string>
-    </resources>
+    <string name="unexpected_exception">Oväntat fel</string>
+    <string name="unexpected_webdav_exception">Oväntat WebDAV-fel</string>
+    <string name="unknown_host_exception">Okänd host-fel</string>
+    <string name="unrecovered_transport_exception">Oåterställt transportfel</string>
+</resources>

@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Bereits bestehendes Konto beim Anlegen eines neuen Kontos</string>
+    <string name="account_not_the_same">Angemeldet mit einem anderen Konto als dem, das aktualisiert wird</string>
+    <string name="bad_oc_version">Es wurde keine gültige Nextcloud-Version auf dem Server gefunden</string>
+    <string name="connect_timeout_exception">Timeout-Ausnahme beim Verbinden</string>
+    <string name="exception_using_account">Ausnahme bei der Verwendung des Kontos</string>
+    <string name="file_locked">Datei ist derzeit von einem anderen Benutzer oder Prozess gesperrt.</string>
+    <string name="file_not_found">Lokale Datei existiert nicht</string>
+    <string name="http_violation">HTTP-Verstoß</string>
+    <string name="instance_not_configured">Der Nextcloud-Server ist nicht konfiguriert!</string>
+    <string name="invalid_character_in_name">Der Dateiname enthält ein unzulässiges Zeichen</string>
+    <string name="json_exception">JSON-Ausnahme</string>
+    <string name="local_storage_full">Lokaler Speicher voll</string>
+    <string name="local_storage_not_moved">Fehler beim Verschieben der Datei in das endgültige Verzeichnis</string>
+    <string name="malformed_url_exception">Ausnahme bei fehlerhafter URL</string>
     <string name="message_install_client_cert">Möchten Sie ein TLS-Client-Zertifikat installieren\?</string>
+    <string name="no_network_connection">Keine Netzwerkverbindung</string>
     <string name="notification_channel_name">NextCloud-Verbindung</string>
     <string name="notification_message_select_client_cert">Client-Zertifikat auswählen für %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Client-Zertifikat auswählen</string>
+    <string name="operation_cancelled">Vom Anrufer abgebrochener Vorgang</string>
     <string name="operation_cancelled_by_the_caller">Vom Anrufer abgebrochener Vorgang</string>
+    <string name="operation_finished_http_code">Vorgang beendet mit HTTP-Statuscode %1$d (%2$s)</string>
+    <string name="socket_exception">Socket-Ausnahme</string>
+    <string name="socket_timeout_exception">Socket-Timeout-Ausnahme</string>
+    <string name="ssl_exception">SSL-Ausnahme</string>
+    <string name="ssl_recoverable_exception">Wiederherstellbare SSL-Ausnahme</string>
+    <string name="sync_conflict">Synchronisierungskonflikt</string>
     <string name="title_no_client_cert">Es wurde kein Client-Zertifikat gefunden</string>
-    </resources>
+    <string name="unexpected_exception">Unerwartete Ausnahme</string>
+    <string name="unexpected_webdav_exception">Unerwartete WebDAV-Ausnahme</string>
+    <string name="unknown_host_exception">Unbekannte Host-Ausnahme</string>
+    <string name="unrecovered_transport_exception">Unbekannte Transportausnahme</string>
+</resources>
