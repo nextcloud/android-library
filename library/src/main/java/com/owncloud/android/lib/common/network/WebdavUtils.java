@@ -28,6 +28,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("FS")
 public class WebdavUtils {
     private static final SimpleDateFormat DATETIME_FORMATS[] = {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
