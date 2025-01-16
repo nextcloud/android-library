@@ -8,4 +8,7 @@
 
 package com.nextcloud.android.lib.resources.recommendations
 
-data class RecommendationResponse(val enabled: Boolean, val recommendations: ArrayList<Recommendation>)
+data class RecommendationResponse(
+    val enabled: Boolean,
+    val recommendations: ArrayList<Recommendation>
+)

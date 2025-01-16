@@ -19,8 +19,7 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Get recommendation of an user
  */
-class GetRecommendationsRemoteOperation :
-    OCSRemoteOperation<RecommendationResponse>() {
+class GetRecommendationsRemoteOperation : OCSRemoteOperation<RecommendationResponse>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<RecommendationResponse> {
         var result: RemoteOperationResult<RecommendationResponse>
