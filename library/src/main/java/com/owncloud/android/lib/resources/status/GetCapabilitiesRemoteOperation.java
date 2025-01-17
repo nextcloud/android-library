@@ -160,6 +160,12 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_SECURITY_GUARD = "security_guard";
     private static final String NODE_DIAGNOSTICS = "diagnostics";
 
+    // needed for checking compatible filenames
+    private static final String FORBIDDEN_FILENAME_CHARACTERS = "forbidden_filename_characters";
+    private static final String FORBIDDEN_FILENAMES = "forbidden_filenames";
+    private static final String FORBIDDEN_FILENAME_EXTENSIONS = "forbidden_filename_extensions";
+    private static final String FORBIDDEN_FILENAME_BASE_NAMES = "forbidden_filename_basenames";
+
     private OCCapability currentCapability = null;
 
     public GetCapabilitiesRemoteOperation() {
@@ -437,6 +443,28 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
                         capability.setDirectEditingEtag(respDirectEditing.getString("etag"));
                     }
+
+                    // region compatible file names
+                    if (respFiles.has(FORBIDDEN_FILENAME_CHARACTERS)) {
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_CHARACTERS);
+                        capability.setForbiddenFilenameCharactersJson(result.toString());
+                    }
+
+                    if (respFiles.has(FORBIDDEN_FILENAMES)) {
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAMES);
+                        capability.setForbiddenFilenamesJson(result.toString());
+                    }
+
+                    if (respFiles.has(FORBIDDEN_FILENAME_EXTENSIONS)) {
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_EXTENSIONS);
+                        capability.setForbiddenFilenameExtensionJson(result.toString());
+                    }
+
+                    if (respFiles.has(FORBIDDEN_FILENAME_BASE_NAMES)) {
+                        JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_BASE_NAMES);
+                        capability.setForbiddenFilenameBaseNamesJson(result.toString());
+                    }
+                    // endregion
 
                     Log_OC.d(TAG, "*** Added " + NODE_FILES);
                 }
