@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.e2ee;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -26,21 +28,26 @@ import org.apache.commons.httpclient.methods.PutMethod;
 public class ToggleEncryptionRemoteOperation extends RemoteOperation<Void> {
 
     private static final String TAG = ToggleEncryptionRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String ENCRYPTED_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/encrypted/";
 
     private final long localId;
     private final String remotePath;
     private final boolean encryption;
 
+    private final SessionTimeOut sessionTimeOut;
+
     /**
      * Constructor
      */
     public ToggleEncryptionRemoteOperation(long localId, String remotePath, boolean encryption) {
+        this(localId, remotePath, encryption, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public ToggleEncryptionRemoteOperation(long localId, String remotePath, boolean encryption, SessionTimeOut sessionTimeOut) {
         this.localId = localId;
         this.remotePath = remotePath;
         this.encryption = encryption;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     /**
@@ -72,7 +79,7 @@ public class ToggleEncryptionRemoteOperation extends RemoteOperation<Void> {
             method.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             method.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
 
-            int status = client.executeMethod(method, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(method, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_OK) {
                 result = new RemoteOperationResult<>(true, method);

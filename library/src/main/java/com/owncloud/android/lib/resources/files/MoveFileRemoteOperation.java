@@ -8,6 +8,8 @@ package com.owncloud.android.lib.resources.files;
 
 import android.util.Log;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -33,13 +35,11 @@ public class MoveFileRemoteOperation extends RemoteOperation {
 
     private static final String TAG = MoveFileRemoteOperation.class.getSimpleName();
 
-    private static final int MOVE_READ_TIMEOUT = 600000;
-    private static final int MOVE_CONNECTION_TIMEOUT = 5000;
+    private final String mSrcRemotePath;
+    private final String mTargetRemotePath;
+    private final boolean mOverwrite;
 
-    private String mSrcRemotePath;
-    private String mTargetRemotePath;
-
-    private boolean mOverwrite;
+    private final SessionTimeOut sessionTimeOut;
 
 
     /**
@@ -50,13 +50,15 @@ public class MoveFileRemoteOperation extends RemoteOperation {
      * @param srcRemotePath    Remote path of the file/folder to move.
      * @param targetRemotePath Remove path desired for the file/folder after moving it.
      */
-    public MoveFileRemoteOperation(
-        String srcRemotePath, String targetRemotePath, boolean overwrite
-    ) {
+    public MoveFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite) {
+        this(srcRemotePath, targetRemotePath, overwrite, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
 
+    public MoveFileRemoteOperation(String srcRemotePath, String targetRemotePath, boolean overwrite, SessionTimeOut sessionTimeOut) {
         mSrcRemotePath = srcRemotePath;
         mTargetRemotePath = targetRemotePath;
         mOverwrite = overwrite;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
 
@@ -70,11 +72,11 @@ public class MoveFileRemoteOperation extends RemoteOperation {
         // check parameters
         if (mTargetRemotePath.equals(mSrcRemotePath)) {
             // nothing to do!
-            return new RemoteOperationResult(ResultCode.OK);
+            return new RemoteOperationResult<>(ResultCode.OK);
         }
 
         if (mTargetRemotePath.startsWith(mSrcRemotePath)) {
-            return new RemoteOperationResult(ResultCode.INVALID_MOVE_INTO_DESCENDANT);
+            return new RemoteOperationResult<>(ResultCode.INVALID_MOVE_INTO_DESCENDANT);
         }
 
 
@@ -87,7 +89,7 @@ public class MoveFileRemoteOperation extends RemoteOperation {
                     client.getFilesDavUri(mTargetRemotePath),
                     mOverwrite
             );
-            int status = client.executeMethod(move, MOVE_READ_TIMEOUT, MOVE_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(move, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             /// process response
             if (status == HttpStatus.SC_MULTI_STATUS) {
@@ -103,7 +105,7 @@ public class MoveFileRemoteOperation extends RemoteOperation {
                 /// http://www.webdav.org/specs/rfc4918.html#rfc.section.9.9.4
 
             } else {
-                result = new RemoteOperationResult(isSuccess(status), move);
+                result = new RemoteOperationResult<>(isSuccess(status), move);
                 client.exhaustResponse(move.getResponseBodyAsStream());
             }
 
@@ -111,7 +113,7 @@ public class MoveFileRemoteOperation extends RemoteOperation {
                 result.getLogMessage());
 
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log.e(TAG, "Move " + mSrcRemotePath + " to " + mTargetRemotePath + ": " +
                 result.getLogMessage(), e);
 
@@ -160,18 +162,15 @@ public class MoveFileRemoteOperation extends RemoteOperation {
 
         RemoteOperationResult result;
         if (failFound) {
-            result = new RemoteOperationResult(ResultCode.PARTIAL_MOVE_DONE);
+            result = new RemoteOperationResult<>(ResultCode.PARTIAL_MOVE_DONE);
         } else {
-            result = new RemoteOperationResult(true, move);
+            result = new RemoteOperationResult<>(true, move);
         }
 
         return result;
-
     }
-
 
     protected boolean isSuccess(int status) {
         return status == HttpStatus.SC_CREATED || status == HttpStatus.SC_NO_CONTENT;
     }
-
 }

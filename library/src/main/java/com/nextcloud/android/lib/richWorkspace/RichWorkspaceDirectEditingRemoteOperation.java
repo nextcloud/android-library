@@ -8,6 +8,8 @@
 package com.nextcloud.android.lib.richWorkspace;
 
 import com.google.gson.GsonBuilder;
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -27,15 +29,19 @@ import java.util.Map;
 
 public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
     private static final String TAG = RichWorkspaceDirectEditingRemoteOperation.class.getSimpleName();
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String DIRECT_ENDPOINT = "/ocs/v2.php/apps/text/workspace/direct";
     private static final String PATH = "path";
 
-    private String path;
+    private final SessionTimeOut sessionTimeOut;
+    private final String path;
 
     public RichWorkspaceDirectEditingRemoteOperation(String path) {
+        this(path, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public RichWorkspaceDirectEditingRemoteOperation(String path, SessionTimeOut sessionTimeOut) {
         this.path = path;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     protected RemoteOperationResult run(OwnCloudClient client) {
@@ -54,7 +60,7 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
 
             postMethod.setRequestEntity(new StringRequestEntity(json));
 
-            int status = client.executeMethod(postMethod, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(postMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_OK) {
                 String response = postMethod.getResponseBodyAsString();
@@ -63,14 +69,14 @@ public class RichWorkspaceDirectEditingRemoteOperation extends RemoteOperation {
                 JSONObject respJSON = new JSONObject(response);
                 String url = (String) respJSON.getJSONObject("ocs").getJSONObject("data").get("url");
 
-                result = new RemoteOperationResult(true, postMethod);
+                result = new RemoteOperationResult<>(true, postMethod);
                 result.setSingleData(url);
             } else {
-                result = new RemoteOperationResult(false, postMethod);
+                result = new RemoteOperationResult<>(false, postMethod);
                 client.exhaustResponse(postMethod.getResponseBodyAsStream());
             }
         } catch (Exception e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Get edit url for rich workspace failed: " + result.getLogMessage(),
                     result.getException());
         } finally {

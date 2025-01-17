@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -29,18 +31,22 @@ import java.util.ArrayList;
  */
 public class CheckEtagRemoteOperation extends RemoteOperation {
 
-    private static final int SYNC_READ_TIMEOUT = 40000;
-    private static final int SYNC_CONNECTION_TIMEOUT = 5000;
     private static final String TAG = CheckEtagRemoteOperation.class.getSimpleName();
 
-    private String path;
-    private String expectedEtag;
+    private final String path;
+    private final String expectedEtag;
+
+    private final SessionTimeOut sessionTimeOut;
 
     public CheckEtagRemoteOperation(String path, String expectedEtag) {
-        this.path = path;
-        this.expectedEtag = expectedEtag;
+        this(path, expectedEtag, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
+    public CheckEtagRemoteOperation(String path, String expectedEtag, SessionTimeOut sessionTimeOut) {
+        this.path = path;
+        this.expectedEtag = expectedEtag;
+        this.sessionTimeOut = sessionTimeOut;
+    }
 
     @Override
     protected RemoteOperationResult run(OwnCloudClient client) {
@@ -53,7 +59,7 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             propfind = new PropFindMethod(client.getFilesDavUri(path),
                     propSet,
                     0);
-            int status = client.executeMethod(propfind, SYNC_READ_TIMEOUT, SYNC_CONNECTION_TIMEOUT);
+            int status = client.executeMethod(propfind, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK) {
                 MultiStatusResponse resp = propfind.getResponseBodyAsMultiStatus().getResponses()[0];
@@ -62,9 +68,9 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
                         .get(DavPropertyName.GETETAG).getValue());
 
                 if (etag.equals(expectedEtag)) {
-                    return new RemoteOperationResult(ResultCode.ETAG_UNCHANGED);
+                    return new RemoteOperationResult<>(ResultCode.ETAG_UNCHANGED);
                 } else {
-                    RemoteOperationResult result = new RemoteOperationResult(ResultCode.ETAG_CHANGED);
+                    final var result = new RemoteOperationResult<>(ResultCode.ETAG_CHANGED);
 
                     ArrayList<Object> list = new ArrayList<>();
                     list.add(etag);
@@ -75,7 +81,7 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             }
 
             if (status == HttpStatus.SC_NOT_FOUND) {
-                return new RemoteOperationResult(ResultCode.FILE_NOT_FOUND);
+                return new RemoteOperationResult<>(ResultCode.FILE_NOT_FOUND);
             }
         } catch (DavException | IOException e) {
             Log_OC.e(TAG, "Error while retrieving eTag");
@@ -85,6 +91,6 @@ public class CheckEtagRemoteOperation extends RemoteOperation {
             }
         }
 
-        return new RemoteOperationResult(ResultCode.ETAG_CHANGED);
+        return new RemoteOperationResult<>(ResultCode.ETAG_CHANGED);
     }
 }
