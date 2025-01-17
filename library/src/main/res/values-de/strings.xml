@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_not_new">Bereits bestehendes Konto beim Anlegen eines neuen Kontos</string>
-    <string name="account_not_the_same">Angemeldet mit einem anderen Konto als dem, das aktualisiert wird</string>
+    <string name="account_not_the_same">Authentifiziert mit einem anderen Konto als dem, das aktualisiert wird</string>
     <string name="bad_oc_version">Es wurde keine gültige Nextcloud-Version auf dem Server gefunden</string>
     <string name="connect_timeout_exception">Timeout-Ausnahme beim Verbinden</string>
     <string name="exception_using_account">Ausnahme bei der Verwendung des Kontos</string>
