@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Účet už existuje pri vytváraní nového</string>
+    <string name="account_not_the_same">Overené pomocou iného účtu, ako je ten, ktorý sa aktualizuje</string>
+    <string name="bad_oc_version">Nenašla sa žiadna podporovaná verzia Nextcloud na serveri</string>
+    <string name="connect_timeout_exception">Výnimka časového limitu spojenia</string>
+    <string name="exception_using_account">Výnimka pri používaní účtu</string>
+    <string name="file_locked">Súbor je momentálne zamknutý iným užívateľom alebo procesom</string>
+    <string name="file_not_found">Lokálny súbor neexistuje</string>
+    <string name="http_violation">Chyba HTTP</string>
+    <string name="instance_not_configured">Nextcloud server nie je nakonfigurovaný!</string>
+    <string name="invalid_character_in_name">Meno súboru obsahuje zakázaný znak</string>
+    <string name="json_exception">Chyba JSON</string>
+    <string name="local_storage_full">Lokálne úložište je plné</string>
+    <string name="local_storage_not_moved">Chyba pri presune súboru do cieľového adresára</string>
+    <string name="malformed_url_exception">Výnimka s chybnou adresou URL</string>
     <string name="message_install_client_cert">Chcete nainštalovať TLS certifikát klienta\?</string>
+    <string name="no_network_connection">Bez sieťového pripojenia</string>
     <string name="notification_channel_name">Pripojenie Nextcloud</string>
     <string name="notification_message_select_client_cert">Vybrať klientský certifikát pre %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Vybrať klientský certifikát</string>
     <string name="operation_cancelled">Operácia bola zrušená volajúcim</string>
     <string name="operation_cancelled_by_the_caller">Operácia bola zrušená volajúcim</string>
+    <string name="operation_finished_http_code">Operácia skončila so stavovým kódom HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Chyba socketu</string>
+    <string name="socket_timeout_exception">Výnimka časového limitu soketu</string>
+    <string name="ssl_exception">Chyba SSL</string>
+    <string name="ssl_recoverable_exception">Opraviteľná chyba SSL</string>
+    <string name="sync_conflict">Konflikt pri synchronizácii</string>
     <string name="title_no_client_cert">Nebol nájdený žiadny klientský certifikát</string>
-    </resources>
+    <string name="unexpected_exception">Neočakávaná výnimka</string>
+    <string name="unexpected_webdav_exception">Neočakávaná výnimka WebDAV</string>
+    <string name="unknown_host_exception">Neznáma výnimka hostiteľa</string>
+    <string name="unrecovered_transport_exception">Neznáma výnimka pri transporte</string>
+</resources>
