@@ -156,6 +156,8 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         assertNotSame(capability.getEndToEndEncryptionApiVersion(), E2EVersion.UNKNOWN);
 
         // recommendations
-        assertTrue(capability.getRecommendations().isTrue());
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_31)) {
+            assertTrue(capability.getRecommendations().isTrue());
+        }
     }
 }
