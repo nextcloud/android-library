@@ -17,6 +17,7 @@ import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.OCCapability
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -30,7 +31,7 @@ class FilesDownloadLimitIT : AbstractIT() {
     @Test
     fun getDefaultLimit() {
         val defaultLimit = getCapability().filesDownloadLimitDefault
-        assert(defaultLimit == 0)
+        assertEquals(0, defaultLimit)
     }
 
     @Test
