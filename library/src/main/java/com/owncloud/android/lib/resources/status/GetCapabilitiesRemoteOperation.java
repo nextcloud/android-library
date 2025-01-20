@@ -160,6 +160,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_SECURITY_GUARD = "security_guard";
     private static final String NODE_DIAGNOSTICS = "diagnostics";
 
+    //recommendations
+    private static final String NODE_RECOMMENDATIONS = "recommendations";
+    
     // needed for checking compatible filenames
     private static final String FORBIDDEN_FILENAME_CHARACTERS = "forbidden_filename_characters";
     private static final String FORBIDDEN_FILENAMES = "forbidden_filenames";
@@ -753,6 +756,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                         int defaultDownloadLimit = filesDownloadLimitCapability.getInt(FILES_DOWNLOAD_LIMIT_DEFAULT);
                         capability.setFilesDownloadLimitDefault(defaultDownloadLimit);
                     }
+                }
+
+                // recommendations
+                if (respCapabilities.has(NODE_RECOMMENDATIONS)) {
+                    JSONObject recommendationsCapability = respCapabilities.getJSONObject(NODE_RECOMMENDATIONS);
+
+                    if (recommendationsCapability.getBoolean(PROPERTY_ENABLED)) {
+                        capability.setRecommendations(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setRecommendations(CapabilityBooleanType.FALSE);
+                    }
+                } else {
+                    capability.setRecommendations(CapabilityBooleanType.FALSE);
                 }
             }
 
