@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="connect_timeout_exception">Výjimka v překročení časového limitu spojení</string>
+    <string name="exception_using_account">Výjimka při použití účtu</string>
+    <string name="file_not_found">Místní soubor neexistuje</string>
+    <string name="http_violation">Porušení HTTP</string>
+    <string name="instance_not_configured">Nextcloud server není nastaven!</string>
+    <string name="json_exception">Výjimka v JSON</string>
+    <string name="local_storage_full">Místní úložiště je plné</string>
+    <string name="malformed_url_exception">Výjimka v nesprávně formulované URL</string>
     <string name="message_install_client_cert">Chcete nainstalovat klientský TLS certifikát\?</string>
+    <string name="no_network_connection">Nepřipojeno k síti</string>
     <string name="notification_channel_name">Připojení k Nextcloud</string>
     <string name="notification_message_select_client_cert">Vyberte klientský certifikát pro %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Vybrat klientský certifikát</string>
+    <string name="operation_cancelled">Operace zrušena volajícím</string>
     <string name="operation_cancelled_by_the_caller">Operace zrušena volajícím</string>
+    <string name="socket_exception">Výjimka v soketu</string>
+    <string name="socket_timeout_exception">Výjimka v překročení časového limitu soketu</string>
+    <string name="ssl_exception">Výjimka v SSL</string>
+    <string name="ssl_recoverable_exception">Zotavitelná výjimka v SSL</string>
+    <string name="sync_conflict">Kolize při synchronizaci</string>
     <string name="title_no_client_cert">Nenalezen žádný klientský certifikát</string>
-    </resources>
+    <string name="unexpected_exception">Neočekávaná výjimka</string>
+    <string name="unexpected_webdav_exception">Neočekávaná výjimka ve WebDAV</string>
+    <string name="unknown_host_exception">Neznámá výjimka hostitele</string>
+    <string name="unrecovered_transport_exception">Nezotavená výjimka v transportu</string>
+</resources>
