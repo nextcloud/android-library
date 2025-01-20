@@ -35,7 +35,7 @@
     <string name="local_storage_not_moved">Error while moving file to final directory</string>
     <string name="account_not_new">Account already existing when creating a new one</string>
     <string name="account_not_the_same">Authenticated with a different account than the one updating</string>
-    <string name="invalid_character_in_name">The file name contains a forbidden character</string>
+    <string name="invalid_character_in_name">The filename contains a forbidden character</string>
     <string name="file_not_found">Local file does not exist</string>
     <string name="sync_conflict">Synchronization conflict</string>
     <string name="file_locked">File is currently locked by another user or process</string>
