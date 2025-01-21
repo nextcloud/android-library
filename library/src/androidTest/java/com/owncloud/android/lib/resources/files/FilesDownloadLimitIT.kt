@@ -37,45 +37,61 @@ class FilesDownloadLimitIT : AbstractIT() {
     @Test
     @Suppress("Detekt.MagicNumber")
     fun downloadLimit() {
-        val share = createTestShare()
-        val limit = 5
+        createTestFile()
 
-        val resultSet = SetFilesDownloadLimitRemoteOperation(share.token!!, limit).execute(nextcloudClient)
-        assert(resultSet.isSuccess)
+        val shareTokens = mutableListOf<String>()
+
+        DOWNLOAD_LIMITS.forEach { limit ->
+            val share = createTestShare()
+            shareTokens.add(share.token!!)
+
+            val resultSet = SetFilesDownloadLimitRemoteOperation(share.token!!, limit).execute(nextcloudClient)
+            assert(resultSet.isSuccess)
+
+            shortSleep()
+
+            val resultGet = GetFilesDownloadLimitRemoteOperation(REMOTE_PATH, false).execute(client)
+            assert(resultGet.isSuccess)
+            assertEquals(shareTokens.size, resultGet.resultData.size)
+
+            val downloadLimit =
+                resultGet.resultData.first {
+                    it.token == share.token
+                }
+
+            assertEquals(limit, downloadLimit.limit)
+            assertEquals(0, downloadLimit.count)
+        }
 
         shortSleep()
 
-        val resultGet1 = GetFilesDownloadLimitRemoteOperation(REMOTE_PATH, false).execute(client)
-        assert(resultGet1.isSuccess)
-        assert(resultGet1.resultData.size == 1)
-        assert(resultGet1.resultData.first().token == share.token)
-        assert(resultGet1.resultData.first().limit == limit)
-        assert(resultGet1.resultData.first().count == 0)
+        for (i in shareTokens.lastIndex downTo 0) {
+            val token = shareTokens[i]
+            val resultRemove = RemoveFilesDownloadLimitRemoteOperation(token).execute(nextcloudClient)
+            assert(resultRemove.isSuccess)
 
-        shortSleep()
+            shortSleep()
 
-        val resultRemove = RemoveFilesDownloadLimitRemoteOperation(share.token!!).execute(nextcloudClient)
-        assert(resultRemove.isSuccess)
-
-        shortSleep()
-
-        val resultGet2 = GetFilesDownloadLimitRemoteOperation(REMOTE_PATH, false).execute(client)
-        assert(resultGet2.isSuccess)
-        assert(resultGet2.resultData.isEmpty())
+            val resultGet = GetFilesDownloadLimitRemoteOperation(REMOTE_PATH, false).execute(client)
+            assert(resultGet.isSuccess)
+            assertEquals(i, resultGet.resultData.size)
+        }
     }
 
     private fun getCapability(): OCCapability =
         GetCapabilitiesRemoteOperation().execute(nextcloudClient).singleData as OCCapability
 
-    private fun createTestShare(): OCShare {
+    private fun createTestFile(): Boolean {
         val localPath = createFile("test")
-
-        assert(
+        val result =
             UploadFileRemoteOperation(localPath, REMOTE_PATH, "text/plain", RANDOM_MTIME)
                 .execute(client)
                 .isSuccess
-        )
+        assert(result)
+        return result
+    }
 
+    private fun createTestShare(): OCShare {
         val result =
             CreateShareRemoteOperation(
                 REMOTE_PATH,
@@ -94,5 +110,6 @@ class FilesDownloadLimitIT : AbstractIT() {
 
     companion object {
         private const val REMOTE_PATH = "/downloadLimits.txt"
+        private val DOWNLOAD_LIMITS = listOf(5, 10)
     }
 }
