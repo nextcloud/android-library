@@ -15,8 +15,8 @@ import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation
 import com.owncloud.android.lib.resources.shares.OCShare
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OCCapability
-import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +24,7 @@ import org.junit.Test
 class FilesDownloadLimitIT : AbstractIT() {
     @Before
     fun before() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_30)
+        testOnlyOnServer(NextcloudVersion.nextcloud_30)
         assert(getCapability().filesDownloadLimit.isTrue)
     }
 
