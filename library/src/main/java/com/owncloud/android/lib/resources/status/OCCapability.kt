@@ -110,6 +110,10 @@ class OCCapability {
     var forbiddenFilenameExtensionJson: String? = null
     var forbiddenFilenameBaseNamesJson: String? = null
 
+    // files download limits
+    var filesDownloadLimit = CapabilityBooleanType.UNKNOWN
+    var filesDownloadLimitDefault = -1
+
     // Etag for capabilities
     var etag: String? = ""
 

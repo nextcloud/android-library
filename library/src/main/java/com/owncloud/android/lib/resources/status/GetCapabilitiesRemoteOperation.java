@@ -166,6 +166,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String FORBIDDEN_FILENAME_EXTENSIONS = "forbidden_filename_extensions";
     private static final String FORBIDDEN_FILENAME_BASE_NAMES = "forbidden_filename_basenames";
 
+    // files download limits
+    private static final String NODE_FILES_DOWNLOAD_LIMIT = "downloadlimit";
+    private static final String FILES_DOWNLOAD_LIMIT_DEFAULT = "default-limit";
+
     private OCCapability currentCapability = null;
 
     public GetCapabilitiesRemoteOperation() {
@@ -733,6 +737,22 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 } else {
                     capability.setSecurityGuard(CapabilityBooleanType.FALSE);
+                }
+
+                // files download limits
+                if (respCapabilities.has(NODE_FILES_DOWNLOAD_LIMIT)) {
+                    JSONObject filesDownloadLimitCapability = respCapabilities.getJSONObject(NODE_FILES_DOWNLOAD_LIMIT);
+
+                    if (filesDownloadLimitCapability.getBoolean(PROPERTY_ENABLED)) {
+                        capability.setFilesDownloadLimit(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setFilesDownloadLimit(CapabilityBooleanType.FALSE);
+                    }
+
+                    if (filesDownloadLimitCapability.has(FILES_DOWNLOAD_LIMIT_DEFAULT)) {
+                        int defaultDownloadLimit = filesDownloadLimitCapability.getInt(FILES_DOWNLOAD_LIMIT_DEFAULT);
+                        capability.setFilesDownloadLimitDefault(defaultDownloadLimit);
+                    }
                 }
             }
 
