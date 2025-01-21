@@ -112,7 +112,7 @@ class OCCapability {
 
     // files download limits
     var filesDownloadLimit = CapabilityBooleanType.UNKNOWN
-    var filesDownloadLimitDefault = 0
+    var filesDownloadLimitDefault = -1
 
     // Etag for capabilities
     var etag: String? = ""

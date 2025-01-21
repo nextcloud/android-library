@@ -31,7 +31,7 @@ class FilesDownloadLimitIT : AbstractIT() {
     @Test
     fun getDefaultLimit() {
         val defaultLimit = getCapability().filesDownloadLimitDefault
-        assertEquals(0, defaultLimit)
+        assertEquals(-1, defaultLimit)
     }
 
     @Test
