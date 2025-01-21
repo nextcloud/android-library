@@ -9,6 +9,7 @@
 package com.owncloud.android.lib.resources.assistant.v2
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.assistant.v2.model.Shape
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskInputShape
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskOutputShape
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
@@ -29,20 +30,24 @@ class AssistantV2Tests : AbstractIT() {
             "core:text2text",
             "Free text to text prompt",
             "Runs an arbitrary prompt through a language model that returns a reply",
-            listOf(
+            inputShape =
                 TaskInputShape(
-                    "Prompt",
-                    "Describe a task that you want the assistant to do or ask a question",
-                    "Text"
-                )
-            ),
-            listOf(
+                    input =
+                        Shape(
+                            "Prompt",
+                            "Describe a task that you want the assistant to do or ask a question",
+                            "Text"
+                        )
+                ),
+            outputShape =
                 TaskOutputShape(
-                    "Generated reply",
-                    "The generated text from the assistant",
-                    "Text"
+                    output =
+                        Shape(
+                            "Generated reply",
+                            "The generated text from the assistant",
+                            "Text"
+                        )
                 )
-            )
         )
 
     private fun getSelectedTaskType(): String = "core:text2text"
