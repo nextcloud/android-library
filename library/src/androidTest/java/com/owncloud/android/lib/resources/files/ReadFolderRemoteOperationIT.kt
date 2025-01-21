@@ -94,8 +94,8 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
         assertEquals(2, remoteFile.tags?.size)
 
-        remoteFile.tags?.sort()
-        assertEquals(tag1, remoteFile.tags?.get(0))
-        assertEquals(tag2, remoteFile.tags?.get(1))
+        remoteFile.tags?.sortBy { it?.name }
+        assertEquals(tag1, remoteFile.tags?.get(0)?.name)
+        assertEquals(tag2, remoteFile.tags?.get(1)?.name)
     }
 }

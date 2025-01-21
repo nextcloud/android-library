@@ -9,6 +9,8 @@ package com.owncloud.android.lib.resources.tags
 
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.network.WebdavEntry.Companion.EXTENDED_PROPERTY_NAME_REMOTE_ID
+import com.owncloud.android.lib.common.network.WebdavEntry.Companion.EXTENDED_PROPERTY_SYSTEM_TAGS_COLOR
+import com.owncloud.android.lib.common.network.WebdavEntry.Companion.NAMESPACE_NC
 import com.owncloud.android.lib.common.network.WebdavEntry.Companion.NAMESPACE_OC
 import com.owncloud.android.lib.common.network.WebdavEntry.Companion.SHAREES_DISPLAY_NAME
 import com.owncloud.android.lib.common.operations.RemoteOperation
@@ -18,15 +20,18 @@ import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
 import org.apache.jackrabbit.webdav.xml.Namespace
 
+@Suppress("NestedBlockDepth")
 class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
     @Deprecated("Deprecated in Java")
     override fun run(client: OwnCloudClient): RemoteOperationResult<List<Tag>> {
         val ocNamespace = Namespace.getNamespace(NAMESPACE_OC)
+        val ncNamespace = Namespace.getNamespace(NAMESPACE_NC)
 
         val propSet =
             DavPropertyNameSet().apply {
                 add(EXTENDED_PROPERTY_NAME_REMOTE_ID, ocNamespace)
                 add(SHAREES_DISPLAY_NAME, ocNamespace)
+                add(EXTENDED_PROPERTY_SYSTEM_TAGS_COLOR, ncNamespace)
             }
 
         val propFindMethod =
@@ -55,7 +60,17 @@ class GetTagsRemoteOperation : RemoteOperation<List<Tag>>() {
                             .get(SHAREES_DISPLAY_NAME, ocNamespace)
                             .value as String
 
-                    result.add(Tag(id, name))
+                    var color =
+                        it
+                            .getProperties(HttpStatus.SC_OK)
+                            .get(EXTENDED_PROPERTY_SYSTEM_TAGS_COLOR, ncNamespace)
+                            ?.value as String?
+
+                    if (color != null) {
+                        color = "#$color"
+                    }
+
+                    result.add(Tag(id, name, color))
                 }
             }
 
