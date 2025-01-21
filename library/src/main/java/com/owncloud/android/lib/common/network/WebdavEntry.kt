@@ -91,7 +91,7 @@ class WebdavEntry constructor(
         private set
     var lockToken: String? = null
         private set
-    var tags = arrayOfNulls<Tag>(0)
+    var tags = emptyArray<Tag?>()
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
