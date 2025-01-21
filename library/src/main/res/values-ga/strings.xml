@@ -9,7 +9,6 @@
     <string name="file_not_found">Níl an comhad áitiúil ann</string>
     <string name="http_violation">Sárú HTTP</string>
     <string name="instance_not_configured">Níl an freastalaí Nextcloud cumraithe!</string>
-    <string name="invalid_character_in_name">Tá carachtar toirmiscthe san ainm comhaid</string>
     <string name="json_exception">Eisceacht JSON</string>
     <string name="local_storage_full">Stóráil áitiúil lán</string>
     <string name="local_storage_not_moved">Earráid agus an comhad á bhogadh go dtí an eolaire deiridh</string>
