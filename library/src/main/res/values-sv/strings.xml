@@ -9,7 +9,6 @@
     <string name="file_not_found">Den lokala filen finns inte</string>
     <string name="http_violation">HTTP-fel</string>
     <string name="instance_not_configured">Nextcloud-servern är inte konfigurerad!</string>
-    <string name="invalid_character_in_name">Filnamnet innehåller ett förbjudet tecken</string>
     <string name="json_exception">JSON-fel</string>
     <string name="local_storage_full">Lokal lagring full</string>
     <string name="local_storage_not_moved">Fel vid flytt av fil till slutlig katalog</string>

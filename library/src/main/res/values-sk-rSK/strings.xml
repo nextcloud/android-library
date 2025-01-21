@@ -9,7 +9,6 @@
     <string name="file_not_found">Lokálny súbor neexistuje</string>
     <string name="http_violation">Chyba HTTP</string>
     <string name="instance_not_configured">Nextcloud server nie je nakonfigurovaný!</string>
-    <string name="invalid_character_in_name">Meno súboru obsahuje zakázaný znak</string>
     <string name="json_exception">Chyba JSON</string>
     <string name="local_storage_full">Lokálne úložište je plné</string>
     <string name="local_storage_not_moved">Chyba pri presune súboru do cieľového adresára</string>
