@@ -8,7 +8,6 @@ package com.owncloud.android.lib.resources.files.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.owncloud.android.lib.common.network.Tag
 import com.nextcloud.android.lib.resources.files.FileDownloadLimit
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavEntry.MountType
