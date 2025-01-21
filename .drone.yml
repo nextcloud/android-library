@@ -111,6 +111,8 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/"
       - su www-data -c "php /var/www/html/occ app:enable -f files_downloadlimit"
+      - su www-data -c "git clone --depth 1 -b master https://github.com/nextcloud/recommendations.git /var/www/html/apps/recommendations/"
+      - su www-data -c "php /var/www/html/occ app:enable -f recommendations"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -228,6 +230,8 @@ services:
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/"
       - su www-data -c "php /var/www/html/occ app:enable -f files_downloadlimit"
+      - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/recommendations.git /var/www/html/apps/recommendations/"
+      - su www-data -c "php /var/www/html/occ app:enable recommendations"
       - /usr/local/bin/run.sh
 
 trigger:
@@ -239,6 +243,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: fe00fcbb3bf41f6aa84193e380345c3b009ef933d295dda86ea3c959a8373381
+hmac: f9e2219ba5004d6abb6eb04ede0dedf0b9d5f20d8769228c1e48a09451a54b06
 
 ...
