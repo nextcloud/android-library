@@ -8,11 +8,17 @@
  */
 package com.owncloud.android.lib.common.operations;
 
+import static com.owncloud.android.lib.resources.users.GetUserInfoRemoteOperation.SPACE_UNLIMITED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.Quota;
 import com.owncloud.android.lib.common.UserInfo;
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
+import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.users.GetUserInfoRemoteOperation;
 
 import org.junit.Test;
@@ -32,8 +38,19 @@ public class GetUserQuotaIT extends AbstractIT {
 
         UserInfo userInfo = result.getResultData();
         Quota quota = userInfo.getQuota();
-        assertTrue(quota.getFree() >= 0);
+
+        assertNotNull(quota);
+
+        OCCapability capability = (OCCapability) new GetCapabilitiesRemoteOperation()
+            .execute(nextcloudClient).getSingleData();
+
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_31)) {
+            assertEquals(SPACE_UNLIMITED, quota.getFree());
+            assertEquals(SPACE_UNLIMITED, quota.getTotal());
+        } else {
+            assertTrue(quota.getFree() >= 0);
+            assertTrue(quota.getTotal() > 0);
+        }
         assertTrue(quota.getUsed() >= 0);
-        assertTrue(quota.getTotal() > 0);
     }
 }
