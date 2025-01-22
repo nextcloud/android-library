@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Conta xa existente ao crear unha nova</string>
+    <string name="account_not_the_same">Autenticado cunha conta diferente á que se está a actualizar</string>
+    <string name="bad_oc_version">Non se atopou ningunha versión válida de Nextcloud no servidor</string>
+    <string name="connect_timeout_exception">Excepción de tempo de espera de conexión</string>
+    <string name="exception_using_account">Excepción ao usar a conta</string>
+    <string name="file_locked">O ficheiro está actualmente bloqueado por outro usuario ou proceso</string>
+    <string name="file_not_found">O ficheiro local non existe</string>
+    <string name="http_violation">Infracción de HTTP</string>
+    <string name="instance_not_configured">O servidor Nextcloud non está configurado!</string>
+    <string name="invalid_character_in_name">O nome do ficheiro contén un carácter prohibido</string>
+    <string name="json_exception">Excepción JSON</string>
+    <string name="local_storage_full">O almacenamento local está cheo</string>
+    <string name="local_storage_not_moved">Produciuse un erro ao mover o ficheiro ao directorio final</string>
+    <string name="malformed_url_exception">Excepción de URL con formato incorrecto</string>
     <string name="message_install_client_cert">Confirma que quere instalar un certificado de cliente TLS?</string>
+    <string name="no_network_connection">Sen conexión de rede</string>
     <string name="notification_channel_name">Conexión de Nextcloud</string>
     <string name="notification_message_select_client_cert">Seleccionar o certificado de cliente para %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Seleccionar o certificado de cliente</string>
+    <string name="operation_cancelled">Operación cancelada por quen chamou</string>
     <string name="operation_cancelled_by_the_caller">Operación cancelada por quen chamou</string>
+    <string name="operation_finished_http_code">A operación rematou co código HTTP de estado %1$d (%2$s)</string>
+    <string name="socket_exception">Excepción de conectador</string>
+    <string name="socket_timeout_exception">Excepción de tempo de espera do conectador</string>
+    <string name="ssl_exception">Excepción SSL</string>
+    <string name="ssl_recoverable_exception">Excepción SSL recuperábel</string>
+    <string name="sync_conflict">Conflito de sincronización</string>
     <string name="title_no_client_cert">Non se atopou ningún certificado de cliente</string>
-    </resources>
+    <string name="unexpected_exception">Excepción non agardada</string>
+    <string name="unexpected_webdav_exception">Excepción WebDAV non agardada</string>
+    <string name="unknown_host_exception">Excepción de maquin/servidor descoñecida</string>
+    <string name="unrecovered_transport_exception">Excepción de transporte non recuperábel</string>
+</resources>

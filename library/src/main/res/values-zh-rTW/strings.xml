@@ -9,6 +9,7 @@
     <string name="file_not_found">本機檔案不存在</string>
     <string name="http_violation">HTTP 違規</string>
     <string name="instance_not_configured">未設定 Nextcloud 伺服器！</string>
+    <string name="invalid_character_in_name">檔案名稱包含禁止使用的字元</string>
     <string name="json_exception">JSON 例外</string>
     <string name="local_storage_full">本機儲存空間已滿</string>
     <string name="local_storage_not_moved">移動檔案到最終目錄時發生錯誤</string>

@@ -9,6 +9,7 @@
     <string name="file_not_found">Lokale Datei existiert nicht</string>
     <string name="http_violation">HTTP-Verstoß</string>
     <string name="instance_not_configured">Der Nextcloud-Server ist nicht konfiguriert!</string>
+    <string name="invalid_character_in_name">Der Dateiname enthält ein unzulässiges Zeichen</string>
     <string name="json_exception">JSON-Ausnahme</string>
     <string name="local_storage_full">Lokaler Speicher voll</string>
     <string name="local_storage_not_moved">Fehler beim Verschieben der Datei in das endgültige Verzeichnis</string>
