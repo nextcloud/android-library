@@ -11,7 +11,7 @@ BUILD_NUMBER=$4
 PR_NUMBER=$5
 
 
-stableBranch="master"
+stableBranch="stable-2.20"
 repository="android-library"
 
 curl "https://www.kaminsky.me/nc-dev/$repository-findbugs/$stableBranch.xml" -o "/tmp/$stableBranch.xml"
