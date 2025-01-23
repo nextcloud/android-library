@@ -1,10 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Обліковий запис присутній під час створення нового</string>
+    <string name="account_not_the_same">Авторизовано за допомогою облікового запису, який відрізняється від того, який оновлюється</string>
+    <string name="bad_oc_version">На цьому сервері не знайдено дійсну версію Nextcloud</string>
+    <string name="connect_timeout_exception">Вичерпано час з\'єднання</string>
+    <string name="exception_using_account">Виняток з використанням облікового запису</string>
+    <string name="file_locked">Файл заблоковано іншим користувачем або процесом</string>
+    <string name="file_not_found">Файл на пристрої відсутній</string>
+    <string name="http_violation">Порушення HTTP</string>
+    <string name="instance_not_configured">Сервер Nextcloud не налаштовано!</string>
+    <string name="invalid_character_in_name">Ім\'я файлу містить заборонений символ</string>
+    <string name="json_exception">Виняток JSON</string>
+    <string name="local_storage_full">Локальне сховище заповнено</string>
+    <string name="local_storage_not_moved">Помилка під час переміщення файлу до каталогу призначення</string>
+    <string name="malformed_url_exception">Виняток некоректного створення URL</string>
     <string name="message_install_client_cert">Встановити сертифікат клієнта TLS\?</string>
+    <string name="no_network_connection">Відсутнє з\'єднання з мережею</string>
     <string name="notification_channel_name">З\'єднання з хмарою</string>
     <string name="notification_message_select_client_cert">Виберіть сертифікат клієнта для %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Виберіть сертифікат клієнта</string>
     <string name="operation_cancelled">Дію скасовано зі сторони абонента, що викликає</string>
     <string name="operation_cancelled_by_the_caller">Дію скасовано зі сторони абонента, що викликає</string>
+    <string name="operation_finished_http_code">Операцію виконано із кодом статусу HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Виняток із сокетом</string>
+    <string name="socket_timeout_exception">Вичерпано час сокету</string>
+    <string name="ssl_exception">Виняток SSL</string>
+    <string name="sync_conflict">Конфлікт синхронізації</string>
     <string name="title_no_client_cert">Відсутній сертифікат клієнта</string>
-    </resources>
+    <string name="unexpected_exception">Неочікуваний виняток</string>
+    <string name="unexpected_webdav_exception">Неочікуваний виняток WebDAV</string>
+    <string name="unknown_host_exception">Невідомий виняток хосту</string>
+    <string name="unrecovered_transport_exception">Виняток передачі, яку неможливо відновити</string>
+</resources>
