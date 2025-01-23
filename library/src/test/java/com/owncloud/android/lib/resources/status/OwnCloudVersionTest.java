@@ -16,13 +16,13 @@ import org.junit.Test;
 public class OwnCloudVersionTest {
     @Test
     public void testOwnCloudVersion() {
-        OwnCloudVersion version = new OwnCloudVersion("17.0.0");
+        OwnCloudVersion version = new OwnCloudVersion("18.0.0");
 
-        assertEquals(0, version.compareTo(OwnCloudVersion.nextcloud_17));
+        assertEquals(0, version.compareTo(OwnCloudVersion.nextcloud_18));
 
-        version = new OwnCloudVersion("17.99.99");
+        version = new OwnCloudVersion("18.99.99");
 
-        assertEquals(0, version.compareTo(new OwnCloudVersion(0x11636300))); // 13.99.99 in hex
+        assertEquals(0, version.compareTo(new OwnCloudVersion(0x12636300))); // 18.99.99 in hex
     }
     
     @Test
@@ -47,16 +47,6 @@ public class OwnCloudVersionTest {
         OwnCloudVersion version = new OwnCloudVersion("");
 
         assertFalse(version.isVersionValid());
-    }
-
-    @Test
-    public void testSupportNC17() {
-        assertTrue(OwnCloudVersion.nextcloud_17.isShareesOnDavSupported());
-    }
-
-    @Test
-    public void testSupportNC18() {
-        assertTrue(OwnCloudVersion.nextcloud_18.isShareesOnDavSupported());
     }
 
     @Test
