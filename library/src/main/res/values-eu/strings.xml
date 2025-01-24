@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-  <resources>
-    <string name="message_install_client_cert">TLS bezero-ziurtagiria instalatu nahi duzu\?</string>
-    <string name="notification_channel_name">Nextcloud konexioa</string>
-    <string name="notification_message_select_client_cert">Hautatu %1$sren bezero-ziurtagiria:%2$d</string>
-    <string name="notification_title_select_client_cert">Hautatu bezero-ziurtagiria</string>
-    <string name="operation_cancelled_by_the_caller">Eragiketa bertan behera utzi du deitzaileak</string>
-    <string name="title_no_client_cert">Ez da bezero-ziurtagiririk aurkitu</string>
-    </resources>

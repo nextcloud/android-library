@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">La cuenta nueva que se ha intentado crear ya existía.</string>
+    <string name="account_not_the_same">Autenticado con una cuenta distinta que la que está actualizándose</string>
+    <string name="bad_oc_version">No se ha encontrado una versión válida de Nextcloud en el servidor</string>
+    <string name="connect_timeout_exception">Excepción, la conexión ha expirado</string>
+    <string name="exception_using_account">Excepción mientras se usaba una cuenta</string>
+    <string name="file_locked">El archivo está bloqueado por otro usuario o proceso</string>
+    <string name="file_not_found">El archivo local no existe</string>
+    <string name="http_violation">Violación HTTP</string>
+    <string name="instance_not_configured">¡El servidor Nextcloud no está configurado!</string>
+    <string name="invalid_character_in_name">El nombre del fichero contiene un carácter prohibido</string>
+    <string name="json_exception">Excepción JSON</string>
+    <string name="local_storage_full">Almacenamiento local lleno</string>
+    <string name="local_storage_not_moved">Error al mover un archivo al directorio final</string>
+    <string name="malformed_url_exception">Excepción URL malformada</string>
+    <string name="message_install_client_cert">¿Quieres instalar un certificado de cliente TLS\?</string>
+    <string name="no_network_connection">Sin conexión de red</string>
+    <string name="notification_channel_name">Conexión a Nextcloud</string>
+    <string name="notification_message_select_client_cert">Selecciona el certificado de cliente para %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Selecciona el certificado de cliente</string>
+    <string name="operation_cancelled">Operación cancelada por el que ha llamado</string>
+    <string name="operation_cancelled_by_the_caller">Operación cancelada por el que ha llamado</string>
+    <string name="operation_finished_http_code">Operación completada con código de estado HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Excepción socket</string>
+    <string name="socket_timeout_exception">Excepción, el socket ha expirado</string>
+    <string name="ssl_exception">Excepción SSL</string>
+    <string name="ssl_recoverable_exception">Excepción SSL recuperable</string>
+    <string name="sync_conflict">Conflicto de sincronización</string>
+    <string name="title_no_client_cert">No se ha encontrado un certificado de cliente</string>
+    <string name="unexpected_exception">Excepción inesperada</string>
+    <string name="unexpected_webdav_exception">Excepción WebDAV inesperada</string>
+    <string name="unknown_host_exception">Excepción servidor desconocido</string>
+    <string name="unrecovered_transport_exception">Excepción no recuperada de transporte</string>
+</resources>
