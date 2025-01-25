@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Yeni bir hesap oluşturulurken hesabın zaten var olduğu görüldü</string>
+    <string name="account_not_the_same">Güncellenen hesaptan farklı bir hesapla kimlik doğrulaması yapıldı</string>
+    <string name="bad_oc_version">Sunucuda geçerli bir Nextcloud sürümü bulunamadı</string>
+    <string name="connect_timeout_exception">Bağlantı zaman aşımı sorunu</string>
+    <string name="exception_using_account">Hesap kullanılırken sorunu</string>
+    <string name="file_locked">Dosya şu anda başka bir kullanıcı veya işlem tarafından kilitlenmiş</string>
+    <string name="file_not_found">Yerel dosya bulunamadı</string>
+    <string name="http_violation">HTTP ihlali</string>
+    <string name="instance_not_configured">Nextcloud sunucusu yapılandırılmamış!</string>
+    <string name="invalid_character_in_name">Dosya adında izin verilmeyen bir karakter var</string>
+    <string name="json_exception">JSON sorunu</string>
+    <string name="local_storage_full">Yerel depolama alanı doldu</string>
+    <string name="local_storage_not_moved">Dosya son klasöre taşınırken sorun çıktı</string>
+    <string name="malformed_url_exception">Bozuk adres sorunu</string>
+    <string name="message_install_client_cert">Bir TLS istemci sertifikası kurmak ister misiniz\?</string>
+    <string name="no_network_connection">Ağ bağlantısı yok</string>
+    <string name="notification_channel_name">Nextcloud bağlantısı</string>
+    <string name="notification_message_select_client_cert">%1$s:%2$d için istemci sertifikası seçin</string>
+    <string name="notification_title_select_client_cert">İstemci sertifikası seçin</string>
+    <string name="operation_cancelled">İşlem çağıran tarafından iptal edildi</string>
+    <string name="operation_cancelled_by_the_caller">İşlem çağıran tarafından iptal edildi</string>
+    <string name="operation_finished_http_code">İşlem %1$d (%2$s) HTTP durum koduyla tamamlandı</string>
+    <string name="socket_exception">Soket sorunu</string>
+    <string name="socket_timeout_exception">Soket zaman aşımı sorunu</string>
+    <string name="ssl_exception">SSL sorunu</string>
+    <string name="ssl_recoverable_exception">SSL kurtarılabilir sorunu</string>
+    <string name="sync_conflict">Eşitleme çakışması</string>
+    <string name="title_no_client_cert">İstemci sertifikası bulunamadı</string>
+    <string name="unexpected_exception">Beklenmeyen sorun</string>
+    <string name="unexpected_webdav_exception">Beklenmeyen WebDAV sorunu</string>
+    <string name="unknown_host_exception">Beklenmeyen sunucu sorunu</string>
+    <string name="unrecovered_transport_exception">Kurtarılmamış aktarım sorunu</string>
+</resources>
