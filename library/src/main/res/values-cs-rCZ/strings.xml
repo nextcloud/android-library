@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_the_same">Ověřeni jiným účtem než tím, kterým aktualizujete</string>
+    <string name="bad_oc_version">Na serveru nenalezena platná verze Nextcloud</string>
     <string name="connect_timeout_exception">Výjimka v překročení časového limitu spojení</string>
     <string name="exception_using_account">Výjimka při použití účtu</string>
+    <string name="file_locked">Soubor je v tuto chvíli uzamčen jiným uživatelem nebo procesem</string>
     <string name="file_not_found">Místní soubor neexistuje</string>
     <string name="http_violation">Porušení HTTP</string>
     <string name="instance_not_configured">Nextcloud server není nastaven!</string>
+    <string name="invalid_character_in_name">Název souboru obsahuje nepovolený znak</string>
     <string name="json_exception">Výjimka v JSON</string>
     <string name="local_storage_full">Místní úložiště je plné</string>
     <string name="malformed_url_exception">Výjimka v nesprávně formulované URL</string>

@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Налог већ постоји док се креира нови</string>
+    <string name="account_not_the_same">Потврђен је идентитет са другим налогом а не са овим који се ажурира</string>
+    <string name="bad_oc_version">На серверу није пронађена ниједна исправна Nextcloud верзија</string>
+    <string name="connect_timeout_exception">Изузетак тајмаута повезивања</string>
+    <string name="exception_using_account">Изузетак током коришћења налога</string>
+    <string name="file_locked">Фајл је тренутно закључао други корисник или процес</string>
+    <string name="file_not_found">Локални фајл не постоји</string>
+    <string name="http_violation">HTTP прекршај</string>
+    <string name="instance_not_configured">Nextcloud сервер није конфигурисан!</string>
+    <string name="invalid_character_in_name">Име фајла садржи забрањени карактер</string>
+    <string name="json_exception">JSON изузетак</string>
+    <string name="local_storage_full">Локално складиште пуно</string>
+    <string name="local_storage_not_moved">Грешка приликом премештања фајла у коначни директоријум</string>
+    <string name="malformed_url_exception">Изузетак неправилно формиране URL адресе</string>
     <string name="message_install_client_cert">Да ли желите да инсталирате TLS клијентски сертификат\?</string>
+    <string name="no_network_connection">Нема мрежне везе</string>
     <string name="notification_channel_name">NextCloud веза</string>
     <string name="notification_message_select_client_cert">Изаберите клијентски сертификат за %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Изаберите клијентски сертификат</string>
     <string name="operation_cancelled">Операцију је отказао позивалац</string>
     <string name="operation_cancelled_by_the_caller">Операцију је отказао позивалац</string>
+    <string name="operation_finished_http_code">Операција се завршила са HTTP кодом статуса %1$d (%2$s)</string>
+    <string name="socket_exception">Изузетак сокета</string>
+    <string name="socket_timeout_exception">Изузетак тајмаута сокета</string>
+    <string name="ssl_exception">SSL изузетак</string>
+    <string name="ssl_recoverable_exception">SSL изузетак који може да се опорави</string>
+    <string name="sync_conflict">Конфликт при синхронизацији</string>
     <string name="title_no_client_cert">Није пронађен ниједан клијентски сертификат</string>
-    </resources>
+    <string name="unexpected_exception">Неочекивани изузетак</string>
+    <string name="unexpected_webdav_exception">Неочекивани WebDAV изузетак</string>
+    <string name="unknown_host_exception">Непознати изузетак хоста</string>
+    <string name="unrecovered_transport_exception">Изузетак транспорта који није опорављен</string>
+</resources>
