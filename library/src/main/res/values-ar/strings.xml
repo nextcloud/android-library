@@ -9,6 +9,7 @@
     <string name="file_not_found">الملف المحلي غير موجود</string>
     <string name="http_violation">إنتهاك HTTP</string>
     <string name="instance_not_configured">خادوم نكست كلاود غير مُهيّأ!</string>
+    <string name="invalid_character_in_name">اسم الملف يحتوي على حروف محظورة</string>
     <string name="json_exception">إستثناء JSON</string>
     <string name="local_storage_full">وحدة التخزين المحلية ممتلئة</string>
     <string name="local_storage_not_moved">خطأ أثناء نقل الملف إلى الدليل النهائي</string>
