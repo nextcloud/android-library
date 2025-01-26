@@ -9,6 +9,7 @@
     <string name="file_not_found">Local file does not exist</string>
     <string name="http_violation">HTTP violation</string>
     <string name="instance_not_configured">The Nextcloud server is not configured!</string>
+    <string name="invalid_character_in_name">The filename contains a forbidden character</string>
     <string name="json_exception">JSON exception</string>
     <string name="local_storage_full">Local storage full</string>
     <string name="local_storage_not_moved">Error while moving file to final directory</string>
