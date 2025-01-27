@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Při vytváření nového, účet už existuje</string>
     <string name="account_not_the_same">Ověřeni jiným účtem než tím, kterým aktualizujete</string>
     <string name="bad_oc_version">Na serveru nenalezena platná verze Nextcloud</string>
     <string name="connect_timeout_exception">Výjimka v překročení časového limitu spojení</string>
@@ -11,6 +12,7 @@
     <string name="invalid_character_in_name">Název souboru obsahuje nepovolený znak</string>
     <string name="json_exception">Výjimka v JSON</string>
     <string name="local_storage_full">Místní úložiště je plné</string>
+    <string name="local_storage_not_moved">Chyba při přesouvání souboru do cílové složky</string>
     <string name="malformed_url_exception">Výjimka v nesprávně formulované URL</string>
     <string name="message_install_client_cert">Chcete nainstalovat klientský TLS certifikát\?</string>
     <string name="no_network_connection">Nepřipojeno k síti</string>
@@ -19,6 +21,7 @@
     <string name="notification_title_select_client_cert">Vybrat klientský certifikát</string>
     <string name="operation_cancelled">Operace zrušena volajícím</string>
     <string name="operation_cancelled_by_the_caller">Operace zrušena volajícím</string>
+    <string name="operation_finished_http_code">Operace dokončena s HTTP stavovým kódem %1$d (%2$s)</string>
     <string name="socket_exception">Výjimka v soketu</string>
     <string name="socket_timeout_exception">Výjimka v překročení časového limitu soketu</string>
     <string name="ssl_exception">Výjimka v SSL</string>
