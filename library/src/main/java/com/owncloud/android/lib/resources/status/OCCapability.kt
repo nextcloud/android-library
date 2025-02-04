@@ -117,6 +117,9 @@ class OCCapability {
     var filesDownloadLimit = CapabilityBooleanType.UNKNOWN
     var filesDownloadLimitDefault = -1
 
+    // notes folder location
+    var notesFolderPath: String? = null
+
     // Etag for capabilities
     var etag: String? = ""
 
