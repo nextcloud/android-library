@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Uue konto loomise ajal samanimeline konto juba eksisteerib</string>
+    <string name="account_not_the_same">Sisselogitud uuendatavast kontost teise.</string>
+    <string name="bad_oc_version">Serverist ei leitud õiget Nextcloudi versiooni</string>
+    <string name="connect_timeout_exception">Ühenduse ajalõpu erand</string>
+    <string name="exception_using_account">Erand konto kasutamisel</string>
+    <string name="file_locked">Fail on hetkel teise kasutaja või protsessi poolt lukus</string>
+    <string name="file_not_found">Kohalikku faili ei eksisteeri</string>
+    <string name="http_violation">HTTP violatsioon</string>
+    <string name="instance_not_configured">Nextcloudi serverit ei ole üles seatud!</string>
+    <string name="invalid_character_in_name">Failinimi sisaldab keelatud kirjamärki</string>
+    <string name="json_exception">JSON-i erand</string>
+    <string name="local_storage_full">Kohalik andmeruum täis</string>
+    <string name="local_storage_not_moved">Viga faili teisaldamisel lõplikku kataloogi</string>
+    <string name="malformed_url_exception">Valesti vormindatud URL-i erand</string>
+    <string name="message_install_client_cert">Kas soovite installida TLS-kliendi sertifikaati\?</string>
+    <string name="no_network_connection">Võrguühendust pole</string>
+    <string name="notification_channel_name">Nextcloudi ühendus</string>
+    <string name="notification_message_select_client_cert">Vali kliendi sertifikaat %1$s:%2$d jaoks</string>
+    <string name="notification_title_select_client_cert">Vali kliendi sertifikaat</string>
+    <string name="operation_cancelled">Helistaja tühistas toimingu</string>
+    <string name="operation_cancelled_by_the_caller">Helistaja tühistas toimingu</string>
+    <string name="operation_finished_http_code">Toiming lõppes HTTP olekukoodiga %1$d (%2$s)</string>
+    <string name="socket_exception">Pistikupesa erand</string>
+    <string name="socket_timeout_exception">Pistikupesa ajalõpu erand</string>
+    <string name="ssl_exception">SSL erand</string>
+    <string name="ssl_recoverable_exception">SSL-i taastatav erand</string>
+    <string name="sync_conflict">Sünkroonimiskonflikt</string>
+    <string name="title_no_client_cert">Kliendi sertifikaati ei leitud</string>
+    <string name="unexpected_exception">Ootamatu erand</string>
+    <string name="unexpected_webdav_exception">Ootamatu WebDAV-i erand</string>
+    <string name="unknown_host_exception">Tundmatu hosti erand</string>
+    <string name="unrecovered_transport_exception">Taastamata transpordierand</string>
+</resources>
