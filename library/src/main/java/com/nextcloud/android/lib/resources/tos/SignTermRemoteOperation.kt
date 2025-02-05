@@ -18,7 +18,9 @@ import org.apache.commons.httpclient.HttpStatus
 /**
  * Sign terms of services
  */
-class SignTermRemoteOperation(val id: Int) : RemoteOperation<Void>() {
+class SignTermRemoteOperation(
+    val id: Int
+) : RemoteOperation<Void>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         val requestBody = hashMapOf("termId" to id)
