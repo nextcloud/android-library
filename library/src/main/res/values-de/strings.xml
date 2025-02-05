@@ -16,7 +16,7 @@
     <string name="malformed_url_exception">Ausnahme bei fehlerhafter URL</string>
     <string name="message_install_client_cert">Möchten Sie ein TLS-Client-Zertifikat installieren\?</string>
     <string name="no_network_connection">Keine Netzwerkverbindung</string>
-    <string name="notification_channel_name">NextCloud-Verbindung</string>
+    <string name="notification_channel_name">Nextcloud-Verbindung</string>
     <string name="notification_message_select_client_cert">Client-Zertifikat auswählen für %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Client-Zertifikat auswählen</string>
     <string name="operation_cancelled">Vom Anrufer abgebrochener Vorgang</string>
