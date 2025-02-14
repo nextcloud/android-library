@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">A fiók már létezik, mikor létrehozza azt.</string>
+    <string name="account_not_the_same">Másik fiókkal jelentkezett be mint amelyik frissül</string>
+    <string name="bad_oc_version">Helytelen Nextcloud verzió a szerveren</string>
+    <string name="connect_timeout_exception">Időtúllépési hiba</string>
+    <string name="exception_using_account">Hiba a fiók használata alatt</string>
+    <string name="file_locked">A fájl hozzáférése blokkolt egy másik felhasználó vagy folyamat által</string>
+    <string name="file_not_found">A helyi fájl nem létezik</string>
+    <string name="http_violation">HTTP hiba</string>
+    <string name="instance_not_configured">Nextcloud szerver nincs beállítva</string>
+    <string name="invalid_character_in_name">A fájlnév tiltott karaktert tartalmaz</string>
+    <string name="json_exception">JSON hiba</string>
+    <string name="local_storage_full">A helyi tároló megtelt</string>
+    <string name="local_storage_not_moved">Hiba a fájl mozgatása közben</string>
+    <string name="malformed_url_exception">URL formátum hiba</string>
+    <string name="message_install_client_cert">Telepíteni akarja a TLS kliens tanusítványát\?</string>
+    <string name="no_network_connection">Nincs hálózati kapcsolat</string>
+    <string name="notification_channel_name">Nextcloud kapcsolat</string>
+    <string name="notification_message_select_client_cert">Válassza ki a kliens tanúsítványtát %1$s:%2$d</string>
+    </resources>
