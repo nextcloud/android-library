@@ -173,6 +173,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_FILES_DOWNLOAD_LIMIT = "downloadlimit";
     private static final String FILES_DOWNLOAD_LIMIT_DEFAULT = "default-limit";
 
+    // notes folder location
+    private static final String NODE_NOTES = "notes";
+    private static final String NOTES_PATH = "notes_path";
+
     private OCCapability currentCapability = null;
 
     public GetCapabilitiesRemoteOperation() {
@@ -770,6 +774,22 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                 } else {
                     capability.setRecommendations(CapabilityBooleanType.FALSE);
                 }
+
+                // notes folder
+                if (respCapabilities.has(NODE_NOTES)) {
+                    JSONObject notesCapability = respCapabilities.getJSONObject(NODE_NOTES);
+
+                    if (notesCapability.has(NOTES_PATH)) {
+                        String notesFolderPath = notesCapability.getString(NOTES_PATH);
+
+                        if (!notesFolderPath.isEmpty() && !notesFolderPath.endsWith("/")) {
+                            notesFolderPath += "/";
+                        }
+
+                        capability.setNotesFolderPath(notesFolderPath);
+                    }
+                }
+
             }
 
             Log_OC.d(TAG, "*** Get Capabilities completed ");
