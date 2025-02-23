@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_not_new">Konto allerede eksisterende, når du opretter en ny</string>
-    <string name="account_not_the_same">Autentificeret med en anden konto end en opdatering</string>
+    <string name="account_not_the_same">Godkendt med en anden konto end en den der opdaterer</string>
     <string name="bad_oc_version">Ingen gyldig Nextcloud version blev fundet på serveren</string>
-    <string name="connect_timeout_exception">Forbindelse tidsudløb undtagelse</string>
+    <string name="connect_timeout_exception">Forbindelse timeout undtagelse</string>
     <string name="exception_using_account">Undtagelse, mens du bruger konto</string>
     <string name="file_locked">Fil er i øjeblikket låst af en anden bruger eller proces</string>
     <string name="file_not_found">Lokal fil findes ikke</string>
@@ -13,15 +13,15 @@
     <string name="json_exception">JSON undtagelse</string>
     <string name="local_storage_full">Lokalt lager fuldt</string>
     <string name="local_storage_not_moved">Fejl under flytning af fil til den endelige mappe</string>
-    <string name="malformed_url_exception">Forkert URL-undtagelse</string>
-    <string name="message_install_client_cert">Vil du installere et TLS-klientcertifikat\?</string>
+    <string name="malformed_url_exception">Forkert URL undtagelse</string>
+    <string name="message_install_client_cert">Vil du installere et TLS klientcertifikat\?</string>
     <string name="no_network_connection">Ingen netværksforbindelse</string>
     <string name="notification_channel_name">Nextcloud forbindelse</string>
     <string name="notification_message_select_client_cert">Vælg klientcertifikat for %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Vælg klientcertifikat</string>
     <string name="operation_cancelled">Handling annulleret af den, der ringer op</string>
     <string name="operation_cancelled_by_the_caller">Handling annulleret af den, der ringer op</string>
-    <string name="operation_finished_http_code">Operation afsluttet med HTTP statuskode %1$d (%2$s)</string>
+    <string name="operation_finished_http_code">Handling afsluttet med HTTP statuskode %1$d (%2$s)</string>
     <string name="socket_exception">Socket undtagelse</string>
     <string name="socket_timeout_exception">Undtagelse for socket timeout</string>
     <string name="ssl_exception">SSL undtagelse</string>
@@ -29,7 +29,7 @@
     <string name="sync_conflict">Synkroniseringskonflikt</string>
     <string name="title_no_client_cert">Der blev ikke fundet noget klientcertifikat</string>
     <string name="unexpected_exception">Uventet undtagelse</string>
-    <string name="unexpected_webdav_exception">Uventet WebDAV-undtagelse</string>
-    <string name="unknown_host_exception">Ukendt værtundtagelse</string>
-    <string name="unrecovered_transport_exception">Undtagelse for uoprettede transporter</string>
+    <string name="unexpected_webdav_exception">Uventet WebDAV undtagelse</string>
+    <string name="unknown_host_exception">Ukendt host undtagelse</string>
+    <string name="unrecovered_transport_exception">Fatal transport undtagelse</string>
 </resources>
