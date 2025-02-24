@@ -35,7 +35,7 @@ class SendCSRRemoteOperationIT : AbstractIT() {
         val keyPair = keyGen.genKeyPair()
 
         // create CSR
-        val urlEncoded: String = CsrHelper().generateCsrPemEncodedString(keyPair, client.userId)
+        val urlEncoded: String = CsrHelper().generateCsrPemEncodedString(keyPair, client.userId, SignatureAlgorithm.SHA1)
 
         val operation = SendCSRRemoteOperation(urlEncoded)
         var result = operation.execute(nextcloudClient)
