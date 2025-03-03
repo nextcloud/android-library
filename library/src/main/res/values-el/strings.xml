@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Ο λογαριασμός δεν είναι νέος</string>
+    <string name="account_not_the_same">Ο λογαριασμός δεν είναι ο ίδιος</string>
+    <string name="bad_oc_version">Κακή έκδοση OC</string>
+    <string name="connect_timeout_exception">Εξαίρεση λόγω λήξης χρόνου σύνδεσης</string>
+    <string name="exception_using_account">Εξαίρεση κατά τη χρήση λογαριασμού</string>
+    <string name="file_locked">Το αρχείο είναι κλειδωμένο</string>
+    <string name="file_not_found">Το αρχείο δεν βρέθηκε</string>
+    <string name="http_violation">Παράβαση HTTP</string>
+    <string name="instance_not_configured">Η εμφάνιση δεν έχει ρυθμιστεί</string>
+    <string name="invalid_character_in_name">Μη έγκυρος χαρακτήρας στο όνομα</string>
+    <string name="json_exception">Εξαίρεση JSON</string>
+    <string name="local_storage_full">Η τοπική αποθήκη είναι πλήρης</string>
+    <string name="local_storage_not_moved">Η τοπική αποθήκη δεν μετακινήθηκε</string>
+    <string name="malformed_url_exception">Εξαίρεση λόγω εσφαλμένης διεύθυνσης URL</string>
+    <string name="message_install_client_cert">Μήνυμα εγκατάστασης πιστοποιητικού πελάτη</string>
+    <string name="no_network_connection">Δεν υπάρχει σύνδεση στο δίκτυο</string>
+    <string name="notification_channel_name">Όνομα καναλιού ειδοποιήσεων</string>
+    <string name="notification_message_select_client_cert">Μήνυμα ειδοποίησης για επιλογή πιστοποιητικού πελάτη</string>
+    <string name="notification_title_select_client_cert">Τίτλος ειδοποίησης για επιλογή πιστοποιητικού πελάτη</string>
+    <string name="operation_cancelled">Η λειτουργία ακυρώθηκε</string>
+    <string name="operation_cancelled_by_the_caller">Η λειτουργία ακυρώθηκε από τον καλούντα</string>
+    <string name="operation_finished_http_code">Η λειτουργία ολοκληρώθηκε με κωδικό HTTP</string>
+    <string name="socket_exception">Εξαίρεση Socket</string>
+    <string name="socket_timeout_exception">Εξαίρεση λόγω λήξης χρόνου Socket</string>
+    <string name="ssl_exception">Εξαίρεση SSL</string>
+    <string name="ssl_recoverable_exception">Επαναφέρσιμη εξαίρεση SSL</string>
+    <string name="sync_conflict">Σύγκρουση συγχρονισμού</string>
+    <string name="title_no_client_cert">Τίτλος χωρίς πιστοποιητικό πελάτη</string>
+    <string name="unexpected_exception">Απροσδόκητη εξαίρεση</string>
+    <string name="unexpected_webdav_exception">Απροσδόκητη εξαίρεση WebDAV</string>
+    <string name="unknown_host_exception">Εξαίρεση λόγω άγνωστου host</string>
+    <string name="unrecovered_transport_exception">Εξαίρεση μεταφοράς που δεν μπορεί να ανακτηθεί</string>
+</resources>
