@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Compte ja existent en crear-ne un de nou</string>
+    <string name="account_not_the_same">Autenticat amb un compte diferent de l\'actualitzat</string>
+    <string name="bad_oc_version">No s\'ha trobat cap versió vàlida del Nextcloud al servidor.</string>
+    <string name="exception_using_account">Excepció en utilitzar el compte</string>
+    <string name="file_locked">Un altre usuari o procés bloqueja el fitxer</string>
+    <string name="file_not_found">El fitxer local no existeix</string>
+    <string name="http_violation">Infracció HTTP</string>
+    <string name="instance_not_configured">El servidor del Nextcloud no està configurat</string>
+    <string name="invalid_character_in_name">El nom de fitxer conté un caràcter prohibit</string>
+    <string name="json_exception">Excepció JSON</string>
+    <string name="local_storage_full">L\'emmagatzematge local és ple</string>
+    <string name="local_storage_not_moved">S\'ha produït un error en moure el fitxer al directori final</string>
+    <string name="malformed_url_exception">L\'excepció de l\'URL té un format incorrecte</string>
+    <string name="message_install_client_cert">Voleu instal·lar un certificat de client TLS\?</string>
+    <string name="no_network_connection">No hi ha connexió a la xarxa</string>
+    <string name="notification_channel_name">Connexió Nextcould</string>
+    <string name="notification_message_select_client_cert">Seleccioneu el certificat del client per a: %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Seleccioneu el certificat del client</string>
+    <string name="operation_cancelled">Operació cancel·lada per la persona que ha trucat</string>
+    <string name="operation_cancelled_by_the_caller">Operació cancel·lada per la persona que ha trucat</string>
+    <string name="operation_finished_http_code">L\'operació ha finalitzat amb el codi d\'estat HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Excepció del sòcol</string>
+    <string name="socket_timeout_exception">Excepció de temps d\'espera del sòcol</string>
+    <string name="ssl_exception">Excepció SSL</string>
+    <string name="ssl_recoverable_exception">Excepció recuperable d\'SSL</string>
+    <string name="sync_conflict">Conflicte de sincronització</string>
+    <string name="title_no_client_cert">No s\'ha trobat cap certificat del client</string>
+    <string name="unexpected_exception">Excepció inesperada</string>
+    <string name="unexpected_webdav_exception">Excepció WebDAV inesperada</string>
+    <string name="unknown_host_exception">Excepció de l\'amfitrió desconeguda</string>
+    <string name="unrecovered_transport_exception">Excepció de transport no recuperada</string>
+</resources>
