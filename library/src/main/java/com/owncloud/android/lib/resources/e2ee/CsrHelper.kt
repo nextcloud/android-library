@@ -69,15 +69,17 @@ class CsrHelper {
     @Throws(IOException::class, OperatorCreationException::class)
     private fun generateCSR(
         keyPair: KeyPair,
-        userId: String,
+        userId: String
     ): PKCS10CertificationRequest {
         val principal = "CN=$userId"
 
         val privateKey = PrivateKeyFactory.createKey(keyPair.private.encoded)
-        val signatureAlgorithm = DefaultSignatureAlgorithmIdentifierFinder().find(SignatureAlgorithm.SHA256.signatureAlg)
-        val digestAlgorithm = DefaultDigestAlgorithmIdentifierFinder().find(SignatureAlgorithm.SHA256.digestAlg)
+        val signatureAlgorithm = SignatureAlgorithm.SHA256
+        val signatureAlgorithmIdentifier =
+            DefaultSignatureAlgorithmIdentifierFinder().find(signatureAlgorithm.signatureAlg)
+        val digestAlgorithmIdentifier = DefaultDigestAlgorithmIdentifierFinder().find(signatureAlgorithm.digestAlg)
         val signer =
-            BcRSAContentSignerBuilder(signatureAlgorithm, digestAlgorithm).build(privateKey)
+            BcRSAContentSignerBuilder(signatureAlgorithmIdentifier, digestAlgorithmIdentifier).build(privateKey)
         val csrBuilder: PKCS10CertificationRequestBuilder =
             JcaPKCS10CertificationRequestBuilder(
                 X500Name(principal),
