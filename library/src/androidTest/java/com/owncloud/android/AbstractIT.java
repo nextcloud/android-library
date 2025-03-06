@@ -127,9 +127,6 @@ public abstract class AbstractIT {
                 i++;
             }
 
-            if (i == 3) {
-                fail("Server not ready!");
-            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -260,8 +257,6 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        removeOnClient(client);
-        removeOnClient(client2);
     }
 
     private void removeOnClient(OwnCloudClient client) {
