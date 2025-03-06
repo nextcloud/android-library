@@ -8,6 +8,7 @@
 package com.nextcloud.common
 
 import android.net.Uri
+import androidx.core.net.toUri
 import com.owncloud.android.lib.common.accounts.AccountUtils
 import com.owncloud.android.lib.common.network.WebdavUtils
 
@@ -28,11 +29,11 @@ class NextcloudUriDelegate(
         get() = userId?.let { UserIdEncoder.encode(it) }
 
     override val filesDavUri: Uri
-        get() = Uri.parse("$davUri/files/$userIdEncoded")
+        get() = "$davUri/files/$userIdEncoded".toUri()
     override val uploadUri: Uri
-        get() = Uri.parse(baseUri.toString() + AccountUtils.DAV_UPLOAD)
+        get() = (baseUri.toString() + AccountUtils.DAV_UPLOAD).toUri()
     override val davUri: Uri
-        get() = Uri.parse(baseUri.toString() + AccountUtils.WEBDAV_PATH_9_0)
+        get() = (baseUri.toString() + AccountUtils.WEBDAV_PATH_9_0).toUri()
 
     override fun getFilesDavUri(path: String): String {
         // encodePath already adds leading slash if needed
