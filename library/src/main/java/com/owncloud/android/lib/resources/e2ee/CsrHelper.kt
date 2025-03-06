@@ -38,7 +38,6 @@ class CsrHelper {
      *
      * @param keyPair the KeyPair with private and public keys
      * @param userId  userId of CSR owner
-     * @param algorithm represents supported signature algorithm
      * @return PEM encoded CSR string
      * @throws IOException               thrown if key cannot be created
      * @throws OperatorCreationException thrown if contentSigner cannot be build
@@ -46,10 +45,9 @@ class CsrHelper {
     @Throws(IOException::class, OperatorCreationException::class)
     fun generateCsrPemEncodedString(
         keyPair: KeyPair,
-        userId: String,
-        algorithm: SignatureAlgorithm
+        userId: String
     ): String {
-        val csr = generateCSR(keyPair, userId, algorithm)
+        val csr = generateCSR(keyPair, userId)
         val derCSR = csr.encoded
         return "-----BEGIN CERTIFICATE REQUEST-----\n" +
             Base64.encodeToString(
@@ -63,7 +61,6 @@ class CsrHelper {
      *
      * @param keyPair the KeyPair with private and public keys
      * @param userId  userId of CSR owner
-     * @param algorithm represents supported signature algorithm
      * @return PKCS10CertificationRequest with the certificate signing request (CSR) data
      * @throws IOException               thrown if key cannot be created
      * @throws OperatorCreationException thrown if contentSigner cannot be build
@@ -73,12 +70,12 @@ class CsrHelper {
     private fun generateCSR(
         keyPair: KeyPair,
         userId: String,
-        algorithm: SignatureAlgorithm
     ): PKCS10CertificationRequest {
         val principal = "CN=$userId"
+
         val privateKey = PrivateKeyFactory.createKey(keyPair.private.encoded)
-        val signatureAlgorithm = DefaultSignatureAlgorithmIdentifierFinder().find(algorithm.signatureAlg)
-        val digestAlgorithm = DefaultDigestAlgorithmIdentifierFinder().find(algorithm.digestAlg)
+        val signatureAlgorithm = DefaultSignatureAlgorithmIdentifierFinder().find(SignatureAlgorithm.SHA256.signatureAlg)
+        val digestAlgorithm = DefaultDigestAlgorithmIdentifierFinder().find(SignatureAlgorithm.SHA256.digestAlg)
         val signer =
             BcRSAContentSignerBuilder(signatureAlgorithm, digestAlgorithm).build(privateKey)
         val csrBuilder: PKCS10CertificationRequestBuilder =

@@ -11,5 +11,5 @@ enum class SignatureAlgorithm(
     val signatureAlg: String,
     val digestAlg: String
 ) {
-    SHA256("SHA256WITHRSA", "SHA-256")
+    SHA256("SHA256WITHRSAENCRYPTION", "SHA-256")
 }
