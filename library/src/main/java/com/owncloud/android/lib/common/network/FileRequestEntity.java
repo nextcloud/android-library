@@ -16,13 +16,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import okio.Throttler;
+import okio.Source;
+import okio.Sink;
+import okio.BufferedSink;
+import okio.Okio;
 
 /**
  * A RequestEntity that represents a File.
@@ -32,6 +35,7 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
     private final File file;
     private final String contentType;
     private final Set<OnDatatransferProgressListener> dataTransferListeners = new HashSet<>();
+    private final Throttler throttler = new Throttler();
 
     public FileRequestEntity(final File file, final String contentType) {
         super();
@@ -77,28 +81,45 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
             dataTransferListeners.remove(listener);
         }
     }
-    
-    
+
+    /**
+     * @param limit Maximum upload speed in bytes per second.
+     *              Disabled by default (limit 0).
+     */
+    public void setBandwidthLimit(long limit) {
+        throttler.bytesPerSecond(limit);
+    }
+
     @Override
     public void writeRequest(final OutputStream out) throws IOException {
-        ByteBuffer tmp = ByteBuffer.allocate(4096);
-        int readResult;
-
-        RandomAccessFile raf = new RandomAccessFile(file, "r");
-        FileChannel channel = raf.getChannel();
+        long readResult;
         Iterator<OnDatatransferProgressListener> it;
         long transferred = 0;
         long size = file.length();
         if (size == 0) size = -1;
+
+        Source source = null;
+        Source bufferSource = null;
+        Sink sink = null;
+        Sink throttledSink = null;
+        BufferedSink bufferedThrottledSink = null;
         try {
-            while ((readResult = channel.read(tmp)) >= 0) {
+            source = Okio.source(file);
+            bufferSource = Okio.buffer(source);
+
+            sink = Okio.sink(out);
+            throttledSink = throttler.sink(sink);
+            bufferedThrottledSink = Okio.buffer(throttledSink);
+
+            while ((readResult = bufferSource.read(bufferedThrottledSink.getBuffer(), 4096)) >= 0) {
                 try {
-                    out.write(tmp.array(), 0, readResult);
+                    bufferedThrottledSink.emitCompleteSegments();
+
                 } catch (IOException io) {
                     // work-around try catch to filter exception in writing
                     throw new WriteException(io);
                 }
-                tmp.clear();
+
                 transferred += readResult;
                 synchronized (dataTransferListeners) {
                     it = dataTransferListeners.iterator();
@@ -107,6 +128,7 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
                     }
                 }
             }
+            bufferedThrottledSink.flush();
 
         } catch (IOException io) {
             // any read problem will be handled as if the file is not there
@@ -123,8 +145,12 @@ public class FileRequestEntity implements RequestEntity, ProgressiveDataTransfer
 
         } finally {
             try {
-                channel.close();
-                raf.close();
+                // TODO Which of these are even necessary? (Been a while since I last dealt with buffers)
+                if (source != null) source.close();
+                if (bufferSource != null) bufferSource.close();
+                // if (sink != null) sink.close();
+                // if (throttledSink != null) throttledSink.close();
+                // if (bufferedThrottledSink != null) bufferedThrottledSink.close();
             } catch (IOException io) {
                 // ignore failures closing source file
             }
