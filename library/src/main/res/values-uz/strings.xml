@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Yangisini yaratishda akkaunt allaqachon mavjudligi aniqlandi</string>
+    <string name="account_not_the_same">Yangilanishda boshqa akkaunt bilan tasdiqlanganligi aniqlandi</string>
+    <string name="bad_oc_version">Serverda Nextcloudning yaroqli versiyasi topilmadi</string>
+    <string name="connect_timeout_exception">Ulanish vaqti tugashi istisno</string>
+    <string name="exception_using_account">Akkaunt qaydnomasidan foydalanishda istisno</string>
+    <string name="file_locked">Fayl hozirda boshqa foydalanuvchi yoki jarayon tomonidan bloklangan</string>
+    <string name="file_not_found">Mahalliy fayl mavjud emas</string>
+    <string name="http_violation">HTTP buzilishi</string>
+    <string name="instance_not_configured">Nextcloud serveri sozlanmagan!</string>
+    <string name="invalid_character_in_name">Fayl nomi taqiqlangan belgidan iborat</string>
+    <string name="json_exception">JSON istisnosi</string>
+    <string name="local_storage_full">Mahalliy xotira toʻlgan</string>
+    <string name="local_storage_not_moved">Faylni yakuniy katalogga ko\'chirishda xatolik yuz berdi</string>
+    <string name="malformed_url_exception">Noto\'g\'ri tuzilgan URL istisnosi</string>
+    <string name="message_install_client_cert">TLS mijoz sertifikatini o\'rnatmoqchimisiz\?</string>
+    <string name="no_network_connection">Tarmoqqa ulanish yo‘q</string>
+    <string name="notification_channel_name">Next bulut ulanishi</string>
+    <string name="notification_message_select_client_cert"> %1$s:%2$duchun mijoz sertifikatini tanlang</string>
+    <string name="notification_title_select_client_cert">Mijoz sertifikatini tanlang</string>
+    <string name="operation_cancelled">Qo\'ng\'iroq qiluvchi tomonidan operatsiya bekor qilindi</string>
+    <string name="operation_cancelled_by_the_caller">Qo\'ng\'iroq qiluvchi tomonidan operatsiya bekor qilindi</string>
+    <string name="operation_finished_http_code"> %1$d (%2$s) HTTP holat kodi bilan operatsiya yakunlandi</string>
+    <string name="socket_exception">Soket istisnosi</string>
+    <string name="socket_timeout_exception">Soket vaqti tugashi istisno</string>
+    <string name="ssl_exception">SSL istisnosi</string>
+    <string name="ssl_recoverable_exception">Qayta tiklanadigan SSL istisnosi</string>
+    <string name="sync_conflict">Sinxronizatsiya ziddiyatlari</string>
+    <string name="title_no_client_cert">Hech qanday mijoz sertifikati topilmadi</string>
+    <string name="unexpected_exception">Kutilmagan istisno</string>
+    <string name="unexpected_webdav_exception">Kutilmagan WebDAV istisnosi</string>
+    <string name="unknown_host_exception">Noma\'lum xost istisnosi</string>
+    <string name="unrecovered_transport_exception">Qayta tiklanmagan transport istisnosi</string>
+</resources>
