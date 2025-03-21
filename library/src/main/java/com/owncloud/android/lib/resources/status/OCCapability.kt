@@ -123,6 +123,8 @@ class OCCapability {
     // Etag for capabilities
     var etag: String? = ""
 
+    var defaultPermissions: Int? = null
+
     val version: OwnCloudVersion
         get() =
             OwnCloudVersion(
