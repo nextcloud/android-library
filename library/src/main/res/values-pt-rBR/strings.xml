@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="connect_timeout_exception">Exceção de tempo limite de conexão</string>
+    <string name="http_violation">Violação HTTP</string>
+    <string name="json_exception">Exceção JSON</string>
+    <string name="local_storage_full">O armazenamento local está cheio.</string>
+    <string name="malformed_url_exception">Exceção de URL malformado</string>
     <string name="message_install_client_cert">Você quer instalar um certificado de cliente TLS?</string>
+    <string name="no_network_connection">Sem conexão de rede</string>
     <string name="notification_channel_name">Conexão Nextcloud</string>
     <string name="notification_message_select_client_cert">Selecione certificado de cliente para %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Selecione certificado de cliente</string>
     <string name="operation_cancelled">Operação cancelada pelo solicitante</string>
     <string name="operation_cancelled_by_the_caller">Operação cancelada pelo solicitante</string>
+    <string name="socket_exception">Exceção de socket</string>
+    <string name="socket_timeout_exception">Exceção de tempo limite do socket</string>
+    <string name="ssl_exception">Exceção SSL</string>
+    <string name="sync_conflict">Conflito de sincronização</string>
     <string name="title_no_client_cert">Nenhum certificado de cliente foi encontrado</string>
+    <string name="unexpected_exception">Exceção inesperada</string>
+    <string name="unknown_host_exception">Exceção de host desconhecido</string>
     </resources>
