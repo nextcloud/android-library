@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Conta já existente ao criar uma nova conta</string>
+    <string name="account_not_the_same">Autenticado com uma conta diferente da que está sendo atualizada</string>
+    <string name="bad_oc_version">Nenhuma versão válida do Nextcloud foi encontrada no servidor</string>
     <string name="connect_timeout_exception">Exceção de tempo limite de conexão</string>
+    <string name="exception_using_account">Exceção durante o uso da conta</string>
+    <string name="file_locked">O arquivo está atualmente bloqueado por outro usuário ou processo</string>
+    <string name="file_not_found">O arquivo local não existe</string>
     <string name="http_violation">Violação HTTP</string>
+    <string name="instance_not_configured">O servidor Nextcloud não está configurado!</string>
+    <string name="invalid_character_in_name">O nome do arquivo contém um caractere proibido</string>
     <string name="json_exception">Exceção JSON</string>
     <string name="local_storage_full">O armazenamento local está cheio.</string>
+    <string name="local_storage_not_moved">Erro ao mover o arquivo para o diretório final</string>
     <string name="malformed_url_exception">Exceção de URL malformado</string>
     <string name="message_install_client_cert">Você quer instalar um certificado de cliente TLS?</string>
     <string name="no_network_connection">Sem conexão de rede</string>
@@ -12,11 +21,15 @@
     <string name="notification_title_select_client_cert">Selecione certificado de cliente</string>
     <string name="operation_cancelled">Operação cancelada pelo solicitante</string>
     <string name="operation_cancelled_by_the_caller">Operação cancelada pelo solicitante</string>
+    <string name="operation_finished_http_code">Operação concluída com código de status HTTP %1$d (%2$s)</string>
     <string name="socket_exception">Exceção de socket</string>
     <string name="socket_timeout_exception">Exceção de tempo limite do socket</string>
     <string name="ssl_exception">Exceção SSL</string>
+    <string name="ssl_recoverable_exception">Exceção recuperável de SSL</string>
     <string name="sync_conflict">Conflito de sincronização</string>
     <string name="title_no_client_cert">Nenhum certificado de cliente foi encontrado</string>
     <string name="unexpected_exception">Exceção inesperada</string>
+    <string name="unexpected_webdav_exception">Exceção inesperada de WebDAV</string>
     <string name="unknown_host_exception">Exceção de host desconhecido</string>
-    </resources>
+    <string name="unrecovered_transport_exception">Exceção de transporte não recuperado</string>
+</resources>
