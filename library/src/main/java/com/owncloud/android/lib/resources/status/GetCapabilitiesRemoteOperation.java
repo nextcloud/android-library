@@ -177,6 +177,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_NOTES = "notes";
     private static final String NOTES_PATH = "notes_path";
 
+    private static final String PROPERTY_DEFAULT_PERMISSIONS = "default_permissions";
+
     private OCCapability currentCapability = null;
 
     public GetCapabilitiesRemoteOperation() {
@@ -366,6 +368,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     if (respFilesSharing.has(PROPERTY_API_ENABLED)) {
                         capability.setFilesSharingApiEnabled(CapabilityBooleanType.fromBooleanValue(
                                 respFilesSharing.getBoolean(PROPERTY_API_ENABLED)));
+                    }
+
+                    if (respFilesSharing.has(PROPERTY_DEFAULT_PERMISSIONS)) {
+                        capability.setDefaultPermissions(respFilesSharing.getInt(PROPERTY_DEFAULT_PERMISSIONS));
                     }
 
                     if (respFilesSharing.has(NODE_PUBLIC)) {
