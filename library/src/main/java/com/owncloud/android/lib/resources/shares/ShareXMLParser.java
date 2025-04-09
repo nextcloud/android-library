@@ -12,6 +12,7 @@ package com.owncloud.android.lib.resources.shares;
 import android.util.Xml;
 
 import com.owncloud.android.lib.common.network.WebdavUtils;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -70,8 +71,9 @@ public class ShareXMLParser {
 	private static final String NODE_DISPLAYNAME_FILE_OWNER = "displayname_file_owner";
 	private static final String NODE_TAGS = "tags";
 	private static final String NODE_URL = "url";
+    private static final String NODE_ATTRIBUTES = "attributes";
 
-	private static final String TAG_FAVORITE = "_$!<Favorite>";
+    private static final String TAG_FAVORITE = "_$!<Favorite>";
 
 	private static final String TYPE_FOLDER = "folder";
 
@@ -417,6 +419,10 @@ public class ShareXMLParser {
 
 					}
 					break;
+
+                case NODE_ATTRIBUTES:
+                    final var aa = readNode(parser, NODE_ATTRIBUTES);
+                    Log_OC.d("asdas","asdasd: "+ aa);
 
 				default:
 					skip(parser);
