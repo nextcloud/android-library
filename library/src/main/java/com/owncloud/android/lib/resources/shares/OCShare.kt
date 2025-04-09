@@ -73,6 +73,7 @@ class OCShare :
     var ownerDisplayName: String? = null
     var isFavorite = false
     var fileDownloadLimit: FileDownloadLimit? = null
+    var attributes: String? = null
 
     constructor() : super() {
         resetData()
@@ -114,6 +115,7 @@ class OCShare :
         mimetype = ""
         ownerDisplayName = ""
         fileDownloadLimit = null
+        attributes = null
     }
 
     /**
@@ -154,6 +156,7 @@ class OCShare :
         mimetype = source.readString()
         ownerDisplayName = source.readString()
         fileDownloadLimit = source.readSerializableCompat()
+        attributes = source.readString()
     }
 
     override fun describeContents(): Int = this.hashCode()
@@ -184,6 +187,7 @@ class OCShare :
         dest.writeString(mimetype)
         dest.writeString(ownerDisplayName)
         dest.writeSerializable(fileDownloadLimit)
+        dest.writeString(attributes)
     }
 
     companion object {
