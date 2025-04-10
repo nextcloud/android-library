@@ -29,6 +29,7 @@ buildscript {
 }
 
 plugins {
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.1.20"
     id "com.diffplug.spotless" version "7.0.3"
 }
 
@@ -59,6 +60,8 @@ configurations {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0"
+
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
     api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'com.github.bitfireAT:dav4jvm:2.2.1'
