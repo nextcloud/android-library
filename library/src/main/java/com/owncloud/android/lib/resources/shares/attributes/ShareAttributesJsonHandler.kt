@@ -11,9 +11,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
 object ShareAttributesJsonHandler {
-    private val gson = GsonBuilder()
-        .registerTypeAdapter(ShareAttributes::class.java, ShareAttributesDeserializer())
-        .create()
+    private val gson =
+        GsonBuilder()
+            .registerTypeAdapter(ShareAttributes::class.java, ShareAttributesDeserializer())
+            .create()
 
     fun toList(jsonString: String?): List<ShareAttributes>? {
         if (jsonString == null) {

@@ -16,7 +16,7 @@ import java.lang.reflect.Type
 /**
  * Custom serializer for the ShareAttributes class.
  * This handles the deserialization and serialization of the ShareAttributes data class.
- * Since Nextcloud 30, the enabled key have bee renamed to value and supports more than boolean.
+ * Since Nextcloud 30, the enabled key have been renamed to value and supports more than boolean.
  *
  * https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html#share-attributes
  */

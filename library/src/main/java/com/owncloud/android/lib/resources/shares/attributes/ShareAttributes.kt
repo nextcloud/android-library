@@ -15,9 +15,8 @@ data class ShareAttributes(
     companion object {
         const val DOWNLOAD_ATTRIBUTE_KEY = "download"
 
-        fun createDownloadAttributes(value: Boolean): ShareAttributes {
-            return ShareAttributes(scope = "permissions", key = DOWNLOAD_ATTRIBUTE_KEY, value = value)
-        }
+        fun createDownloadAttributes(value: Boolean): ShareAttributes =
+            ShareAttributes(scope = "permissions", key = DOWNLOAD_ATTRIBUTE_KEY, value = value)
     }
 }
 
