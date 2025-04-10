@@ -73,7 +73,7 @@ public class ShareXMLParser {
 	private static final String NODE_URL = "url";
     private static final String NODE_ATTRIBUTES = "attributes";
 
-    private static final String TAG_FAVORITE = "_$!<Favorite>";
+	private static final String TAG_FAVORITE = "_$!<Favorite>";
 
 	private static final String TYPE_FOLDER = "folder";
 
@@ -422,7 +422,6 @@ public class ShareXMLParser {
 
                 case NODE_ATTRIBUTES:
                     final var rawAttributesString = readText(parser);
-                    // final var attributes = ShareAttributesJsonParser.INSTANCE.parseJson(rawAttributesString);
                     share.setAttributes(rawAttributesString);
                     break;
 
