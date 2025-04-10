@@ -7,18 +7,28 @@
 
 package com.owncloud.android.lib.resources.shares.attributes
 
-import kotlinx.serialization.json.Json
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 object ShareAttributesJsonHandler {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val gson = GsonBuilder()
+        .registerTypeAdapter(ShareAttributes::class.java, ShareAttributesDeserializer())
+        .create()
 
-    /**
-     * Parses a JSON string into a list of `ShareAttributes` objects.
-     */
-    fun parseJson(jsonString: String): List<ShareAttributes> = json.decodeFromString(jsonString)
+    fun toList(jsonString: String?): List<ShareAttributes>? {
+        if (jsonString == null) {
+            return null
+        }
 
-    /**
-     * Converts a list of `ShareAttributes` objects into a JSON string.
-     */
-    fun toJson(shareAttributes: List<ShareAttributes>): String = json.encodeToString(shareAttributes)
+        val listType = object : TypeToken<List<ShareAttributes>>() {}.type
+        return gson.fromJson(jsonString, listType)
+    }
+
+    fun toJson(shareAttributes: List<ShareAttributes>?): String? {
+        if (shareAttributes == null) {
+            return null
+        }
+
+        return gson.toJson(shareAttributes)
+    }
 }
