@@ -15,14 +15,10 @@ object ShareAttributesJsonHandler {
     /**
      * Parses a JSON string into a list of `ShareAttributes` objects.
      */
-    fun parseJson(jsonString: String): List<ShareAttributes> {
-        return json.decodeFromString(jsonString)
-    }
+    fun parseJson(jsonString: String): List<ShareAttributes> = json.decodeFromString(jsonString)
 
     /**
      * Converts a list of `ShareAttributes` objects into a JSON string.
      */
-    fun toJson(shareAttributes: List<ShareAttributes>): String {
-        return json.encodeToString(shareAttributes)
-    }
+    fun toJson(shareAttributes: List<ShareAttributes>): String = json.encodeToString(shareAttributes)
 }
