@@ -16,6 +16,4 @@ data class ShareAttributes(
     var isEnabled: Boolean
 )
 
-fun List<ShareAttributes>?.getDownloadAttribute(): ShareAttributes? {
-    return this?.find { it.key == "download" }
-}
+fun List<ShareAttributes>?.getDownloadAttribute(): ShareAttributes? = this?.find { it.key == "download" }
