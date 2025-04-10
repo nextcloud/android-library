@@ -12,7 +12,6 @@ package com.owncloud.android.lib.resources.shares;
 import android.util.Xml;
 
 import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -24,6 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 /**
  * Parser for Share API Response
@@ -421,8 +421,10 @@ public class ShareXMLParser {
 					break;
 
                 case NODE_ATTRIBUTES:
-                    final var aa = readNode(parser, NODE_ATTRIBUTES);
-                    Log_OC.d("asdas","asdasd: "+ aa);
+                    final var rawAttributesString = readText(parser);
+                    // final var attributes = ShareAttributesJsonParser.INSTANCE.parseJson(rawAttributesString);
+                    share.setAttributes(rawAttributesString);
+                    break;
 
 				default:
 					skip(parser);
