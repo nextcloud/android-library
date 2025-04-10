@@ -421,8 +421,7 @@ public class ShareXMLParser {
 					break;
 
                 case NODE_ATTRIBUTES:
-                    final var rawAttributesString = readText(parser);
-                    share.setAttributes(rawAttributesString);
+                    share.setAttributes(readText(parser));
                     break;
 
 				default:

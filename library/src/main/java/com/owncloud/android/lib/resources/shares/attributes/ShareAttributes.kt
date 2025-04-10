@@ -7,11 +7,6 @@
 
 package com.owncloud.android.lib.resources.shares.attributes
 
-/**
- * Share attributes are used for more advanced flags like permissions.
- *
- * https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html#share-attributes
- */
 data class ShareAttributes(
     val scope: String,
     val key: String,
