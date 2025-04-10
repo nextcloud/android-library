@@ -49,6 +49,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
     private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String ENTITY_CHARSET = "UTF-8";
+    private static final String PARAM_ATTRIBUTES = "attributes";
 
 
     /**
@@ -78,6 +79,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
     private String note;
     private String label;
+    private String attributes;
 
 
     /**
@@ -137,6 +139,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         this.label = label;
     }
 
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
+    }
+
     public void setNote(String note) {
         this.note = note;
     }
@@ -179,6 +185,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
         if (label != null) {
             parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label)));
+        }
+
+        if (attributes != null) {
+            parametersToUpdate.add(new Pair<>(PARAM_ATTRIBUTES, URLEncoder.encode(attributes)));
         }
 
         /// perform required PUT requests

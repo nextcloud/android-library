@@ -49,7 +49,8 @@ class CreateShareRemoteOperationIT : AbstractIT() {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true,
-                note
+                note,
+                null
             ).execute(client)
 
         junit.framework.Assert.assertTrue(sut.isSuccess)
