@@ -9,6 +9,12 @@ package com.owncloud.android.lib.resources.shares.attributes
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Share attributes are used for more advanced flags like permissions.
+ *
+ *
+ * https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html#share-attributes
+ */
 @Serializable(with = ShareAttributesSerializer::class)
 data class ShareAttributes(
     val scope: String,
