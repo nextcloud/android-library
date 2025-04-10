@@ -9,6 +9,7 @@ package com.nextcloud.extensions
 
 import com.google.gson.JsonObject
 
+@Suppress("ReturnCount")
 fun JsonObject?.getBoolean(key: String): Boolean? {
     if (this == null) {
         return null
