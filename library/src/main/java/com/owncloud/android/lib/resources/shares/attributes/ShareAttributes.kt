@@ -10,7 +10,16 @@ package com.owncloud.android.lib.resources.shares.attributes
 data class ShareAttributes(
     val scope: String,
     val key: String,
-    var isEnabled: Boolean
-)
+    var value: Boolean
+) {
+    companion object {
+        const val DOWNLOAD_ATTRIBUTE_KEY = "download"
 
-fun List<ShareAttributes>?.getDownloadAttribute(): ShareAttributes? = this?.find { it.key == "download" }
+        fun createDownloadAttributes(value: Boolean): ShareAttributes {
+            return ShareAttributes(scope = "permissions", key = DOWNLOAD_ATTRIBUTE_KEY, value = value)
+        }
+    }
+}
+
+fun List<ShareAttributes>?.getDownloadAttribute(): ShareAttributes? =
+    this?.find { it.key == ShareAttributes.DOWNLOAD_ATTRIBUTE_KEY }
