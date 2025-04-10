@@ -10,6 +10,7 @@ package com.owncloud.android.lib.resources.shares.attributes
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.nextcloud.extensions.getBoolean
 import java.lang.reflect.Type
 
 /**
@@ -28,13 +29,7 @@ class ShareAttributesDeserializer : JsonDeserializer<ShareAttributes> {
         val jsonObject = json?.asJsonObject
         val scope = jsonObject?.get("scope")?.asString ?: ""
         val key = jsonObject?.get("key")?.asString ?: ""
-
-        val status = when {
-            jsonObject?.has("enabled") == true -> jsonObject.get("enabled").asBoolean
-            jsonObject?.has("value") == true -> jsonObject.get("value").asBoolean
-            else -> false
-        }
-
-        return ShareAttributes(scope, key, status)
+        val value = (jsonObject.getBoolean("value") ?: jsonObject.getBoolean("enabled")) == true
+        return ShareAttributes(scope, key, value)
     }
 }
