@@ -37,6 +37,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private static final String PARAM_PASSWORD = "password";
     private static final String PARAM_PERMISSIONS = "permissions";
     private static final String PARAM_NOTE = "note";
+    private static final String PARAM_ATTRIBUTES = "attributes";
 
     private final String remoteFilePath;
     private final ShareType shareType;
@@ -46,6 +47,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private final int permissions;
     private boolean getShareDetails;
     private String note;
+    private String attributes;
 
     /**
      * Constructor
@@ -67,6 +69,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
      *                       For user or group shares.
      *                       To obtain combinations, add the desired values together.
      *                       For instance, for Re-Share, delete, read, update, add 16+8+2+1 = 27.
+     * @param attributes     Share attributes are used for more advanced flags like permissions.
      */
     public CreateShareRemoteOperation(
             String remoteFilePath,
@@ -76,7 +79,8 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
             String password,
             int permissions,
             boolean getShareDetails,
-            String note
+            String note,
+            String attributes
     ) {
         this.remoteFilePath = remoteFilePath;
         this.shareType = shareType;
@@ -86,6 +90,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
         this.permissions = permissions;
         this.getShareDetails = getShareDetails;        // defaults to false for backwards compatibility
         this.note = note;
+        this.attributes = attributes;
     }
 
     public CreateShareRemoteOperation(
@@ -95,7 +100,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
             boolean publicUpload,
             String password,
             int permissions) {
-        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, "");
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, "", null);
     }
 
     public CreateShareRemoteOperation(
@@ -105,8 +110,9 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
             boolean publicUpload,
             String password,
             int permissions,
-            String note) {
-        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, note);
+            String note,
+            String attributes) {
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, false, note, attributes);
     }
 
     public CreateShareRemoteOperation(
@@ -117,7 +123,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
             String password,
             int permissions,
             boolean getShareDetails) {
-        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, getShareDetails, "");
+        this(remoteFilePath, shareType, shareWith, publicUpload, password, permissions, getShareDetails, "", null);
     }
 
     public boolean isGettingShareDetails() {
@@ -156,6 +162,10 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
             if (!TextUtils.isEmpty(note)) {
                 post.addParameter(PARAM_NOTE, note);
+            }
+
+            if (!TextUtils.isEmpty(attributes)) {
+                post.addParameter(PARAM_ATTRIBUTES, attributes);
             }
 
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
