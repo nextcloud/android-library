@@ -80,8 +80,10 @@ class OCShare :
      * The `attributes` field stores the share attributes as a raw JSON string, allowing for flexible handling
      * of versioned responses (V1 and V2). The `ShareAttributesSerializer` is used for serialization and
      * deserialization. Storing as a `String` prevents complex parcel write/read logic associated with
-     * `kotlinx.serialization` and ensures compatibility with the Nextcloud API, which requires raw JSON for
+     * `kotlinx.serialization` and provides compatibility with the Share API, which requires raw JSON for
      * requests and responses.
+     *
+     * https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html#share-attributes
      */
     var attributes: String? = null
 
