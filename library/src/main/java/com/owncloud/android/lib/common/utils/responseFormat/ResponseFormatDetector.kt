@@ -18,14 +18,14 @@ object ResponseFormatDetector {
     private const val JSON_OBJECT_PREFIX = "{"
     private const val JSON_ARRAY_PREFIX = "["
 
-    fun detectFormat(input: String): ResponseFormat {
-        return when {
+    fun detectFormat(input: String): ResponseFormat =
+        when {
             isJson(input) -> ResponseFormat.JSON
             isXml(input) -> ResponseFormat.XML
             else -> ResponseFormat.UNKNOWN
         }
-    }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isJson(input: String): Boolean {
         return try {
             val trimmed = input.trim()
@@ -43,8 +43,9 @@ object ResponseFormatDetector {
         }
     }
 
-    private fun isXml(input: String): Boolean {
-        return try {
+    @Suppress("TooGenericExceptionCaught")
+    private fun isXml(input: String): Boolean =
+        try {
             val factory = DocumentBuilderFactory.newInstance()
             val builder = factory.newDocumentBuilder()
             val stream = ByteArrayInputStream(input.toByteArray())
@@ -54,5 +55,4 @@ object ResponseFormatDetector {
             Log_OC.e(TAG, "Exception isXml: $e")
             false
         }
-    }
 }

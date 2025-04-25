@@ -8,5 +8,7 @@
 package com.owncloud.android.lib.common.utils.responseFormat
 
 enum class ResponseFormat {
-    JSON, XML, UNKNOWN
+    JSON,
+    XML,
+    UNKNOWN
 }
