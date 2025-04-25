@@ -9,42 +9,39 @@ package com.owncloud.android.lib.common.utils.responseFormat
 
 import com.owncloud.android.lib.common.utils.Log_OC
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 object ResponseFormatDetector {
     private const val TAG = "ResponseFormatDetector"
-    private const val JSON_OBJECT_PREFIX = "{"
-    private const val JSON_ARRAY_PREFIX = "["
 
     fun detectFormat(input: String): ResponseFormat =
         when {
-            isJson(input) -> ResponseFormat.JSON
-            isXml(input) -> ResponseFormat.XML
+            isJSON(input) -> ResponseFormat.JSON
+            isXML(input) -> ResponseFormat.XML
             else -> ResponseFormat.UNKNOWN
         }
 
-    @Suppress("TooGenericExceptionCaught")
-    private fun isJson(input: String): Boolean {
+    private fun isJSON(input: String): Boolean {
         return try {
-            val trimmed = input.trim()
-            if (trimmed.startsWith(JSON_OBJECT_PREFIX)) {
-                JSONObject(trimmed)
-            } else if (trimmed.startsWith(JSON_ARRAY_PREFIX)) {
-                JSONArray(trimmed)
-            } else {
-                return false
-            }
+            JSONObject(input)
             true
-        } catch (e: Exception) {
-            Log_OC.e(TAG, "Exception isJson: $e")
-            false
+        } catch (e: JSONException) {
+            try {
+                Log_OC.i(TAG, "Info it's not JSONObject: $e")
+                JSONArray(input)
+                true
+            } catch (e: JSONException) {
+                Log_OC.e(TAG, "Exception it's not JSONArray: $e")
+                false
+            }
         }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun isXml(input: String): Boolean =
+    private fun isXML(input: String): Boolean =
         try {
             val factory = DocumentBuilderFactory.newInstance()
             val builder = factory.newDocumentBuilder()
@@ -52,7 +49,7 @@ object ResponseFormatDetector {
             builder.parse(stream)
             true
         } catch (e: Exception) {
-            Log_OC.e(TAG, "Exception isXml: $e")
+            Log_OC.e(TAG, "Exception isXML: $e")
             false
         }
 }
