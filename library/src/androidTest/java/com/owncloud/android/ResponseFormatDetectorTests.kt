@@ -13,7 +13,6 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
 class ResponseFormatDetectorTests {
-
     @Test
     fun testJsonDetection() {
         val json = """{ "name": "Alice", "age": 30 }"""
