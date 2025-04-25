@@ -24,8 +24,8 @@ object ResponseFormatDetector {
             else -> ResponseFormat.UNKNOWN
         }
 
-    private fun isJSON(input: String): Boolean {
-        return try {
+    private fun isJSON(input: String): Boolean =
+        try {
             JSONObject(input)
             true
         } catch (e: JSONException) {
@@ -38,7 +38,6 @@ object ResponseFormatDetector {
                 false
             }
         }
-    }
 
     @Suppress("TooGenericExceptionCaught")
     private fun isXML(input: String): Boolean =
