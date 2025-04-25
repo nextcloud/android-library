@@ -10,7 +10,7 @@ package com.owncloud.android;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.owncloud.android.lib.common.operations.ExceptionParser;
+import com.owncloud.android.lib.common.operations.XMLExceptionParser;
 
 import org.junit.Test;
 
@@ -23,10 +23,10 @@ import java.io.InputStream;
  * Created by tobi on 3/21/18.
  */
 
-public class ExceptionParserIT {
+public class XMLExceptionParserIT {
 
     @Test
-    public void testVirusException() throws IOException {
+    public void testVirusException() {
         String virusException = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<d:error xmlns:d=\"DAV:\" xmlns:s=\"http://sabredav.org/ns\">\n" +
                 "  <s:exception>OCA\\DAV\\Connector\\Sabre\\Exception\\UnsupportedMediaType" +
@@ -36,14 +36,14 @@ public class ExceptionParserIT {
                 "</d:error>";
 
         InputStream is = new ByteArrayInputStream(virusException.getBytes());
-        ExceptionParser xmlParser = new ExceptionParser(is);
+        XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
         assertTrue(xmlParser.isVirusException());
         assertFalse(xmlParser.isInvalidCharacterException());
     }
 
     @Test
-    public void testInvalidCharacterException() throws IOException {
+    public void testInvalidCharacterException() {
         String virusException = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<d:error xmlns:d=\"DAV:\" xmlns:s=\"http://sabredav.org/ns\">\n" +
                 "  <s:exception>OC\\Connector\\Sabre\\Exception\\InvalidPath</s:exception>\n" +
@@ -51,14 +51,14 @@ public class ExceptionParserIT {
                 "</d:error>";
 
         InputStream is = new ByteArrayInputStream(virusException.getBytes());
-        ExceptionParser xmlParser = new ExceptionParser(is);
+        XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
         assertTrue(xmlParser.isInvalidCharacterException());
         assertFalse(xmlParser.isVirusException());
     }
 
     @Test
-    public void testInvalidCharacterUploadException() throws IOException {
+    public void testInvalidCharacterUploadException() {
         String virusException = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<d:error xmlns:d=\"DAV:\" xmlns:s=\"http://sabredav.org/ns\">\n" +
                 "  <s:exception>OCP\\Files\\InvalidPathException</s:exception>\n" +
@@ -66,29 +66,29 @@ public class ExceptionParserIT {
                 "</d:error>";
 
         InputStream is = new ByteArrayInputStream(virusException.getBytes());
-        ExceptionParser xmlParser = new ExceptionParser(is);
+        XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
         assertTrue(xmlParser.isInvalidCharacterException());
         assertFalse(xmlParser.isVirusException());
     }
 
     @Test
-    public void testEmptyString() throws IOException {
+    public void testEmptyString() {
         String emptyString = "";
 
         InputStream is = new ByteArrayInputStream(emptyString.getBytes());
-        ExceptionParser xmlParser = new ExceptionParser(is);
+        XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
         assertFalse(xmlParser.isVirusException());
         assertFalse(xmlParser.isInvalidCharacterException());
     }
 
     @Test
-    public void testString() throws IOException {
+    public void testString() {
         String emptyString = "";
 
         InputStream is = new ByteArrayInputStream(emptyString.getBytes());
-        ExceptionParser xmlParser = new ExceptionParser(is);
+        XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
         assertFalse(xmlParser.isVirusException());
         assertFalse(xmlParser.isInvalidCharacterException());
