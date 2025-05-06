@@ -18,6 +18,7 @@ import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
 import com.owncloud.android.lib.common.operations.OperationCancelledException;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
@@ -31,6 +32,15 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import java.io.FileInputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.math.BigInteger;
+
+
+
 
 /**
  * Remote operation performing the upload of a remote file to the ownCloud server.
@@ -211,6 +221,24 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
             }
 
             putMethod.setRequestEntity(entity);
+
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                try (FileInputStream fis = new FileInputStream(f);
+                     DigestInputStream dis = new DigestInputStream(fis, md)) {
+                    byte[] buffer = new byte[8192];
+                    while (dis.read(buffer) != -1) {
+                        // digest is updated by reading
+                    }
+                }
+
+                String Hash = String.format("%064x", new BigInteger(1, md.digest()));
+                putMethod.addRequestHeader("X-Content-Hash", Hash);
+            } catch (Exception e) {
+                // falls Hash-Berechnung fehlschlägt, einfach ohne Chunk‑Hash fortfahren
+                Log_OC.w(this, "Could not compute chunk hash");
+            }
+
             status = client.executeMethod(putMethod);
 
             result = new RemoteOperationResult<>(isSuccess(status), putMethod);
