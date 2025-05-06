@@ -32,9 +32,10 @@ class CreateShareRemoteOperationIT : AbstractIT() {
 
     @Test
     fun createShareWithNoteAndAttributes() {
-        val attributes = ShareAttributesJsonHandler.toJson(
-            listOf(ShareAttributes.createDownloadAttributes(true))
-        )
+        val attributes =
+            ShareAttributesJsonHandler.toJson(
+                listOf(ShareAttributes.createDownloadAttributes(true))
+            )
         val note = "Note with attributes"
         val path = "/shareWithAttributes/"
 
@@ -63,17 +64,18 @@ class CreateShareRemoteOperationIT : AbstractIT() {
         note: String,
         attributes: String? = null
     ): OCShare {
-        val operation = CreateShareRemoteOperation(
-            path,
-            ShareType.USER,
-            accountName,
-            false,
-            "",
-            OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
-            true,
-            note,
-            attributes
-        )
+        val operation =
+            CreateShareRemoteOperation(
+                path,
+                ShareType.USER,
+                accountName,
+                false,
+                "",
+                OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
+                true,
+                note,
+                attributes
+            )
         val result = operation.execute(client)
         assertTrue(result.isSuccess)
         return result.resultData[0]
