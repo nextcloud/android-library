@@ -36,6 +36,12 @@ import java.util.Objects;
 
 import androidx.annotation.VisibleForTesting;
 
+import java.io.FileInputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.ByteBuffer;
+import java.math.BigInteger;
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
 
@@ -216,6 +222,24 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
             moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
 
+            try {
+                File file_hash = new File(localPath);
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                try (FileInputStream fis = new FileInputStream(file_hash);
+                     DigestInputStream dis = new DigestInputStream(fis, md)) {
+                        byte[] buffer = new byte[8192];
+                        while (dis.read(buffer) != -1) {
+                        // digest is updated by reading
+                    }
+                }
+
+                String Hash = String.format("%064x", new BigInteger(1, md.digest()));
+                moveMethod.addRequestHeader("X-Content-Hash", Hash);
+            } catch (Exception e) {
+                // falls Hash-Berechnung fehlschlägt, einfach ohne Chunk‑Hash fortfahren
+                Log_OC.w(TAG, "Could not compute chunk hash");
+            }
+
             if (creationTimestamp != null && creationTimestamp > 0) {
                 moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
             }
@@ -289,6 +313,35 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             if (token != null) {
                 putMethod.addRequestHeader(E2E_TOKEN, token);
+            }
+
+            try (RandomAccessFile hashRaf = new RandomAccessFile(file, "r")){
+                // 1. MessageDigest für SHA‑256 anlegen
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+                // 2. Chunk-Daten in den Digest einspeisen
+                //    channel ist bereits auf file geöffnet
+                FileChannel hashChannel = hashRaf.getChannel();
+                hashChannel.position(chunk.getStart());
+
+                ByteBuffer buf = ByteBuffer.allocate((int)chunk.getLength());
+                hashChannel.position(chunk.getStart());
+                hashChannel.read(buf);
+
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = hashChannel.read(ByteBuffer.wrap(buffer))) != -1) {
+                    md.update(buffer, 0, bytesRead);
+                }
+
+                // 3. Hash in hex‑Notation
+                String chunkHash = String.format("%064x", new BigInteger(1, md.digest()));
+
+                // 4. Header hinzufügen
+                putMethod.addRequestHeader("X-Content-Hash", chunkHash);
+            } catch (Exception e) {
+                // falls Hash-Berechnung fehlschlägt, einfach ohne Chunk‑Hash fortfahren
+                Log_OC.w(TAG, "Could not compute chunk hash");
             }
 
             status = client.executeMethod(putMethod);
