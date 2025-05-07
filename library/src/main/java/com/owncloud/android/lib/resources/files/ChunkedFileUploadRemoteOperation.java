@@ -322,17 +322,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 // 2. Chunk-Daten in den Digest einspeisen
                 //    channel ist bereits auf file geöffnet
                 FileChannel hashChannel = hashRaf.getChannel();
-                hashChannel.position(chunk.getStart());
-
                 ByteBuffer buf = ByteBuffer.allocate((int)chunk.getLength());
                 hashChannel.position(chunk.getStart());
                 hashChannel.read(buf);
-
-                byte[] buffer = new byte[8192];
-                int bytesRead;
-                while ((bytesRead = hashChannel.read(ByteBuffer.wrap(buffer))) != -1) {
-                    md.update(buffer, 0, bytesRead);
-                }
+                md.update(buf.array());
 
                 // 3. Hash in hex‑Notation
                 String chunkHash = String.format("%064x", new BigInteger(1, md.digest()));
