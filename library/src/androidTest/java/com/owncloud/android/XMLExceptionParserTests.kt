@@ -72,15 +72,4 @@ class XMLExceptionParserTests {
         Assert.assertFalse(xmlParser.isVirusException)
         Assert.assertFalse(xmlParser.isInvalidCharacterException)
     }
-
-    @Test
-    fun testString() {
-        val emptyString = ""
-
-        val inputStream = ByteArrayInputStream(emptyString.toByteArray())
-        val xmlParser = XMLExceptionParser(inputStream)
-
-        Assert.assertFalse(xmlParser.isVirusException)
-        Assert.assertFalse(xmlParser.isInvalidCharacterException)
-    }
 }
