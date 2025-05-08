@@ -10,7 +10,6 @@ package com.owncloud.android;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 import android.content.Context;
@@ -19,6 +18,7 @@ import android.os.Bundle;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.nextcloud.android.lib.resources.files.ToggleFileLockRemoteOperation;
 import com.nextcloud.common.NextcloudClient;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -54,6 +54,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
 
@@ -77,7 +78,8 @@ public abstract class AbstractIT {
     protected String baseFolderPath = "/test_for_build/";
 
     public static final String ASSETS__TEXT_FILE_NAME = "textFile.txt";
-    private static String LOCAL_TRUSTSTORE_FILENAME = "knownServers.bks";
+    private static final String LOCAL_TRUSTSTORE_FILENAME = "knownServers.bks";
+    private static final String TAG = "AbstractIT";
 
     @BeforeClass
     public static void beforeAll() throws InterruptedException,
@@ -115,26 +117,26 @@ public abstract class AbstractIT {
     }
 
     private static void waitForServer(OwnCloudClient client, Uri baseUrl) {
-        // use http 
-        Uri httpUrl = Uri.parse(baseUrl.toString().replaceFirst("https", "http"));
-        GetMethod get = new GetMethod(httpUrl + "/status.php");
+        String statusUrl = baseUrl + "/status.php";
+        GetMethod get;
+        int maxRetries = 3;
 
-        try {
-            int i = 0;
-            while (client.executeMethod(get) != HttpStatus.SC_OK && i < 3) {
-                System.out.println("wait…");
-                Thread.sleep(60 * 1000);
-                i++;
+        for (int i=0;i<maxRetries;i++) {
+            get = new GetMethod(statusUrl);
+
+            try {
+                if (client.executeMethod(get) == HttpStatus.SC_OK) {
+                    Log_OC.d(TAG, "Server is ready");
+                    return;
+                }
+
+                Log_OC.d(TAG, "Server not ready, retrying in 60 seconds...");
+                TimeUnit.MINUTES.sleep(1);
+            } catch (Exception e) {
+                Log_OC.d(TAG, "Server not ready, failed: " + e);
+            } finally {
+                get.releaseConnection();
             }
-
-            if (i == 3) {
-                fail("Server not ready!");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -265,30 +267,58 @@ public abstract class AbstractIT {
     }
 
     private void removeOnClient(OwnCloudClient client) {
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        final var result = new ReadFolderRemoteOperation("/").execute(client);
         assertTrue(result.getLogMessage(context), result.isSuccess());
 
         for (Object object : result.getData()) {
-            RemoteFile remoteFile = (RemoteFile) object;
-
-            if (!"/".equals(remoteFile.getRemotePath()) &&
-                remoteFile.getMountType() != WebdavEntry.MountType.GROUP) {
-                if (remoteFile.isEncrypted()) {
-                    assertTrue(new ToggleEncryptionRemoteOperation(
-                        remoteFile.getLocalId(),
-                        remoteFile.getRemotePath(),
-                        false)
-                        .execute(client)
-                        .isSuccess());
-                }
-
-                assertTrue("Failed to remove " + remoteFile.getRemotePath(),
-                    new RemoveFileRemoteOperation(remoteFile.getRemotePath()).execute(client).isSuccess());
+            if (!(object instanceof RemoteFile remoteFile)) {
+                Log_OC.d(TAG, "removeOnClient skipping not instance of RemoteFile");
+                continue;
             }
+
+            String remotePath = remoteFile.getRemotePath();
+
+            if ("/".equals(remotePath) || remoteFile.getMountType() == WebdavEntry.MountType.GROUP) {
+                Log_OC.d(TAG, "removeOnClient skipping root path or mount type is group");
+                continue;
+            }
+
+            if (remoteFile.isEncrypted()) {
+                assertTrue(toggleEncryptionRemoteFile(remoteFile));
+            }
+
+            if (remoteFile.isLocked() && remotePath != null) {
+                unlockRemoteFile(remotePath);
+            }
+
+            boolean isRemoteFileRemoved = removeRemoteFile(remotePath);
+            final var removeFileOperationErrorMessage = ("Failed to remove " + remotePath);
+            assertTrue(removeFileOperationErrorMessage, isRemoteFileRemoved);
         }
 
         // delete keystore
-        new File(context.getFilesDir(), LOCAL_TRUSTSTORE_FILENAME).delete();
+        boolean isKeyStoreDeleted = new File(context.getFilesDir(), LOCAL_TRUSTSTORE_FILENAME).delete();
+        Log_OC.d(TAG,"KeyStore file deletion result: " + isKeyStoreDeleted);
+    }
+
+    private boolean toggleEncryptionRemoteFile(RemoteFile remoteFile) {
+        final var operation = new ToggleEncryptionRemoteOperation(remoteFile.getLocalId(), remoteFile.getRemotePath(), false);
+        final var result = operation.execute(client);
+        return result.isSuccess();
+    }
+
+    private void unlockRemoteFile(String path) {
+        final var operation = new ToggleFileLockRemoteOperation(false, path);
+        final var result = operation.execute(nextcloudClient);
+        if (result.isSuccess()) {
+            Log_OC.d(TAG,"Locked file: " + path + " unlocked");
+        }
+    }
+
+    private boolean removeRemoteFile(String path) {
+        final var operation = new RemoveFileRemoteOperation(path);
+        final var result = operation.execute(client);
+        return result.isSuccess();
     }
 
     public static File getFile(String filename) throws IOException {
