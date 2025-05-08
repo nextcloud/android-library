@@ -22,7 +22,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -140,11 +139,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         this.note = note;
     }
 
-    @Override
-    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
-        RemoteOperationResult<List<OCShare>> result;
-
-        /// prepare array of parameters to update
+    private String getRequestBody() {
         JsonObject params = new JsonObject();
         if (password != null) {
             params.addProperty(PARAM_PASSWORD, password);
@@ -161,7 +156,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
             params.addProperty(PARAM_EXPIRATION_DATE, formattedExpirationDate);
         }
-        
+
         if (permissions > 0) {
             params.addProperty(PARAM_PERMISSIONS, Integer.toString(permissions));
         }
@@ -170,16 +165,24 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             params.addProperty(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload));
         }
 
+        if (note != null) {
+            params.addProperty(PARAM_NOTE, note);
+        }
+
+        if (label != null) {
+            params.addProperty(PARAM_LABEL, label);
+        }
+
+        return params.toString();
+    }
+
+    @Override
+    protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
+        RemoteOperationResult<List<OCShare>> result;
+        String requestBody = getRequestBody();
+
         PutMethod put = null;
         try {
-            if (note != null) {
-                params.addProperty(PARAM_NOTE, URLEncoder.encode(note, ENTITY_CHARSET));
-            }
-
-            if (label != null) {
-                params.addProperty(PARAM_LABEL, URLEncoder.encode(label, ENTITY_CHARSET));
-            }
-
             Uri requestUri = client.getBaseUri();
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(ShareUtils.SHARING_API_PATH.substring(1));
@@ -188,11 +191,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
             put = new PutMethod(uriString);
             put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            put.setRequestEntity(new StringRequestEntity(
-                params.toString(),
-                ENTITY_CONTENT_TYPE,
-                ENTITY_CHARSET
-            ));
+            put.setRequestEntity(new StringRequestEntity(requestBody, ENTITY_CONTENT_TYPE, ENTITY_CHARSET));
 
             int status = client.executeMethod(put);
             if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
