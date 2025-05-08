@@ -33,7 +33,7 @@ import java.util.Locale;
 
 /**
  * Updates parameters of an existing Share resource, known its remote ID.
- * 
+ * <p>
  * Allow updating several parameters, triggering a request to the server per parameter.
  */
 public class UpdateShareRemoteOperation extends RemoteOperation {
@@ -54,7 +54,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     /**
      * Identifier of the share to update
      */
-    private long remoteId;
+    private final long remoteId;
 
     /**
      * Password to set for the public link
@@ -143,8 +143,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
     @Override
     protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
-        RemoteOperationResult<List<OCShare>> result = null;
-        int status;
+        RemoteOperationResult<List<OCShare>> result;
 
         /// prepare array of parameters to update
         List<Pair<String, String>> parametersToUpdate = new ArrayList<>();
@@ -165,7 +164,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         }
         
         if (permissions > 0) {
-            // set permissions
             parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
         }
 
@@ -173,70 +171,61 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
         }
 
-        if (note != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_NOTE, URLEncoder.encode(note)));
-        }
-
-        if (label != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label)));
-        }
-
-        /// perform required PUT requests
         PutMethod put = null;
-        String uriString;
-
         try {
+            if (note != null) {
+                parametersToUpdate.add(new Pair<>(PARAM_NOTE, URLEncoder.encode(note, ENTITY_CHARSET)));
+            }
+
+            if (label != null) {
+                parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label, ENTITY_CHARSET)));
+            }
+
             Uri requestUri = client.getBaseUri();
             Uri.Builder uriBuilder = requestUri.buildUpon();
             uriBuilder.appendEncodedPath(ShareUtils.SHARING_API_PATH.substring(1));
             uriBuilder.appendEncodedPath(Long.toString(remoteId));
-            uriString = uriBuilder.build().toString();
+            String uriString = uriBuilder.build().toString();
 
-            for (Pair<String, String> parameter : parametersToUpdate) {
-                if (put != null) {
-                    put.releaseConnection();
-                }
-                put = new PutMethod(uriString);
-                put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-                put.setRequestEntity(new StringRequestEntity(
-                        parameter.first + "=" + parameter.second,
-                        ENTITY_CONTENT_TYPE,
-                        ENTITY_CHARSET
-                ));
+            StringBuilder bodyBuilder = new StringBuilder();
+            for (int i = 0; i < parametersToUpdate.size(); i++) {
+                Pair<String, String> param = parametersToUpdate.get(i);
+                bodyBuilder.append(param.first)
+                    .append("=")
+                    .append(param.second);
 
-                status = client.executeMethod(put);
-
-                if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
-                    String response = put.getResponseBodyAsString();
-
-                    // Parse xml response
-                    ShareToRemoteOperationResultParser parser = new ShareToRemoteOperationResultParser(
-                            new ShareXMLParser()
-                    );
-                    parser.setServerBaseUri(client.getBaseUri());
-                    result = parser.parse(response);
-
-                } else {
-                    result = new RemoteOperationResult<>(false, put);
-                }
-                if (!result.isSuccess()) {
-                    break;
+                if (i < parametersToUpdate.size() - 1) {
+                    bodyBuilder.append("&");
                 }
             }
 
+            put = new PutMethod(uriString);
+            put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+            put.setRequestEntity(new StringRequestEntity(
+                bodyBuilder.toString(),
+                ENTITY_CONTENT_TYPE,
+                ENTITY_CHARSET
+            ));
+
+            int status = client.executeMethod(put);
+            if (status == HttpStatus.SC_OK || status == HttpStatus.SC_BAD_REQUEST) {
+                String response = put.getResponseBodyAsString();
+                final var shareXMLParser = new ShareXMLParser();
+                final var parser = new ShareToRemoteOperationResultParser(shareXMLParser);
+                parser.setServerBaseUri(client.getBaseUri());
+                result = parser.parse(response);
+            } else {
+                result = new RemoteOperationResult<>(false, put);
+            }
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while updating remote share ", e);
-            if (put != null) {
-                put.releaseConnection();
-            }
-
         } finally {
             if (put != null) {
                 put.releaseConnection();
             }
         }
+
         return result;
     }
-
 }
