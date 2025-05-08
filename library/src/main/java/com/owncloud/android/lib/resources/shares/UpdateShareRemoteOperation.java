@@ -11,8 +11,8 @@
 package com.owncloud.android.lib.resources.shares;
 
 import android.net.Uri;
-import android.util.Pair;
 
+import com.google.gson.JsonObject;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -25,7 +25,6 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +46,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
     private static final String PARAM_LABEL = "label";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
-    private static final String ENTITY_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private static final String ENTITY_CONTENT_TYPE = "application/json";
     private static final String ENTITY_CHARSET = "UTF-8";
 
 
@@ -146,39 +145,39 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         RemoteOperationResult<List<OCShare>> result;
 
         /// prepare array of parameters to update
-        List<Pair<String, String>> parametersToUpdate = new ArrayList<>();
+        JsonObject params = new JsonObject();
         if (password != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_PASSWORD, password));
+            params.addProperty(PARAM_PASSWORD, password);
         }
 
         if (expirationDateInMillis < 0) {
             // clear expiration date
-            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, ""));
+            params.addProperty(PARAM_EXPIRATION_DATE, "");
         } else if (expirationDateInMillis > 0) {
             // set expiration date
             DateFormat dateFormat = new SimpleDateFormat(FORMAT_EXPIRATION_DATE, Locale.US);
             Calendar expirationDate = Calendar.getInstance();
             expirationDate.setTimeInMillis(expirationDateInMillis);
             String formattedExpirationDate = dateFormat.format(expirationDate.getTime());
-            parametersToUpdate.add(new Pair<>(PARAM_EXPIRATION_DATE, formattedExpirationDate));
+            params.addProperty(PARAM_EXPIRATION_DATE, formattedExpirationDate);
         }
         
         if (permissions > 0) {
-            parametersToUpdate.add(new Pair<>(PARAM_PERMISSIONS, Integer.toString(permissions)));
+            params.addProperty(PARAM_PERMISSIONS, Integer.toString(permissions));
         }
 
         if (hideFileDownload != null) {
-            parametersToUpdate.add(new Pair<>(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload)));
+            params.addProperty(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload));
         }
 
         PutMethod put = null;
         try {
             if (note != null) {
-                parametersToUpdate.add(new Pair<>(PARAM_NOTE, URLEncoder.encode(note, ENTITY_CHARSET)));
+                params.addProperty(PARAM_NOTE, URLEncoder.encode(note, ENTITY_CHARSET));
             }
 
             if (label != null) {
-                parametersToUpdate.add(new Pair<>(PARAM_LABEL, URLEncoder.encode(label, ENTITY_CHARSET)));
+                params.addProperty(PARAM_LABEL, URLEncoder.encode(label, ENTITY_CHARSET));
             }
 
             Uri requestUri = client.getBaseUri();
@@ -187,22 +186,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
             uriBuilder.appendEncodedPath(Long.toString(remoteId));
             String uriString = uriBuilder.build().toString();
 
-            StringBuilder bodyBuilder = new StringBuilder();
-            for (int i = 0; i < parametersToUpdate.size(); i++) {
-                Pair<String, String> param = parametersToUpdate.get(i);
-                bodyBuilder.append(param.first)
-                    .append("=")
-                    .append(param.second);
-
-                if (i < parametersToUpdate.size() - 1) {
-                    bodyBuilder.append("&");
-                }
-            }
-
             put = new PutMethod(uriString);
             put.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
             put.setRequestEntity(new StringRequestEntity(
-                bodyBuilder.toString(),
+                params.toString(),
                 ENTITY_CONTENT_TYPE,
                 ENTITY_CHARSET
             ));
