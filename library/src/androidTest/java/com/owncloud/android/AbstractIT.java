@@ -121,7 +121,7 @@ public abstract class AbstractIT {
         GetMethod get;
         int maxRetries = 3;
 
-        for (int i=0;i<maxRetries;i++) {
+        for (int i = 0; i < maxRetries; i++) {
             get = new GetMethod(statusUrl);
 
             try {
@@ -272,14 +272,14 @@ public abstract class AbstractIT {
 
         for (Object object : result.getData()) {
             if (!(object instanceof RemoteFile remoteFile)) {
-                Log_OC.d(TAG, "removeOnClient skipping not instance of RemoteFile");
+                Log_OC.d(TAG, "Skipping removeOnClient: not instance of RemoteFile");
                 continue;
             }
 
             String remotePath = remoteFile.getRemotePath();
 
             if ("/".equals(remotePath) || remoteFile.getMountType() == WebdavEntry.MountType.GROUP) {
-                Log_OC.d(TAG, "removeOnClient skipping root path or mount type is group");
+                Log_OC.d(TAG, "Skipping removeOnClient: remote path is root path or mount type is group");
                 continue;
             }
 
@@ -296,9 +296,8 @@ public abstract class AbstractIT {
             assertTrue(removeFileOperationErrorMessage, isRemoteFileRemoved);
         }
 
-        // delete keystore
         boolean isKeyStoreDeleted = new File(context.getFilesDir(), LOCAL_TRUSTSTORE_FILENAME).delete();
-        Log_OC.d(TAG,"KeyStore file deletion result: " + isKeyStoreDeleted);
+        Log_OC.d(TAG, "KeyStore file deletion result: " + isKeyStoreDeleted);
     }
 
     private boolean toggleEncryptionRemoteFile(RemoteFile remoteFile) {
@@ -311,7 +310,7 @@ public abstract class AbstractIT {
         final var operation = new ToggleFileLockRemoteOperation(false, path);
         final var result = operation.execute(nextcloudClient);
         if (result.isSuccess()) {
-            Log_OC.d(TAG,"Locked file: " + path + " unlocked");
+            Log_OC.d(TAG, "Locked file: " + path + " unlocked");
         }
     }
 
