@@ -30,6 +30,8 @@ import com.owncloud.android.lib.R;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.common.utils.responseFormat.ResponseFormat;
+import com.owncloud.android.lib.common.utils.responseFormat.ResponseFormatDetector;
 import com.owncloud.android.lib.resources.files.CreateLocalFileException;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -235,10 +237,13 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             switch (httpCode) {
                 case HttpStatus.SC_BAD_REQUEST:
                     try {
-                        InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                        ExceptionParser xmlParser = new ExceptionParser(is);
-                        if (xmlParser.isInvalidCharacterException()) {
-                            mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
+                        if (!bodyResponse.isEmpty() &&
+                            ResponseFormatDetector.INSTANCE.detectFormat(bodyResponse) == ResponseFormat.XML) {
+                            InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                            XMLExceptionParser xmlParser = new XMLExceptionParser(is);
+                            if (xmlParser.isInvalidCharacterException()) {
+                                mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
+                            }
                         }
                     } catch (Exception e) {
                         mCode = ResultCode.UNHANDLED_HTTP_CODE;
@@ -336,9 +341,11 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             try {
                 String bodyResponse = httpMethod.getResponseBodyAsString();
 
-                if (bodyResponse != null && bodyResponse.length() > 0) {
+                if (bodyResponse != null
+                    && !bodyResponse.isEmpty() &&
+                    ResponseFormatDetector.INSTANCE.detectFormat(bodyResponse) == ResponseFormat.XML) {
                     InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                    ExceptionParser xmlParser = new ExceptionParser(is);
+                    XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
                     if (xmlParser.isInvalidCharacterException()) {
                         mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
