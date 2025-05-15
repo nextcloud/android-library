@@ -32,15 +32,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import java.io.FileInputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.math.BigInteger;
-
-
-
-
 /**
  * Remote operation performing the upload of a remote file to the ownCloud server.
  *

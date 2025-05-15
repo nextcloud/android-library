@@ -29,13 +29,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import java.io.FileInputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.math.BigInteger;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
 
 
 /**

@@ -9,6 +9,7 @@ package com.owncloud.android.lib.resources.files;
 import android.text.TextUtils;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
 import com.owncloud.android.lib.common.network.WebdavEntry;
@@ -36,8 +37,6 @@ import java.util.Objects;
 
 import androidx.annotation.VisibleForTesting;
 
-import java.io.FileInputStream;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.nio.ByteBuffer;
 import java.math.BigInteger;
