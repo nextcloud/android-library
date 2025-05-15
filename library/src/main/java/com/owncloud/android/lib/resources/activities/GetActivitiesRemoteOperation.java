@@ -54,7 +54,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
     private static final String NODE_DATA = "data";
 
-    private int lastGiven = -1;
+    private long lastGiven = -1;
     
     private long fileId = -1;
 
@@ -65,7 +65,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         this.fileId = fileId;
     }
 
-    public GetActivitiesRemoteOperation(long fileId, int lastGiven) {
+    public GetActivitiesRemoteOperation(long fileId, long lastGiven) {
         this.fileId = fileId;
         this.lastGiven = lastGiven;
     }
@@ -114,7 +114,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
             if (isSuccess(status)) {
                 String nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
                 if (nextPageHeader != null) {
-                    lastGiven = Integer.parseInt(nextPageHeader);
+                    lastGiven = Long.parseLong(nextPageHeader);
                 } else {
                     lastGiven = -1;
                 }
@@ -185,7 +185,7 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
 
             Header nextPageHeader = get.getResponseHeader("X-Activity-Last-Given");
             if (nextPageHeader != null) {
-                lastGiven = Integer.parseInt(nextPageHeader.getValue());
+                lastGiven = Long.parseLong(nextPageHeader.getValue());
             } else {
                 lastGiven = -1;
             }

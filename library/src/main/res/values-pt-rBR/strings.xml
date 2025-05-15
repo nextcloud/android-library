@@ -21,7 +21,7 @@
     <string name="notification_title_select_client_cert">Selecione certificado de cliente</string>
     <string name="operation_cancelled">Operação cancelada pelo solicitante</string>
     <string name="operation_cancelled_by_the_caller">Operação cancelada pelo solicitante</string>
-    <string name="operation_finished_http_code">Operação concluída com código de status HTTP %1$d (%2$s)</string>
+    <string name="operation_finished_http_code">Operação foi concluída com código de status HTTP %1$d (%2$s)</string>
     <string name="socket_exception">Exceção de socket</string>
     <string name="socket_timeout_exception">Exceção de tempo limite do socket</string>
     <string name="ssl_exception">Exceção SSL</string>

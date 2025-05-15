@@ -3,6 +3,7 @@
     <string name="account_not_new">Compte ja existent en crear-ne un de nou</string>
     <string name="account_not_the_same">Autenticat amb un compte diferent de l\'actualitzat</string>
     <string name="bad_oc_version">No s\'ha trobat cap versió vàlida del Nextcloud al servidor.</string>
+    <string name="connect_timeout_exception">Excepció de temps d\'espera del sòcol</string>
     <string name="exception_using_account">Excepció en utilitzar el compte</string>
     <string name="file_locked">Un altre usuari o procés bloqueja el fitxer</string>
     <string name="file_not_found">El fitxer local no existeix</string>
@@ -15,7 +16,7 @@
     <string name="malformed_url_exception">L\'excepció de l\'URL té un format incorrecte</string>
     <string name="message_install_client_cert">Voleu instal·lar un certificat de client TLS\?</string>
     <string name="no_network_connection">No hi ha connexió a la xarxa</string>
-    <string name="notification_channel_name">Connexió Nextcould</string>
+    <string name="notification_channel_name">Connexió Nextcloud</string>
     <string name="notification_message_select_client_cert">Seleccioneu el certificat del client per a: %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Seleccioneu el certificat del client</string>
     <string name="operation_cancelled">Operació cancel·lada per la persona que ha trucat</string>
