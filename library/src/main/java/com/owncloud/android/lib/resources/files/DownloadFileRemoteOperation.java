@@ -155,7 +155,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                                     String digestAlgorithm = null;
 
                                     switch (Algorithm) {
-                                        case "sha-256":
+                                        case "sha256":
                                             digestAlgorithm = "SHA-256";
                                             break;
                                         default:
