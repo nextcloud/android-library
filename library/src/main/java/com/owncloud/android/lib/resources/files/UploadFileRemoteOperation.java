@@ -32,6 +32,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import java.io.FileInputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.math.BigInteger;
+
+
+
+
 /**
  * Remote operation performing the upload of a remote file to the ownCloud server.
  *
@@ -211,6 +220,12 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
             }
 
             putMethod.setRequestEntity(entity);
+
+            String Hash = FileUtils.getHASHfromFile(this, f, "SHA-256");
+            if(Hash != null){
+                putMethod.addRequestHeader("X-Content-Hash", Hash);
+            }
+
             status = client.executeMethod(putMethod);
 
             result = new RemoteOperationResult<>(isSuccess(status), putMethod);
