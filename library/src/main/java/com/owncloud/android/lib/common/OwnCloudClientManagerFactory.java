@@ -15,6 +15,7 @@ public class OwnCloudClientManagerFactory {
     private static String sUserAgent = "Mozilla/5.0 (Android) Nextcloud-android";
     private static String proxyHost = "";
     private static int proxyPort = -1;
+    private static boolean hash_check_enable = false;
 
     public static OwnCloudClientManager getDefaultSingleton() {
         if (sDefaultSingleton == null) {
@@ -45,5 +46,13 @@ public class OwnCloudClientManagerFactory {
 
     public static int getProxyPort() {
         return proxyPort;
+    }
+
+    public static void setHASHcheck(boolean status) {
+        hash_check_enable = status;
+    }
+
+    public static boolean getHASHcheck() {
+        return hash_check_enable;
     }
 }
