@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import java.util.Locale;
 
-
 /**
  * Remote operation performing the download of a remote file in the ownCloud server.
  *
@@ -156,6 +155,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
 
                                     switch (Algorithm) {
                                         case "sha256":
+
                                             digestAlgorithm = "SHA-256";
                                             break;
                                         default:
