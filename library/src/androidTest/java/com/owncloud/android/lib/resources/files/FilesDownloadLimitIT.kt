@@ -18,6 +18,7 @@ import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OCCapability
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -102,7 +103,7 @@ class FilesDownloadLimitIT : AbstractIT() {
                 1
             ).execute(client)
 
-        assert(result.isSuccess)
+        assertTrue(result.getLogMessage(), result.isSuccess)
         val share = result.resultData.first()
         assert(share.token != null)
         return share

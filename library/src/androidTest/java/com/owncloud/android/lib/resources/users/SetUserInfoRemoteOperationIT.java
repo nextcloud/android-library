@@ -133,14 +133,15 @@ public class SetUserInfoRemoteOperationIT extends AbstractIT {
         RemoteOperationResult<UserInfo> userInfo = new GetUserInfoRemoteOperation().execute(nextcloudClient);
         assertTrue(userInfo.isSuccess());
         String oldValue = userInfo.getResultData().getTwitter();
+        String newValue = "Nextclouders";
 
         // set
-        assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.TWITTER, "@Nextclouders")
+        assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.TWITTER, newValue)
                 .execute(nextcloudClient).isSuccess());
 
         userInfo = new GetUserInfoRemoteOperation().execute(nextcloudClient);
         assertTrue(userInfo.isSuccess());
-        assertEquals("@Nextclouders", userInfo.getResultData().getTwitter());
+        assertEquals(newValue, userInfo.getResultData().getTwitter());
 
         // reset
         assertTrue(new SetUserInfoRemoteOperation(SetUserInfoRemoteOperation.Field.TWITTER, oldValue)

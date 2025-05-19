@@ -44,7 +44,7 @@ public class RemoveShareIT extends AbstractIT {
                 false,
                 "", 1).execute(client);
 
-        assertTrue(result.isSuccess());
+        assertTrue(result.getLogMessage(), result.isSuccess());
 
         OCShare ocShare = result.getResultData().get(0);
 
