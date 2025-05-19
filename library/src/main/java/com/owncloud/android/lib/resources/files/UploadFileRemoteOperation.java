@@ -32,11 +32,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
-
-
-
-
 /**
  * Remote operation performing the upload of a remote file to the ownCloud server.
  *
