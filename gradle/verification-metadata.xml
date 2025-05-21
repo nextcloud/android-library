@@ -206,6 +206,7 @@
          <trusted-key id="D878D4A823EAE731B729D1A8D2151178A123C97F">
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.1.10"/>
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.1.11"/>
+            <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.1.12"/>
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.1.9"/>
          </trusted-key>
          <trusted-key id="DB0597E3144342256BC81E3EC727D053C4481CF5" group="org.tensorflow" name="tensorflow-lite-metadata" version="0.1.0-rc2"/>
