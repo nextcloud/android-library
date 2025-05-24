@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Kontu bat badago berria sortzean</string>
+    <string name="account_not_the_same">Eguneraketaz bestelako kontu batekin autentifikatua</string>
+    <string name="bad_oc_version">Zerbitzarian ez da NextCloud-en baliozko bertsiorik aurkitu</string>
+    <string name="connect_timeout_exception">Konektatu denbora-mugaren salbuespena</string>
+    <string name="exception_using_account">Salbuespena kontua erabiltzean</string>
+    <string name="file_locked">Une honetan fitxategia beste erabiltzaile edo prozesu batek blokeatuta du</string>
+    <string name="file_not_found">Fitxategi lokala ez da existitzen</string>
+    <string name="http_violation">HTTP urraketa</string>
+    <string name="instance_not_configured">Nextcloud zerbitzaria ez dago konfiguratuta!</string>
+    <string name="invalid_character_in_name">Fitxategiaren izenak debekatutako karaktere bat dauka</string>
+    <string name="json_exception">JSON salbuespena</string>
+    <string name="local_storage_full">Biltegiratze lokala beteta</string>
+    <string name="local_storage_not_moved">Errorea fitxategia helburu direktoriora mugitzean</string>
+    <string name="malformed_url_exception">Gaizki osatutako URL salbuespena</string>
+    <string name="message_install_client_cert">TLS bezero-ziurtagiria instalatu nahi duzu\?</string>
+    <string name="no_network_connection">Ez dago sare konexiorik</string>
+    <string name="notification_channel_name">Nextcloud konexioa</string>
+    <string name="notification_message_select_client_cert">Hautatu %1$sren bezero-ziurtagiria:%2$d</string>
+    <string name="notification_title_select_client_cert">Hautatu bezero-ziurtagiria</string>
+    <string name="operation_cancelled">Eragiketa bertan behera utzi du deitzaileak</string>
+    <string name="operation_cancelled_by_the_caller">Eragiketa bertan behera utzi du deitzaileak</string>
+    <string name="operation_finished_http_code">Eragiketa amaitu da HTTP egoera kodea %1$d (%2$s) dela</string>
+    <string name="socket_exception">Socket salbuespena</string>
+    <string name="socket_timeout_exception">Socket-aren denbora-muga salbuespena</string>
+    <string name="ssl_exception">SSL salbuespena</string>
+    <string name="ssl_recoverable_exception">SSL salbuespen berreskuragarria</string>
+    <string name="sync_conflict">Sinkronizazio-gatazka</string>
+    <string name="title_no_client_cert">Ez da bezero-ziurtagiririk aurkitu</string>
+    <string name="unexpected_exception">Ustekabeko salbuespena</string>
+    <string name="unexpected_webdav_exception">Ustekabeko WebDAV salbuespena</string>
+    <string name="unknown_host_exception">Ostalari-salbuespen ezezaguna</string>
+    <string name="unrecovered_transport_exception">Berreskuratu gabeko garraioaren salbuespena</string>
+</resources>
