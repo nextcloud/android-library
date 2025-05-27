@@ -48,7 +48,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String ENTITY_CONTENT_TYPE = "application/json";
     private static final String ENTITY_CHARSET = "UTF-8";
 
-
     /**
      * Identifier of the share to update
      */
