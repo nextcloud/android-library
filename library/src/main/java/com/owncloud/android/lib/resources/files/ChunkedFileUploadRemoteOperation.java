@@ -220,9 +220,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
             moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
 
-            String Hash = FileUtils.getHASHfromFile(this, new File(localPath), "SHA-256");
-            if(Hash != null){
-                putMethod.addRequestHeader("X-Content-Hash", Hash);
+            File localFile = new File(localPath);
+            String hash = FileUtils.getHashFromFile(this, localFile, "SHA-256");
+            if(hash != null) {
+                putMethod.addRequestHeader("X-Content-Hash", hash);
             }
 
             if (creationTimestamp != null && creationTimestamp > 0) {
@@ -300,7 +301,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 putMethod.addRequestHeader(E2E_TOKEN, token);
             }
 
-            if (OwnCloudClientManagerFactory.getHASHcheck()) {
+            if (OwnCloudClientManagerFactory.getHashCheck()) {
                 try (RandomAccessFile hashRaf = new RandomAccessFile(file, "r")) {
                     MessageDigest md = MessageDigest.getInstance("SHA-256");
 

@@ -163,9 +163,9 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                                             continue;
                                     }
 
-                                    String FileHash = FileUtils.getHASHfromFile(this, targetFile, digestAlgorithm);
+                                    String fileHash = FileUtils.getHashFromFile(this, targetFile, digestAlgorithm);
 
-                                    if (!hash.equalsIgnoreCase(FileHash)) {
+                                    if (!hash.equalsIgnoreCase(fileHash)) {
                                         // Hash is incorrect: delete file and abort
                                         Log_OC.w(TAG, "Hash mismatch: expected="+ hash +" actual="+ FileHash);
                                         status = 418;

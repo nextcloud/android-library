@@ -48,11 +48,11 @@ public class OwnCloudClientManagerFactory {
         return proxyPort;
     }
 
-    public static void setHASHcheck(boolean status) {
-        hash_check_enable = status;
+    public static void setHashCheck(boolean status) {
+        hashCheckEnable = status;
     }
 
-    public static boolean getHASHcheck() {
-        return hash_check_enable;
+    public static boolean getHashCheck() {
+        return hashCheckEnable;
     }
 }
