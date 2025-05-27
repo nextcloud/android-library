@@ -49,7 +49,6 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String ENTITY_CHARSET = "UTF-8";
     private static final String PARAM_ATTRIBUTES = "attributes";
 
-
     /**
      * Identifier of the share to update
      */
