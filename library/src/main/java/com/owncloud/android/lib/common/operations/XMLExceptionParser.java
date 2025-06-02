@@ -24,8 +24,8 @@ import java.io.InputStream;
  *
  * @author masensio, tobiaskaminsky
  */
-public class ExceptionParser {
-    private static final String TAG = ExceptionParser.class.getSimpleName();
+public class XMLExceptionParser {
+    private static final String TAG = XMLExceptionParser.class.getSimpleName();
 
     private static final String INVALID_PATH_EXCEPTION_STRING = "OC\\Connector\\Sabre\\Exception\\InvalidPath";
     private static final String INVALID_PATH_EXCEPTION_UPLOAD_STRING = "OCP\\Files\\InvalidPathException";
@@ -46,25 +46,20 @@ public class ExceptionParser {
     /**
      * Parse is as an Invalid Path Exception
      *
-     * @param is InputStream xml
-     * @return if The exception is an Invalid Char Exception
-     * @throws IOException
+     * @param inputStream InputStream xml
      */
-    public ExceptionParser(InputStream is) throws IOException {
-        try {
-            // XMLPullParser
+    public XMLExceptionParser(InputStream inputStream) {
+        try (inputStream) {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
 
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(is, null);
+            parser.setInput(inputStream, null);
             parser.nextTag();
             readError(parser);
         } catch (Exception e) {
             Log_OC.e(TAG, "Error parsing exception: " + e.getMessage());
-        } finally {
-            is.close();
         }
     }
 
