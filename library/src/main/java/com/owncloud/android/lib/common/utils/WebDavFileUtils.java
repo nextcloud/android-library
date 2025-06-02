@@ -1,11 +1,14 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.common.utils;
+
+import android.net.Uri;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
@@ -57,6 +60,31 @@ public class WebDavFileUtils {
             mFolderAndFiles.add(remoteFile);
         }
 
+        return mFolderAndFiles;
+    }
+
+    /**
+     * Read the data retrieved from the server about the contents of the target folder
+     *
+     * @param remoteData Full response got from the server with the data of the target
+     *                   folder and its direct children.
+     * @param client     Client instance to the remote server where the data were
+     *                   retrieved.
+     * @return
+     */
+    public ArrayList<RemoteFile> readAlbumData(MultiStatus remoteData, OwnCloudClient client) {
+        String url = client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId();
+
+        ArrayList<RemoteFile> mFolderAndFiles = new ArrayList<>();
+
+        // loop to update every child
+        // reading from 1 as 0th item will be just the root album path
+        for (int i = 1; i < remoteData.getResponses().length; ++i) {
+            /// new OCFile instance with the data from the server
+            WebdavEntry we = new WebdavEntry(remoteData.getResponses()[i], Uri.parse(url).getEncodedPath());
+            RemoteFile remoteFile = new RemoteFile(we);
+            mFolderAndFiles.add(remoteFile);
+        }
         return mFolderAndFiles;
     }
 }
