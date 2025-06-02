@@ -83,7 +83,6 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
     @Test
     fun updateMultipleParams() {
-
         assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
 
         val createOperationResult =
