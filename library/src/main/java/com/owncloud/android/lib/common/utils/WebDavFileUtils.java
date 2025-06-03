@@ -18,6 +18,8 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * WebDav helper.
@@ -72,19 +74,23 @@ public class WebDavFileUtils {
      *                   retrieved.
      * @return
      */
-    public ArrayList<RemoteFile> readAlbumData(MultiStatus remoteData, OwnCloudClient client) {
-        String url = client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId();
-
-        ArrayList<RemoteFile> mFolderAndFiles = new ArrayList<>();
-
-        // loop to update every child
-        // reading from 1 as 0th item will be just the root album path
-        for (int i = 1; i < remoteData.getResponses().length; ++i) {
-            /// new OCFile instance with the data from the server
-            WebdavEntry we = new WebdavEntry(remoteData.getResponses()[i], Uri.parse(url).getEncodedPath());
-            RemoteFile remoteFile = new RemoteFile(we);
-            mFolderAndFiles.add(remoteFile);
+    public List<RemoteFile> readAlbumData(MultiStatus remoteData, OwnCloudClient client) {
+        String baseUrl = client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId();
+        String encodedPath = Uri.parse(baseUrl).getEncodedPath();
+        if (encodedPath == null) {
+            return Collections.emptyList();
         }
-        return mFolderAndFiles;
+
+        List<RemoteFile> files = new ArrayList<>();
+        final var responses = remoteData.getResponses();
+
+        // reading from 1 as 0th item will be just the root album path
+        for (int i = 1; i < responses.length; i++) {
+            WebdavEntry entry = new WebdavEntry(responses[i], encodedPath);
+            RemoteFile remoteFile = new RemoteFile(entry);
+            files.add(remoteFile);
+        }
+
+        return files;
     }
 }
