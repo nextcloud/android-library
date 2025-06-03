@@ -57,7 +57,7 @@ public class ReadAlbumItemsRemoteOperation extends RemoteOperation<List<RemoteFi
             if (isSuccess) {
                 // get data from remote folder
                 MultiStatus dataInServer = query.getResponseBodyAsMultiStatus();
-                ArrayList<RemoteFile> mFolderAndFiles = new WebDavFileUtils().readAlbumData(dataInServer, client);
+                List<RemoteFile> mFolderAndFiles = new WebDavFileUtils().readAlbumData(dataInServer, client);
 
                 // Result of the operation
                 result = new RemoteOperationResult<>(true, query);
