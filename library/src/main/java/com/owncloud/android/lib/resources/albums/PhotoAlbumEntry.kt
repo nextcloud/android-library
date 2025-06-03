@@ -66,41 +66,26 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
 
     val albumName: String
         get() {
-            var href = href
-            if (href.isEmpty()) {
-                return ""
-            }
-
-            // Remove trailing slash if present
-            if (href.endsWith("/")) {
-                href = href.substring(0, href.length - 1)
-            }
-
-            // Split and return last part
-            val parts = href.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            return if (parts.isNotEmpty()) parts[parts.size - 1] else ""
+            return href
+                .removeSuffix("/")
+                .substringAfterLast("/")
+                .takeIf { it.isNotEmpty() } ?: ""
         }
 
     val createdDate: String
         get() {
-            val jsonRange = dateRange
             val currentDate = Date(System.currentTimeMillis())
-            if (jsonRange.isNullOrEmpty()) {
-                return dateFormat.format(currentDate)
-            }
 
-            try {
-                val obj = JSONObject(jsonRange)
+            return try {
+                val obj = JSONObject(dateRange ?: return dateFormat.format(currentDate))
                 val startTimestamp = obj.optLong("start", 0)
-
-                if (startTimestamp > 0) {
-                    val date = Date(startTimestamp * 1000L) // Convert to milliseconds
-                    return dateFormat.format(date)
-                }
+                if (startTimestamp > 0)
+                    dateFormat.format(Date(startTimestamp * 1000L))
+                else
+                    dateFormat.format(currentDate)
             } catch (e: JSONException) {
                 e.printStackTrace()
-                return dateFormat.format(currentDate)
+                dateFormat.format(currentDate)
             }
-            return dateFormat.format(currentDate)
         }
 }
