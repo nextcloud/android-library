@@ -4,156 +4,149 @@
  * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+package com.owncloud.android.lib.resources.albums
 
-package com.owncloud.android.lib.resources.albums;
-
-import android.util.Log;
-
-import com.nextcloud.common.SessionTimeOut;
-import com.nextcloud.common.SessionTimeOutKt;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.Status;
-import org.apache.jackrabbit.webdav.client.methods.CopyMethod;
-
-import java.io.IOException;
-
+import android.util.Log
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
+import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.network.WebdavUtils
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode
+import com.owncloud.android.lib.resources.albums.CopyFileToAlbumRemoteOperation
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.jackrabbit.webdav.DavException
+import org.apache.jackrabbit.webdav.Status
+import org.apache.jackrabbit.webdav.client.methods.CopyMethod
+import java.io.IOException
 
 /**
  * Remote operation moving a remote file or folder in the ownCloud server to a different folder
  * in the same account.
- * <p>
+ *
+ *
  * Allows renaming the moving file/folder at the same time.
  */
-public class CopyFileToAlbumRemoteOperation extends RemoteOperation {
-    private static final String TAG = CopyFileToAlbumRemoteOperation.class.getSimpleName();
-
-    private final String mSrcRemotePath;
-    private final String mTargetRemotePath;
-
-    private final SessionTimeOut sessionTimeOut;
-
-    public CopyFileToAlbumRemoteOperation(String srcRemotePath, String targetRemotePath) {
-        this(srcRemotePath, targetRemotePath, SessionTimeOutKt.getDefaultSessionTimeOut());
-    }
-
-    public CopyFileToAlbumRemoteOperation(String srcRemotePath, String targetRemotePath, SessionTimeOut sessionTimeOut) {
-        mSrcRemotePath = srcRemotePath;
-        mTargetRemotePath = targetRemotePath;
-        this.sessionTimeOut = sessionTimeOut;
-    }
-
+class CopyFileToAlbumRemoteOperation @JvmOverloads constructor(
+    private val mSrcRemotePath: String,
+    private val mTargetRemotePath: String,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+) :
+    RemoteOperation<Any>() {
     /**
      * Performs the operation.
      *
      * @param client Client object to communicate with the remote ownCloud server.
      */
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
+    @Deprecated("Deprecated in Java")
+    override fun run(client: OwnCloudClient): RemoteOperationResult<Any> {
+        /** check parameters */
 
-        /// check parameters
-        if (mTargetRemotePath.equals(mSrcRemotePath)) {
+        if (mTargetRemotePath == mSrcRemotePath) {
             // nothing to do!
-            return new RemoteOperationResult<>(ResultCode.OK);
+            return RemoteOperationResult(ResultCode.OK)
         }
 
         if (mTargetRemotePath.startsWith(mSrcRemotePath)) {
-            return new RemoteOperationResult<>(ResultCode.INVALID_COPY_INTO_DESCENDANT);
+            return RemoteOperationResult(ResultCode.INVALID_COPY_INTO_DESCENDANT)
         }
 
-        /// perform remote operation
-        CopyMethod copyMethod = null;
-        RemoteOperationResult result;
+        /** perform remote operation */
+        var copyMethod: CopyMethod? = null
+        var result: RemoteOperationResult<Any>
         try {
-            copyMethod = new CopyMethod(
+            copyMethod = CopyMethod(
                 client.getFilesDavUri(this.mSrcRemotePath),
-                client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId() + "/albums" + WebdavUtils.encodePath(mTargetRemotePath),
+                "${client.baseUri}/remote.php/dav/photos/${client.userId}/albums${
+                    WebdavUtils.encodePath(
+                        mTargetRemotePath
+                    )
+                }",
                 false
-            );
-            int status = client.executeMethod(copyMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
+            )
+            val status = client.executeMethod(
+                copyMethod,
+                sessionTimeOut.readTimeOut,
+                sessionTimeOut.connectionTimeOut
+            )
 
-            /// process response
+            /** process response */
             if (status == HttpStatus.SC_MULTI_STATUS) {
-                result = processPartialError(copyMethod);
-
+                result = processPartialError(copyMethod)
             } else if (status == HttpStatus.SC_PRECONDITION_FAILED) {
-
-                result = new RemoteOperationResult<>(ResultCode.INVALID_OVERWRITE);
-                client.exhaustResponse(copyMethod.getResponseBodyAsStream());
-
+                result = RemoteOperationResult<Any>(ResultCode.INVALID_OVERWRITE)
+                client.exhaustResponse(copyMethod.responseBodyAsStream)
             } else {
-                result = new RemoteOperationResult<>(isSuccess(status), copyMethod);
-                client.exhaustResponse(copyMethod.getResponseBodyAsStream());
+                result = RemoteOperationResult<Any>(isSuccess(status), copyMethod)
+                client.exhaustResponse(copyMethod.responseBodyAsStream)
             }
 
-            Log.i(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage());
-
-        } catch (Exception e) {
-            result = new RemoteOperationResult<>(e);
-            Log.e(TAG, "Copy " + mSrcRemotePath + " to " + mTargetRemotePath + ": " + result.getLogMessage(), e);
-
+            Log.i(
+                TAG,
+                "Copy $mSrcRemotePath to $mTargetRemotePath : ${result.logMessage}"
+            )
+        } catch (e: Exception) {
+            result = RemoteOperationResult<Any>(e)
+            Log.e(
+                TAG,
+                "Copy $mSrcRemotePath to $mTargetRemotePath : ${result.logMessage}", e
+            )
         } finally {
-            if (copyMethod != null) {
-                copyMethod.releaseConnection();
-            }
+            copyMethod?.releaseConnection()
         }
 
-        return result;
+        return result
     }
-
 
     /**
      * Analyzes a multistatus response from the OC server to generate an appropriate result.
-     * <p>
+     *
+     *
      * In WebDAV, a COPY request on collections (folders) can be PARTIALLY successful: some
      * children are copied, some other aren't.
-     * <p>
+     *
+     *
      * According to the WebDAV specification, a multistatus response SHOULD NOT include partial
      * successes (201, 204) nor for descendants of already failed children (424) in the response
      * entity. But SHOULD NOT != MUST NOT, so take carefully.
      *
      * @param copyMethod Copy operation just finished with a multistatus response
-     * @return A result for the {@link CopyFileToAlbumRemoteOperation} caller
+     * @return A result for the [CopyFileToAlbumRemoteOperation] caller
      * @throws java.io.IOException                       If the response body could not be parsed
      * @throws org.apache.jackrabbit.webdav.DavException If the status code is other than MultiStatus or if obtaining
-     *                                                   the response XML document fails
+     * the response XML document fails
      */
-    private RemoteOperationResult processPartialError(CopyMethod copyMethod)
-        throws IOException, DavException {
+    @Throws(IOException::class, DavException::class)
+    private fun processPartialError(copyMethod: CopyMethod): RemoteOperationResult<Any> {
         // Adding a list of failed descendants to the result could be interesting; or maybe not.
         // For the moment, let's take the easy way.
+        /** check that some error really occurred */
 
-        /// check that some error really occurred
-        MultiStatusResponse[] responses = copyMethod.getResponseBodyAsMultiStatus().getResponses();
-        Status[] status;
-        boolean failFound = false;
-        for (int i = 0; i < responses.length && !failFound; i++) {
-            status = responses[i].getStatus();
-            failFound = (
-                status != null &&
-                    status.length > 0 &&
-                    status[0].getStatusCode() > 299
-            );
+        val responses = copyMethod.responseBodyAsMultiStatus.responses
+        var status: Array<Status>?
+        var failFound = false
+        var i = 0
+        while (i < responses.size && !failFound) {
+            status = responses[i].status
+            failFound = (!status.isNullOrEmpty() && status[0].statusCode > 299
+                )
+            i++
         }
-
-        RemoteOperationResult result;
-        if (failFound) {
-            result = new RemoteOperationResult<>(ResultCode.PARTIAL_COPY_DONE);
+        val result: RemoteOperationResult<Any> = if (failFound) {
+            RemoteOperationResult<Any>(ResultCode.PARTIAL_COPY_DONE)
         } else {
-            result = new RemoteOperationResult<>(true, copyMethod);
+            RemoteOperationResult<Any>(true, copyMethod)
         }
 
-        return result;
+        return result
     }
 
-    protected boolean isSuccess(int status) {
-        return status == HttpStatus.SC_CREATED || status == HttpStatus.SC_NO_CONTENT;
+    private fun isSuccess(status: Int): Boolean {
+        return status == HttpStatus.SC_CREATED || status == HttpStatus.SC_NO_CONTENT
+    }
+
+    companion object {
+        private val TAG: String = CopyFileToAlbumRemoteOperation::class.java.simpleName
     }
 }
