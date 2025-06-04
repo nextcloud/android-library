@@ -4,69 +4,72 @@
  * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+package com.owncloud.android.lib.resources.albums
 
-package com.owncloud.android.lib.resources.albums;
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
+import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.network.WebdavUtils
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import com.owncloud.android.lib.resources.albums.RenameAlbumRemoteOperation
+import org.apache.jackrabbit.webdav.client.methods.MoveMethod
 
-import com.nextcloud.common.SessionTimeOut;
-import com.nextcloud.common.SessionTimeOutKt;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-
-import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
-
-public class RenameAlbumRemoteOperation extends RemoteOperation {
-    private static final String TAG = RenameAlbumRemoteOperation.class.getSimpleName();
-    private final String mOldRemotePath;
-    private final String mNewAlbumName;
-    private final SessionTimeOut sessionTimeOut;
-
-    public RenameAlbumRemoteOperation(String mOldRemotePath, String mNewAlbumName) {
-        this(mOldRemotePath, mNewAlbumName, SessionTimeOutKt.getDefaultSessionTimeOut());
-    }
-
-    public RenameAlbumRemoteOperation(String mOldRemotePath, String mNewAlbumName, SessionTimeOut sessionTimeOut) {
-        this.mOldRemotePath = mOldRemotePath;
-        this.mNewAlbumName = mNewAlbumName;
-        this.sessionTimeOut = sessionTimeOut;
-    }
-
-    public String getNewAlbumName() {
-        return mNewAlbumName;
-    }
-
+class RenameAlbumRemoteOperation @JvmOverloads constructor(
+    private val mOldRemotePath: String,
+    val newAlbumName: String,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+) :
+    RemoteOperation<Any>() {
     /**
      * Performs the operation.
      *
      * @param client Client object to communicate with the remote ownCloud server.
      */
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result = null;
-        MoveMethod move = null;
-        String url = client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId() + "/albums";
+    @Deprecated("Deprecated in Java")
+    override fun run(client: OwnCloudClient): RemoteOperationResult<Any>? {
+        var result: RemoteOperationResult<Any>? = null
+        var move: MoveMethod? = null
+        val url = "${client.baseUri}/remote.php/dav/photos/${client.userId}/albums"
         try {
-            if (!this.mNewAlbumName.equals(this.mOldRemotePath)) {
-                move = new MoveMethod(url + WebdavUtils.encodePath(mOldRemotePath), url + WebdavUtils.encodePath(mNewAlbumName), true);
-                client.executeMethod(move, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
-                result = new RemoteOperationResult(move.succeeded(), move);
-                Log_OC.i(TAG, "Rename " + this.mOldRemotePath + " to " + this.mNewAlbumName + ": " + result.getLogMessage());
-                client.exhaustResponse(move.getResponseBodyAsStream());
-                return result;
+            if (this.newAlbumName != this.mOldRemotePath) {
+                move = MoveMethod(
+                    "$url${WebdavUtils.encodePath(mOldRemotePath)}", "$url${
+                        WebdavUtils.encodePath(
+                            newAlbumName
+                        )
+                    }", true
+                )
+                client.executeMethod(
+                    move,
+                    sessionTimeOut.readTimeOut,
+                    sessionTimeOut.connectionTimeOut
+                )
+                result = RemoteOperationResult<Any>(move.succeeded(), move)
+                Log_OC.i(
+                    TAG,
+                    "Rename ${this.mOldRemotePath} to ${this.newAlbumName} : ${result.logMessage}"
+                )
+                client.exhaustResponse(move.responseBodyAsStream)
+                return result
             }
-        } catch (Exception e) {
-            result = new RemoteOperationResult(e);
-            Log_OC.e(TAG, "Rename " + this.mOldRemotePath + " to " + this.mNewAlbumName + ": " + result.getLogMessage(), e);
-            return result;
+        } catch (e: Exception) {
+            result = RemoteOperationResult<Any>(e)
+            Log_OC.e(
+                TAG,
+                "Rename ${this.mOldRemotePath} to ${this.newAlbumName} : ${result.logMessage}",
+                e
+            )
+            return result
         } finally {
-            if (move != null) {
-                move.releaseConnection();
-            }
+            move?.releaseConnection()
         }
 
-        return result;
+        return result
     }
 
+    companion object {
+        private val TAG: String = RenameAlbumRemoteOperation::class.java.simpleName
+    }
 }

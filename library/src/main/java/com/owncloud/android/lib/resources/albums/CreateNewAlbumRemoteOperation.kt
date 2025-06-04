@@ -4,69 +4,67 @@
  * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+package com.owncloud.android.lib.resources.albums
 
-package com.owncloud.android.lib.resources.albums;
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
+import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.network.WebdavUtils
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import com.owncloud.android.lib.resources.albums.CreateNewAlbumRemoteOperation
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod
 
-import com.nextcloud.common.SessionTimeOut;
-import com.nextcloud.common.SessionTimeOutKt;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-
-public class CreateNewAlbumRemoteOperation extends RemoteOperation<Void> {
-    private static final String TAG = CreateNewAlbumRemoteOperation.class.getSimpleName();
-    private final String newAlbumName;
-    private final SessionTimeOut sessionTimeOut;
-
-    public CreateNewAlbumRemoteOperation(String newAlbumName) {
-        this(newAlbumName, SessionTimeOutKt.getDefaultSessionTimeOut());
-    }
-
-    public CreateNewAlbumRemoteOperation(String newAlbumName, SessionTimeOut sessionTimeOut) {
-        this.newAlbumName = newAlbumName;
-        this.sessionTimeOut = sessionTimeOut;
-    }
-
-    public String getNewAlbumName() {
-        return newAlbumName;
-    }
-
+class CreateNewAlbumRemoteOperation @JvmOverloads constructor(
+    val newAlbumName: String,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+) :
+    RemoteOperation<Void>() {
     /**
      * Performs the operation.
      *
      * @param client Client object to communicate with the remote ownCloud server.
      */
-    @Override
-    protected RemoteOperationResult<Void> run(OwnCloudClient client) {
-        MkColMethod mkCol = null;
-        RemoteOperationResult<Void> result;
+    @Deprecated("Deprecated in Java")
+    override fun run(client: OwnCloudClient): RemoteOperationResult<Void> {
+        var mkCol: MkColMethod? = null
+        var result: RemoteOperationResult<Void>
         try {
-            mkCol = new MkColMethod(client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId() + "/albums" + WebdavUtils.encodePath(newAlbumName));
-            client.executeMethod(mkCol, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
-            if (405 == mkCol.getStatusCode()) {
-                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS);
+            mkCol = MkColMethod(
+                "${client.baseUri}/remote.php/dav/photos/${client.userId}/albums${
+                    WebdavUtils.encodePath(
+                        newAlbumName
+                    )
+                }"
+            )
+            client.executeMethod(
+                mkCol,
+                sessionTimeOut.readTimeOut,
+                sessionTimeOut.connectionTimeOut
+            )
+            if (HttpStatus.SC_METHOD_NOT_ALLOWED == mkCol.statusCode) {
+                result =
+                    RemoteOperationResult(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS)
             } else {
-                result = new RemoteOperationResult<>(mkCol.succeeded(), mkCol);
-                result.setResultData(null);
+                result = RemoteOperationResult(mkCol.succeeded(), mkCol)
+                result.setResultData(null)
             }
 
-            Log_OC.d(TAG, "Create album " + newAlbumName + ": " + result.getLogMessage());
-            client.exhaustResponse(mkCol.getResponseBodyAsStream());
-        } catch (Exception e) {
-            result = new RemoteOperationResult<>(e);
-            Log_OC.e(TAG, "Create album " + newAlbumName + ": " + result.getLogMessage(), e);
+            Log_OC.d(TAG, "Create album $newAlbumName : ${result.logMessage}")
+            client.exhaustResponse(mkCol.responseBodyAsStream)
+        } catch (e: Exception) {
+            result = RemoteOperationResult(e)
+            Log_OC.e(TAG, "Create album $newAlbumName : ${result.logMessage}", e)
         } finally {
-            if (mkCol != null) {
-                mkCol.releaseConnection();
-            }
-
+            mkCol?.releaseConnection()
         }
 
-        return result;
+        return result
     }
 
+    companion object {
+        private val TAG: String = CreateNewAlbumRemoteOperation::class.java.simpleName
+    }
 }
