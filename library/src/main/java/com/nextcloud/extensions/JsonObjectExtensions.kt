@@ -17,7 +17,11 @@ fun JsonObject?.getBoolean(key: String): Boolean? {
     }
 
     if (has(key) && get(key).isJsonPrimitive) {
-        return get(key).asBoolean
+        return try {
+            get(key).asBoolean
+        } catch (_: UnsupportedOperationException) {
+            null
+        }
     }
 
     return null
