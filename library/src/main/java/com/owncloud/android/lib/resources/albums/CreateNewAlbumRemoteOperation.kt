@@ -49,7 +49,7 @@ class CreateNewAlbumRemoteOperation @JvmOverloads constructor(
                     RemoteOperationResult(RemoteOperationResult.ResultCode.FOLDER_ALREADY_EXISTS)
             } else {
                 result = RemoteOperationResult(mkCol.succeeded(), mkCol)
-                result.setResultData(null)
+                result.resultData = null
             }
 
             Log_OC.d(TAG, "Create album $newAlbumName : ${result.logMessage}")
