@@ -27,7 +27,7 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
     private val dateRange: String?
 
     companion object {
-        val dateFormat = SimpleDateFormat("MMM yyyy", Locale.US)
+        private val dateFormat = SimpleDateFormat("MMM yyyy", Locale.US)
     }
 
     init {
@@ -51,7 +51,7 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
     private fun parseInt(value: String?): Int {
         return try {
             value?.toInt() ?: 0
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             0
         }
     }
@@ -59,7 +59,7 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
     private fun parseLong(value: String?): Long {
         return try {
             value?.toLong() ?: 0L
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             0L
         }
     }
