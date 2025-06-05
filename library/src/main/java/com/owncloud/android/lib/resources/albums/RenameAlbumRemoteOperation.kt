@@ -13,7 +13,6 @@ import com.owncloud.android.lib.common.network.WebdavUtils
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.resources.albums.RenameAlbumRemoteOperation
 import org.apache.jackrabbit.webdav.client.methods.MoveMethod
 
 class RenameAlbumRemoteOperation @JvmOverloads constructor(
@@ -52,7 +51,6 @@ class RenameAlbumRemoteOperation @JvmOverloads constructor(
                     "Rename ${this.mOldRemotePath} to ${this.newAlbumName} : ${result.logMessage}"
                 )
                 client.exhaustResponse(move.responseBodyAsStream)
-                return result
             }
         } catch (e: Exception) {
             result = RemoteOperationResult<Any>(e)
@@ -61,7 +59,6 @@ class RenameAlbumRemoteOperation @JvmOverloads constructor(
                 "Rename ${this.mOldRemotePath} to ${this.newAlbumName} : ${result.logMessage}",
                 e
             )
-            return result
         } finally {
             move?.releaseConnection()
         }

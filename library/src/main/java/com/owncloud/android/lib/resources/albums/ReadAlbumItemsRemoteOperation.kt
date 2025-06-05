@@ -14,7 +14,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.common.utils.WebDavFileUtils
-import com.owncloud.android.lib.resources.albums.ReadAlbumItemsRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.jackrabbit.webdav.DavConstants

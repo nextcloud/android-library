@@ -45,23 +45,16 @@ class ReadAlbumsRemoteOperation @JvmOverloads constructor(
             )
             val isSuccess = status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK
             if (isSuccess) {
-                val multiStatus = propfind.responseBodyAsMultiStatus
-                val albumsList: MutableList<PhotoAlbumEntry> = ArrayList()
-                for (response in multiStatus.responses) {
-                    val st = response.status[0].statusCode
-                    if (st == HttpStatus.SC_OK) {
-                        val entry = PhotoAlbumEntry(response)
-                        albumsList.add(entry)
-                    }
-                }
+                val albumsList = propfind.responseBodyAsMultiStatus.responses
+                    .filter { it.status[0].statusCode == HttpStatus.SC_OK }
+                    .map { res -> PhotoAlbumEntry(res) }
                 result = RemoteOperationResult<List<PhotoAlbumEntry>>(true, propfind)
-                result.setResultData(albumsList)
+                result.resultData = albumsList
             } else {
                 result = RemoteOperationResult<List<PhotoAlbumEntry>>(false, propfind)
                 client.exhaustResponse(propfind.responseBodyAsStream)
             }
-        } catch (var13: Exception) {
-            val e = var13
+        } catch (e: Exception) {
             result = RemoteOperationResult<List<PhotoAlbumEntry>>(e)
             Log_OC.e(TAG, "Read album failed: ${result.logMessage}", result.exception)
         } finally {
