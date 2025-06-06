@@ -39,60 +39,62 @@ class CopyFileToAlbumRemoteOperation @JvmOverloads constructor(
      * @param client Client object to communicate with the remote ownCloud server.
      */
     @Deprecated("Deprecated in Java")
+    @Suppress("TooGenericExceptionCaught")
     override fun run(client: OwnCloudClient): RemoteOperationResult<Any> {
         /** check parameters */
 
+        var result: RemoteOperationResult<Any>
         if (mTargetRemotePath == mSrcRemotePath) {
             // nothing to do!
-            return RemoteOperationResult(ResultCode.OK)
-        }
+            result = RemoteOperationResult(ResultCode.OK)
+        } else if (mTargetRemotePath.startsWith(mSrcRemotePath)) {
+            result = RemoteOperationResult(ResultCode.INVALID_COPY_INTO_DESCENDANT)
+        } else {
+            /** perform remote operation */
+            var copyMethod: CopyMethod? = null
+            try {
+                copyMethod = CopyMethod(
+                    client.getFilesDavUri(this.mSrcRemotePath),
+                    "${client.baseUri}/remote.php/dav/photos/${client.userId}/albums${
+                        WebdavUtils.encodePath(
+                            mTargetRemotePath
+                        )
+                    }",
+                    false
+                )
+                val status = client.executeMethod(
+                    copyMethod,
+                    sessionTimeOut.readTimeOut,
+                    sessionTimeOut.connectionTimeOut
+                )
 
-        if (mTargetRemotePath.startsWith(mSrcRemotePath)) {
-            return RemoteOperationResult(ResultCode.INVALID_COPY_INTO_DESCENDANT)
-        }
+                /** process response */
+                result = when (status) {
+                    HttpStatus.SC_MULTI_STATUS -> processPartialError(copyMethod)
+                    HttpStatus.SC_PRECONDITION_FAILED -> {
+                        client.exhaustResponse(copyMethod.responseBodyAsStream)
+                        RemoteOperationResult<Any>(ResultCode.INVALID_OVERWRITE)
+                    }
 
-        /** perform remote operation */
-        var copyMethod: CopyMethod? = null
-        var result: RemoteOperationResult<Any>
-        try {
-            copyMethod = CopyMethod(
-                client.getFilesDavUri(this.mSrcRemotePath),
-                "${client.baseUri}/remote.php/dav/photos/${client.userId}/albums${
-                    WebdavUtils.encodePath(
-                        mTargetRemotePath
-                    )
-                }",
-                false
-            )
-            val status = client.executeMethod(
-                copyMethod,
-                sessionTimeOut.readTimeOut,
-                sessionTimeOut.connectionTimeOut
-            )
+                    else -> {
+                        client.exhaustResponse(copyMethod.responseBodyAsStream)
+                        RemoteOperationResult<Any>(isSuccess(status), copyMethod)
+                    }
+                }
 
-            /** process response */
-            if (status == HttpStatus.SC_MULTI_STATUS) {
-                result = processPartialError(copyMethod)
-            } else if (status == HttpStatus.SC_PRECONDITION_FAILED) {
-                result = RemoteOperationResult<Any>(ResultCode.INVALID_OVERWRITE)
-                client.exhaustResponse(copyMethod.responseBodyAsStream)
-            } else {
-                result = RemoteOperationResult<Any>(isSuccess(status), copyMethod)
-                client.exhaustResponse(copyMethod.responseBodyAsStream)
+                Log.i(
+                    TAG,
+                    "Copy $mSrcRemotePath to $mTargetRemotePath : ${result.logMessage}"
+                )
+            } catch (e: Exception) {
+                result = RemoteOperationResult<Any>(e)
+                Log.e(
+                    TAG,
+                    "Copy $mSrcRemotePath to $mTargetRemotePath : ${result.logMessage}", e
+                )
+            } finally {
+                copyMethod?.releaseConnection()
             }
-
-            Log.i(
-                TAG,
-                "Copy $mSrcRemotePath to $mTargetRemotePath : ${result.logMessage}"
-            )
-        } catch (e: Exception) {
-            result = RemoteOperationResult<Any>(e)
-            Log.e(
-                TAG,
-                "Copy $mSrcRemotePath to $mTargetRemotePath : ${result.logMessage}", e
-            )
-        } finally {
-            copyMethod?.releaseConnection()
         }
 
         return result
@@ -128,7 +130,7 @@ class CopyFileToAlbumRemoteOperation @JvmOverloads constructor(
         var i = 0
         while (i < responses.size && !failFound) {
             status = responses[i].status
-            failFound = (!status.isNullOrEmpty() && status[0].statusCode > 299
+            failFound = (!status.isNullOrEmpty() && status[0].statusCode > FAILED_STATUS_CODE
                 )
             i++
         }
@@ -147,5 +149,6 @@ class CopyFileToAlbumRemoteOperation @JvmOverloads constructor(
 
     companion object {
         private val TAG: String = CopyFileToAlbumRemoteOperation::class.java.simpleName
+        private const val FAILED_STATUS_CODE = 299
     }
 }
