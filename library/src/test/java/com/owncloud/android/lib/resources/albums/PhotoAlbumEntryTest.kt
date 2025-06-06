@@ -12,7 +12,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class PhotoAlbumEntryTest {
-
     @Test
     fun testAlbumName_withTrailingSlash() {
         val entry = createTestEntry("/remote.php/dav/photos/user_id/albums/vacation2024/")

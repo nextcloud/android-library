@@ -19,7 +19,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class PhotoAlbumEntry(response: MultiStatusResponse) {
+class PhotoAlbumEntry(
+    response: MultiStatusResponse
+) {
     val href: String
     val lastPhoto: Long
     val nbItems: Int
@@ -28,6 +30,7 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
 
     companion object {
         private val dateFormat = SimpleDateFormat("MMM yyyy", Locale.US)
+        private const val MILLIS = 1000L
     }
 
     init {
@@ -42,27 +45,28 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
         this.dateRange = parseString(properties, WebdavEntry.PROPERTY_DATE_RANGE)
     }
 
-    private fun parseString(props: DavPropertySet, name: String): String? {
+    private fun parseString(
+        props: DavPropertySet,
+        name: String
+    ): String? {
         val propName = DavPropertyName.create(name, Namespace.getNamespace("nc", WebdavEntry.NAMESPACE_NC))
         val prop = props[propName]
         return if (prop != null && prop.value != null) prop.value.toString() else null
     }
 
-    private fun parseInt(value: String?): Int {
-        return try {
+    private fun parseInt(value: String?): Int =
+        try {
             value?.toInt() ?: 0
         } catch (_: NumberFormatException) {
             0
         }
-    }
 
-    private fun parseLong(value: String?): Long {
-        return try {
+    private fun parseLong(value: String?): Long =
+        try {
             value?.toLong() ?: 0L
         } catch (_: NumberFormatException) {
             0L
         }
-    }
 
     val albumName: String
         get() {
@@ -79,10 +83,11 @@ class PhotoAlbumEntry(response: MultiStatusResponse) {
             return try {
                 val obj = JSONObject(dateRange ?: return dateFormat.format(currentDate))
                 val startTimestamp = obj.optLong("start", 0)
-                if (startTimestamp > 0)
-                    dateFormat.format(Date(startTimestamp * 1000L))
-                else
+                if (startTimestamp > 0) {
+                    dateFormat.format(Date(startTimestamp * MILLIS))
+                } else {
                     dateFormat.format(currentDate)
+                }
             } catch (e: JSONException) {
                 e.printStackTrace()
                 dateFormat.format(currentDate)
