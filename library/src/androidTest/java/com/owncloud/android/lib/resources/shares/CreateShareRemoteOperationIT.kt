@@ -32,16 +32,14 @@ class CreateShareRemoteOperationIT : AbstractIT() {
 
     @Test
     fun createShareWithNoteAndAttributes() {
-        val attributes =
-            ShareAttributesJsonHandler.toJson(
-                listOf(ShareAttributes.createDownloadAttributes(true))
-            )
+        val attributes = listOf(ShareAttributes.createDownloadAttributes(true))
         val note = "Note with attributes"
         val path = "/shareWithAttributes/"
 
         createFolder(path)
-        val share = createShare(path, "admin", note, attributes)
+        val share = createShare(path, "admin", note, ShareAttributesJsonHandler.toJson(attributes))
         assertEquals(note, share.note)
+        assertEquals(attributes, ShareAttributesJsonHandler.toList(share.attributes))
     }
 
     @Test
