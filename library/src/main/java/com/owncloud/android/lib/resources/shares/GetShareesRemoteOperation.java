@@ -73,6 +73,7 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
     private static final String NODE_USERS = "users";
     private static final String NODE_GROUPS = "groups";
     private static final String NODE_REMOTES = "remotes";
+    private static final String NODE_REMOTE_GROUPS = "remote_groups";
     private static final String NODE_EMAILS = "emails";
     private static final String NODE_ROOMS = "rooms";
     private static final String NODE_CIRCLES = "circles";
@@ -138,6 +139,7 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
                 JSONArray respExactUsers = respExact.getJSONArray(NODE_USERS);
                 JSONArray respExactGroups = respExact.getJSONArray(NODE_GROUPS);
                 JSONArray respExactRemotes = respExact.getJSONArray(NODE_REMOTES);
+                JSONArray respExactRemoteGroups = respExact.getJSONArray(NODE_REMOTE_GROUPS);
                 JSONArray respExactCircles;
                 if (respExact.has(NODE_CIRCLES)) {
                     respExactCircles = respExact.getJSONArray(NODE_CIRCLES);
@@ -156,6 +158,7 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
                 JSONArray respPartialUsers = respData.getJSONArray(NODE_USERS);
                 JSONArray respPartialGroups = respData.getJSONArray(NODE_GROUPS);
                 JSONArray respPartialRemotes = respData.getJSONArray(NODE_REMOTES);
+                JSONArray respPartialRemoteGroups = respData.getJSONArray(NODE_REMOTE_GROUPS);
                 JSONArray respPartialCircles;
 
                 if (respData.has(NODE_CIRCLES)) {
@@ -165,23 +168,25 @@ public class GetShareesRemoteOperation extends RemoteOperation<ArrayList<JSONObj
                 }
 
                 JSONArray respPartialRooms;
-                
+
                 if (respData.has(NODE_ROOMS)) {
                     respPartialRooms = respData.getJSONArray(NODE_ROOMS);
                 } else {
                     respPartialRooms = new JSONArray();
                 }
-                
+
                 JSONArray[] jsonResults = {
                         respExactUsers,
                         respExactGroups,
                         respExactRemotes,
+                        respExactRemoteGroups,
                         respExactRooms,
                         respExactEmails,
                         respExactCircles,
                         respPartialUsers,
                         respPartialGroups,
                         respPartialRemotes,
+                        respPartialRemoteGroups,
                         respPartialRooms,
                         respPartialCircles
                 };
