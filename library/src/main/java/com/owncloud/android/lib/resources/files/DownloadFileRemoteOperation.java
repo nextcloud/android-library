@@ -144,7 +144,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 }
                 
                 if (transferred == totalToTransfer || transferEncoding) {
-                    if (OwnCloudClientManagerFactory.getHashFromFile()){
+                    if (OwnCloudClientManagerFactory.getHashDownloadCheck()){
                         Header hashHeader = getMethod.getResponseHeader("X-Content-Hash");
                         String expectedHash = hashHeader != null ? hashHeader.getValue() : null;
                         if (expectedHash != null) {
