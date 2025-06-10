@@ -57,7 +57,8 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true,
-                ""
+                "",
+                null
             ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
