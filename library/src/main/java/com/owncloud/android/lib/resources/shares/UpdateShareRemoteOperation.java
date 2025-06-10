@@ -2,6 +2,7 @@
  * Nextcloud Android Library
  *
  * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2025 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2018-2021 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-FileCopyrightText: 2015 ownCloud Inc.
  * SPDX-FileCopyrightText: 2015 David A. Velasco <dvelasco@solidgear.es>
@@ -176,6 +177,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
         if (label != null) {
             params.addProperty(PARAM_LABEL, label);
+        }
+
+        if (attributes != null) {
+            params.addProperty(PARAM_ATTRIBUTES, attributes);
         }
 
         return params.toString();
