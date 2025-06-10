@@ -18,8 +18,8 @@ buildscript {
         junit_version = '4.13.2'
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.9.2'
-        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.1.11'
+        classpath 'com.android.tools.build:gradle:8.10.1'
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8"
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
@@ -63,7 +63,7 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'com.github.bitfireAT:dav4jvm:2.2.1'
     // in transition phase, we use old and new libs
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.12.1'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.13.1'
     implementation 'androidx.annotation:annotation:1.9.1'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
@@ -71,10 +71,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.guava:guava:33.4.0-jre'
 
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.80'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.81'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
-    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.6.9'
+    spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.6.10'
 
     // dependencies for tests
     testImplementation "junit:junit:$junit_version"
@@ -92,7 +92,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'
-    androidTestImplementation 'commons-io:commons-io:2.18.0'
+    androidTestImplementation 'commons-io:commons-io:2.19.0'
 }
 
 spotbugs {
