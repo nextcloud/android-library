@@ -16,6 +16,7 @@ public class OwnCloudClientManagerFactory {
     private static String proxyHost = "";
     private static int proxyPort = -1;
     private static boolean hashCheckEnable = false;
+    private static boolean hashCheckDownloadEnable = false;
 
     public static OwnCloudClientManager getDefaultSingleton() {
         if (sDefaultSingleton == null) {
@@ -54,5 +55,12 @@ public class OwnCloudClientManagerFactory {
 
     public static boolean getHashCheck() {
         return hashCheckEnable;
+    }
+    public static void setHashDownloadCheck(boolean status) {
+        hashCheckDownloadEnable = status;
+    }
+
+    public static boolean getHashDownloadCheck() {
+        return hashCheckDownloadEnable;
     }
 }

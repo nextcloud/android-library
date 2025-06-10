@@ -6,6 +6,8 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import android.os.Build;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
@@ -30,6 +32,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import java.util.Locale;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Remote operation performing the download of a remote file in the ownCloud server.
@@ -85,6 +89,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private int downloadFile(OwnCloudClient client, File targetFile) throws IOException, OperationCancelledException, CreateLocalFileException {
         int status;
         boolean savedFile = false;
@@ -139,7 +144,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 }
                 
                 if (transferred == totalToTransfer || transferEncoding) {
-                    if (OwnCloudClientManagerFactory.getHASHcheck()){
+                    if (OwnCloudClientManagerFactory.getHashFromFile()){
                         Header hashHeader = getMethod.getResponseHeader("X-Content-Hash");
                         String expectedHash = hashHeader != null ? hashHeader.getValue() : null;
                         if (expectedHash != null) {
@@ -155,8 +160,13 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
 
                                     switch (Algorithm) {
                                         case "sha256":
-
                                             digestAlgorithm = "SHA-256";
+                                            break;
+                                        case "sha1":
+                                            digestAlgorithm = "SHA-1";
+                                            break;
+                                        case "md5":
+                                            digestAlgorithm = "MD5";
                                             break;
                                         default:
                                             // Skip unknown algorithm
@@ -167,7 +177,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
 
                                     if (!hash.equalsIgnoreCase(fileHash)) {
                                         // Hash is incorrect: delete file and abort
-                                        Log_OC.w(TAG, "Hash mismatch: expected="+ hash +" actual="+ FileHash);
+                                        Log_OC.w(TAG, "Hash mismatch: expected="+ hash +" actual="+ fileHash);
                                         status = 418;
                                         savedFile = false;
                                     }else{
