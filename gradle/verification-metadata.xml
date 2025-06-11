@@ -166,6 +166,7 @@
             <trusting group="org.eclipse.platform" name="org.eclipse.osgi" version="3.18.500"/>
             <trusting group="org.eclipse.platform" name="org.eclipse.osgi" version="3.23.0"/>
          </trusted-key>
+         <trusted-key id="A31DDE881C3E3C4C985BD0D02C7F998F4272C851" group="com.diffplug.spotless"/>
          <trusted-key id="A413F67D71BEEC23ADD0CE0ACB43338E060CF9FA">
             <trusting group="com.google.code.findbugs"/>
             <trusting group="org.jacoco"/>
