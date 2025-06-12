@@ -44,7 +44,7 @@ class RemoteFile :
     var unreadCommentsCount = 0
     var isHasPreview = false
     var note: String? = null
-    var sharees: Array<ShareeUser?>? = null
+    var sharees: Array<ShareeUser>? = null
     var richWorkspace: String? = null
     var isLocked = false
     var lockType: FileLockType? = null
