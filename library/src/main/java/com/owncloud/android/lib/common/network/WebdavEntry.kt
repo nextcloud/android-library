@@ -556,6 +556,7 @@ class WebdavEntry constructor(
             ShareType.EMAIL == shareType ||
                 ShareType.FEDERATED == shareType ||
                 ShareType.GROUP == shareType ||
+                ShareType.FEDERATED_GROUP == shareType ||
                 ShareType.ROOM == shareType
         return if ((isSupportedShareType || displayName.isNotEmpty()) && userId.isNotEmpty()) {
             ShareeUser(userId, displayName, shareType)
