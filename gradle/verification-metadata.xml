@@ -166,6 +166,7 @@
             <trusting group="org.eclipse.platform" name="org.eclipse.osgi" version="3.18.500"/>
             <trusting group="org.eclipse.platform" name="org.eclipse.osgi" version="3.23.0"/>
          </trusted-key>
+         <trusted-key id="A31DDE881C3E3C4C985BD0D02C7F998F4272C851" group="com.diffplug.spotless"/>
          <trusted-key id="A413F67D71BEEC23ADD0CE0ACB43338E060CF9FA">
             <trusting group="com.google.code.findbugs"/>
             <trusting group="org.jacoco"/>
@@ -184,7 +185,10 @@
          <trusted-key id="AA417737BD805456DB3CBDDE6601E5C08DCCBB96" group="info.picocli" name="picocli" version="4.7.5"/>
          <trusted-key id="AA70C7C433D501636392EC02153E7A3C2B4E5118" group="org.eclipse.ee4j" name="project"/>
          <trusted-key id="ADBC987D1A7B91DB6B0AAA81995EFBF4A3D20BEB" group="com.pinterest.ktlint"/>
-         <trusted-key id="AEFEB87890CDFDF2BC08C4AABDD2A76422470515" group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.6.10"/>
+         <trusted-key id="AEFEB87890CDFDF2BC08C4AABDD2A76422470515">
+            <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.6.10"/>
+            <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.6.11"/>
+         </trusted-key>
          <trusted-key id="AFCC4C7594D09E2182C60E0F7A01B0F236E5430F" group="com.google.code.gson"/>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD" group="io.grpc"/>
          <trusted-key id="B087A0EB8416563AFE64CEBA4604091C01C3086A" group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.6.4"/>
