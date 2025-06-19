@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2023 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
@@ -220,6 +221,20 @@ public class WebdavUtils {
 
         return propSet;
     }
+
+    public static DavPropertyNameSet getAlbumPropSet() {
+        DavPropertyNameSet propertySet = new DavPropertyNameSet();
+        Namespace ncNamespace = Namespace.getNamespace("nc",WebdavEntry.NAMESPACE_NC);
+
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LAST_PHOTO,ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_NB_ITEMS, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LOCATION, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_DATE_RANGE, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_COLLABORATORS, ncNamespace));
+
+        return propertySet;
+    }
+
 
     /**
      *
