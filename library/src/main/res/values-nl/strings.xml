@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="local_storage_full">Lokale opslag vol</string>
+    <string name="message_install_client_cert">Wil je een TLS clientcertificaat installeren\?</string>
+    <string name="no_network_connection">Geen netwerkverbinding</string>
+    <string name="notification_channel_name">Nextcloud verbinding</string>
+    <string name="notification_message_select_client_cert">Selecteer cliëntcertificaat for %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Selecteer cliëntcertificaat</string>
+    <string name="operation_cancelled">Actie geannulleerd door aanvrager</string>
+    <string name="operation_cancelled_by_the_caller">Actie geannulleerd door aanvrager</string>
+    <string name="socket_exception">Socketfout</string>
+    <string name="socket_timeout_exception">Socket time-out fout</string>
+    <string name="ssl_exception">SSL-fout</string>
+    <string name="sync_conflict">Synchronisatieconflict</string>
+    <string name="title_no_client_cert">Geen cliëntcertificaat gevonden</string>
+    <string name="unexpected_exception">Onverwachte fout</string>
+    <string name="unexpected_webdav_exception">Onverwachte WebDAV fout</string>
+    <string name="unknown_host_exception">Onverwachte host fout</string>
+    </resources>

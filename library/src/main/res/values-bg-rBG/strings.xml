@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Профилът вече съществува</string>
+    <string name="account_not_the_same">Влезли сте с профил, различен от този който променяте</string>
+    <string name="bad_oc_version">Не е открива валидна версия на Nextcloud на този сървър</string>
+    <string name="connect_timeout_exception">Грешка при връзката (Connection timeout exception)</string>
+    <string name="exception_using_account">Грешка при използването на профила</string>
+    <string name="file_locked">Файлът е заключен от друг потребител или процес</string>
+    <string name="file_not_found">Локалният файл не съществува</string>
+    <string name="http_violation">HTTP грешка (HTTP violation)</string>
+    <string name="instance_not_configured">Nextcloud сървъра не е конфигуриран!</string>
+    <string name="invalid_character_in_name">Името на файла съдържа забранен символ.</string>
+    <string name="json_exception">JSON грешка (JSON exception)</string>
+    <string name="local_storage_full">Локалното място за съхранение е пълно</string>
+    <string name="local_storage_not_moved">Грешка при преместването на файла в зададената директория</string>
+    <string name="malformed_url_exception">Грешно формиран URL (Malformed URL exception)</string>
+    <string name="message_install_client_cert">Искате ли да инсталирате TLS сертификат\?</string>
+    <string name="no_network_connection">Няма връзка с Интернет</string>
+    <string name="notification_channel_name">Nextcloud връзка</string>
+    <string name="notification_message_select_client_cert">Изберете клиентски сертификат за %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Изберете клиентски сертификат</string>
+    <string name="operation_cancelled">Действието е отменено от обаждащия се.</string>
+    <string name="operation_cancelled_by_the_caller">Действието е отменено от обаждащия се.</string>
+    <string name="operation_finished_http_code">Действието завърши с HTTP статус %1$d(%2$s)</string>
+    <string name="socket_exception">Грешка при порта (Socker exception)</string>
+    <string name="socket_timeout_exception">Грешка при изчакване на порта (Socket timeout exception)</string>
+    <string name="ssl_exception">SSL грешка</string>
+    <string name="ssl_recoverable_exception">SSL грешка (SSL recoverable exception)</string>
+    <string name="sync_conflict">Конфликт при синхронизацията</string>
+    <string name="title_no_client_cert">Не е открит клиентски сертификат</string>
+    <string name="unexpected_exception">Неочаквана грешка (Unexpected exception)</string>
+    <string name="unexpected_webdav_exception">WebDAV грешка (Unexpected WebDAV exception)</string>
+    <string name="unknown_host_exception">Грешка при хоста (Unknown host exception)</string>
+    <string name="unrecovered_transport_exception">Грешка при предаването (Unrecovered transport exception)</string>
+</resources>
