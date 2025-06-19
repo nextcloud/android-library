@@ -43,7 +43,6 @@ public class GetNotificationRemoteOperation extends RemoteOperation<Notification
         this.id = id;
     }
 
-    @SuppressFBWarnings("HTTP_PARAMETER_POLLUTION")
     @Override
     public RemoteOperationResult<Notification> run(NextcloudClient client) {
         RemoteOperationResult<Notification> result;

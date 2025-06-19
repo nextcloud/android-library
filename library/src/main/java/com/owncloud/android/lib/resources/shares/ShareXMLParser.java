@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * Parser for Share API Response
  *
@@ -70,6 +71,7 @@ public class ShareXMLParser {
 	private static final String NODE_DISPLAYNAME_FILE_OWNER = "displayname_file_owner";
 	private static final String NODE_TAGS = "tags";
 	private static final String NODE_URL = "url";
+    private static final String NODE_ATTRIBUTES = "attributes";
 
 	private static final String TAG_FAVORITE = "_$!<Favorite>";
 
@@ -417,6 +419,10 @@ public class ShareXMLParser {
 
 					}
 					break;
+
+                case NODE_ATTRIBUTES:
+                    share.setAttributes(readText(parser));
+                    break;
 
 				default:
 					skip(parser);

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Compte déjà existant lors de la création d\'un nouveau</string>
+    <string name="account_not_the_same">Authentifié avec un compte différent de celui qui effectue la mise à jour</string>
+    <string name="bad_oc_version">Aucune version valide de Nextcloud n\'a été trouvée sur le serveur</string>
+    <string name="connect_timeout_exception">Exception de délai de connexion</string>
+    <string name="exception_using_account">Exception lors de l\'utilisation du compte</string>
+    <string name="file_locked">Le fichier est actuellement verrouillé par un autre utilisateur ou processus</string>
+    <string name="file_not_found">Le fichier local n\'existe pas</string>
+    <string name="http_violation">Violation HTTP</string>
+    <string name="instance_not_configured">Le serveur Nextcloud n\'est pas configuré !</string>
+    <string name="invalid_character_in_name">Le nom de fichier contient un caractère interdit</string>
+    <string name="json_exception">Exception JSON</string>
+    <string name="local_storage_full">Stockage local plein</string>
+    <string name="local_storage_not_moved">Erreur lors du déplacement du fichier vers le répertoire final</string>
+    <string name="malformed_url_exception">Exception d\'URL mal formée</string>
+    <string name="message_install_client_cert">Souhaitez-vous installer un certificat client TLS \?</string>
+    <string name="no_network_connection">Aucune connexion réseau</string>
+    <string name="notification_channel_name">Connexion à Nextcloud</string>
+    <string name="notification_message_select_client_cert">Sélectionnez le certificat du client pour %1$s : %2$d</string>
+    <string name="notification_title_select_client_cert">Sélectionner un certificat client</string>
+    <string name="operation_cancelled">Opération annulée par l\'appelant.</string>
+    <string name="operation_cancelled_by_the_caller">Opération annulée par l\'appelant.</string>
+    <string name="operation_finished_http_code">Opération terminée avec le code d\'état HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Exception de socket</string>
+    <string name="socket_timeout_exception">Exception d\'expiration du délai de socket</string>
+    <string name="ssl_exception">Exception SSL</string>
+    <string name="ssl_recoverable_exception">Exception récupérable SSL</string>
+    <string name="sync_conflict">Conflit de synchronisation</string>
+    <string name="title_no_client_cert">Aucun certificat client n\'a été trouvé</string>
+    <string name="unexpected_exception">Exception inattendue</string>
+    <string name="unexpected_webdav_exception">Exception WebDAV inattendue</string>
+    <string name="unknown_host_exception">Exception d\'hôte inconnu</string>
+    <string name="unrecovered_transport_exception">Exception de transport non récupérée</string>
+</resources>
