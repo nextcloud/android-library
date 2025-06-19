@@ -25,9 +25,11 @@
     <string name="socket_exception">Грешка при порта (Socker exception)</string>
     <string name="socket_timeout_exception">Грешка при изчакване на порта (Socket timeout exception)</string>
     <string name="ssl_exception">SSL грешка</string>
+    <string name="ssl_recoverable_exception">SSL грешка (SSL recoverable exception)</string>
     <string name="sync_conflict">Конфликт при синхронизацията</string>
     <string name="title_no_client_cert">Не е открит клиентски сертификат</string>
     <string name="unexpected_exception">Неочаквана грешка (Unexpected exception)</string>
     <string name="unexpected_webdav_exception">WebDAV грешка (Unexpected WebDAV exception)</string>
     <string name="unknown_host_exception">Грешка при хоста (Unknown host exception)</string>
-    </resources>
+    <string name="unrecovered_transport_exception">Грешка при предаването (Unrecovered transport exception)</string>
+</resources>
