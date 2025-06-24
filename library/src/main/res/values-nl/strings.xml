@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_not_new">Account bestaat al bij het aanmaken van een nieuw account</string>
+    <string name="account_not_the_same">Geverifieerd met een ander account dan het account dat de update uitvoert</string>
+    <string name="bad_oc_version">Er is geen geldige Nextcloud-versie gevonden op de server</string>
+    <string name="connect_timeout_exception">Time-out bij verbinden</string>
+    <string name="exception_using_account">Uitzondering tijdens het gebruik van account</string>
+    <string name="file_locked">Het bestand is momenteel vergrendeld door een andere gebruiker of proces.</string>
+    <string name="file_not_found">Lokale bestand bestaat niet</string>
+    <string name="http_violation">HTTP-overtreding</string>
+    <string name="instance_not_configured">De Nextcloud server is niet geconfigureerd!</string>
+    <string name="invalid_character_in_name">De bestandsnaam bevat een niet-toegestaan teken</string>
+    <string name="json_exception">JSON uitzondering</string>
     <string name="local_storage_full">Lokale opslag vol</string>
+    <string name="local_storage_not_moved">Fout bij het verplaatsen van het bestand naar de definitieve map</string>
+    <string name="malformed_url_exception">Slecht gevormde URL uitzondering</string>
     <string name="message_install_client_cert">Wil je een TLS clientcertificaat installeren\?</string>
     <string name="no_network_connection">Geen netwerkverbinding</string>
     <string name="notification_channel_name">Nextcloud verbinding</string>
@@ -8,12 +21,15 @@
     <string name="notification_title_select_client_cert">Selecteer cliëntcertificaat</string>
     <string name="operation_cancelled">Actie geannulleerd door aanvrager</string>
     <string name="operation_cancelled_by_the_caller">Actie geannulleerd door aanvrager</string>
+    <string name="operation_finished_http_code">Operatie eindigde met HTTP statuscode %1$d (%2$s)</string>
     <string name="socket_exception">Socketfout</string>
     <string name="socket_timeout_exception">Socket time-out fout</string>
     <string name="ssl_exception">SSL-fout</string>
+    <string name="ssl_recoverable_exception">SSL herstelbare uitzondering</string>
     <string name="sync_conflict">Synchronisatieconflict</string>
     <string name="title_no_client_cert">Geen cliëntcertificaat gevonden</string>
     <string name="unexpected_exception">Onverwachte fout</string>
     <string name="unexpected_webdav_exception">Onverwachte WebDAV fout</string>
     <string name="unknown_host_exception">Onverwachte host fout</string>
-    </resources>
+    <string name="unrecovered_transport_exception">Niet-herstelde transportuitzondering</string>
+</resources>
