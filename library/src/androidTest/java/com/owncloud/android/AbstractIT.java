@@ -292,8 +292,7 @@ public abstract class AbstractIT {
             }
 
             boolean isRemoteFileRemoved = removeRemoteFile(remotePath);
-            final var removeFileOperationErrorMessage = ("Failed to remove " + remotePath);
-            assertTrue(removeFileOperationErrorMessage, isRemoteFileRemoved);
+            assertTrue("Failed to remove " + remotePath, isRemoteFileRemoved);
         }
 
         boolean isKeyStoreDeleted = new File(context.getFilesDir(), LOCAL_TRUSTSTORE_FILENAME).delete();
