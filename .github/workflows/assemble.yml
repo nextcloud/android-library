@@ -12,6 +12,9 @@ on:
     push:
         branches: [ master, stable-* ]
 
+permissions:
+    contents: read
+
 jobs:
     assemble:
         runs-on: ubuntu-latest
