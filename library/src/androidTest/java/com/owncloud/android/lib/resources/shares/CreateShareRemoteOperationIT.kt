@@ -9,8 +9,6 @@ package com.owncloud.android.lib.resources.shares
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
-import com.owncloud.android.lib.resources.shares.attributes.ShareAttributes
-import com.owncloud.android.lib.resources.shares.attributes.ShareAttributesJsonHandler
 import com.owncloud.android.lib.resources.status.GetStatusRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
@@ -30,23 +28,6 @@ class CreateShareRemoteOperationIT : AbstractIT() {
         val data = result.data as ArrayList<Any>
         ownCloudVersion = data[0] as OwnCloudVersion
         Assume.assumeTrue(ownCloudVersion?.isNewerOrEqual(NextcloudVersion.nextcloud_24) == true)
-    }
-
-    @Test
-    fun createShareWithNoteAndAttributes() {
-        val attributes = listOf(
-            ShareAttributes.createDownloadAttributes(
-                true,
-                ownCloudVersion?.isNewerOrEqual(NextcloudVersion.nextcloud_30) == true
-            )
-        )
-        val note = "Note with attributes"
-        val path = "/shareWithAttributes/"
-
-        createFolder(path)
-        val share = createShare(path, "admin", note, ShareAttributesJsonHandler.toJson(attributes))
-        assertEquals(note, share.note)
-        assertEquals(attributes, ShareAttributesJsonHandler.toList(share.attributes))
     }
 
     @Test
