@@ -30,7 +30,7 @@ class ShareAttributesDeserializer : JsonDeserializer<ShareAttributes> {
         val jsonObject = json?.asJsonObject
         val scope = jsonObject?.get("scope")?.asString ?: ""
         val key = jsonObject?.get("key")?.asString ?: ""
-        val value = (jsonObject.getBoolean("value") ?: jsonObject.getBoolean("enabled")) == true
+        val value = jsonObject.getBoolean("abstractValue") == true
         return ShareAttributes(scope, key, value)
     }
 }
