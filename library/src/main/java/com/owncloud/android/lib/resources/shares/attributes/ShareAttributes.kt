@@ -11,7 +11,7 @@ package com.owncloud.android.lib.resources.shares.attributes
 open class ShareAttributes(
     open val scope: String,
     open val key: String,
-    open val abstractValue: Boolean
+    open var abstractValue: Boolean
 ) {
     companion object {
         const val DOWNLOAD_ATTRIBUTE_KEY = "download"
