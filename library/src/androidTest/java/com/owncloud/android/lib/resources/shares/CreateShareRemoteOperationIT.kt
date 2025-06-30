@@ -21,18 +21,25 @@ import org.junit.Before
 import org.junit.Test
 
 class CreateShareRemoteOperationIT : AbstractIT() {
+    private var ownCloudVersion: OwnCloudVersion? = null
+
     @Before
     fun before() {
         val result = GetStatusRemoteOperation(context).execute(client)
         assertTrue(result.isSuccess)
         val data = result.data as ArrayList<Any>
-        val ownCloudVersion = data[0] as OwnCloudVersion
-        Assume.assumeTrue(ownCloudVersion.isNewerOrEqual(NextcloudVersion.nextcloud_24))
+        ownCloudVersion = data[0] as OwnCloudVersion
+        Assume.assumeTrue(ownCloudVersion?.isNewerOrEqual(NextcloudVersion.nextcloud_24) == true)
     }
 
     @Test
     fun createShareWithNoteAndAttributes() {
-        val attributes = listOf(ShareAttributes.createDownloadAttributes(true))
+        val attributes = listOf(
+            ShareAttributes.createDownloadAttributes(
+                true,
+                ownCloudVersion?.isNewerOrEqual(NextcloudVersion.nextcloud_30) == true
+            )
+        )
         val note = "Note with attributes"
         val path = "/shareWithAttributes/"
 
