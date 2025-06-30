@@ -19,15 +19,14 @@ import org.junit.Before
 import org.junit.Test
 
 class CreateShareRemoteOperationIT : AbstractIT() {
-    private var ownCloudVersion: OwnCloudVersion? = null
 
     @Before
     fun before() {
         val result = GetStatusRemoteOperation(context).execute(client)
         assertTrue(result.isSuccess)
         val data = result.data as ArrayList<Any>
-        ownCloudVersion = data[0] as OwnCloudVersion
-        Assume.assumeTrue(ownCloudVersion?.isNewerOrEqual(NextcloudVersion.nextcloud_24) == true)
+        val ownCloudVersion = data[0] as OwnCloudVersion
+        Assume.assumeTrue(ownCloudVersion.isNewerOrEqual(NextcloudVersion.nextcloud_24))
     }
 
     @Test
