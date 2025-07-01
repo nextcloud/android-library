@@ -10,8 +10,6 @@ package com.owncloud.android.lib.resources.assistant.v2
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.assistant.v2.model.Shape
-import com.owncloud.android.lib.resources.assistant.v2.model.TaskInputShape
-import com.owncloud.android.lib.resources.assistant.v2.model.TaskOutputShape
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
@@ -31,8 +29,8 @@ class AssistantV2Tests : AbstractIT() {
             "Free text to text prompt",
             "Runs an arbitrary prompt through a language model that returns a reply",
             inputShape =
-                TaskInputShape(
-                    input =
+                mapOf(
+                    "input" to
                         Shape(
                             "Prompt",
                             "Describe a task that you want the assistant to do or ask a question",
@@ -40,8 +38,8 @@ class AssistantV2Tests : AbstractIT() {
                         )
                 ),
             outputShape =
-                TaskOutputShape(
-                    output =
+                mapOf(
+                    "output" to
                         Shape(
                             "Generated reply",
                             "The generated text from the assistant",
