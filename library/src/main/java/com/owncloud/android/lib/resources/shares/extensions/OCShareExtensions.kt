@@ -18,15 +18,16 @@ private const val PERMISSIONS_KEY = "permissions"
 private const val VALUE_KEY = "value"
 private const val ENABLED_KEY = "enabled"
 
-fun OCShare?.toggleAllowDownloadAndSync(
+fun toggleAllowDownloadAndSync(
+    attributes: String?,
     isChecked: Boolean,
     useV2DownloadAttributes: Boolean
 ): String? {
     val jsonArray =
-        if (this?.attributes?.isEmpty() == true) {
+        if (attributes?.isEmpty() == true) {
             JSONArray()
         } else {
-            JSONArray(this?.attributes)
+            JSONArray(attributes)
         }
     val downloadAttr = jsonArray.findDownloadAttribute()
     val enabledKey = getEnabledKey(useV2DownloadAttributes)
