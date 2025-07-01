@@ -16,20 +16,12 @@ data class TaskTypeData(
     val id: String?,
     val name: String?,
     val description: String?,
-    val inputShape: TaskInputShape?,
-    val outputShape: TaskOutputShape?
-)
-
-data class TaskInputShape(
-    val input: Shape?
-)
-
-data class TaskOutputShape(
-    val output: Shape?
+    val inputShape: Map<String, Shape>?,
+    val outputShape: Map<String, Shape>?
 )
 
 data class Shape(
-    val name: String,
-    val description: String,
-    val type: String
+    val name: String?,
+    val description: String?,
+    val type: String?
 )

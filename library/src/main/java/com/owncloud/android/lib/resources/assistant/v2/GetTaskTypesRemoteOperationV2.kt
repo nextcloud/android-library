@@ -19,6 +19,32 @@ import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypes
 import org.apache.commons.httpclient.HttpStatus
 
+/**
+ * Returns a list of supported task types.
+ *
+ * Example JSON representation of one task type:
+ * ```
+ * {
+ *   "id": "core:text2text",
+ *   "name": "Free text to text prompt",
+ *   "description": "Runs an arbitrary prompt through a language model that returns a reply",
+ *   "inputShape": {
+ *     "input": {
+ *       "name": "Prompt",
+ *       "description": "Describe a task that you want the assistant to do or ask a question",
+ *       "type": "Text"
+ *     }
+ *   },
+ *   "outputShape": {
+ *     "output": {
+ *       "name": "Generated reply",
+ *       "description": "The generated text from the assistant",
+ *       "type": "Text"
+ *     }
+ *   }
+ * }
+ * ```
+ */
 class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
     private val supportedTaskType = "Text"
 
@@ -36,21 +62,18 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
                     getServerResponse(
                         getMethod,
                         object : TypeToken<ServerResponse<TaskTypes>>() {}
-                    )?.ocs?.data?.types
+                    )
 
                 val taskTypeList =
-                    response?.map { (key, value) ->
-                        value.copy(id = value.id ?: key)
-                    }
-
-                val supportedTaskTypeList =
-                    taskTypeList?.filter { taskType ->
-                        taskType.inputShape?.input?.type == supportedTaskType &&
-                            taskType.outputShape?.output?.type == supportedTaskType
-                    }
+                    response
+                        ?.ocs
+                        ?.data
+                        ?.types
+                        ?.map { (key, value) -> value.copy(id = value.id ?: key) }
+                        ?.filter { taskType -> isSingleTextInputOutput(taskType) }
 
                 result = RemoteOperationResult(true, getMethod)
-                result.setResultData(supportedTaskTypeList)
+                result.resultData = taskTypeList
             } else {
                 result = RemoteOperationResult(false, getMethod)
             }
@@ -65,6 +88,21 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
             getMethod?.releaseConnection()
         }
         return result
+    }
+
+    private fun isSingleTextInputOutput(taskType: TaskTypeData): Boolean {
+        val inputShape = taskType.inputShape
+        val outputShape = taskType.outputShape
+
+        val hasOneTextInput =
+            inputShape?.size == 1 &&
+                inputShape.values.first().type == supportedTaskType
+
+        val hasOneTextOutput =
+            outputShape?.size == 1 &&
+                outputShape.values.first().type == supportedTaskType
+
+        return hasOneTextInput && hasOneTextOutput
     }
 
     companion object {
