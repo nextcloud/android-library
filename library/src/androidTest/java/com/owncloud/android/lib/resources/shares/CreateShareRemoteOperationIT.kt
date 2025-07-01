@@ -19,7 +19,6 @@ import org.junit.Before
 import org.junit.Test
 
 class CreateShareRemoteOperationIT : AbstractIT() {
-
     @Before
     fun before() {
         val result = GetStatusRemoteOperation(context).execute(client)
