@@ -23,12 +23,11 @@ fun toggleAllowDownloadAndSync(
     isChecked: Boolean,
     useV2DownloadAttributes: Boolean
 ): String? {
-    val jsonArray =
-        if (attributes?.isEmpty() == true) {
-            JSONArray()
-        } else {
-            JSONArray(attributes)
-        }
+    var jsonArray = JSONArray()
+    if (!attributes.isNullOrEmpty()) {
+        jsonArray = JSONArray(attributes)
+    }
+
     val downloadAttr = jsonArray.findDownloadAttribute()
     val enabledKey = getEnabledKey(useV2DownloadAttributes)
 
