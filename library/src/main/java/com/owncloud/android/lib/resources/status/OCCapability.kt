@@ -130,10 +130,14 @@ class OCCapability {
     val declarativeUiContextMenu: List<Endpoint>
         
         get() {
+            if (declarativeUiContextMenuJson == null) {
+                return emptyList()
+            }
+            
             val listType = object : TypeToken<Array<Array<String>>>() {}.type
             val arrayList : Array<Array<String>> =  Gson().fromJson(declarativeUiContextMenuJson, listType)
             
-            var returnList = mutableListOf<Endpoint>();
+            val returnList = mutableListOf<Endpoint>();
             
             for (a in arrayList) {
                 returnList.add(Endpoint(a[0], a[1]))
