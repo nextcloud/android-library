@@ -177,6 +177,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     // notes folder location
     private static final String NODE_NOTES = "notes";
     private static final String NOTES_PATH = "notes_path";
+    
+    // declarative ui
+    private static final String NODE_DECLARATIVE_UI = "declarativeui";
+    private static final String NODE_CONTEXT_MENU = "context-menu";
 
     private static final String PROPERTY_DEFAULT_PERMISSIONS = "default_permissions";
 
@@ -802,6 +806,23 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                         }
 
                         capability.setNotesFolderPath(notesFolderPath);
+                    }
+                }
+                
+                // declarative ui
+                if (respCapabilities.has(NODE_DECLARATIVE_UI)) {
+                    JSONObject declarativeUiCapability = respCapabilities.getJSONObject(NODE_DECLARATIVE_UI);
+                    
+                    if (declarativeUiCapability.has(NODE_CONTEXT_MENU)) {
+                        String array = declarativeUiCapability.getString(NODE_CONTEXT_MENU);
+
+//                        ArrayList<Endpoint> endpoints = new ArrayList<>();
+//                        
+//                        for (int i = 0; i < array.length(); i++) {
+//                            endpoints.add(new Endpoint(array.getJSONArray(i).getString(0), 
+//                                                       array.getJSONArray(i).getString(1)));
+//                        }
+                        capability.setDeclarativeUiContextMenuJson(array);
                     }
                 }
 
