@@ -14,14 +14,14 @@ data class TaskTypes(
 
 data class TaskTypeData(
     val id: String?,
-    val name: String?,
+    val name: String,
     val description: String?,
-    val inputShape: Map<String, Shape>?,
-    val outputShape: Map<String, Shape>?
+    val inputShape: Map<String, Shape>,
+    val outputShape: Map<String, Shape>
 )
 
 data class Shape(
-    val name: String?,
-    val description: String?,
-    val type: String?
+    val name: String,
+    val description: String,
+    val type: String
 )

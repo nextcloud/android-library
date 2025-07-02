@@ -95,11 +95,11 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
         val outputShape = taskType.outputShape
 
         val hasOneTextInput =
-            inputShape?.size == 1 &&
+            inputShape.size == 1 &&
                 inputShape.values.first().type == supportedTaskType
 
         val hasOneTextOutput =
-            outputShape?.size == 1 &&
+            outputShape.size == 1 &&
                 outputShape.values.first().type == supportedTaskType
 
         return hasOneTextInput && hasOneTextOutput
