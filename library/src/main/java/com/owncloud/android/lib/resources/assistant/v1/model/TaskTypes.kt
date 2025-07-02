@@ -16,7 +16,7 @@ data class TaskTypes(
 
 data class TaskType(
     val id: String?,
-    val name: String?,
+    val name: String,
     val description: String?
 )
 
@@ -26,7 +26,7 @@ fun TaskTypes.toV2(): List<TaskTypeData> =
             id = taskType.id,
             name = taskType.name,
             description = taskType.description,
-            inputShape = null,
-            outputShape = null
+            inputShape = emptyMap(),
+            outputShape = emptyMap()
         )
     }
