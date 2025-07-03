@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Akaunti tayari ipo wakati wa kutengeneza mpya</string>
+    <string name="account_not_the_same">Imethibitishwa na akaunti tofauti na ile inayosasisha</string>
+    <string name="bad_oc_version">Hakuna toleo halali la Nextcloud lililopatikana kwenye seva</string>
+    <string name="connect_timeout_exception">Unganisha muda wa kuisha wa jambo la pekee </string>
+    <string name="exception_using_account">Jambo la pekee wakati wa kutumia akaunti</string>
+    <string name="file_locked">Faili kwa sasa imefungwa na mtumiaji au mchakato mwingine</string>
+    <string name="file_not_found">Faili ya ndani haipo</string>
+    <string name="http_violation"> Ukiukaji wa HTTP</string>
+    <string name="instance_not_configured">Seva ya Nextcloud haijasanidiwa!</string>
+    <string name="invalid_character_in_name">Jina la faili lina herufi iliyokatazwa</string>
+    <string name="json_exception">Jambo la pekee la JSON</string>
+    <string name="local_storage_full">Hifadhi ya ndani imejaa</string>
+    <string name="local_storage_not_moved">Hitilafu wakati wa kuhamisha faili hadi saraka ya mwisho</string>
+    <string name="malformed_url_exception">Ubaguzi wa URL wenye hitilafu</string>
+    <string name="message_install_client_cert">Je, unataka kusakinisha cheti cha mteja cha TLS\?</string>
+    <string name="no_network_connection">Hakuna mtandao</string>
+    <string name="notification_channel_name">Mtandao wa Nextcloud</string>
+    <string name="notification_message_select_client_cert">Chagua cheti cha mteja kwa %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Chagua cheti cha mteja</string>
+    <string name="operation_cancelled">Operesheni imeghairishwa na mpiga simu</string>
+    <string name="operation_cancelled_by_the_caller">Operesheni imeghairishwa na mpiga simu</string>
+    <string name="operation_finished_http_code">Uendeshaji umekamilika kwa msimbo wa hali ya HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Soketi ya pekee</string>
+    <string name="socket_timeout_exception">Muda wa mwisho wa soketi ya kipekee</string>
+    <string name="ssl_exception">Jambo la pekee la SSL</string>
+    <string name="ssl_recoverable_exception">SSL ya kipekee inayoweza kurejeshwa</string>
+    <string name="sync_conflict">Mzozo wa ulandanishi</string>
+    <string name="title_no_client_cert">Hakuna cheti cha mteja kilichopatikana</string>
+    <string name="unexpected_exception">Jambo la kipekee lisilotarajiwa</string>
+    <string name="unexpected_webdav_exception">Jambo la kipekee lisilotarajiwa la WebDAV</string>
+    <string name="unknown_host_exception">Mwenyeji wa kipekee asiyejulikana</string>
+    <string name="unrecovered_transport_exception">Ubaguzi wa usafiri ambao haujarejeshwa</string>
+</resources>
