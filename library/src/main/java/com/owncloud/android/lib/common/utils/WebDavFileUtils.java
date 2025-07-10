@@ -81,8 +81,8 @@ public class WebDavFileUtils {
             return Collections.emptyList();
         }
 
-        List<RemoteFile> files = new ArrayList<>();
         final var responses = remoteData.getResponses();
+        List<RemoteFile> files = new ArrayList<>(Math.max(0, responses.length - 1));
 
         // reading from 1 as 0th item will be just the root album path
         for (int i = 1; i < responses.length; i++) {
