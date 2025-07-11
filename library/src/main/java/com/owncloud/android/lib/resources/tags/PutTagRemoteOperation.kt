@@ -12,8 +12,6 @@ import com.nextcloud.operations.PutMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.EMPTY_BYTE_ARRAY
 import org.apache.commons.httpclient.HttpStatus
 
 class PutTagRemoteOperation(
@@ -21,7 +19,7 @@ class PutTagRemoteOperation(
     val fileId: Long
 ) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        val empty: RequestBody = EMPTY_BYTE_ARRAY.toRequestBody()
+        val empty: RequestBody = RequestBody.EMPTY
         val putMethod =
             PutMethod(
                 client.baseUri.toString() + TAG_URL + fileId + "/" + id,
