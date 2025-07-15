@@ -7,7 +7,7 @@
  */
 package com.nextcloud.android.lib.resources.declarativeui
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
@@ -17,12 +17,16 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.declarativeui.DeclarativeUI
+import com.owncloud.android.lib.resources.declarativeui.Element
+import com.owncloud.android.lib.resources.declarativeui.ElementTypeAdapter
 import org.apache.commons.httpclient.HttpStatus
 
 /**
  * Get terms of service of an user
  */
-class GetDeclarativeUiJsonOperation(val url: String) : OCSRemoteOperation<JsonArray>() {
+class GetDeclarativeUiJsonOperation(
+    val url: String
+) : OCSRemoteOperation<JsonArray>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<JsonArray> {
         var result: RemoteOperationResult<JsonArray>
@@ -65,17 +69,13 @@ class GetDeclarativeUiJsonOperation(val url: String) : OCSRemoteOperation<JsonAr
         return result
     }
 
-    fun parseResult(response: String) : DeclarativeUI {
-        // val listType = object : TypeToken<>>() {}.type
+    fun parseResult(response: String): DeclarativeUI {
+        val gson =
+            GsonBuilder()
+                .registerTypeHierarchyAdapter(Element::class.java, ElementTypeAdapter())
+                .create()
 
-        // val gson = GsonBuilder()
-        //     .registerTypeAdapter(RichElement::class.java, RichElementTypeAdapter())
-        //     .registerTypeAdapter(PreviewObject::class.java, PreviewObjectAdapter())
-        //     .create()
-        // val listType = object : TypeToken<MutableList<Activity?>?>() {
-        // }.getType()
-        
-        return Gson().fromJson(response, DeclarativeUI::class.java)
+        return gson.fromJson(response, DeclarativeUI::class.java)
     }
 
     companion object {

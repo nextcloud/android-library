@@ -7,7 +7,6 @@
 
 package com.owncloud.android.lib.resources.declarativeui
 
-data class DeclarativeUI(
-    val version: Double,
-    val root: Layout
-)
+data class Text(
+    val text: String
+) : Element
