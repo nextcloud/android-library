@@ -9,7 +9,6 @@
 package com.nextcloud.common
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import com.nextcloud.android.lib.core.Clock
 import com.nextcloud.android.lib.core.ClockImpl
