@@ -7,7 +7,12 @@
 
 package com.owncloud.android.lib.resources.declarativeui
 
-data class DeclarativeUI(
-    val version: Double,
-    val root: Layout
-)
+import com.google.gson.annotations.SerializedName
+
+enum class Orientation {
+    @SerializedName("horizontal")
+    HORIZONTAL,
+
+    @SerializedName("vertical")
+    VERTICAL
+}

@@ -124,28 +124,27 @@ class OCCapability {
 
     // notes folder location
     var notesFolderPath: String? = null
-    
+
     // declarative ui
     var declarativeUiContextMenuJson: String? = null
     val declarativeUiContextMenu: List<Endpoint>
-        
+
         get() {
             if (declarativeUiContextMenuJson == null) {
                 return emptyList()
             }
-            
+
             val listType = object : TypeToken<Array<Array<String>>>() {}.type
-            val arrayList : Array<Array<String>> =  Gson().fromJson(declarativeUiContextMenuJson, listType)
-            
-            val returnList = mutableListOf<Endpoint>();
-            
+            val arrayList: Array<Array<String>> = Gson().fromJson(declarativeUiContextMenuJson, listType)
+
+            val returnList = mutableListOf<Endpoint>()
+
             for (a in arrayList) {
                 returnList.add(Endpoint(a[0], a[1]))
             }
-            
+
             return returnList
         }
-        
 
     // Etag for capabilities
     var etag: String? = ""

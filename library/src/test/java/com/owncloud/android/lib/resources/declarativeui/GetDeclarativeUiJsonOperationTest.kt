@@ -13,25 +13,43 @@ import org.junit.Test
 
 class GetDeclarativeUiJsonOperationTest {
     @Test
+    @Suppress("LongMethod")
     fun testParseJson() {
-        val string1 = """{
-            "version": 0.1,
-            "root": Layout {
+        val string = """
+            {
+                "version": 0.1,
+                "root": {
+                    "orientation": "vertical",
+                    "rows": [
+                        {
+                            "children": [
+                                    {
+                                        "element": "Button",
+                                        "type": "primary",
+                                        "label": "Submit"
+                                    },
+                                    {
+                                        "element": "Button",
+                                        "type": "secondary",
+                                        "label": "Cancel"
+                                    }
+                            ]
+                        },
+                        {
+                            "children": [
+                                {
+                                    "element": "Text",
+                                    "text": "Hello World!"
+                                }, 
+                                {
+                                    "element": "Image",
+                                    "url": "/core/img/logo/logo.png"
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
-                
-            }
-  "Button": {
-    "label": "Submit",
-    "type": "primary",
-  },
-  "Image": {
-    "url": "/core/img/logo/logo.png"
-  }
-}"""
-
-        val string = """{
-            "version": "0.1"
-             }
             """
 
         val sut = GetDeclarativeUiJsonOperation("")
@@ -39,5 +57,31 @@ class GetDeclarativeUiJsonOperationTest {
         val declarativeUI = sut.parseResult(string)
 
         assertEquals(0.1, declarativeUI.version)
+        assertEquals(Orientation.VERTICAL, declarativeUI.root.orientation)
+        assertEquals(2, declarativeUI.root.rows.count())
+
+        // row 1
+        assertEquals(
+            2,
+            declarativeUI.root.rows[0]
+                .children
+                .count()
+        )
+
+        val button1 = declarativeUI.root.rows[0].children[0] as Button
+        assertEquals("Submit", button1.label)
+
+        // row 2
+        assertEquals(
+            2,
+            declarativeUI.root.rows[1]
+                .children
+                .count()
+        )
+        val text = declarativeUI.root.rows[1].children[0] as Text
+        assertEquals("Hello World!", text.text)
+
+        val image = declarativeUI.root.rows[1].children[1] as Image
+        assertEquals("/core/img/logo/logo.png", image.url)
     }
 }
