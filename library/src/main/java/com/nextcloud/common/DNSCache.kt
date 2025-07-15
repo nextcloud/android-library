@@ -2,11 +2,14 @@
  * Nextcloud Android Library
  *
  * SPDX-FileCopyrightText: 2022-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2025 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
  * SPDX-License-Identifier: MIT
  */
 package com.nextcloud.common
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import com.nextcloud.android.lib.core.Clock
 import com.nextcloud.android.lib.core.ClockImpl
@@ -15,6 +18,7 @@ import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetAddress
 import java.net.UnknownHostException
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * DNS Cache which prefers IPv6 unless otherwise specified
@@ -24,12 +28,15 @@ object DNSCache {
 
     // 30 seconds is the Java default. Let's keep it.
     @VisibleForTesting
+    @Volatile
     var ttlMillis: Long = DEFAULT_TTL
 
     @VisibleForTesting
+    @Volatile
     var clock: Clock = ClockImpl()
 
     @VisibleForTesting
+    @Volatile
     var dns: Dns = Dns.SYSTEM
 
     data class DNSInfo(
@@ -40,30 +47,24 @@ object DNSCache {
         fun isExpired(): Boolean = clock.currentTimeMillis - timestamp > ttlMillis
     }
 
-    private val cache: MutableMap<String, DNSInfo> = HashMap()
+    private val cache: ConcurrentHashMap<String, DNSInfo> = ConcurrentHashMap()
 
     @Throws(UnknownHostException::class)
-    @Synchronized
     @JvmStatic
     fun lookup(hostname: String): List<InetAddress> {
         val entry = cache[hostname]
         if (entry?.addresses?.isNotEmpty() == true && !entry.isExpired()) {
             return entry.addresses
         }
-        val preferIPV4 =
-            when (entry) {
-                null -> false
-                else -> entry.preferIPV4
-            }
 
         val addresses = dns.lookup(hostname).toMutableList()
         if (addresses.isEmpty()) {
             throw UnknownHostException("Unknown host $hostname")
         }
-        val sortedAddresses = sortAddresses(addresses, preferIPV4)
 
-        val newEntry = DNSInfo(sortedAddresses, preferIPV4)
-        cache[hostname] = newEntry
+        val preferIPV4 = entry?.preferIPV4 ?: false
+        val sortedAddresses = sortAddresses(addresses, preferIPV4)
+        cache[hostname] = DNSInfo(sortedAddresses, preferIPV4)
 
         return sortedAddresses
     }
@@ -71,18 +72,18 @@ object DNSCache {
     /**
      * Set IP version preference for a hostname, and re-sort addresses if needed
      */
-    @Synchronized
+    @RequiresApi(Build.VERSION_CODES.N)
     @JvmStatic
     fun setIPVersionPreference(
         hostname: String,
         preferIPV4: Boolean
     ) {
-        val entry = cache[hostname]
-        if (entry != null) {
-            val addresses = sortAddresses(entry.addresses, preferIPV4)
-            cache[hostname] = DNSInfo(addresses, preferIPV4)
-        } else {
-            cache[hostname] = DNSInfo(emptyList(), preferIPV4)
+        cache.compute(hostname) { _, old ->
+            val addresses =
+                old?.addresses?.let {
+                    sortAddresses(it, preferIPV4)
+                } ?: emptyList()
+            DNSInfo(addresses, preferIPV4)
         }
     }
 
@@ -92,7 +93,6 @@ object DNSCache {
      *  - The first address is an IPv6 address
      *  - There are IPv4 addresses available too
      */
-    @Synchronized
     @JvmStatic
     fun isIPV6First(hostname: String): Boolean {
         val firstV6 = cache[hostname]?.addresses?.firstOrNull() is Inet6Address
@@ -103,7 +103,6 @@ object DNSCache {
     /**
      * Clears the cache
      */
-    @Synchronized
     @JvmStatic
     fun clear() {
         cache.clear()
