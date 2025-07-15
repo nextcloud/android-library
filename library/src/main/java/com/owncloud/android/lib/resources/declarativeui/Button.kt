@@ -7,4 +7,7 @@
 
 package com.owncloud.android.lib.resources.declarativeui
 
-data class Button(val label: String, val type: String) : Element
+data class Button(
+    val label: String,
+    val type: String
+) : Element

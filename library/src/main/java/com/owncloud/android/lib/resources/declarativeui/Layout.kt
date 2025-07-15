@@ -7,8 +7,10 @@
 
 package com.owncloud.android.lib.resources.declarativeui
 
-data class Layout(
-    val type: String,
-    val rows: List<Row>
-)
+import com.google.gson.annotations.SerializedName
 
+data class Layout(
+    @SerializedName("orientation")
+    var orientation: Orientation,
+    var rows: List<Row>
+)
