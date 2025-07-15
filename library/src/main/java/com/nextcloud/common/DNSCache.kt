@@ -72,18 +72,22 @@ object DNSCache {
     /**
      * Set IP version preference for a hostname, and re-sort addresses if needed
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     @JvmStatic
     fun setIPVersionPreference(
         hostname: String,
         preferIPV4: Boolean
     ) {
-        cache.compute(hostname) { _, old ->
-            val addresses =
-                old?.addresses?.let {
-                    sortAddresses(it, preferIPV4)
-                } ?: emptyList()
-            DNSInfo(addresses, preferIPV4)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            cache.compute(hostname) { _, old ->
+                val addresses =
+                    old?.addresses?.let {
+                        sortAddresses(it, preferIPV4)
+                    } ?: emptyList()
+                DNSInfo(addresses, preferIPV4)
+            }
+        } else {
+            val addresses = cache[hostname]?.addresses?.let { sortAddresses(it, preferIPV4) } ?: emptyList()
+            cache[hostname] = DNSInfo(addresses, preferIPV4)
         }
     }
 
