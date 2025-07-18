@@ -135,11 +135,11 @@ public class FileIT extends AbstractIT {
         RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
         assertEquals("/", parentFolder.getRemotePath());
 
-        for (int i = 1; i < result.getData().size(); i++) {
-            if (result.getData().get(i) instanceof RemoteFile child) {
-                if (path.equals(child.getRemotePath()) && child.getSharees() != null) {
-                    assertEquals(0, child.getSharees().length);
-                }
+        for (Object item : result.getData()) {
+            if (item instanceof RemoteFile child &&
+                path.equals(child.getRemotePath()) &&
+                child.getSharees() != null) {
+                assertEquals(1, child.getSharees().length);
             }
         }
     }
