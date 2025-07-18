@@ -73,7 +73,7 @@ class WebdavEntry constructor(
     var unreadCommentsCount = 0
     var isHasPreview = false
     var note = ""
-    var sharees = arrayOfNulls<ShareeUser>(0)
+    var sharees = arrayOf<ShareeUser>()
     var richWorkspace: String? = null
     var isLocked = false
         private set
@@ -374,22 +374,18 @@ class WebdavEntry constructor(
             if (prop != null && prop.value != null) {
                 if (prop.value is ArrayList<*>) {
                     val list = prop.value as ArrayList<*>
-                    val tempList: MutableList<ShareeUser?> = ArrayList()
+                    val tempList: MutableList<ShareeUser> = ArrayList()
                     for (i in list.indices) {
                         val element = list[i] as Element
                         val user = createShareeUser(element)
-                        if (user != null) {
-                            tempList.add(user)
-                        }
+                        tempList.add(user)
                     }
                     sharees = tempList.toTypedArray()
                 } else {
                     // single item or empty
                     val element = prop.value as Element
                     val user = createShareeUser(element)
-                    if (user != null) {
-                        sharees = arrayOf(user)
-                    }
+                    sharees = arrayOf(user)
                 }
             }
 
@@ -548,7 +544,7 @@ class WebdavEntry constructor(
         return stringValue?.toLong() ?: 0L
     }
 
-    private fun createShareeUser(element: Element): ShareeUser? {
+    private fun createShareeUser(element: Element): ShareeUser {
         val displayName = extractDisplayName(element)
         val userId = extractUserId(element)
         val shareType = extractShareType(element)
