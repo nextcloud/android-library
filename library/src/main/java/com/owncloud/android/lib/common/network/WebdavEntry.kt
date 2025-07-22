@@ -548,16 +548,7 @@ class WebdavEntry constructor(
         val displayName = extractDisplayName(element)
         val userId = extractUserId(element)
         val shareType = extractShareType(element)
-        val isSupportedShareType =
-            ShareType.EMAIL == shareType ||
-                ShareType.FEDERATED == shareType ||
-                ShareType.GROUP == shareType ||
-                ShareType.ROOM == shareType
-        return if ((isSupportedShareType || displayName.isNotEmpty()) && userId.isNotEmpty()) {
-            ShareeUser(userId, displayName, shareType)
-        } else {
-            null
-        }
+        return ShareeUser(userId, displayName, shareType)
     }
 
     private fun extractDisplayName(element: Element): String {
