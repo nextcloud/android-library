@@ -214,7 +214,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
             status = client.execute(get);
 
-            if (isNotModified(status)) {
+            if (false) {
                 Log_OC.d(TAG, "Capabilities not modified");
 
                 result = new RemoteOperationResult(true, get);
@@ -808,24 +808,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                         capability.setNotesFolderPath(notesFolderPath);
                     }
                 }
-                
+
                 // declarative ui
                 if (respCapabilities.has(NODE_DECLARATIVE_UI)) {
-                    JSONObject declarativeUiCapability = respCapabilities.getJSONObject(NODE_DECLARATIVE_UI);
-                    
-                    if (declarativeUiCapability.has(NODE_CONTEXT_MENU)) {
-                        String array = declarativeUiCapability.getString(NODE_CONTEXT_MENU);
-
-//                        ArrayList<Endpoint> endpoints = new ArrayList<>();
-//                        
-//                        for (int i = 0; i < array.length(); i++) {
-//                            endpoints.add(new Endpoint(array.getJSONArray(i).getString(0), 
-//                                                       array.getJSONArray(i).getString(1)));
-//                        }
-                        capability.setDeclarativeUiContextMenuJson(array);
-                    }
+                    capability.setDeclarativeUiJson(respCapabilities.getString(NODE_DECLARATIVE_UI));
                 }
-
             }
 
             Log_OC.d(TAG, "*** Get Capabilities completed ");
