@@ -26,7 +26,6 @@ import android.util.SparseArray;
 import android.webkit.ClientCertRequest;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -455,7 +454,6 @@ public class AdvancedX509KeyManager
    }
 
    @SuppressWarnings("unused")
-   @RequiresApi(21)
    public void handleWebViewClientCertRequest(@NonNull final ClientCertRequest request) {
       Log_OC.d(TAG, "handleWebViewClientCertRequest(keyTypes=" + Arrays.toString(request.getKeyTypes()) +
               ", issuers=" + Arrays.toString(request.getPrincipals()) + ", hostname=" + request.getHost() +
