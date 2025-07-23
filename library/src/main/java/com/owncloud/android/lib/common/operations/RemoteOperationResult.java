@@ -19,7 +19,6 @@ package com.owncloud.android.lib.common.operations;
 import android.accounts.Account;
 import android.accounts.AccountsException;
 import android.content.Context;
-import android.os.Build;
 import android.system.ErrnoException;
 import android.system.OsConstants;
 
@@ -271,7 +270,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
         if (e instanceof OperationCancelledException) {
             mCode = ResultCode.CANCELLED;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && e instanceof ErrnoException && ((ErrnoException) e).errno == OsConstants.ENOTCONN) {
+        } else if (e instanceof ErrnoException && ((ErrnoException) e).errno == OsConstants.ENOTCONN) {
             mCode = ResultCode.NO_NETWORK_CONNECTION;
         } else if (e instanceof ConnectException) {
             mCode = ResultCode.HOST_NOT_AVAILABLE;
