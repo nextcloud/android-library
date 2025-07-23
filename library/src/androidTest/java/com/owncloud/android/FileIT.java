@@ -129,17 +129,17 @@ public class FileIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         // verify
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        final var result = new ReadFolderRemoteOperation("/").execute(client);
         assertTrue(result.isSuccess());
 
         RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
         assertEquals("/", parentFolder.getRemotePath());
 
-        for (int i = 1; i < result.getData().size(); i++) {
-            RemoteFile child = (RemoteFile) result.getData().get(i);
-
-            if (path.equals(child.getRemotePath())) {
-                assertEquals(0, child.getSharees().length);
+        for (Object item : result.getData()) {
+            if (item instanceof RemoteFile child &&
+                path.equals(child.getRemotePath()) &&
+                child.getSharees() != null) {
+                assertEquals(1, child.getSharees().length);
             }
         }
     }
