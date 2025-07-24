@@ -61,6 +61,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     final Set<OnDatatransferProgressListener> dataTransferListeners = new HashSet<>();
 
     protected RequestEntity entity = null;
+    private long bandwidthLimit = 0;
 
     @VisibleForTesting
     public UploadFileRemoteOperation() {
@@ -134,6 +135,20 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
         this.creationTimestamp = creationTimestamp;
     }
 
+    /**
+     * @param limit Maximum upload speed in bytes per second.
+     *              Disabled by default (limit 0).
+     */
+    public void setBandwidthLimit(long limit) {
+        bandwidthLimit = limit;
+
+        // If already in progress then set the limit immediately
+        // Otherwise it will be saved and set when it's run.
+        if (entity != null) {
+            ((FileRequestEntity) entity).setBandwidthLimit(limit);
+        }
+    }
+
     @Override
     protected RemoteOperationResult<String> run(OwnCloudClient client) {
         RemoteOperationResult<String> result;
@@ -193,6 +208,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
         try {
             File f = new File(localPath);
             entity = new FileRequestEntity(f, mimeType);
+            ((FileRequestEntity) entity).setBandwidthLimit(bandwidthLimit);
             synchronized (dataTransferListeners) {
                 ((ProgressiveDataTransfer) entity)
                         .addDataTransferProgressListeners(dataTransferListeners);
