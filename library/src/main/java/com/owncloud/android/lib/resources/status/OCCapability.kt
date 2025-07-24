@@ -133,11 +133,11 @@ class OCCapability {
                 return emptyList()
             }
 
-         val listType = object : TypeToken<Map<String, Hook>>() {}.type
-         val l = object : TypeToken<List<String>>() {}.type
-            val declarativeUI: Map<String, Hook> = Gson().fromJson(declarativeUiJson, l)
+         val l = object : TypeToken<DeclarativeUI>() {}.type
+         //val l = object : TypeToken<List<String>>() {}.type
+            val declarativeUI: DeclarativeUI = Gson().fromJson(declarativeUiJson, l)
         
-            return declarativeUI.getValue(type).endpoints
+            return declarativeUI.contextmenu // declarativeUI.getValue(type).endpoints
         }
 
     // Etag for capabilities

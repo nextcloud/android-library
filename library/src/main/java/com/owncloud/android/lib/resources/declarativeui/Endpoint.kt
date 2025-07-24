@@ -13,5 +13,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Endpoint(
     val name: String,
-    val relativeURL: String
+    val url: String
 ) : Parcelable
