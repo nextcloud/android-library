@@ -10,6 +10,7 @@
 package com.owncloud.android;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.declarativeui.Endpoint;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.E2EVersion;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
@@ -18,6 +19,8 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -165,4 +168,18 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
             assertTrue(capability.getUserStatusSupportsBusy().isTrue());
         }
     }
+    
+    @Test
+    public void testDeclarativeUI() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertNotNull(result.getSingleData());
+
+        OCCapability capability = (OCCapability) result.getSingleData();
+
+        List<Endpoint> createNewList =  capability.getDeclarativeUi("create-new");
+        
+        assertFalse(createNewList.isEmpty());
+    } 
 }
