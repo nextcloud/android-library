@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Уже существующий аккаунт при создании нового</string>
+    <string name="account_not_the_same">Аутентификация с помощью учетной записи, отличной от обновляемой</string>
+    <string name="bad_oc_version">На сервере не была найдена действительная версия Nextcloud</string>
+    <string name="connect_timeout_exception">Исключение тайм-аута подключения</string>
+    <string name="exception_using_account">Исключение при использовании учетной записи</string>
+    <string name="file_locked">Файл в данный момент заблокирован другим пользователем или процессом</string>
+    <string name="file_not_found">Локальный файл не существует</string>
+    <string name="http_violation">Нарушение HTTP</string>
+    <string name="instance_not_configured">Сервер Nextcloud не настроен!</string>
+    <string name="invalid_character_in_name">Имя файла содержит запрещенный символ</string>
+    <string name="json_exception">JSON исключение</string>
+    <string name="local_storage_full">Закончилось свободное место в локальном хранилище</string>
+    <string name="local_storage_not_moved">Ошибка при перемещении файла в конечный каталог</string>
+    <string name="malformed_url_exception">Исключение неправильного URL-адреса</string>
+    <string name="message_install_client_cert">Хотите ли вы установить сертификат клиента TLS\?</string>
+    <string name="no_network_connection">Нет подключения к сети</string>
+    <string name="notification_channel_name">Подключение Nextcloud</string>
+    <string name="notification_message_select_client_cert">Выберите сертификат клиента для %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Выберите сертификат клиента</string>
+    <string name="operation_cancelled">Операция отменена вызывающим абонентом</string>
+    <string name="operation_cancelled_by_the_caller">Операция отменена вызывающим абонентом</string>
+    <string name="operation_finished_http_code">Операция завершена с кодом состояния HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Исключение сокета</string>
+    <string name="socket_timeout_exception">Исключение тайм-аута сокета</string>
+    <string name="ssl_exception">Исключение SSL</string>
+    <string name="ssl_recoverable_exception">Исключение с возможностью восстановления SSL</string>
+    <string name="sync_conflict">Конфликт синхронизации</string>
+    <string name="title_no_client_cert">Сертификат клиента не найден</string>
+    <string name="unexpected_exception">Неожиданное исключение</string>
+    <string name="unexpected_webdav_exception">Неожиданное исключение WebDAV</string>
+    <string name="unknown_host_exception">Исключение неизвестного хоста</string>
+    <string name="unrecovered_transport_exception">Невозвращенное транспортное исключение</string>
+</resources>

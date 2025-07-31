@@ -19,7 +19,6 @@ package com.owncloud.android.lib.common.operations;
 import android.accounts.Account;
 import android.accounts.AccountsException;
 import android.content.Context;
-import android.os.Build;
 import android.system.ErrnoException;
 import android.system.OsConstants;
 
@@ -30,6 +29,8 @@ import com.owncloud.android.lib.R;
 import com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.lib.common.utils.responseFormat.ResponseFormat;
+import com.owncloud.android.lib.common.utils.responseFormat.ResponseFormatDetector;
 import com.owncloud.android.lib.resources.files.CreateLocalFileException;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -235,10 +236,13 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             switch (httpCode) {
                 case HttpStatus.SC_BAD_REQUEST:
                     try {
-                        InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                        ExceptionParser xmlParser = new ExceptionParser(is);
-                        if (xmlParser.isInvalidCharacterException()) {
-                            mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
+                        if (!bodyResponse.isEmpty() &&
+                            ResponseFormatDetector.INSTANCE.detectFormat(bodyResponse) == ResponseFormat.XML) {
+                            InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                            XMLExceptionParser xmlParser = new XMLExceptionParser(is);
+                            if (xmlParser.isInvalidCharacterException()) {
+                                mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
+                            }
                         }
                     } catch (Exception e) {
                         mCode = ResultCode.UNHANDLED_HTTP_CODE;
@@ -266,7 +270,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
         if (e instanceof OperationCancelledException) {
             mCode = ResultCode.CANCELLED;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && e instanceof ErrnoException && ((ErrnoException) e).errno == OsConstants.ENOTCONN) {
+        } else if (e instanceof ErrnoException && ((ErrnoException) e).errno == OsConstants.ENOTCONN) {
             mCode = ResultCode.NO_NETWORK_CONNECTION;
         } else if (e instanceof ConnectException) {
             mCode = ResultCode.HOST_NOT_AVAILABLE;
@@ -336,9 +340,11 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             try {
                 String bodyResponse = httpMethod.getResponseBodyAsString();
 
-                if (bodyResponse != null && bodyResponse.length() > 0) {
+                if (bodyResponse != null
+                    && !bodyResponse.isEmpty() &&
+                    ResponseFormatDetector.INSTANCE.detectFormat(bodyResponse) == ResponseFormat.XML) {
                     InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                    ExceptionParser xmlParser = new ExceptionParser(is);
+                    XMLExceptionParser xmlParser = new XMLExceptionParser(is);
 
                     if (xmlParser.isInvalidCharacterException()) {
                         mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;

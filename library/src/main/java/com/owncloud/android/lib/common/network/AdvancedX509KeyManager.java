@@ -26,7 +26,6 @@ import android.util.SparseArray;
 import android.webkit.ClientCertRequest;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -287,8 +286,8 @@ public class AdvancedX509KeyManager
     * @param filter AKMAlias object used as filter
     * @return all aliases from KEYCHAIN_ALIASES which satisfy alias.matches(filter)
     */
-   private static <T> Collection<String> filterAliases(Collection<T> aliases, AKMAlias filter) {
-      Collection<String> filtered = new LinkedList<>();
+   private static <T> LinkedList<String> filterAliases(Collection<T> aliases, AKMAlias filter) {
+       LinkedList<String> filtered = new LinkedList<>();
       for (Object alias : aliases) {
          if (new AKMAlias(alias.toString()).matches(filter)) {
             filtered.add(((String) alias));
@@ -308,7 +307,7 @@ public class AdvancedX509KeyManager
    private @NonNull String[] getAliases(Set<KeyType> keyTypes, Principal[] issuers, String hostname, Integer port) {
       // Check keychain aliases
       AKMAlias filter = new AKMAlias(KEYCHAIN, null, hostname, port);
-      List<String> validAliases = new LinkedList<>(filterAliases(sharedPreferences.getStringSet(KEYCHAIN_ALIASES, new HashSet<>()), filter));
+      List<String> validAliases = filterAliases(sharedPreferences.getStringSet(KEYCHAIN_ALIASES, new HashSet<>()), filter);
 
       Log_OC.d(TAG, "getAliases(keyTypes=" + (keyTypes != null ? Arrays.toString(keyTypes.toArray()) : null)
               + ", issuers=" + Arrays.toString(issuers)
@@ -455,7 +454,6 @@ public class AdvancedX509KeyManager
    }
 
    @SuppressWarnings("unused")
-   @RequiresApi(21)
    public void handleWebViewClientCertRequest(@NonNull final ClientCertRequest request) {
       Log_OC.d(TAG, "handleWebViewClientCertRequest(keyTypes=" + Arrays.toString(request.getKeyTypes()) +
               ", issuers=" + Arrays.toString(request.getPrincipals()) + ", hostname=" + request.getHost() +

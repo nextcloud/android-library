@@ -103,7 +103,7 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
             if (size == 0) {
                 size = -1;
             }
-            long maxCount = Math.min(mOffset + length - 1, mChannel.size());
+            long maxCount = Math.min(mOffset + length, mChannel.size());
             while (mChannel.position() < maxCount) {
                 readCount = mChannel.read(mBuffer);
                 try {

@@ -57,7 +57,8 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true,
-                ""
+                "",
+                null
             ).execute(client)
 
         assertTrue(createOperationResult.isSuccess)
@@ -78,6 +79,47 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
         assertEquals(note, updatedShare.note)
 
         assertTrue(RemoveFileRemoteOperation("/note/").execute(client).isSuccess)
+    }
+
+    @Test
+    fun updateMultipleParams() {
+        assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
+
+        val createOperationResult =
+            CreateShareRemoteOperation(
+                "/label/",
+                ShareType.PUBLIC_LINK,
+                "",
+                true,
+                "",
+                OCShare.READ_PERMISSION_FLAG
+            ).execute(client)
+
+        assertTrue(createOperationResult.isSuccess)
+
+        val share = createOperationResult.resultData[0]
+
+        val sut = UpdateShareRemoteOperation(share.remoteId)
+        val label = "test & test"
+        sut.setLabel(label)
+
+        val note = "test note"
+        sut.setNote(note)
+
+        val password = "test_pass_%_90"
+        sut.setPassword(password)
+
+        assertTrue(sut.execute(client).isSuccess)
+
+        val getShareOperationResult = GetShareRemoteOperation(share.remoteId).execute(client)
+        assertTrue(getShareOperationResult.isSuccess)
+        val updatedShare = getShareOperationResult.resultData[0]
+
+        assertEquals(label, updatedShare.label)
+        assertEquals(true, updatedShare.isPasswordProtected)
+        assertEquals(note, updatedShare.note)
+
+        assertTrue(RemoveFileRemoteOperation("/label/").execute(client).isSuccess)
     }
 
     @Test

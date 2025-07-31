@@ -12,8 +12,8 @@ import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.status.GetStatusRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
-import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
@@ -22,7 +22,7 @@ class CreateShareRemoteOperationIT : AbstractIT() {
     @Before
     fun before() {
         val result = GetStatusRemoteOperation(context).execute(client)
-        Assert.assertTrue(result.isSuccess)
+        assertTrue(result.isSuccess)
         val data = result.data as ArrayList<Any>
         val ownCloudVersion = data[0] as OwnCloudVersion
         Assume.assumeTrue(ownCloudVersion.isNewerOrEqual(NextcloudVersion.nextcloud_24))
@@ -31,31 +31,37 @@ class CreateShareRemoteOperationIT : AbstractIT() {
     @Test
     fun createShareWithNote() {
         val note = "This is the note"
+        val path = "/share/"
 
-        Assert.assertTrue(
-            CreateFolderRemoteOperation(
-                "/share/",
-                true
-            ).execute(client).isSuccess
-        )
+        createFolder(path)
+        val share = createShare(path, "admin", note)
+        assertEquals(note, share.note)
+    }
 
-        // share folder to user "admin"
-        val sut =
+    private fun createFolder(path: String) {
+        assertTrue(CreateFolderRemoteOperation(path, true).execute(client).isSuccess)
+    }
+
+    private fun createShare(
+        path: String,
+        accountName: String,
+        note: String,
+        attributes: String? = null
+    ): OCShare {
+        val operation =
             CreateShareRemoteOperation(
-                "/share/",
+                path,
                 ShareType.USER,
-                "admin",
+                accountName,
                 false,
                 "",
                 OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER,
                 true,
-                note
-            ).execute(client)
-
-        junit.framework.Assert.assertTrue(sut.isSuccess)
-
-        val share = sut.resultData[0]
-
-        assertEquals(note, share.note)
+                note,
+                attributes
+            )
+        val result = operation.execute(client)
+        assertTrue(result.isSuccess)
+        return result.resultData[0]
     }
 }

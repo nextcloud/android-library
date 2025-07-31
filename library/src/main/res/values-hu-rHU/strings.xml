@@ -18,4 +18,18 @@
     <string name="no_network_connection">Nincs hálózati kapcsolat</string>
     <string name="notification_channel_name">Nextcloud kapcsolat</string>
     <string name="notification_message_select_client_cert">Válassza ki a kliens tanúsítványtát %1$s:%2$d</string>
-    </resources>
+    <string name="notification_title_select_client_cert">Ügyféltanúsítvány kiválasztása</string>
+    <string name="operation_cancelled">A hívó megszakította a műveletet</string>
+    <string name="operation_cancelled_by_the_caller">A hívó megszakította a műveletet</string>
+    <string name="operation_finished_http_code">Művelet %1$d (%2$s) HTTP státuszkóddal befejezve</string>
+    <string name="socket_exception">Socket hiba</string>
+    <string name="socket_timeout_exception">Socket időtúllépési hiba</string>
+    <string name="ssl_exception">SSL hiba</string>
+    <string name="ssl_recoverable_exception">Visszaállítható SSL hiba</string>
+    <string name="sync_conflict">Szinkronizációs ütközés</string>
+    <string name="title_no_client_cert">Nem található ügyféltanúsítvány</string>
+    <string name="unexpected_exception">Váratlan hiba</string>
+    <string name="unexpected_webdav_exception">Váratlan WebDAV hiba</string>
+    <string name="unknown_host_exception">Ismeretlen host hiba</string>
+    <string name="unrecovered_transport_exception">Nem visszaállított átviteli hiba</string>
+</resources>

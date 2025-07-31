@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Konto już istnieje</string>
+    <string name="account_not_the_same">Uwierzytelniono inne konto niż to użyte do aktualizacji</string>
+    <string name="bad_oc_version">Na serwerze nie znaleziono wymaganej wersji Nextcloud</string>
+    <string name="connect_timeout_exception">Przekroczono limit czasu połączenia</string>
+    <string name="exception_using_account">Wystąpił wyjątek podczas korzystania z konta</string>
+    <string name="file_locked">Plik jest aktualnie otwarty przez innego użytkownika lub proces</string>
+    <string name="file_not_found">Plik lokalny nie istnieje</string>
+    <string name="http_violation">Naruszenie protokołu HTTP</string>
+    <string name="instance_not_configured">Serwer Nextcloud nie został skonfigurowany!</string>
+    <string name="invalid_character_in_name">Nazwa pliku zawiera niedozwolony znak</string>
+    <string name="json_exception">Wyjątek JSON</string>
+    <string name="local_storage_full">Pamięć lokalna pełna</string>
+    <string name="local_storage_not_moved">Błąd podczas przenoszenia pliku do folderu docelowego</string>
+    <string name="malformed_url_exception">Nieprawidłowy format adresu URL (wyjątek)</string>
+    <string name="message_install_client_cert">Czy chcesz zainstalować certyfikat klienta TLS\?</string>
+    <string name="no_network_connection">Brak połączenia sieciowego</string>
+    <string name="notification_channel_name">Połączenie Nextcloud</string>
+    <string name="notification_message_select_client_cert">Wybierz certyfikat klienta dla %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Wybierz certyfikat klienta</string>
+    <string name="operation_cancelled">Operacja anulowana przez dzwoniącego</string>
+    <string name="operation_cancelled_by_the_caller">Operacja anulowana przez dzwoniącego</string>
+    <string name="operation_finished_http_code">Zapytanie HTTP nie powiodło się z kodem: %1$d (%2$s)</string>
+    <string name="socket_exception">Wyjątek</string>
+    <string name="socket_timeout_exception">Przekroczono limit czasu gniazda (socket timeout)</string>
+    <string name="ssl_exception">Wyjątek SSL</string>
+    <string name="ssl_recoverable_exception">Odzyskiwalny wyjątek SSL (SSL recoverable exception)</string>
+    <string name="sync_conflict">Konflikt synchronizacji</string>
+    <string name="title_no_client_cert">Nie znaleziono certyfikatu klienta</string>
+    <string name="unexpected_exception">Nieoczekiwany wyjątek</string>
+    <string name="unexpected_webdav_exception">Nieoczekiwany wyjątek WebDAV</string>
+    <string name="unknown_host_exception">Nieznany wyjątek hosta</string>
+    <string name="unrecovered_transport_exception">Nieodzyskany wyjątek transportu</string>
+</resources>
