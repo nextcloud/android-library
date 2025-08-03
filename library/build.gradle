@@ -121,20 +121,20 @@ tasks.withType(SpotBugsTask){task ->
 }
 
 android {
-    compileSdk 35
+    compileSdk = 35
 
     buildTypes {
         debug {
-            testCoverageEnabled true
+            testCoverageEnabled = true
         }
     }
 
     lint {
-        abortOnError true
+        abortOnError = true
         disable 'MissingTranslation', 'GradleDependency', 'VectorPath', 'IconMissingDensityFolder', 'IconDensities', 'GoogleAppIndexingWarning', 'MissingDefaultResource', 'StringFormatInvalid', 'MissingQuantity', 'InvalidPackage'
-        htmlOutput file("$project.buildDir/reports/lint/lint.html")
-        htmlReport true
-        warningsAsErrors true
+        htmlOutput = file("$project.buildDir/reports/lint/lint.html")
+        htmlReport = true
+        warningsAsErrors = true
     }
 
     defaultConfig {
@@ -149,7 +149,7 @@ android {
         testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD2", "${NC_TEST_SERVER_PASSWORD2}"
         testInstrumentationRunnerArguments disableAnalytics: 'true'
 
-        multiDexEnabled true
+        multiDexEnabled = true
     }
 
     compileOptions {
@@ -172,7 +172,7 @@ android {
         }
     }
 
-    namespace 'com.owncloud.android.lib'
+    namespace = 'com.owncloud.android.lib'
 }
 
 tasks.register("combinedTestReport", JacocoReport) {
