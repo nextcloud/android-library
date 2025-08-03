@@ -27,10 +27,10 @@ repositories {
 }
 
 android {
-    compileSdk 35
+    compileSdk = 35
 
     lintOptions {
-        abortOnError false
+        abortOnError = false
     }
 
     packagingOptions {
@@ -44,11 +44,11 @@ android {
         minSdkVersion 21
         targetSdkVersion 35
 
-        multiDexEnabled true
+        multiDexEnabled = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    namespace 'com.owncloud.android.lib.sampleclient'
+    namespace = 'com.owncloud.android.lib.sampleclient'
 }
 
 dependencies {
