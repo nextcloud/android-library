@@ -78,6 +78,7 @@
          <trusted-key id="33FD4BFD33554634053D73C0C2148900BCD3C2AF" group="org.jetbrains" name="annotations" version="23.0.0"/>
          <trusted-key id="34441E504A937F43EB0DAEF96A65176A0FB1CD0B">
             <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.22"/>
+            <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.27"/>
             <trusting group="org.codehaus.groovy"/>
          </trusted-key>
          <trusted-key id="3690C240CE51B4670D30AD1C38EE757D69184620" group="org.tukaani" name="xz" version="1.9"/>
@@ -163,7 +164,10 @@
          </trusted-key>
          <trusted-key id="8A10792983023D5D14C93B488D7F1BEC1E2ECAE7" group="^com[.]fasterxml($|([.].*))" regex="true"/>
          <trusted-key id="8E3A02905A1AE67E7B0F9ACD3967D4EDA591B991" group="org.jetbrains.kotlinx" name="kotlinx-html-jvm" version="0.8.1"/>
-         <trusted-key id="8F9A3C6D105B9F57844A721D79E193516BE7998F" group="org.dom4j" name="dom4j" version="2.1.4"/>
+         <trusted-key id="8F9A3C6D105B9F57844A721D79E193516BE7998F">
+            <trusting group="org.dom4j" name="dom4j" version="2.1.4"/>
+            <trusting group="org.dom4j" name="dom4j" version="2.2.0"/>
+         </trusted-key>
          <trusted-key id="90EE19787A7BCF6FD37A1E9180C08B1C29100955" group="com.squareup" name="javawriter"/>
          <trusted-key id="95115197C5227C0887299D000F9FE62F88E938D8" group="com.google.dagger" name="dagger" version="2.48"/>
          <trusted-key id="9857C388D7D1D9D031274CD0A5DEF5A76F94A471" group="^com[.]github[.]spotbugs($|([.].*))" regex="true"/>
@@ -237,6 +241,7 @@
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.2.1"/>
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.2.2"/>
             <trusting group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.2.3"/>
+            <trusting group="^com[.]github[.]spotbugs($|([.].*))" regex="true"/>
          </trusted-key>
          <trusted-key id="DB0597E3144342256BC81E3EC727D053C4481CF5" group="org.tensorflow" name="tensorflow-lite-metadata" version="0.1.0-rc2"/>
          <trusted-key id="DBD744ACE7ADE6AA50DD591F66B50994442D2D40" group="^com[.]squareup($|([.].*))" regex="true"/>
