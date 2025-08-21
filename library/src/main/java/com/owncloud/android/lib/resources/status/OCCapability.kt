@@ -10,7 +10,6 @@
 package com.owncloud.android.lib.resources.status
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.owncloud.android.lib.resources.declarativeui.Endpoint
 
 /**
@@ -128,17 +127,16 @@ class OCCapability {
     // declarative ui - context menu
     var declarativeUiJson: String? = null
 
-    fun getDeclarativeUi(type: String) : List<Endpoint> {
-            if (declarativeUiJson == null ||  type.isEmpty()) {
-                return emptyList()
-            }
-
-         val l = object : TypeToken<DeclarativeUI>() {}.type
-         //val l = object : TypeToken<List<String>>() {}.type
-            val declarativeUI: DeclarativeUI = Gson().fromJson(declarativeUiJson, l)
-        
-            return declarativeUI.contextmenu // declarativeUI.getValue(type).endpoints
+    fun getDeclarativeUiEndpoints(hook: Type): List<Endpoint> {
+        if (declarativeUiJson == null) {
+            return emptyList()
         }
+
+        val declarativeUI: DeclarativeUiData = Gson().fromJson(declarativeUiJson, DeclarativeUiData::class.java)
+
+        return declarativeUI.hooks.find { it.type == hook }?.endpoints
+            ?: emptyList()
+    }
 
     // Etag for capabilities
     var etag: String? = ""

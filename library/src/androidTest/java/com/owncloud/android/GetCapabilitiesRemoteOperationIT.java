@@ -10,13 +10,13 @@
 package com.owncloud.android;
 
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.declarativeui.Endpoint;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.E2EVersion;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+import com.owncloud.android.lib.resources.status.Type;
 
 import org.junit.Test;
 
@@ -178,8 +178,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         OCCapability capability = (OCCapability) result.getSingleData();
 
-        List<Endpoint> createNewList =  capability.getDeclarativeUi("create-new");
-        
-        assertFalse(createNewList.isEmpty());
+        assertEquals(5, capability.getDeclarativeUiEndpoints(Type.CONTEXT_MENU).size());
+        assertEquals(2, capability.getDeclarativeUiEndpoints(Type.CREATE_NEW).size());
     } 
 }

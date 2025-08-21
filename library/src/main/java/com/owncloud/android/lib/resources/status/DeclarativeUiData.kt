@@ -7,6 +7,4 @@
 
 package com.owncloud.android.lib.resources.status
 
-import com.owncloud.android.lib.resources.declarativeui.Endpoint
-
-data class DeclarativeUI(val contextmenu: List<Endpoint>)
+data class DeclarativeUiData(val hooks: List<Hook>)
