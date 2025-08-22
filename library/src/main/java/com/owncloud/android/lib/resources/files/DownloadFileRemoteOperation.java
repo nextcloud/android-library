@@ -6,7 +6,10 @@
  */
 package com.owncloud.android.lib.resources.files;
 
+import android.os.Build;
+
 import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
 import com.owncloud.android.lib.common.network.WebdavUtils;
 import com.owncloud.android.lib.common.operations.OperationCancelledException;
@@ -27,6 +30,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import java.util.Locale;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Remote operation performing the download of a remote file in the ownCloud server.
@@ -82,6 +89,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private int downloadFile(OwnCloudClient client, File targetFile) throws IOException, OperationCancelledException, CreateLocalFileException {
         int status;
         boolean savedFile = false;
@@ -135,8 +143,60 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                     transferEncoding = "chunked".equals(transferEncodingHeader.getValue());
                 }
                 
-                if (transferred == totalToTransfer || transferEncoding) {  
-                    savedFile = true;
+                if (transferred == totalToTransfer || transferEncoding) {
+                    if (OwnCloudClientManagerFactory.getHashDownloadCheck()){
+                        Header hashHeader = getMethod.getResponseHeader("X-Content-Hash");
+                        String expectedHash = hashHeader != null ? hashHeader.getValue() : null;
+                        if (expectedHash != null) {
+                            try {
+                                String[] entries = expectedHash.split(",");
+                                for (String entry : entries) {
+                                    String[] parts = entry.split(";", 2);
+                                    if (parts.length != 2) continue;
+                                    String Algorithm  = parts[0].trim().toLowerCase(Locale.ROOT);
+                                    String hash  = parts[1].trim();
+
+                                    String digestAlgorithm = null;
+
+                                    switch (Algorithm) {
+                                        case "sha256":
+                                            digestAlgorithm = "SHA-256";
+                                            break;
+                                        case "sha1":
+                                            digestAlgorithm = "SHA-1";
+                                            break;
+                                        case "md5":
+                                            digestAlgorithm = "MD5";
+                                            break;
+                                        default:
+                                            // Skip unknown algorithm
+                                            continue;
+                                    }
+
+                                    String fileHash = FileUtils.getHashFromFile(this, targetFile, digestAlgorithm);
+
+                                    if (!hash.equalsIgnoreCase(fileHash)) {
+                                        // Hash is incorrect: delete file and abort
+                                        Log_OC.w(TAG, "Hash mismatch: expected="+ hash +" actual="+ fileHash);
+                                        status = 418;
+                                        savedFile = false;
+                                    }else{
+                                        savedFile = true;
+                                        break;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                Log_OC.w(TAG, "Could not compute chunk hash");
+                                status = 418;
+                                savedFile = false;
+                            }
+                        }else {
+                            savedFile = true;
+                        }
+                    }else {
+                        savedFile = true;
+                    }
+
                     Header modificationTime = getMethod.getResponseHeader("Last-Modified");
                     if (modificationTime == null) {
                         modificationTime = getMethod.getResponseHeader("last-modified");
