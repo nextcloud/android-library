@@ -13,7 +13,7 @@ import android.os.Parcelable
 class Status(
     val status: StatusType,
     val message: String?,
-    val icon: String,
+    val icon: String?,
     val clearAt: Long
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
