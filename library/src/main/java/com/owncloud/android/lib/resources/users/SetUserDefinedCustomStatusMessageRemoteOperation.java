@@ -16,6 +16,8 @@ import com.owncloud.android.lib.resources.OCSRemoteOperation;
 
 import org.apache.commons.httpclient.HttpStatus;
 
+import androidx.annotation.Nullable;
+
 /**
  * Remote operation performing setting user defined custom status message
  */
@@ -28,7 +30,7 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
     private final String statusIcon;
     private final Long clearAt;
 
-    public SetUserDefinedCustomStatusMessageRemoteOperation(String message, String statusIcon, Long clearAt) {
+    public SetUserDefinedCustomStatusMessageRemoteOperation(String message, String statusIcon, @Nullable Long clearAt) {
         this.message = message;
         this.statusIcon = statusIcon;
         this.clearAt = clearAt;
@@ -46,7 +48,9 @@ public class SetUserDefinedCustomStatusMessageRemoteOperation extends OCSRemoteO
             // request body
             JSONRequestBody jsonRequestBody = new JSONRequestBody("message", message);
             jsonRequestBody.put("statusIcon", statusIcon);
-            jsonRequestBody.put("clearAt", clearAt.toString());
+            if (clearAt != null) {
+                jsonRequestBody.put("clearAt", clearAt.toString());
+            }
 
             // remote request
             putMethod = new PutMethod(client.getBaseUri() + SET_STATUS_URL, true, jsonRequestBody.get());

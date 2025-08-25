@@ -92,6 +92,7 @@ class OCCapability {
     // user status
     var userStatus = CapabilityBooleanType.UNKNOWN
     var userStatusSupportsEmoji = CapabilityBooleanType.UNKNOWN
+    var userStatusSupportsBusy = CapabilityBooleanType.UNKNOWN
 
     // Groupfolders
     var groupfolders = CapabilityBooleanType.UNKNOWN

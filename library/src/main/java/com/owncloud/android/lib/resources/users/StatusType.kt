@@ -25,5 +25,8 @@ enum class StatusType(
     AWAY("away"),
 
     @SerializedName("invisible")
-    INVISIBLE("invisible")
+    INVISIBLE("invisible"),
+
+    @SerializedName("busy")
+    BUSY("busy")
 }
