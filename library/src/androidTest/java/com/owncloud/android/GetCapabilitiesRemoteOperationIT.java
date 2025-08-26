@@ -9,13 +9,6 @@
  */
 package com.owncloud.android;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.E2EVersion;
@@ -25,6 +18,13 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Class to test GetRemoteCapabilitiesOperation
@@ -153,11 +153,16 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         }
 
         // e2e
-        assertNotSame(capability.getEndToEndEncryptionApiVersion(), E2EVersion.UNKNOWN);
+        assertNotSame(E2EVersion.UNKNOWN, capability.getEndToEndEncryptionApiVersion());
 
         // recommendations
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_31)) {
             assertTrue(capability.getRecommendations().isTrue());
+        }
+
+        // busy
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_32)) {
+            assertTrue(capability.getUserStatusSupportsBusy().isTrue());
         }
     }
 }
