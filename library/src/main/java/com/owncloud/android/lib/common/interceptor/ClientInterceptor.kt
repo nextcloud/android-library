@@ -26,6 +26,8 @@ import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @Suppress("TooManyFunctions")
 class ClientInterceptor {
@@ -81,8 +83,9 @@ class ClientInterceptor {
 
     fun interceptOkHttp3Request(request: Request) {
         Log_OC.d(TAG, "➡️ Method: ${request.method} 🌐 URL: ${request.url}")
-        logHeaders(request.headers.toMultimap().flatMap { (k, vList) -> vList.map { k to it } })
-
+        request.headers?.toMultimap()?.let { headerMap ->
+            logHeaders(headerMap.flatMap { (k, vList) -> vList.map { k to it } })
+        }
         request.body?.let {
             val buffer = okio.Buffer()
             it.writeTo(buffer)
@@ -93,8 +96,21 @@ class ClientInterceptor {
 
     fun interceptOkHttp3Response(response: Response) {
         Log_OC.d(TAG, "⬅️ Status: ${response.code}")
-        logHeaders(response.headers.toMultimap().flatMap { (k, vList) -> vList.map { k to it } })
-        logBody(response.peekBody(Long.MAX_VALUE).string(), response.body.contentType()?.toString(), "Response")
+        response.headers?.toMultimap()?.let { headerMap ->
+            logHeaders(headerMap.flatMap { (k, vList) -> vList.map { k to it } })
+        }
+
+        val body =
+            try {
+                response.peekBody(Long.MAX_VALUE)
+            } catch (_: Exception) {
+                null
+            }
+
+        body?.string()?.let { bodyString ->
+            logBody(bodyString, response.body?.contentType()?.toString(), "Response")
+        }
+
         Log_OC.d(TAG, "-------------------------")
     }
 
