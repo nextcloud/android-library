@@ -17,11 +17,12 @@ import org.apache.commons.httpclient.HttpMethod
 import org.apache.commons.httpclient.HttpMethodBase
 import org.json.JSONArray
 import org.json.JSONObject
-import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.StringReader
+import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
+import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
@@ -114,36 +115,38 @@ class ClientInterceptor {
     }
 
     // region Private Methods
-    private fun formatXml(
-        xml: String,
-        indent: Int = 2
-    ): String =
-        try {
-            val builder =
-                DocumentBuilderFactory
-                    .newInstance()
-                    .apply {
-                        isNamespaceAware = true
-                        isIgnoringComments = true
-                        isIgnoringElementContentWhitespace = true
-                    }.newDocumentBuilder()
+    private val xmlDocBuilder = DocumentBuilderFactory.newInstance().apply {
+        isNamespaceAware = true
+        isIgnoringComments = true
+        isIgnoringElementContentWhitespace = true
+    }.newDocumentBuilder()
 
-            val doc: Document = builder.parse(InputSource(StringReader(xml)))
+    private val threadLocalTransformer = ThreadLocal<Transformer>()
 
-            val transformer =
-                TransformerFactory.newInstance().newTransformer().apply {
-                    setOutputProperty(OutputKeys.INDENT, "yes")
-                    setOutputProperty("{http://xml.apache.org/xslt}indent-amount", indent.toString())
-                    setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
-                    setOutputProperty(OutputKeys.ENCODING, "UTF-8")
-                }
-
-            val writer = java.io.StringWriter()
-            transformer.transform(DOMSource(doc), StreamResult(writer))
-            writer.toString()
-        } catch (_: Exception) {
-            xml
+    private fun getTransformer(): Transformer {
+        var transformer = threadLocalTransformer.get()
+        if (transformer == null) {
+            transformer = TransformerFactory.newInstance().newTransformer().apply {
+                setOutputProperty(OutputKeys.INDENT, "yes")
+                setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
+                setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+            }
+            threadLocalTransformer.set(transformer)
         }
+        return transformer
+    }
+
+    private fun formatXml(xml: String): String = try {
+        val characterStream = StringReader(xml)
+        val inputSource = InputSource(characterStream)
+        val doc = xmlDocBuilder.parse(inputSource)
+        val writer = StringWriter()
+        val domSource = DOMSource(doc)
+        val streamResult = StreamResult(writer)
+        getTransformer().transform(domSource, streamResult)
+        writer.toString()
+    } catch (_: Exception) { xml }
 
     private fun formatJson(
         json: String,
@@ -152,8 +155,8 @@ class ClientInterceptor {
         try {
             val trimmed = json.trim()
             when {
-                trimmed.startsWith("{") -> JSONObject(trimmed).toString(indent)
-                trimmed.startsWith("[") -> JSONArray(trimmed).toString(indent)
+                ResponseFormatDetector.isJsonObject(trimmed) -> JSONObject(trimmed).toString(indent)
+                ResponseFormatDetector.isJsonArray(trimmed) -> JSONArray(trimmed).toString(indent)
                 else -> json
             }
         } catch (_: Exception) {
