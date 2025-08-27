@@ -20,8 +20,7 @@ object ResponseFormatDetector {
             else -> ResponseFormat.UNKNOWN
         }
 
-    private fun isJSON(input: String): Boolean =
-        isJsonObject(input) || isJsonArray(input)
+    private fun isJSON(input: String): Boolean = isJsonObject(input) || isJsonArray(input)
 
     fun isJsonObject(input: String): Boolean = runCatching { JSONObject(input) }.isSuccess
 

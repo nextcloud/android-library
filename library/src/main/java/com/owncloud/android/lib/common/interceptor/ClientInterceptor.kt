@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
+@Suppress("TooManyFunctions")
 class ClientInterceptor {
     companion object {
         private const val TAG = "ClientInterceptor"
@@ -115,38 +116,45 @@ class ClientInterceptor {
     }
 
     // region Private Methods
-    private val xmlDocBuilder = DocumentBuilderFactory.newInstance().apply {
-        isNamespaceAware = true
-        isIgnoringComments = true
-        isIgnoringElementContentWhitespace = true
-    }.newDocumentBuilder()
+    private val xmlDocBuilder =
+        DocumentBuilderFactory
+            .newInstance()
+            .apply {
+                isNamespaceAware = true
+                isIgnoringComments = true
+                isIgnoringElementContentWhitespace = true
+            }.newDocumentBuilder()
 
     private val threadLocalTransformer = ThreadLocal<Transformer>()
 
     private fun getTransformer(): Transformer {
         var transformer = threadLocalTransformer.get()
         if (transformer == null) {
-            transformer = TransformerFactory.newInstance().newTransformer().apply {
-                setOutputProperty(OutputKeys.INDENT, "yes")
-                setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
-                setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
-                setOutputProperty(OutputKeys.ENCODING, "UTF-8")
-            }
+            transformer =
+                TransformerFactory.newInstance().newTransformer().apply {
+                    setOutputProperty(OutputKeys.INDENT, "yes")
+                    setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                    setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
+                    setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+                }
             threadLocalTransformer.set(transformer)
         }
         return transformer
     }
 
-    private fun formatXml(xml: String): String = try {
-        val characterStream = StringReader(xml)
-        val inputSource = InputSource(characterStream)
-        val doc = xmlDocBuilder.parse(inputSource)
-        val writer = StringWriter()
-        val domSource = DOMSource(doc)
-        val streamResult = StreamResult(writer)
-        getTransformer().transform(domSource, streamResult)
-        writer.toString()
-    } catch (_: Exception) { xml }
+    private fun formatXml(xml: String): String =
+        try {
+            val characterStream = StringReader(xml)
+            val inputSource = InputSource(characterStream)
+            val doc = xmlDocBuilder.parse(inputSource)
+            val writer = StringWriter()
+            val domSource = DOMSource(doc)
+            val streamResult = StreamResult(writer)
+            getTransformer().transform(domSource, streamResult)
+            writer.toString()
+        } catch (_: Exception) {
+            xml
+        }
 
     private fun formatJson(
         json: String,
