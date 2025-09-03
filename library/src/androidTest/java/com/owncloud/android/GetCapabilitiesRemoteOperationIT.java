@@ -36,28 +36,27 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     @Test
     public void testGetRemoteCapabilitiesOperation() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
-        checkCapability(capability, client.getUserId());
+        checkCapability(result.getResultData(), client.getUserId());
     }
 
     @Test
     public void testGetRemoteCapabilitiesOperationEtag() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(client);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(client);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
+        OCCapability capability = result.getResultData();
 
-        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(client);
+        RemoteOperationResult<OCCapability> resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(client);
         assertTrue(resultEtag.isSuccess());
-        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+        OCCapability sameCapability = resultEtag.getResultData();
         assertEquals(capability, sameCapability);
 
         checkCapability(capability, client.getUserId());
@@ -69,28 +68,27 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     @Test
     public void testGetRemoteCapabilitiesOperationWithNextcloudClient() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
-        checkCapability(capability, client.getUserId());
+        checkCapability(result.getResultData(), client.getUserId());
     }
 
     @Test
     public void testGetRemoteCapabilitiesOperationEtagWithNextcloudClient() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertTrue(result.getData() != null && result.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getData().get(0);
+        OCCapability capability = result.getResultData();
 
-        RemoteOperationResult resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> resultEtag = new GetCapabilitiesRemoteOperation(capability).execute(nextcloudClient);
         assertTrue(resultEtag.isSuccess());
-        assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
+        assertNotNull(result.getResultData());
 
-        OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
+        OCCapability sameCapability = resultEtag.getResultData();
         assertEquals(capability, sameCapability);
 
         checkCapability(capability, nextcloudClient.getUserId());

@@ -64,9 +64,9 @@ public class SetUserInfoRemoteOperationIT extends AbstractIT {
 
     @Test
     public void testSetPhone() {
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        OCCapability ocCapability = (OCCapability) result.getSingleData();
+        OCCapability ocCapability = result.getResultData();
 
         RemoteOperationResult<UserInfo> userInfo = new GetUserInfoRemoteOperation().execute(nextcloudClient);
         assertTrue(userInfo.isSuccess());

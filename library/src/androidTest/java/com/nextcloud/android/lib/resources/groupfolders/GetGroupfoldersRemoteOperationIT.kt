@@ -9,7 +9,6 @@ package com.nextcloud.android.lib.resources.groupfolders
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
-import com.owncloud.android.lib.resources.status.OCCapability
 import org.junit.Assert.assertEquals
 import org.junit.Assume.assumeTrue
 import org.junit.Test
@@ -17,7 +16,7 @@ import org.junit.Test
 class GetGroupfoldersRemoteOperationIT : AbstractIT() {
     @Test
     fun getGroupfolders() {
-        val capability = GetCapabilitiesRemoteOperation().execute(client).singleData as OCCapability
+        val capability = GetCapabilitiesRemoteOperation().execute(client).resultData
 
         assumeTrue(capability.groupfolders.isTrue)
 
