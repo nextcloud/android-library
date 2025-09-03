@@ -144,6 +144,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String NODE_USER_STATUS = "user_status";
     private static final String NODE_USER_STATUS_ENABLED = "enabled";
     private static final String NODE_USER_STATUS_SUPPORTS_EMOJI = "supports_emoji";
+    private static final String NODE_USER_STATUS_SUPPORTS_BUSY = "supports_busy";
 
     // groupfolders
     private static final String NODE_GROUPFOLDERS = "groupfolders";
@@ -697,9 +698,16 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     } else {
                         capability.setUserStatusSupportsEmoji(CapabilityBooleanType.FALSE);
                     }
+
+                    if (userStatusCapability.getBoolean(NODE_USER_STATUS_SUPPORTS_BUSY)) {
+                        capability.setUserStatusSupportsBusy(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setUserStatusSupportsBusy(CapabilityBooleanType.FALSE);
+                    }
                 } else {
                     capability.setUserStatus(CapabilityBooleanType.FALSE);
                     capability.setUserStatusSupportsEmoji(CapabilityBooleanType.FALSE);
+                    capability.setUserStatusSupportsBusy(CapabilityBooleanType.FALSE);
                 }
 
                 // groupfolders
