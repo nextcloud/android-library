@@ -58,12 +58,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
 
         OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
-
-        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
-            assertEquals(capability, sameCapability);
-        } else {
-            assertEquals(capability.getEtag(), sameCapability.getEtag());
-        }
+        assertEquals(capability, sameCapability);
 
         checkCapability(capability, client.getUserId());
     }
@@ -96,12 +91,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         assertTrue(resultEtag.getData() != null && resultEtag.getData().size() == 1);
 
         OCCapability sameCapability = (OCCapability) resultEtag.getData().get(0);
-
-        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_19)) {
-            assertEquals(capability, sameCapability);
-        } else {
-            assertEquals(capability.getEtag(), sameCapability.getEtag());
-        }
+        assertEquals(capability, sameCapability);
 
         checkCapability(capability, nextcloudClient.getUserId());
     }
