@@ -255,7 +255,10 @@
          <trusted-key id="EE0CA873074092F806F59B65D364ABAA39A47320" group="com.google.errorprone"/>
          <trusted-key id="EF5214AD654CD05F0DA91609ECEAC3B11AD0E0A0" group="com.adobe.xmp" name="xmpcore" version="6.1.11"/>
          <trusted-key id="F1A51E051F527E0C8E24D54D4B1E11D5A4B91E89" group="com.google.protobuf"/>
-         <trusted-key id="F254B35617DC255D9344BCFA873A8E86B4372146" group="org.codehaus.mojo"/>
+         <trusted-key id="F254B35617DC255D9344BCFA873A8E86B4372146">
+            <trusting group="org.apache" name="apache" version="13"/>
+            <trusting group="org.codehaus.mojo"/>
+         </trusted-key>
          <trusted-key id="F3184BCD55F4D016E30D4C9BF42E87F9665015C9" group="org.jsoup" name="jsoup" version="1.12.2"/>
          <trusted-key id="FA77DCFEF2EE6EB2DEBEDD2C012579464D01C06A" group="org.apache" name="apache"/>
          <trusted-key id="FA7929F83AD44C4590F6CC6815C71C0A4E0B8EDD" group="net.java.dev.jna"/>
