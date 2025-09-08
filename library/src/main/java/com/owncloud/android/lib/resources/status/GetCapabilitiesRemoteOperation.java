@@ -34,7 +34,7 @@ import java.util.ArrayList;
  *
  * Save in Result.getData in a OCCapability object
  */
-public class GetCapabilitiesRemoteOperation extends RemoteOperation {
+public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability> {
 
     private static final String TAG = GetCapabilitiesRemoteOperation.class.getSimpleName();
 
@@ -190,8 +190,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    public RemoteOperationResult run(NextcloudClient client) {
-        RemoteOperationResult result;
+    public RemoteOperationResult<OCCapability> run(NextcloudClient client) {
+        RemoteOperationResult<OCCapability> result;
         int status;
         GetMethod get = null;
 
@@ -213,7 +213,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
             if (isNotModified(status)) {
                 Log_OC.d(TAG, "Capabilities not modified");
 
-                result = new RemoteOperationResult(true, get);
+                result = new RemoteOperationResult<>(true, get);
                 result.setSingleData(currentCapability);
 
                 Log_OC.d(TAG, "*** Get Capabilities completed ");
@@ -229,20 +229,16 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                 }
 
                 // Result
-                result = new RemoteOperationResult(true, get);
-                result.setSingleData(capability);
+                result = new RemoteOperationResult<>(true, get);
+                result.setResultData(capability);
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
-                if (response != null) {
-                    Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
-                } else {
-                    Log_OC.e(TAG, "*** status code: " + status);
-                }
+                Log_OC.e(TAG, "*** status code: " + status + "; response message: " + response);
             }
         } catch (JSONException | IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting capabilities", e);
 
         } finally {
@@ -254,8 +250,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     }
 
     @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
+    protected RemoteOperationResult<OCCapability> run(OwnCloudClient client) {
+        RemoteOperationResult<OCCapability> result;
         int status;
         org.apache.commons.httpclient.methods.GetMethod get = null;
 
@@ -278,7 +274,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
             if (isNotModified(status)) {
                 Log_OC.d(TAG, "Capabilities not modified");
 
-                result = new RemoteOperationResult(true, get);
+                result = new RemoteOperationResult<>(true, get);
                 result.setSingleData(currentCapability);
 
                 Log_OC.d(TAG, "*** Get Capabilities completed ");
@@ -294,10 +290,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                 }
 
                 // Result
-                result = new RemoteOperationResult(true, get);
-                result.setSingleData(capability);
+                result = new RemoteOperationResult<>(true, get);
+                result.setResultData(capability);
             } else {
-                result = new RemoteOperationResult(false, get);
+                result = new RemoteOperationResult<>(false, get);
                 String response = get.getResponseBodyAsString();
                 Log_OC.e(TAG, "Failed response while getting capabilities from the server ");
                 if (response != null) {
@@ -307,7 +303,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                 }
             }
         } catch (JSONException | IOException e) {
-            result = new RemoteOperationResult(e);
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting capabilities", e);
 
         } finally {
