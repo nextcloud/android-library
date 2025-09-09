@@ -36,7 +36,7 @@ abstract class OkHttpMethodBase(
 
     private var response: Response? = null
     private var queryMap: Map<String, String> = HashMap()
-    private val requestHeaders: MutableMap<String, String> = HashMap()
+    val requestHeaders: MutableMap<String, String> = HashMap()
     private val requestBuilder: Request.Builder = Request.Builder()
     private var request: Request? = null
 
@@ -151,6 +151,16 @@ abstract class OkHttpMethodBase(
 
         return response?.code ?: UNKNOWN_STATUS_CODE
     }
+
+    fun getRequestBodyAsString(): String =
+        try {
+            val copy = request?.newBuilder()?.build()
+            val buffer = okio.Buffer()
+            copy?.body?.writeTo(buffer)
+            buffer.readUtf8()
+        } catch (_: Exception) {
+            ""
+        }
 
     abstract fun applyType(temp: Request.Builder)
 
