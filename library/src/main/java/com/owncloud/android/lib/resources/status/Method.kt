@@ -7,4 +7,8 @@
 
 package com.owncloud.android.lib.resources.status
 
-data class DeclarativeUiData(val hooks: List<Hook>)
+enum class Method {
+    GET,
+    POST,
+    PUT
+}

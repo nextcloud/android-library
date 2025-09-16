@@ -10,6 +10,7 @@
 package com.owncloud.android.lib.resources.status
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.owncloud.android.lib.resources.declarativeui.Endpoint
 
 /**
@@ -127,15 +128,33 @@ class OCCapability {
     // declarative ui - context menu
     var declarativeUiJson: String? = null
 
-    fun getDeclarativeUiEndpoints(hook: Type): List<Endpoint> {
+    fun getDeclarativeUiEndpoints(hook: Type, mimetype: String): List<Endpoint> {
         if (declarativeUiJson == null) {
             return emptyList()
         }
 
-        val declarativeUI: DeclarativeUiData = Gson().fromJson(declarativeUiJson, DeclarativeUiData::class.java)
+        val apps = object : TypeToken<Map<String, Map<String, List<Endpoint>>>>() {}.type
+        val test: Map<String, Map<String, List<Endpoint>>> = Gson().fromJson(declarativeUiJson, apps)
 
-        return declarativeUI.hooks.find { it.type == hook }?.endpoints
-            ?: emptyList()
+        val endpoints = test.values
+            .map { it[hook.string] }
+            .flatMap { it?.toList().orEmpty() }
+            .filter {
+                filterMimetype(mimetype, it.mimetypeFilter)
+
+            }
+
+        endpoints.forEach {
+            if (it.method == null) {
+                it.method = Method.GET
+            }
+        }
+
+        return endpoints
+    }
+
+    private fun filterMimetype(mimetype: String, mimetypeFilter: String?): Boolean {
+        return mimetypeFilter?.split(",")?.any { mimetype.startsWith(it.trim()) } ?: true
     }
 
     // Etag for capabilities
