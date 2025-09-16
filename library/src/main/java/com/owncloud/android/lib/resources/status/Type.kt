@@ -8,14 +8,11 @@
 package com.owncloud.android.lib.resources.status
 
 import com.google.gson.annotations.SerializedName
-import com.owncloud.android.lib.resources.declarativeui.Endpoint
 
-data class Hook(val type: Type, val endpoints: List<Endpoint>)
-
-enum class Type {
+enum class Type(val string: String) {
     @SerializedName("context-menu")
-    CONTEXT_MENU,
+    CONTEXT_MENU("context-menu"),
 
     @SerializedName("create-new")
-    CREATE_NEW
+    CREATE_NEW("create-new")
 }
