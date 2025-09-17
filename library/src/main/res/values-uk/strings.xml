@@ -25,6 +25,7 @@
     <string name="socket_exception">Виняток із сокетом</string>
     <string name="socket_timeout_exception">Вичерпано час сокету</string>
     <string name="ssl_exception">Виняток SSL</string>
+    <string name="ssl_recoverable_exception">Виправне виключення SSL</string>
     <string name="sync_conflict">Конфлікт синхронізації</string>
     <string name="title_no_client_cert">Відсутній сертифікат клієнта</string>
     <string name="unexpected_exception">Неочікуваний виняток</string>
