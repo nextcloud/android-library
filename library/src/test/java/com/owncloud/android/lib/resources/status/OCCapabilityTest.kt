@@ -38,6 +38,7 @@ class OCCapabilityTest {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun parseDeclarativeUI() {
         val string = """{
               "analytics": {
@@ -106,7 +107,7 @@ class OCCapabilityTest {
                 ]
               }
             }"""
-        
+
         val sut = OCCapability()
         sut.declarativeUiJson = string
 
