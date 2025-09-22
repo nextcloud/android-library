@@ -176,7 +176,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         OCCapability capability = (OCCapability) result.getSingleData();
 
-        assertEquals(5, capability.getDeclarativeUiEndpoints(Type.CONTEXT_MENU).size());
-        assertEquals(2, capability.getDeclarativeUiEndpoints(Type.CREATE_NEW).size());
+        assertEquals(5, capability.getDeclarativeUiEndpoints(Type.CONTEXT_MENU, "").size());
+        assertEquals(2, capability.getDeclarativeUiEndpoints(Type.CREATE_NEW, "").size());
     } 
 }

@@ -9,7 +9,9 @@ package com.owncloud.android.lib.resources.status
 
 import com.google.gson.annotations.SerializedName
 
-enum class Type(val string: String) {
+enum class Type(
+    val string: String
+) {
     @SerializedName("context-menu")
     CONTEXT_MENU("context-menu"),
 

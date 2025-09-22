@@ -55,6 +55,10 @@ class ElementTypeAdapter :
                         Class.forName("com.owncloud.android.lib.resources.declarativeui.Image")
                             as Class<out Element>
 
+                    "URL" ->
+                        Class.forName("com.owncloud.android.lib.resources.declarativeui.URL")
+                            as Class<out Element>
+
                     else -> return null
                 }
 

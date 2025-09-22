@@ -19,8 +19,8 @@ data class Endpoint(
     var method: Method?,
     @SerializedName("mimetype_filters")
     val mimetypeFilter: String?,
+    @SerializedName("params")
     val bodyParams: Array<String>?,
-    @SerializedName("android_icon")
     val icon: String?,
     val filter: String?
 ) : Parcelable
