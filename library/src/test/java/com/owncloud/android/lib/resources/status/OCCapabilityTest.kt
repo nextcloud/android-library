@@ -48,7 +48,10 @@ class OCCapabilityTest {
                     "url": "\/ocs\/v2.php\/apps\/analytics\/createFromDataFile?fileId={fileId}",
                     "method": "POST",
                     "mimetype_filters": "text\/csv",
-                    "bodyParams": [],
+                    "params": {
+                        'file_id': '{fileId}',
+                        'file_path': '{filePath}'
+                    },
                     "icon": "\/apps\/analytics\/img\/app.svg"
                   }
                 ],
@@ -116,7 +119,7 @@ class OCCapabilityTest {
         assertEquals(3, sut.getDeclarativeUiEndpoints(Type.CREATE_NEW, "text/markdown").size.toLong())
 
         // Zip
-        assertEquals(3, sut.getDeclarativeUiEndpoints(Type.CONTEXT_MENU, "application/zip").size.toLong())
+        assertEquals(4, sut.getDeclarativeUiEndpoints(Type.CONTEXT_MENU, "application/zip").size.toLong())
         assertEquals(3, sut.getDeclarativeUiEndpoints(Type.CREATE_NEW, "application/zip").size.toLong())
     }
 }
