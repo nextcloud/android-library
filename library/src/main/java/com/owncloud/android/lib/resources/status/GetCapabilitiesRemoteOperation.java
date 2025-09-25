@@ -177,6 +177,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     // notes folder location
     private static final String NODE_NOTES = "notes";
     private static final String NOTES_PATH = "notes_path";
+    
+    // declarative ui
+    private static final String NODE_DECLARATIVE_UI = "declarativeui";
+    private static final String NODE_CONTEXT_MENU = "context-menu";
 
     private static final String PROPERTY_DEFAULT_PERMISSIONS = "default_permissions";
 
@@ -210,7 +214,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
             status = client.execute(get);
 
-            if (isNotModified(status)) {
+            if (false) {
                 Log_OC.d(TAG, "Capabilities not modified");
 
                 result = new RemoteOperationResult(true, get);
@@ -805,6 +809,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 }
 
+                // declarative ui
+                if (respCapabilities.has(NODE_DECLARATIVE_UI)) {
+                    capability.setDeclarativeUiJson(respCapabilities.getString(NODE_DECLARATIVE_UI));
+                }
             }
 
             Log_OC.d(TAG, "*** Get Capabilities completed ");
