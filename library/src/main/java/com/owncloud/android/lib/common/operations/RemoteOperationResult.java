@@ -137,7 +137,10 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         FOLDER_ALREADY_EXISTS,
         CANNOT_CREATE_FILE,
         LOCKED,
-        SIGNING_TOS_NEEDED
+        SIGNING_TOS_NEEDED,
+
+        // Cancelled by user
+        MANUAL_CANCELLED
     }
 
     private boolean mSuccess = false;
