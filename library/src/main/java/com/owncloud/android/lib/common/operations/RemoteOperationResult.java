@@ -140,7 +140,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         SIGNING_TOS_NEEDED,
 
         // Cancelled by user
-        MANUAL_CANCELLED
+        USER_CANCELLED
     }
 
     private boolean mSuccess = false;
