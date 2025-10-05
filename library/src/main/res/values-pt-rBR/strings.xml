@@ -5,7 +5,7 @@
     <string name="bad_oc_version">Nenhuma versão válida do Nextcloud foi encontrada no servidor</string>
     <string name="connect_timeout_exception">Exceção de tempo limite de conexão</string>
     <string name="exception_using_account">Exceção durante o uso da conta</string>
-    <string name="file_locked">O arquivo está atualmente bloqueado por outro usuário ou processo</string>
+    <string name="file_locked">O arquivo está atualmente trancado por outro usuário ou processo</string>
     <string name="file_not_found">O arquivo local não existe</string>
     <string name="http_violation">Violação HTTP</string>
     <string name="instance_not_configured">O servidor Nextcloud não está configurado!</string>
