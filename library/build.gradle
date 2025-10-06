@@ -121,8 +121,6 @@ tasks.withType(SpotBugsTask){task ->
 }
 
 android {
-    compileSdk = 35
-
     buildTypes {
         debug {
             testCoverageEnabled = true
@@ -138,8 +136,9 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 35
+        minSdk = 21
+        targetSdk = 36
+        compileSdk = 36
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
