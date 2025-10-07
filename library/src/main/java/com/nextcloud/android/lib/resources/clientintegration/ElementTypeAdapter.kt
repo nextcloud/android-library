@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package com.owncloud.android.lib.resources.clientintegration
+package com.nextcloud.android.lib.resources.clientintegration
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
@@ -31,7 +31,7 @@ class ElementTypeAdapter :
         return element
     }
 
-    @Throws(JsonParseException::class, java.lang.ClassNotFoundException::class, Throwable::class)
+    @Throws(JsonParseException::class, ClassNotFoundException::class, Throwable::class)
     override fun deserialize(
         json: JsonElement,
         type: Type,
@@ -44,19 +44,19 @@ class ElementTypeAdapter :
             val cls: Class<out Element> =
                 when (typeName) {
                     "Button" ->
-                        Class.forName("com.owncloud.android.lib.resources.declarativeui.Button")
+                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.Button")
                             as Class<out Element>
 
                     "Text" ->
-                        Class.forName("com.owncloud.android.lib.resources.declarativeui.Text")
+                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.Text")
                             as Class<out Element>
 
                     "Image" ->
-                        Class.forName("com.owncloud.android.lib.resources.declarativeui.Image")
+                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.Image")
                             as Class<out Element>
 
                     "URL" ->
-                        Class.forName("com.owncloud.android.lib.resources.declarativeui.URL")
+                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.URL")
                             as Class<out Element>
 
                     else -> return null

@@ -11,8 +11,8 @@ package com.owncloud.android.lib.resources.status
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.owncloud.android.lib.resources.clientintegration.App
-import com.owncloud.android.lib.resources.clientintegration.Endpoint
+import com.nextcloud.android.lib.resources.clientintegration.App
+import com.nextcloud.android.lib.resources.clientintegration.Endpoint
 
 /**
  * Contains data of the Capabilities for an account, from the Capabilities API
@@ -126,7 +126,7 @@ class OCCapability {
     // notes folder location
     var notesFolderPath: String? = null
 
-    // declarative ui
+    // client integration
     var clientIntegrationJson: String? = null
 
     fun getClientIntegrationEndpoints(

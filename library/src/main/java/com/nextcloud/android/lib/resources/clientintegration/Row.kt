@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.clientintegration
+package com.nextcloud.android.lib.resources.clientintegration
 
 data class Row(
     val children: List<Element>

@@ -808,7 +808,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 }
 
-                // declarative ui
+                // client integration
                 if (respCapabilities.has(NODE_CLIENT_INTEGRATION)) {
                     capability.setClientIntegrationJson(respCapabilities.getString(NODE_CLIENT_INTEGRATION));
                 }

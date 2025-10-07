@@ -5,7 +5,7 @@
  * SPDX-FileCopyrightText: 2025 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
-package com.nextcloud.android.lib.resources.declarativeui
+package com.nextcloud.android.lib.resources.clientintegration
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
@@ -16,9 +16,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
-import com.owncloud.android.lib.resources.clientintegration.ClientIntegrationUI
-import com.owncloud.android.lib.resources.clientintegration.Element
-import com.owncloud.android.lib.resources.clientintegration.ElementTypeAdapter
 import org.apache.commons.httpclient.HttpStatus
 
 /**

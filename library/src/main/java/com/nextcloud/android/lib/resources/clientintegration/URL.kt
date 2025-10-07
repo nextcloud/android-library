@@ -5,8 +5,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package com.owncloud.android.lib.resources.clientintegration
+package com.nextcloud.android.lib.resources.clientintegration
 
-data class Image(
+data class URL(
+    val text: String,
     val url: String
 ) : Element

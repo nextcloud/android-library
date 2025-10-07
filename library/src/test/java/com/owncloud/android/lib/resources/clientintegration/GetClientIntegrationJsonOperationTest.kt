@@ -7,11 +7,15 @@
 
 package com.owncloud.android.lib.resources.clientintegration
 
-import com.nextcloud.android.lib.resources.declarativeui.GetClientIntegrationJsonOperation
+import com.nextcloud.android.lib.resources.clientintegration.Button
+import com.nextcloud.android.lib.resources.clientintegration.GetClientIntegrationJsonOperation
+import com.nextcloud.android.lib.resources.clientintegration.Image
+import com.nextcloud.android.lib.resources.clientintegration.Orientation
+import com.nextcloud.android.lib.resources.clientintegration.Text
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
-class GetDeclarativeUiJsonOperationTest {
+class GetClientIntegrationJsonOperationTest {
     @Test
     @Suppress("LongMethod")
     fun testParseJson() {
@@ -54,34 +58,34 @@ class GetDeclarativeUiJsonOperationTest {
 
         val sut = GetClientIntegrationJsonOperation("")
 
-        val declarativeUI = sut.parseResult(string)
+        val clientIntegrationUI = sut.parseResult(string)
 
-        assertEquals(0.1, declarativeUI.version)
-        assertEquals(Orientation.VERTICAL, declarativeUI.root.orientation)
-        assertEquals(2, declarativeUI.root.rows.count())
+        assertEquals(0.1, clientIntegrationUI.version)
+        assertEquals(Orientation.VERTICAL, clientIntegrationUI.root.orientation)
+        assertEquals(2, clientIntegrationUI.root.rows.count())
 
         // row 1
         assertEquals(
             2,
-            declarativeUI.root.rows[0]
+            clientIntegrationUI.root.rows[0]
                 .children
                 .count()
         )
 
-        val button1 = declarativeUI.root.rows[0].children[0] as Button
+        val button1 = clientIntegrationUI.root.rows[0].children[0] as Button
         assertEquals("Submit", button1.label)
 
         // row 2
         assertEquals(
             2,
-            declarativeUI.root.rows[1]
+            clientIntegrationUI.root.rows[1]
                 .children
                 .count()
         )
-        val text = declarativeUI.root.rows[1].children[0] as Text
+        val text = clientIntegrationUI.root.rows[1].children[0] as Text
         assertEquals("Hello World!", text.text)
 
-        val image = declarativeUI.root.rows[1].children[1] as Image
+        val image = clientIntegrationUI.root.rows[1].children[1] as Image
         assertEquals("/core/img/logo/logo.png", image.url)
     }
 }

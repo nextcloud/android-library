@@ -59,7 +59,7 @@ class OCCapabilityTest {
                  "create-new": [
                   {
                     "name": "Analytic chart",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/newChart"
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/newChart"
                   }
                   ]
               },
@@ -76,29 +76,29 @@ class OCCapabilityTest {
                  "create-new": [
                       {
                         "name": "Analytic chart",
-                        "url": "\/ocs\/v2.php\/apps\/declarativetest\/newChart"
+                        "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/newChart"
                       }
                  ]
               },
-              "declarativetest": {
+              "clientintegrationtest": {
                 "version": 0.1,
                 "context-menu": [
                   {
                     "name": "List all UI elements",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/all"
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/all"
                   },
                   {
                     "name": "First version",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/version1"
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/version1"
                   },
                   {
                     "name": "Convert to PDF",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/convertFile\/123123",
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/convertFile\/123123",
                     "mimetype_filters": "image\/"
                   },
                   {
                     "name": "Create transcript",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/version1",
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/version1",
                     "mimetype_filters": "audio\/",
                     "android_icon": "file_sound"
                   },
@@ -111,7 +111,7 @@ class OCCapabilityTest {
                   },
                   {
                     "name": "Unzip",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/version1",
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/version1",
                     "mimetype_filters": "application\/zip",
                     "android_icon": "file_zip"
                   }
@@ -119,11 +119,11 @@ class OCCapabilityTest {
                 "create-new": [
                   {
                     "name": "Deck board",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/newDeckBoard"
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/newDeckBoard"
                   },
                   {
                     "name": "New Contact",
-                    "url": "\/ocs\/v2.php\/apps\/declarativetest\/newContact",
+                    "url": "\/ocs\/v2.php\/apps\/clientintegrationtest\/newContact",
                     "android_icon": "file_vcard"
                   }
                 ]
