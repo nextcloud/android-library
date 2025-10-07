@@ -5,9 +5,8 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package com.owncloud.android.lib.resources.declarativeui
+package com.owncloud.android.lib.resources.clientintegration
 
-data class Button(
-    val label: String,
-    val type: String
+data class Image(
+    val url: String
 ) : Element

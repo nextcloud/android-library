@@ -6,16 +6,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.status
+package com.owncloud.android.lib.resources.clientintegration
 
 import com.google.gson.annotations.SerializedName
 
-enum class Type(
-    val string: String
-) {
+data class App(
+    val version: Double,
     @SerializedName("context-menu")
-    CONTEXT_MENU("context-menu"),
-
+    val contextMenu: List<Endpoint>,
     @SerializedName("create-new")
-    CREATE_NEW("create-new")
-}
+    val createNew: List<Endpoint>
+)

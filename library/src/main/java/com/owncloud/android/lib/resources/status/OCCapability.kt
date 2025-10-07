@@ -11,7 +11,8 @@ package com.owncloud.android.lib.resources.status
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.owncloud.android.lib.resources.declarativeui.Endpoint
+import com.owncloud.android.lib.resources.clientintegration.App
+import com.owncloud.android.lib.resources.clientintegration.Endpoint
 
 /**
  * Contains data of the Capabilities for an account, from the Capabilities API
@@ -125,28 +126,28 @@ class OCCapability {
     // notes folder location
     var notesFolderPath: String? = null
 
-    // declarative ui - context menu
-    var declarativeUiJson: String? = null
+    // declarative ui
+    var clientIntegrationJson: String? = null
 
-    fun getDeclarativeUiEndpoints(
+    fun getClientIntegrationEndpoints(
         hook: Type,
         mimetype: String
     ): List<Endpoint> {
-        if (declarativeUiJson == null) {
+        if (clientIntegrationJson == null) {
             return emptyList()
         }
 
-        val apps = object : TypeToken<Map<String, Map<String, List<Endpoint>>>>() {}.type
-        val test: Map<String, Map<String, List<Endpoint>>> = Gson().fromJson(declarativeUiJson, apps)
+        val appsType = object : TypeToken<Map<String, App>>() {}.type
+        val apps: Map<String, App> = Gson().fromJson(clientIntegrationJson, appsType)
 
         val endpoints =
-            test.values
-                .map { it[hook.string] }
-                .flatMap { it?.toList().orEmpty() }
-                .filter {
-                    filterMimetype(mimetype, it.mimetypeFilter)
-                }
+            apps.values
+                .filter { it.version <= CLIENT_INTEGRATION_VERSION }
+                .map { mapHooks(it, hook) }
+                .flatMap { it.toList() }
+                .filter { filterMimetype(mimetype, it.mimetypeFilter) }
 
+        // GET by default
         endpoints.forEach {
             if (it.method == null) {
                 it.method = Method.GET
@@ -155,6 +156,15 @@ class OCCapability {
 
         return endpoints
     }
+
+    private fun mapHooks(
+        app: App,
+        hook: Type
+    ): List<Endpoint> =
+        when (hook) {
+            Type.CONTEXT_MENU -> app.contextMenu
+            Type.CREATE_NEW -> app.createNew
+        }
 
     private fun filterMimetype(
         mimetype: String,
@@ -179,5 +189,6 @@ class OCCapability {
 
     companion object {
         private const val VERSION_DOT = "."
+        private const val CLIENT_INTEGRATION_VERSION = 0.1
     }
 }

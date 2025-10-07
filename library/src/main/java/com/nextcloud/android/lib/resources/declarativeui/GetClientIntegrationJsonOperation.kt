@@ -1,8 +1,8 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2024 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2025 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
 package com.nextcloud.android.lib.resources.declarativeui
@@ -16,15 +16,15 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
-import com.owncloud.android.lib.resources.declarativeui.DeclarativeUI
-import com.owncloud.android.lib.resources.declarativeui.Element
-import com.owncloud.android.lib.resources.declarativeui.ElementTypeAdapter
+import com.owncloud.android.lib.resources.clientintegration.ClientIntegrationUI
+import com.owncloud.android.lib.resources.clientintegration.Element
+import com.owncloud.android.lib.resources.clientintegration.ElementTypeAdapter
 import org.apache.commons.httpclient.HttpStatus
 
 /**
- * Get terms of service of an user
+ * Get client integration
  */
-class GetDeclarativeUiJsonOperation(
+class GetClientIntegrationJsonOperation(
     val url: String
 ) : OCSRemoteOperation<JsonArray>() {
     @Suppress("TooGenericExceptionCaught")
@@ -60,7 +60,7 @@ class GetDeclarativeUiJsonOperation(
             result = RemoteOperationResult(e)
             Log_OC.e(
                 TAG,
-                "Get terms failed: " + result.logMessage,
+                "Get client integration failed: " + result.logMessage,
                 result.exception
             )
         } finally {
@@ -69,16 +69,16 @@ class GetDeclarativeUiJsonOperation(
         return result
     }
 
-    fun parseResult(response: String): DeclarativeUI {
+    fun parseResult(response: String): ClientIntegrationUI {
         val gson =
             GsonBuilder()
                 .registerTypeHierarchyAdapter(Element::class.java, ElementTypeAdapter())
                 .create()
 
-        return gson.fromJson(response, DeclarativeUI::class.java)
+        return gson.fromJson(response, ClientIntegrationUI::class.java)
     }
 
     companion object {
-        private val TAG = GetDeclarativeUiJsonOperation::class.java.simpleName
+        private val TAG = GetClientIntegrationJsonOperation::class.java.simpleName
     }
 }

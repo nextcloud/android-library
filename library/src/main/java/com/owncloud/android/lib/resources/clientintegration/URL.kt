@@ -5,9 +5,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package com.owncloud.android.lib.resources.declarativeui
+package com.owncloud.android.lib.resources.clientintegration
 
-data class DeclarativeUI(
-    val version: Double,
-    val root: Layout
-)
+data class URL(
+    val text: String,
+    val url: String
+) : Element

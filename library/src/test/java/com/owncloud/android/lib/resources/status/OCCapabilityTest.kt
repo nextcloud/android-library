@@ -39,9 +39,10 @@ class OCCapabilityTest {
 
     @Test
     @Suppress("LongMethod")
-    fun parseDeclarativeUI() {
+    fun parseClientIntegrationJson() {
         val string = """{
               "analytics": {
+                "version": 0.1,
                 "context-menu": [
                   {
                     "name": "Show data in Analytics",
@@ -62,7 +63,25 @@ class OCCapabilityTest {
                   }
                   ]
               },
+              "brandNewApp": {
+                "version": 0.2,
+                "context-menu": [
+                  {
+                    "name": "Too new",
+                    "url": "\/ocs\/v2.php\/apps\/brandNewApp\/",
+                    "method": "GET",
+                    "icon": "\/apps\/brandNewApp\/img\/app.svg"
+                  }
+                ],
+                 "create-new": [
+                      {
+                        "name": "Analytic chart",
+                        "url": "\/ocs\/v2.php\/apps\/declarativetest\/newChart"
+                      }
+                 ]
+              },
               "declarativetest": {
+                "version": 0.1,
                 "context-menu": [
                   {
                     "name": "List all UI elements",
@@ -112,14 +131,14 @@ class OCCapabilityTest {
             }"""
 
         val sut = OCCapability()
-        sut.declarativeUiJson = string
+        sut.clientIntegrationJson = string
 
         // Markdown
-        assertEquals(3, sut.getDeclarativeUiEndpoints(Type.CONTEXT_MENU, "text/markdown").size.toLong())
-        assertEquals(3, sut.getDeclarativeUiEndpoints(Type.CREATE_NEW, "text/markdown").size.toLong())
+        assertEquals(3, sut.getClientIntegrationEndpoints(Type.CONTEXT_MENU, "text/markdown").size.toLong())
+        assertEquals(3, sut.getClientIntegrationEndpoints(Type.CREATE_NEW, "text/markdown").size.toLong())
 
         // Zip
-        assertEquals(4, sut.getDeclarativeUiEndpoints(Type.CONTEXT_MENU, "application/zip").size.toLong())
-        assertEquals(3, sut.getDeclarativeUiEndpoints(Type.CREATE_NEW, "application/zip").size.toLong())
+        assertEquals(4, sut.getClientIntegrationEndpoints(Type.CONTEXT_MENU, "application/zip").size.toLong())
+        assertEquals(3, sut.getClientIntegrationEndpoints(Type.CREATE_NEW, "application/zip").size.toLong())
     }
 }

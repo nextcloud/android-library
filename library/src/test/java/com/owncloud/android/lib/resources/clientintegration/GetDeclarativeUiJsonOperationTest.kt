@@ -5,9 +5,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package com.owncloud.android.lib.resources.declarativeui
+package com.owncloud.android.lib.resources.clientintegration
 
-import com.nextcloud.android.lib.resources.declarativeui.GetDeclarativeUiJsonOperation
+import com.nextcloud.android.lib.resources.declarativeui.GetClientIntegrationJsonOperation
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
@@ -52,7 +52,7 @@ class GetDeclarativeUiJsonOperationTest {
             }
             """
 
-        val sut = GetDeclarativeUiJsonOperation("")
+        val sut = GetClientIntegrationJsonOperation("")
 
         val declarativeUI = sut.parseResult(string)
 

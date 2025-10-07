@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-package com.owncloud.android.lib.resources.declarativeui
+package com.owncloud.android.lib.resources.clientintegration
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext

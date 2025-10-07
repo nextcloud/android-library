@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.declarativeui
+package com.owncloud.android.lib.resources.clientintegration
 
 import com.google.gson.annotations.SerializedName
 

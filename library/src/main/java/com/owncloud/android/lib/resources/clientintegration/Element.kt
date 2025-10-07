@@ -5,8 +5,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.resources.declarativeui
+package com.owncloud.android.lib.resources.clientintegration
 
-data class Row(
-    val children: List<Element>
-)
+interface Element

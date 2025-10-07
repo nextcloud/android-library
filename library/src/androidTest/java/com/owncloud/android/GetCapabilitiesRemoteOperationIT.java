@@ -168,7 +168,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     }
     
     @Test
-    public void testDeclarativeUI() {
+    public void testClientIntegration() {
         // get capabilities
         RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
@@ -176,7 +176,7 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
 
         OCCapability capability = (OCCapability) result.getSingleData();
 
-        assertEquals(5, capability.getDeclarativeUiEndpoints(Type.CONTEXT_MENU, "").size());
-        assertEquals(2, capability.getDeclarativeUiEndpoints(Type.CREATE_NEW, "").size());
+        assertEquals(5, capability.getClientIntegrationEndpoints(Type.CONTEXT_MENU, "").size());
+        assertEquals(2, capability.getClientIntegrationEndpoints(Type.CREATE_NEW, "").size());
     } 
 }
