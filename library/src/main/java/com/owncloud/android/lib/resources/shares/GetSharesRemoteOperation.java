@@ -10,6 +10,8 @@
  */
 package com.owncloud.android.lib.resources.shares;
 
+import com.nextcloud.common.SessionTimeOut;
+import com.nextcloud.common.SessionTimeOutKt;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -28,14 +30,20 @@ import static com.owncloud.android.lib.resources.shares.ShareUtils.INCLUDE_TAGS;
 public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
 
     private static final String TAG = GetSharesRemoteOperation.class.getSimpleName();
-    private boolean sharedWithMe = false;
+    private final boolean sharedWithMe;
+    private final SessionTimeOut sessionTimeOut;
 
     public GetSharesRemoteOperation() {
-        this(false);
+        this(false, SessionTimeOutKt.getDefaultSessionTimeOut());
     }
 
     public GetSharesRemoteOperation(boolean sharedWithMe) {
+        this(sharedWithMe, SessionTimeOutKt.getDefaultSessionTimeOut());
+    }
+
+    public GetSharesRemoteOperation(boolean sharedWithMe, SessionTimeOut sessionTimeOut) {
         this.sharedWithMe = sharedWithMe;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     @Override
@@ -51,6 +59,9 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
             get = new GetMethod(client.getBaseUri() + ShareUtils.SHARING_API_PATH);
             get.setQueryString(INCLUDE_TAGS);
             get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+
+            get.getParams().setSoTimeout(sessionTimeOut.getReadTimeOut());
+            client.setDefaultTimeouts(sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
 
             if (sharedWithMe) {
                 get.setQueryString("shared_with_me=true");
@@ -86,6 +97,4 @@ public class GetSharesRemoteOperation extends RemoteOperation<List<OCShare>> {
     private boolean isSuccess(int status) {
         return (status == HttpStatus.SC_OK);
     }
-
-
 }
