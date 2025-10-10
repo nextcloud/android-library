@@ -180,6 +180,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
 
     private static final String PROPERTY_DEFAULT_PERMISSIONS = "default_permissions";
 
+    // support
+    private static final String NODE_SUPPORT = "support";
+    private static final String HAS_VALID_SUBSCRIPTION = "hasValidSubscription";
+    
     private OCCapability currentCapability = null;
 
     public GetCapabilitiesRemoteOperation() {
@@ -805,6 +809,18 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     }
                 }
 
+                // support
+                if (respCapabilities.has(NODE_SUPPORT)) {
+                    JSONObject supportCapability = respCapabilities.getJSONObject(NODE_SUPPORT);
+
+                    if (supportCapability.getBoolean(HAS_VALID_SUBSCRIPTION)) {
+                        capability.setHasValidSubscription(CapabilityBooleanType.TRUE);
+                    } else {
+                        capability.setHasValidSubscription(CapabilityBooleanType.FALSE);
+                    }
+                } else {
+                    capability.setHasValidSubscription(CapabilityBooleanType.FALSE);
+                }
             }
 
             Log_OC.d(TAG, "*** Get Capabilities completed ");
