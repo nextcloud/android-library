@@ -9,8 +9,10 @@
  */
 package com.nextcloud.common
 
+import com.nextcloud.common.OkHttpMethodBase.Companion.UNKNOWN_STATUS_CODE
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.utils.BodyHelper
 import com.owncloud.android.lib.common.utils.Log_OC
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -82,7 +84,10 @@ abstract class OkHttpMethodBase(
         queryMap = params
     }
 
-    fun getResponseBodyAsString(): String = response?.body?.string() ?: ""
+    fun getResponseBodyAsString(): String {
+        val body = response?.body ?: return ""
+        return BodyHelper.parseResponse(body)
+    }
 
     fun getResponseContentLength(): Long = response?.body?.contentLength() ?: -1
 
