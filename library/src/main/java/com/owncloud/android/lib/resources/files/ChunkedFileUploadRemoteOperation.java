@@ -50,6 +50,7 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
     private final boolean onWifiConnection;
     private String uploadFolderUri;
     private String destinationUri;
+    private ChunkUploadListener chunkUploadListener;
 
     public ChunkedFileUploadRemoteOperation(String storagePath,
                                             String remotePath,
@@ -115,6 +116,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
               token,
               disableRetries);
         this.onWifiConnection = onWifiConnection;
+    }
+
+    public void setChunkUploadListener(ChunkUploadListener listener) {
+        chunkUploadListener = listener;
     }
 
     protected static Chunk calcNextChunk(long fileSize, int chunkId, long startByte, long chunkSize) {
@@ -197,6 +202,10 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             while (nextByte + 1 < file.length()) {
                 // determine size of next chunk
                 Chunk chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize);
+
+                if (chunkUploadListener != null) {
+                    chunkUploadListener.onChunkStarted(chunk);
+                }
 
                 RemoteOperationResult chunkResult = uploadChunk(client, chunk);
                 if (!chunkResult.isSuccess()) {
