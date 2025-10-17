@@ -8,5 +8,5 @@
 package com.owncloud.android.lib.resources.files
 
 interface ChunkUploadListener {
-    fun onChunkStarted(chunk: Chunk)
+    fun isCancelled(): Boolean = false
 }
