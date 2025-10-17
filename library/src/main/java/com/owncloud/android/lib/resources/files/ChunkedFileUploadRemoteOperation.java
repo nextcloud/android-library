@@ -203,17 +203,13 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
                 // determine size of next chunk
                 Chunk chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize);
 
-                if (chunkUploadListener != null && chunkUploadListener.isCancelled()) {
+                if (cancellationRequested.get() || (chunkUploadListener != null && chunkUploadListener.isCancelled())) {
                     return new RemoteOperationResult<>(new OperationCancelledException());
                 }
 
                 final var chunkResult = uploadChunk(client, chunk);
                 if (!chunkResult.isSuccess()) {
                     return chunkResult;
-                }
-
-                if (cancellationRequested.get()) {
-                    return new RemoteOperationResult<>(new OperationCancelledException());
                 }
 
                 nextByte += chunk.getLength();
