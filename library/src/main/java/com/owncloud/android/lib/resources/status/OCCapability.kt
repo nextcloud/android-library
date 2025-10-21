@@ -113,6 +113,7 @@ class OCCapability {
     var forbiddenFilenamesJson: String? = null
     var forbiddenFilenameExtensionJson: String? = null
     var forbiddenFilenameBaseNamesJson: String? = null
+    var isWCFEnabled = CapabilityBooleanType.UNKNOWN
 
     // files download limits
     var filesDownloadLimit = CapabilityBooleanType.UNKNOWN
