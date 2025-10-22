@@ -10,6 +10,7 @@ package com.owncloud.android;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import android.content.Context;
@@ -348,6 +349,8 @@ public abstract class AbstractIT {
             .execute(nextcloudClient);
         if (result.isSuccess() && result.getSingleData() instanceof OCCapability ocCapability) {
             assumeTrue(ocCapability.getVersion().isNewerOrEqual(version));
+        } else {
+            assumeFalse(true);
         }
     }
 }
