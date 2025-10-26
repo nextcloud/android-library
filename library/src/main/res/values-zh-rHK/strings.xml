@@ -5,17 +5,17 @@
     <string name="bad_oc_version">伺服器上找不到有效的 Nextcloud 版本</string>
     <string name="connect_timeout_exception">連線逾時例外</string>
     <string name="exception_using_account">使用帳戶時發生錯誤</string>
-    <string name="file_locked">檔案目前被其他用戶或處理程序鎖定</string>
-    <string name="file_not_found">近端資料夾不存在</string>
+    <string name="file_locked">檔案目前被另一個用戶或處理程序鎖定</string>
+    <string name="file_not_found">近端檔案不存在</string>
     <string name="http_violation">HTTP 違規</string>
-    <string name="instance_not_configured">未設定 Nextcloud 伺服器！</string>
-    <string name="invalid_character_in_name">檔案名稱包含禁止使用的字元</string>
+    <string name="instance_not_configured">未配置 Nextcloud 伺服器！</string>
+    <string name="invalid_character_in_name">檔案名含有禁止使用的字元</string>
     <string name="json_exception">JSON 例外</string>
     <string name="local_storage_full">近端儲存空間已滿</string>
     <string name="local_storage_not_moved">移動檔案到最終目錄時發生錯誤</string>
     <string name="malformed_url_exception">URL 格式錯誤例外</string>
-    <string name="message_install_client_cert">你想安装 TLS 客户端证书吗？</string>
-    <string name="no_network_connection">沒有網路連線</string>
+    <string name="message_install_client_cert">您是否要安裝 TLS 客戶端憑證？</string>
+    <string name="no_network_connection">沒有網絡連線</string>
     <string name="notification_channel_name">Nextcloud 連接</string>
     <string name="notification_message_select_client_cert">選取 %1$s 的客戶端憑證：%2$d</string>
     <string name="notification_title_select_client_cert">選取客戶端憑證</string>
@@ -30,6 +30,6 @@
     <string name="title_no_client_cert">找不到客戶端憑證</string>
     <string name="unexpected_exception">意外例外</string>
     <string name="unexpected_webdav_exception">非預期的 WebDAV 例外</string>
-    <string name="unknown_host_exception">未知的主機例外</string>
+    <string name="unknown_host_exception">不詳的主機例外</string>
     <string name="unrecovered_transport_exception">無法復原的傳輸例外</string>
 </resources>
