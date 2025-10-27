@@ -33,7 +33,7 @@ class DashboardListWidgetsRemoteOperationIT : AbstractIT() {
                 ?.getOrNull(0)
                 ?.type == DashBoardButtonType.MORE
         )
-        assertTrue(result.resultData["activity"]?.roundIcons == false)
+        assertTrue(result.resultData["activity"]?.roundIcons == true)
 
         assertTrue(result.resultData["user_status"]?.roundIcons == true)
     }
