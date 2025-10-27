@@ -59,8 +59,8 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         // add color to one tag
         val plainColor = "ff00ff"
         val colorWithHex = "#$plainColor"
-        val tag1 = sut.resultData.first()
-        val tag2 = sut.resultData[1]
+        val tag1 = sut.resultData.sortedBy { it.id }.last()
+        val tag2 = sut.resultData.sortedBy { it.id }[sut.resultData.count() - 2]
         val newProps = DavPropertySet()
         newProps.add(
             DefaultDavProperty(
@@ -105,7 +105,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
                 .find { it.remotePath == tagFolder }
                 ?.tags
         assertEquals(2, tags?.size)
-        assertEquals(colorWithHex, tags?.first()?.color)
-        assertEquals(null, tags?.get(1)?.color)
+        assertEquals(null, tags?.first()?.color)
+        assertEquals(colorWithHex, tags?.last()?.color)
     }
 }
