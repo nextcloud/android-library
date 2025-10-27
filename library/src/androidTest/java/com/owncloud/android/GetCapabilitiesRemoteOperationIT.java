@@ -157,5 +157,10 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         
         // support
         assertTrue(capability.getHasValidSubscription().isFalse());
+
+        // wcf
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_32)) {
+            assertTrue(capability.isWCFEnabled().isFalse());
+        }
     }
 }
