@@ -62,6 +62,10 @@ public class Log_OC {
         void wtf(String tag, String message);
     }
 
+    public static boolean isEnabled() {
+        return isEnabled;
+    }
+
     /**
      * This is legacy logger implementation extracted to allow
      * the code to compile and run without hiccup.
