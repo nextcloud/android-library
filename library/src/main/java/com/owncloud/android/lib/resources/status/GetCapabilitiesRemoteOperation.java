@@ -170,6 +170,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
     private static final String FORBIDDEN_FILENAME_EXTENSIONS = "forbidden_filename_extensions";
     private static final String FORBIDDEN_FILENAME_BASE_NAMES = "forbidden_filename_basenames";
 
+    private static final String WINDOWS_COMPATIBLE_FILENAMES = "windows_compatible_filenames";
+
     // files download limits
     private static final String NODE_FILES_DOWNLOAD_LIMIT = "downloadlimit";
     private static final String FILES_DOWNLOAD_LIMIT_DEFAULT = "default-limit";
@@ -485,6 +487,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation {
                     if (respFiles.has(FORBIDDEN_FILENAME_BASE_NAMES)) {
                         JSONArray result = respFiles.getJSONArray(FORBIDDEN_FILENAME_BASE_NAMES);
                         capability.setForbiddenFilenameBaseNamesJson(result.toString());
+                    }
+
+                    if (respFiles.has(WINDOWS_COMPATIBLE_FILENAMES)) {
+                        capability.setWCFEnabled(CapabilityBooleanType.fromBooleanValue(
+                            respFiles.getBoolean(WINDOWS_COMPATIBLE_FILENAMES)));
                     }
                     // endregion
 
