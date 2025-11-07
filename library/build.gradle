@@ -92,7 +92,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.7.0'
-    androidTestImplementation 'commons-io:commons-io:2.20.0'
+    androidTestImplementation 'commons-io:commons-io:2.21.0'
 }
 
 spotbugs {
