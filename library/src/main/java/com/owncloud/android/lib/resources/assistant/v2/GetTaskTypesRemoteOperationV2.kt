@@ -47,6 +47,7 @@ import org.apache.commons.httpclient.HttpStatus
  */
 class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
     private val supportedTaskType = "Text"
+    private val chatTaskName = "Chat"
 
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<List<TaskTypeData>> {
@@ -70,7 +71,10 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
                         ?.data
                         ?.types
                         ?.map { (key, value) -> value.copy(id = value.id ?: key) }
-                        ?.filter { taskType -> isSingleTextInputOutput(taskType) }
+                        ?.filter { taskType ->
+                            isSingleTextInputOutput(taskType) || taskType.name == chatTaskName
+                        }
+                        ?.sortedByDescending { it.name == chatTaskName }
 
                 result = RemoteOperationResult(true, getMethod)
                 result.resultData = taskTypeList
