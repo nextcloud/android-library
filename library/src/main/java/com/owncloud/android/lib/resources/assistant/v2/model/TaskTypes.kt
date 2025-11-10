@@ -18,7 +18,18 @@ data class TaskTypeData(
     val description: String?,
     val inputShape: Map<String, Shape>,
     val outputShape: Map<String, Shape>
-)
+) {
+    companion object {
+        private const val CONVERSATION_LIST_ID = "ConversationList"
+        val conversationList = TaskTypeData(
+            CONVERSATION_LIST_ID,
+            "",
+            "",
+            mapOf(),
+            mapOf()
+        )
+    }
+}
 
 data class Shape(
     val name: String,
