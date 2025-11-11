@@ -21,13 +21,14 @@ data class TaskTypeData(
 ) {
     companion object {
         private const val CONVERSATION_LIST_ID = "ConversationList"
-        val conversationList = TaskTypeData(
-            CONVERSATION_LIST_ID,
-            "",
-            "",
-            mapOf(),
-            mapOf()
-        )
+        val conversationList =
+            TaskTypeData(
+                CONVERSATION_LIST_ID,
+                "",
+                "",
+                mapOf(),
+                mapOf()
+            )
     }
 }
 

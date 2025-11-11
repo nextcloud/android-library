@@ -73,8 +73,7 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
                         ?.map { (key, value) -> value.copy(id = value.id ?: key) }
                         ?.filter { taskType ->
                             isSingleTextInputOutput(taskType) || taskType.name == chatTaskName
-                        }
-                        ?.sortedByDescending { it.name == chatTaskName }
+                        }?.sortedByDescending { it.name == chatTaskName }
 
                 result = RemoteOperationResult(true, getMethod)
                 result.resultData = taskTypeList
