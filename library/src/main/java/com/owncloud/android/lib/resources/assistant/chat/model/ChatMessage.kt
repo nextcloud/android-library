@@ -20,4 +20,6 @@ data class ChatMessage(
     val ocpTaskId: Any?,
     val sources: String,
     val attachments: List<Any?>
-)
+) {
+    val isHuman: Boolean = (role == "human")
+}
