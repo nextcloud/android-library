@@ -10,11 +10,10 @@ package com.owncloud.android.lib.resources.assistant.chat
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PutMethod
+import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.ServerResponse
-import com.owncloud.android.lib.resources.OCSRemoteOperation
-import com.owncloud.android.lib.resources.assistant.chat.model.Conversation
+import com.owncloud.android.lib.resources.assistant.chat.model.CreateConversation
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
@@ -22,9 +21,9 @@ import org.apache.commons.httpclient.HttpStatus
 class CreateConversationRemoteOperation(
     private val title: String?,
     private val timestamp: Long
-) : OCSRemoteOperation<Conversation>() {
+) : RemoteOperation<CreateConversation>() {
     @Suppress("TooGenericExceptionCaught")
-    override fun run(client: NextcloudClient): RemoteOperationResult<Conversation> {
+    override fun run(client: NextcloudClient): RemoteOperationResult<CreateConversation> {
         val bodyMap =
             hashMapOf(
                 "title" to title,
@@ -39,13 +38,11 @@ class CreateConversationRemoteOperation(
 
         return try {
             if (status == HttpStatus.SC_OK) {
-                val response =
-                    getServerResponse(
-                        putMethod,
-                        object : TypeToken<ServerResponse<Conversation>>() {}
-                    )
-                val result: RemoteOperationResult<Conversation> = RemoteOperationResult(true, putMethod)
-                result.resultData = response?.ocs?.data
+                val responseBody = putMethod.getResponseBodyAsString()
+                val type = object : TypeToken<CreateConversation>() {}.type
+                val response: CreateConversation = gson.fromJson(responseBody, type)
+                val result: RemoteOperationResult<CreateConversation> = RemoteOperationResult(true, putMethod)
+                result.resultData = response
                 result
             } else {
                 RemoteOperationResult(false, putMethod)

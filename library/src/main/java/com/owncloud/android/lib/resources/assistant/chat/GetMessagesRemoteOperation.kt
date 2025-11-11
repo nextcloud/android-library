@@ -10,16 +10,16 @@ package com.owncloud.android.lib.resources.assistant.chat
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
+import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.ServerResponse
-import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.assistant.chat.model.ChatMessage
 import org.apache.commons.httpclient.HttpStatus
 
 class GetMessagesRemoteOperation(
     private val sessionId: String
-) : OCSRemoteOperation<List<ChatMessage>>() {
+) : RemoteOperation<List<ChatMessage>>() {
+
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<List<ChatMessage>> {
         val getMethod =
@@ -31,13 +31,11 @@ class GetMessagesRemoteOperation(
 
         return try {
             if (status == HttpStatus.SC_OK) {
-                val response =
-                    getServerResponse(
-                        getMethod,
-                        object : TypeToken<ServerResponse<List<ChatMessage>>>() {}
-                    )
+                val responseBody = getMethod.getResponseBodyAsString()
+                val type = object : TypeToken<List<ChatMessage>>() {}.type
+                val response: List<ChatMessage> = gson.fromJson(responseBody, type)
                 val result: RemoteOperationResult<List<ChatMessage>> = RemoteOperationResult(true, getMethod)
-                result.resultData = response?.ocs?.data
+                result.resultData = response
                 result
             } else {
                 RemoteOperationResult(false, getMethod)
