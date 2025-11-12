@@ -1,8 +1,9 @@
 /*
- * Nextcloud - Android Client
+ * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2025 Alper Ozturk <alper.ozturk@nextcloud.com>
- * SPDX-License-Identifier: AGPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 package com.owncloud.android.lib.resources.assistant.chat.model
@@ -31,17 +32,17 @@ data class ChatMessage(
         private const val TIMESTAMP_PRESENTATION_TIME_PATTERN = "HH:mm"
     }
 
-    fun isHuman(): Boolean {
-        return role == "human"
-    }
+    fun isHuman(): Boolean = role == "human"
 
     @OptIn(ExperimentalTime::class)
     fun timestampRepresentation(): String {
         val instant = Instant.fromEpochSeconds(timestamp)
         val deviceZone = ZoneId.systemDefault()
 
-        val formatter = DateTimeFormatter.ofPattern(TIMESTAMP_PRESENTATION_TIME_PATTERN, Locale.getDefault())
-            .withZone(deviceZone)
+        val formatter =
+            DateTimeFormatter
+                .ofPattern(TIMESTAMP_PRESENTATION_TIME_PATTERN, Locale.getDefault())
+                .withZone(deviceZone)
 
         return formatter.format(instant.toJavaInstant())
     }
