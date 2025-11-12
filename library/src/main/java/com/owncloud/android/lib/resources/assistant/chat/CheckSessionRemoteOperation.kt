@@ -19,17 +19,17 @@ import org.apache.commons.httpclient.HttpStatus
 class CheckSessionRemoteOperation(
     private val sessionId: String
 ) : RemoteOperation<Session>() {
-
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Session> {
-        val getMethod = GetMethod(
-            client.baseUri.toString() + "$BASE_URL/check_session?sessionId=$sessionId",
-            true
-        )
+        val getMethod =
+            GetMethod(
+                client.baseUri.toString() + "$BASE_URL/check_session?sessionId=$sessionId",
+                true
+            )
         val status = getMethod.execute(client)
 
         return try {
-             if (status == HttpStatus.SC_OK) {
+            if (status == HttpStatus.SC_OK) {
                 val responseBody = getMethod.getResponseBodyAsString()
                 val jsonResponse = gson.fromJson(responseBody, Session::class.java)
 
