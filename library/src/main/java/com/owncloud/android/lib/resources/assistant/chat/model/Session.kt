@@ -17,5 +17,5 @@ data class Session(
 )
 
 data class SessionTask(
-    val taskId: Long,
+    val taskId: Long
 )

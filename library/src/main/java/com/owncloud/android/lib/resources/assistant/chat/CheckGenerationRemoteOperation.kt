@@ -19,11 +19,11 @@ class CheckGenerationRemoteOperation(
     private val taskId: String,
     private val sessionId: String
 ) : RemoteOperation<ChatMessage>() {
-
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<ChatMessage> {
-        val url = client.baseUri.toString() +
-            "$BASE_URL/check_generation?taskId=$taskId&sessionId=$sessionId"
+        val url =
+            client.baseUri.toString() +
+                "$BASE_URL/check_generation?taskId=$taskId&sessionId=$sessionId"
 
         val getMethod = GetMethod(url, true)
         val status = getMethod.execute(client)

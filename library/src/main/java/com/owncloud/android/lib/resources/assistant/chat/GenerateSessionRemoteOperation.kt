@@ -19,7 +19,6 @@ import org.apache.commons.httpclient.HttpStatus
 class GenerateSessionRemoteOperation(
     private val sessionId: String
 ) : RemoteOperation<SessionTask>() {
-
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<SessionTask> {
         val url = client.baseUri.toString() + "$BASE_URL/generate?sessionId=$sessionId"
