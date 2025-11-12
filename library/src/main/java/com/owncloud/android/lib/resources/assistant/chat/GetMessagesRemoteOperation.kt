@@ -1,8 +1,9 @@
 /*
- * Nextcloud - Android Client
+ * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2025 Alper Ozturk <alper.ozturk@nextcloud.com>
- * SPDX-License-Identifier: AGPL-3.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 package com.owncloud.android.lib.resources.assistant.chat
@@ -19,7 +20,6 @@ import org.apache.commons.httpclient.HttpStatus
 class GetMessagesRemoteOperation(
     private val sessionId: String
 ) : RemoteOperation<List<ChatMessage>>() {
-
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<List<ChatMessage>> {
         val getMethod =
