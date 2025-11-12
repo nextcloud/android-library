@@ -20,7 +20,8 @@ data class TaskTypeData(
     val outputShape: Map<String, Shape>
 ) {
     private val chatTaskName = "Chat"
-    val isChat: Boolean = (name == chatTaskName)
+
+    fun isChat(): Boolean = (name == chatTaskName)
 
     companion object {
         private const val CONVERSATION_LIST_ID = "ConversationList"
