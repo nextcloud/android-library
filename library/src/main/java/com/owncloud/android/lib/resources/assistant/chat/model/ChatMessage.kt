@@ -9,12 +9,6 @@
 package com.owncloud.android.lib.resources.assistant.chat.model
 
 import com.google.gson.annotations.SerializedName
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
-import kotlin.time.toJavaInstant
 
 data class ChatMessage(
     val id: Long,
@@ -27,23 +21,4 @@ data class ChatMessage(
     val ocpTaskId: Any?,
     val sources: String,
     val attachments: List<Any?>
-) {
-    companion object {
-        private const val TIMESTAMP_PRESENTATION_TIME_PATTERN = "HH:mm"
-    }
-
-    fun isHuman(): Boolean = role == "human"
-
-    @OptIn(ExperimentalTime::class)
-    fun timestampRepresentation(): String {
-        val instant = Instant.fromEpochSeconds(timestamp)
-        val deviceZone = ZoneId.systemDefault()
-
-        val formatter =
-            DateTimeFormatter
-                .ofPattern(TIMESTAMP_PRESENTATION_TIME_PATTERN, Locale.getDefault())
-                .withZone(deviceZone)
-
-        return formatter.format(instant.toJavaInstant())
-    }
-}
+)
