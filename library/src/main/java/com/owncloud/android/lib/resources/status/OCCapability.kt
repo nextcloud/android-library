@@ -127,6 +127,9 @@ class OCCapability {
 
     var defaultPermissions: Int? = null
 
+    // support
+    var hasValidSubscription = CapabilityBooleanType.UNKNOWN
+
     val version: OwnCloudVersion
         get() =
             OwnCloudVersion(
