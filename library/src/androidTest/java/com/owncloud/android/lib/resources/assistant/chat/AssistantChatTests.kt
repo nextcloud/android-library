@@ -24,7 +24,14 @@ class AssistantChatTests : AbstractIT() {
     @Before
     fun before() {
         testOnlyOnServer(NextcloudVersion.nextcloud_30)
-        sessionId = "test-session-${System.currentTimeMillis()}"
+
+        val result =
+            CreateConversationRemoteOperation(null, System.currentTimeMillis())
+                .execute(nextcloudClient)
+        assertTrue(result.isSuccess)
+        sessionId =
+            result.resultData.session.id
+                .toString()
     }
 
     @Test
