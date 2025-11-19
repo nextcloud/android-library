@@ -8,6 +8,8 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.google.gson.annotations.SerializedName
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -32,6 +34,7 @@ data class Conversation(
     }
 
     @OptIn(ExperimentalTime::class)
+    @RequiresApi(Build.VERSION_CODES.O)
     fun titleRepresentation(): String {
         return if (title != null) {
             title
