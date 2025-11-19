@@ -59,7 +59,7 @@ configurations {
 }
 
 dependencies {
-    implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
+    implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.22.2'
     api 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'com.github.bitfireAT:dav4jvm:2.2.1'
     // in transition phase, we use old and new libs
