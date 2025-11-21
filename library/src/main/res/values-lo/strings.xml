@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">ບັນຊີນີ້ມີຢູ່ແລ້ວ</string>
+    <string name="account_not_the_same">ບັນຊີບໍ່ກົງກັນ</string>
+    <string name="bad_oc_version">ເວີຊັນຂອງເຊີບເວີບໍ່ຮອງຮັບ</string>
+    <string name="connect_timeout_exception">ການເຊື່ອມຕໍ່ໝົດເວລາ</string>
+    <string name="exception_using_account">ເກີດຂໍ້ຜິດພາດໃນຂະນະນຳໃຊ້ບັນຊີ</string>
+    <string name="file_locked">ໄຟລ໌ຖືກລັອກຢູ່</string>
+    <string name="file_not_found">ບໍ່ພົບໄຟລ໌</string>
+    <string name="http_violation">ການລະເມີດໂປຣໂຕຄໍ HTTP</string>
+    <string name="instance_not_configured">ເຊີບເວີຍັງບໍ່ທັນໄດ້ຕັ້ງຄ່າ</string>
+    <string name="invalid_character_in_name">ມີຕົວອັກສອນທີ່ບໍ່ຖືກຕ້ອງໃນຊື່</string>
+    <string name="json_exception">ເກີດຂໍ້ຜິດພາດ JSON</string>
+    <string name="local_storage_full">ຊ່ອງເກັບຂໍ້ມູນເຕັມ</string>
+    <string name="local_storage_not_moved">ບໍ່ສາມາດຍ້າຍພື້ນທີ່ຈັດເກັບຂໍ້ມູນໄດ້</string>
+    <string name="malformed_url_exception">ຮູບແບບ URL ບໍ່ຖືກຕ້ອງ</string>
+    <string name="message_install_client_cert">ກະລຸນາຕິດຕັ້ງໃບຢັ້ງຢືນໃນການຕັ້ງຄ່າອຸປະກອນຂອງທ່ານ</string>
+    <string name="no_network_connection">ບໍ່ມີການເຊື່ອມຕໍ່ເຄືອຂ່າຍ</string>
+    <string name="notification_channel_name">ການແຈ້ງເຕືອນທົ່ວໄປ</string>
+    <string name="notification_message_select_client_cert">ແຕະເພື່ອເລືອກໃບຢັ້ງຢືນ</string>
+    <string name="notification_title_select_client_cert">ຕ້ອງການໃບຢັ້ງຢືນ</string>
+    <string name="operation_cancelled">ການດຳເນີນການຖືກຍົກເລີກ</string>
+    <string name="operation_cancelled_by_the_caller">ການດຳເນີນການຖືກຍົກເລີກໂດຍຜູ້ຮ້ອງຂໍ</string>
+    <string name="operation_finished_http_code">ການດຳເນີນການສຳເລັດດ້ວຍລະຫັດ HTTP: %d</string>
+    <string name="socket_exception">ເກີດຂໍ້ຜິດພາດ Socket</string>
+    <string name="socket_timeout_exception">Socket ໝົດເວລາການເຊື່ອມຕໍ່</string>
+    <string name="ssl_exception">ເກີດຂໍ້ຜິດພາດ SSL</string>
+    <string name="ssl_recoverable_exception">ເກີດຂໍ້ຜິດພາດ SSL ທີ່ສາມາດກູ້ຄືນໄດ້</string>
+    <string name="sync_conflict">ການຊິ້ງຂໍ້ມູນຂັດກັນ</string>
+    <string name="title_no_client_cert">ບໍ່ມີໃບຢັ້ງຢືນ</string>
+    <string name="unexpected_exception">ເກີດຂໍ້ຜິດພາດທີ່ບໍ່ຄາດຄິດ</string>
+    <string name="unexpected_webdav_exception">ເກີດຂໍ້ຜິດພາດ WebDAV ທີ່ບໍ່ຄາດຄິດ</string>
+    <string name="unknown_host_exception">ບໍ່ພົບໂຮສທີ່ລະບຸ</string>
+    <string name="unrecovered_transport_exception">ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນທີ່ບໍ່ສາມາດກູ້ຄືນໄດ້</string>
+</resources>
