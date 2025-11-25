@@ -57,6 +57,7 @@ import java.util.Locale;
 
 import javax.net.ssl.SSLException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okhttp3.Headers;
 
 
@@ -268,6 +269,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
      *
      * @param e Exception that interrupted the {@link RemoteOperation}
      */
+    @SuppressFBWarnings("ITC")
     public RemoteOperationResult(Exception e) {
         mException = e;
 
