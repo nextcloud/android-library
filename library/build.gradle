@@ -71,7 +71,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.guava:guava:33.5.0-jre'
 
-    implementation 'org.bouncycastle:bcpkix-jdk18on:1.82'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.83'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     spotbugsPlugins 'com.mebigfatguy.sb-contrib:sb-contrib:7.7.0'
