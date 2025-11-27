@@ -116,6 +116,8 @@ class AssistantChatTests : AbstractIT() {
 
     @Test
     fun testGetTaskTypesAndVerifyChatAndSorting() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_34)
+
         val result = GetTaskTypesRemoteOperationV2().execute(nextcloudClient)
 
         assertTrue("Request must succeed", result.isSuccess)
