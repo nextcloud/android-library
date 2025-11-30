@@ -88,7 +88,10 @@
          <trusted-key id="3690C240CE51B4670D30AD1C38EE757D69184620" group="org.tukaani" name="xz" version="1.9"/>
          <trusted-key id="3872ED7D5904493D23D78FA2C4C8CB73B1435348" group="com.android.tools.build" name="transform-api" version="2.0.0-deprecated-use-gradle-api"/>
          <trusted-key id="3F05DDA9F317301E927136D417A27CE7A60FF5F0" group="io.opentelemetry"/>
-         <trusted-key id="4161A24D2E7F660FCFDB6AAFAE094C852B4EE5DC" group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.0"/>
+         <trusted-key id="4161A24D2E7F660FCFDB6AAFAE094C852B4EE5DC">
+            <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.0"/>
+            <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.1"/>
+         </trusted-key>
          <trusted-key id="41CD49B4EF5876F9E9F691DABAC30622339994C4" group="org.jspecify" name="jspecify" version="1.0.0"/>
          <trusted-key id="44F4797A52C336FA666CD9271DE461528F1F1B2A" group="org.apache.jackrabbit"/>
          <trusted-key id="44FBDBBC1A00FE414F1C1873586654072EAD6677" group="org.sonatype.oss" name="oss-parent" version="9"/>
