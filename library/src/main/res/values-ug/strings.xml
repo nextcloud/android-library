@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">يېڭىسىنى قۇرىۋاتقاندا ھېساباتنىڭ مەۋجۇت ئىكەنلىكى بايقالدى</string>
+    <string name="account_not_the_same">يېڭىلا</string>
+    <string name="bad_oc_version">مۇلازىمېتىردا ئىناۋەتلىك Nextcloud نەشىرى تېپىلمىدى</string>
+    <string name="connect_timeout_exception">ئۇلاش ۋاقىت توشۇش خاتالىقى</string>
+    <string name="exception_using_account">ھېسابات قۇرىۋاتقاندا خاتالىق</string>
+    <string name="file_locked">ھۆججەت نۆۋەتتە باشقا بىر ئىشلەتكۈچى ياكى جەريان تەرىپىدىن قۇلۇپلاندى</string>
+    <string name="file_not_found">يەرلىك ھۆججەت مەۋجۇت ئەمەس</string>
+    <string name="http_violation">HTTP خىلاپلىق</string>
+    <string name="instance_not_configured">Nextcloud مۇلازىمېتىرى سەپلەنمىدى</string>
+    <string name="invalid_character_in_name">ھۆججەت نامىدا چەكلەنگەن ھەرپ بار</string>
+    <string name="json_exception">JSON مۇستەسنا</string>
+    <string name="local_storage_full">يەرلىك ساقلاش تولۇق</string>
+    <string name="local_storage_not_moved">ھۆججەتنى ئاخىرقى مۇندەرىجىگە يۆتكەۋاتقاندا خاتالىق</string>
+    <string name="malformed_url_exception">خاتا يېزىلغان URL مۇستەسناسى</string>
+    <string name="message_install_client_cert">سىز بىر TLS خېرىدار گۇۋاھنامىسى قاچىلامسىز؟</string>
+    <string name="no_network_connection">تور ئۇلىنىشى يوق</string>
+    <string name="notification_channel_name">Nextcloud ئۇلىنىشى</string>
+    <string name="notification_message_select_client_cert">%1$s نىڭ گۇۋاھنامىسىنى تاللاڭ: %2$d</string>
+    <string name="notification_title_select_client_cert">خېرىدار گۇۋاھنامىسىنى تاللا</string>
+    <string name="operation_cancelled">مەشخۇلات چاقىرغۇچى تەرىپىدىن ئەمەلدىن قالدى</string>
+    <string name="operation_cancelled_by_the_caller">مەشخۇلات چاقىرغۇچى تەرىپىدىن ئەمەلدىن قالدى</string>
+    <string name="operation_finished_http_code">مەشخۇلات HTTP ھالەت كودى %1$d (%2$s) بىلەن ئاياغلاشتى</string>
+    <string name="socket_exception">Socket مۇستەسناسى</string>
+    <string name="socket_timeout_exception">Socket ۋاقىت ئۆتۈش مۇستەسناسى</string>
+    <string name="ssl_exception">SSL مۇستەسناسى</string>
+    <string name="ssl_recoverable_exception">تۈزەتكىلى بولىدىغان SSL مۇستەسناسى</string>
+    <string name="sync_conflict">ماس قەدەملەش زىددىيتى</string>
+    <string name="title_no_client_cert">خېرىدار گۇۋاھنامىسىنى تېپىلمىدى</string>
+    <string name="unexpected_exception">كۈتۈلمىگەن مۇستەسنا</string>
+    <string name="unexpected_webdav_exception">كۈتۈلمىگەنWebDAV مۇستەسناسى</string>
+    <string name="unknown_host_exception">نامەلۇم ساھىبخان مۇستەسناسى</string>
+    <string name="unrecovered_transport_exception">تۈزەتكىلى بولىدىغان يەتكۈزۈش مۇستەسناسى</string>
+</resources>
