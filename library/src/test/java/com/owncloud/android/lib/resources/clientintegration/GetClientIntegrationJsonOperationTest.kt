@@ -89,4 +89,47 @@ class GetClientIntegrationJsonOperationTest {
         val image = clientIntegrationUI.root.rows[1].children[1] as Image
         assertEquals("/core/img/logo/logo.png", image.url)
     }
+
+    @Test
+    @Suppress("LongMethod")
+    fun testParseJsonHorizontal() {
+        val string = """
+            {
+                "version": 0.2,
+                "root": {
+                    "orientation": "horizontal",
+                    "rows": [
+                        {
+                            "children": [
+                                {
+                                    "element": "Text",
+                                    "text": "Left"
+                                },
+                                {
+                                    "element": "Text",
+                                    "text": "Right"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+            """
+
+        val sut = GetClientIntegrationJsonOperation("")
+        val clientIntegrationUI = sut.parseResult(string)
+
+        assertEquals(0.2, clientIntegrationUI.version)
+        assertEquals(Orientation.HORIZONTAL, clientIntegrationUI.root.orientation)
+        assertEquals(1, clientIntegrationUI.root.rows.count())
+
+        val row = clientIntegrationUI.root.rows[0]
+        assertEquals(2, row.children.count())
+
+        val leftText = row.children[0] as Text
+        assertEquals("Left", leftText.text)
+
+        val rightText = row.children[1] as Text
+        assertEquals("Right", rightText.text)
+    }
 }
