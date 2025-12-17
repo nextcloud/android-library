@@ -14,5 +14,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ClientIntegrationUI(
     val version: Double,
-    val root: Layout
+    val root: Layout?
 ) : Parcelable
