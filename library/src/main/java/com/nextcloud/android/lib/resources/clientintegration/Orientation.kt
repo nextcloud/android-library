@@ -8,9 +8,12 @@
 
 package com.nextcloud.android.lib.resources.clientintegration
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-enum class Orientation {
+@Parcelize
+enum class Orientation : Parcelable {
     @SerializedName("horizontal")
     HORIZONTAL,
 
