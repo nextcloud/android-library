@@ -10,7 +10,6 @@ package com.nextcloud.android.lib.resources.users;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
-import android.net.Uri;
 import android.text.TextUtils;
 
 import com.owncloud.android.AbstractIT;
@@ -18,16 +17,14 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 
 import org.junit.Test;
 
-import okhttp3.Credentials;
-
 public class GenerateOneTimeAppPasswordRemoteOperationIT extends AbstractIT {
 
     @Test
     public void generateAppPassword() {
         // nc://onetime-login/user:user1&password:Z8i8J-QLDbr-mSn9A-ijXzN-NSBSt&server:https://qr.ltd3.nextcloud.com
 
-        nextcloudClient.setBaseUri(Uri.parse("https://qr.ltd3.nextcloud.com"));
-        nextcloudClient.setCredentials(Credentials.basic("user1", "9swi2-c9WGn-29cPg-eRNJm-XknFJ"));
+        // nextcloudClient.setBaseUri(Uri.parse("https://qr.ltd3.nextcloud.com"));
+        // nextcloudClient.setCredentials(Credentials.basic("user1", "user1"));
 
         GenerateOneTimeAppPasswordRemoteOperation sut = new GenerateOneTimeAppPasswordRemoteOperation();
         RemoteOperationResult<String> result = sut.execute(nextcloudClient);
