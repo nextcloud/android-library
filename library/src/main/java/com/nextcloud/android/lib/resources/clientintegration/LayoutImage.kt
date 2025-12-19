@@ -11,7 +11,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Image(
+data class LayoutImage(
     val url: String
 ) : Element,
     Parcelable

@@ -45,16 +45,16 @@ class ElementTypeAdapter :
             val prefix = "com.nextcloud.android.lib.resources.clientintegration"
             val cls: Class<out Element> =
                 when (typeName) {
-                    "LayoutButton" ->
+                    "Button" ->
                         Class.forName("$prefix.LayoutButton") as Class<out Element>
 
-                    "LayoutText" ->
+                    "Text" ->
                         Class.forName("$prefix.LayoutText") as Class<out Element>
 
-                    "LayoutImage" ->
+                    "Image" ->
                         Class.forName("$prefix.LayoutImage") as Class<out Element>
 
-                    "LayoutURL" ->
+                    "URL" ->
                         Class.forName("$prefix.LayoutURL") as Class<out Element>
 
                     else -> return null
