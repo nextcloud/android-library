@@ -15,6 +15,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Layout(
     @SerializedName("orientation")
-    var orientation: Orientation,
-    var rows: List<Row>
+    var orientation: LayoutOrientation,
+    var layoutRows: List<LayoutRow>
 ) : Parcelable
