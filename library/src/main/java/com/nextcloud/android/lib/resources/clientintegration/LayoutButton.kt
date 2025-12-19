@@ -12,7 +12,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Text(
-    val text: String
+data class LayoutButton(
+    val label: String,
+    val type: String
 ) : Element,
     Parcelable

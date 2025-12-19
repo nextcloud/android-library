@@ -9,14 +9,9 @@
 package com.nextcloud.android.lib.resources.clientintegration
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class Orientation : Parcelable {
-    @SerializedName("horizontal")
-    HORIZONTAL,
-
-    @SerializedName("vertical")
-    VERTICAL
-}
+data class LayoutRow(
+    val children: List<Element>
+) : Parcelable

@@ -12,6 +12,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Row(
-    val children: List<Element>
-) : Parcelable
+data class LayoutText(
+    val text: String
+) : Element,
+    Parcelable
