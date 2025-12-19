@@ -1,8 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2025 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2025 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -12,8 +11,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class URL(
-    val text: String,
+data class Image(
     val url: String
 ) : Element,
     Parcelable

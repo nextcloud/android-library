@@ -42,23 +42,20 @@ class ElementTypeAdapter :
         val typeName = jsonObject.get("element").asString
 
         try {
+            val prefix = "com.nextcloud.android.lib.resources.clientintegration"
             val cls: Class<out Element> =
                 when (typeName) {
-                    "Button" ->
-                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.Button")
-                            as Class<out Element>
+                    "LayoutButton" ->
+                        Class.forName("$prefix.LayoutButton") as Class<out Element>
 
-                    "Text" ->
-                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.Text")
-                            as Class<out Element>
+                    "LayoutText" ->
+                        Class.forName("$prefix.LayoutText") as Class<out Element>
 
-                    "Image" ->
-                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.Image")
-                            as Class<out Element>
+                    "LayoutImage" ->
+                        Class.forName("$prefix.LayoutImage") as Class<out Element>
 
-                    "URL" ->
-                        Class.forName("com.nextcloud.android.lib.resources.clientintegration.URL")
-                            as Class<out Element>
+                    "LayoutURL" ->
+                        Class.forName("$prefix.LayoutURL") as Class<out Element>
 
                     else -> return null
                 }

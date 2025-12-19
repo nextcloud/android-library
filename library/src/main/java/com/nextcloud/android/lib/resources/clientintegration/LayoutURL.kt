@@ -9,12 +9,11 @@
 package com.nextcloud.android.lib.resources.clientintegration
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Layout(
-    @SerializedName("orientation")
-    var orientation: LayoutOrientation,
-    var rows: List<LayoutRow>
-) : Parcelable
+data class LayoutURL(
+    val text: String,
+    val url: String
+) : Element,
+    Parcelable
