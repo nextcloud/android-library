@@ -150,6 +150,7 @@ class OCShare :
         remoteId = source.readLong()
         shareLink = source.readString()
         isPasswordProtected = source.readInt() == 1
+        note = source.readString()
         isHideFileDownload = source.readInt() == 1
         label = source.readString()
         isHasPreview = source.readInt() == 1
@@ -181,6 +182,7 @@ class OCShare :
         dest.writeLong(remoteId)
         dest.writeString(shareLink)
         dest.writeInt(if (isPasswordProtected) 1 else 0)
+        dest.writeString(note)
         dest.writeInt(if (isHideFileDownload) 1 else 0)
         dest.writeString(label)
         dest.writeInt(if (isHasPreview) 1 else 0)
