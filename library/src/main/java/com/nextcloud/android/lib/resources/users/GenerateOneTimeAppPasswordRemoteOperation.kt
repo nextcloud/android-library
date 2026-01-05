@@ -5,62 +5,72 @@
  * SPDX-FileCopyrightText: 2025 Tobias Kaminsky
  * SPDX-License-Identifier: MIT
  */
-package com.nextcloud.android.lib.resources.users;
+package com.nextcloud.android.lib.resources.users
 
-
-import com.nextcloud.common.NextcloudClient;
-import com.nextcloud.operations.GetMethod;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.OCSRemoteOperation;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.json.JSONObject;
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.operations.GetMethod
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import com.owncloud.android.lib.resources.OCSRemoteOperation
+import okio.IOException
+import org.apache.commons.httpclient.HttpStatus
+import org.json.JSONObject
 
 /**
  * Generate an app password via username / login and **onetime** password. Available since Nextcloud 33
  */
-
-
-public class GenerateOneTimeAppPasswordRemoteOperation extends OCSRemoteOperation<String> {
-    private static final String TAG = GenerateOneTimeAppPasswordRemoteOperation.class.getSimpleName();
-    private static final String DIRECT_ENDPOINT = "/ocs/v2.php/core/getapppassword-onetime";
-
-    // JSON node names
-    private static final String NODE_OCS = "ocs";
-    private static final String NODE_DATA = "data";
-    private static final String NODE_APPPASSWORD = "apppassword";
-    
-    public RemoteOperationResult<String> run(NextcloudClient client) {
-        RemoteOperationResult<String> result;
-        GetMethod getMethod = null;
+class GenerateOneTimeAppPasswordRemoteOperation : OCSRemoteOperation<String?>() {
+    override fun run(client: NextcloudClient): RemoteOperationResult<String?> {
+        var result: RemoteOperationResult<String?>
+        var getMethod: GetMethod? = null
 
         try {
-            getMethod = new GetMethod(client.getBaseUri() + DIRECT_ENDPOINT + JSON_FORMAT, true);
+            getMethod = GetMethod(client.baseUri.toString() + ENDPOINT + JSON_FORMAT, true)
 
             // remote request
-            int status = client.execute(getMethod);
+            val status: Int = client.execute(getMethod)
 
             if (status == HttpStatus.SC_OK) {
-                String response = getMethod.getResponseBodyAsString();
+                val response = getMethod.getResponseBodyAsString()
 
-                JSONObject respJSON = new JSONObject(response);
-                String password = respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).getString(NODE_APPPASSWORD);
+                val respJSON = JSONObject(response)
+                val password =
+                    respJSON.getJSONObject(NODE_OCS).getJSONObject(NODE_DATA).getString(
+                        NODE_APPPASSWORD
+                    )
 
-                result = new RemoteOperationResult<>(true, getMethod);
-                result.setResultData(password);
+                result = RemoteOperationResult(true, getMethod)
+                result.resultData = password
             } else {
-                result = new RemoteOperationResult<>(false, getMethod);
+                result = RemoteOperationResult(false, getMethod)
             }
-        } catch (Exception e) {
-            result = new RemoteOperationResult<>(e);
-            Log_OC.e(TAG, "Generate app password failed: " + result.getLogMessage(),
-                    result.getException());
+        } catch (e: IOException) {
+            result = RemoteOperationResult(e)
+            Log_OC.e(
+                TAG,
+                "Generate app password failed: " + result.getLogMessage(),
+                result.exception
+            )
+        } catch (e: org.json.JSONException) {
+            result = RemoteOperationResult(e)
+            Log_OC.e(
+                TAG,
+                "Generate app password failed: " + result.getLogMessage(),
+                result.exception
+            )
         } finally {
-            if (getMethod != null) {
-                getMethod.releaseConnection();
-            }
+            getMethod?.releaseConnection()
         }
-        return result;
+        return result
+    }
+
+    companion object {
+        private val TAG: String = GenerateOneTimeAppPasswordRemoteOperation::class.java.getSimpleName()
+        private const val ENDPOINT = "/ocs/v2.php/core/getapppassword-onetime"
+
+        // JSON node names
+        private const val NODE_OCS = "ocs"
+        private const val NODE_DATA = "data"
+        private const val NODE_APPPASSWORD = "apppassword"
     }
 }
