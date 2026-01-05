@@ -9,6 +9,7 @@ package com.nextcloud.android.lib.resources.users
 
 import android.text.TextUtils
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
@@ -16,6 +17,9 @@ import org.junit.Test
 class GenerateOneTimeAppPasswordRemoteOperationIT : AbstractIT() {
     @Test
     fun generateAppPassword() {
+        // only on NC33+
+        testOnlyOnServer(NextcloudVersion.nextcloud_33)
+
         val sut = GenerateOneTimeAppPasswordRemoteOperation()
         val result = sut.execute(nextcloudClient)
 
