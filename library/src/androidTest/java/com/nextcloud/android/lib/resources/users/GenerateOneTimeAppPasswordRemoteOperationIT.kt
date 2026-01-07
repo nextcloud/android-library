@@ -17,8 +17,8 @@ import org.junit.Test
 class GenerateOneTimeAppPasswordRemoteOperationIT : AbstractIT() {
     @Test
     fun generateAppPassword() {
-        // only on NC33+
-        testOnlyOnServer(NextcloudVersion.nextcloud_33)
+        // only on NC34+
+        testOnlyOnServer(NextcloudVersion.nextcloud_34)
 
         val sut = GenerateOneTimeAppPasswordRemoteOperation()
         val result = sut.execute(nextcloudClient)
