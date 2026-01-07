@@ -104,6 +104,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
             (rootMetadata.data as ArrayList<RemoteFile>)
                 .find { it.remotePath == tagFolder }
                 ?.tags
+        tags?.sortBy { it?.color }
         assertEquals(2, tags?.size)
         assertEquals(null, tags?.first()?.color)
         assertEquals(colorWithHex, tags?.last()?.color)
