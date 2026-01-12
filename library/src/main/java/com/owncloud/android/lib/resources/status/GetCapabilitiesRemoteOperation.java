@@ -179,6 +179,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
     // notes folder location
     private static final String NODE_NOTES = "notes";
     private static final String NOTES_PATH = "notes_path";
+    
+    // client integration
+    private static final String NODE_CLIENT_INTEGRATION = "client_integration";
 
     private static final String PROPERTY_DEFAULT_PERMISSIONS = "default_permissions";
 
@@ -810,6 +813,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
 
                         capability.setNotesFolderPath(notesFolderPath);
                     }
+                }
+
+                // client integration
+                if (respCapabilities.has(NODE_CLIENT_INTEGRATION)) {
+                    capability.setClientIntegrationJson(respCapabilities.getString(NODE_CLIENT_INTEGRATION));
                 }
 
                 // support

@@ -9,6 +9,11 @@
  */
 package com.owncloud.android.lib.resources.status
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.nextcloud.android.lib.resources.clientintegration.App
+import com.nextcloud.android.lib.resources.clientintegration.Endpoint
+
 /**
  * Contains data of the Capabilities for an account, from the Capabilities API
  */
@@ -122,6 +127,54 @@ class OCCapability {
     // notes folder location
     var notesFolderPath: String? = null
 
+    // client integration
+    var clientIntegrationJson: String? = null
+
+    fun getClientIntegrationEndpoints(
+        hook: Type,
+        mimetype: String
+    ): List<Endpoint> {
+        if (clientIntegrationJson == null) {
+            return emptyList()
+        }
+
+        val appsType = object : TypeToken<Map<String, App>>() {}.type
+        val apps: Map<String, App> = Gson().fromJson(clientIntegrationJson, appsType)
+
+        val endpoints =
+            apps.values
+                .filter { it.version <= CLIENT_INTEGRATION_VERSION }
+                .mapNotNull { mapHooks(it, hook) }
+                .flatMap { it.toList() }
+                .filter { filterMimetype(mimetype, it.mimetypeFilter) }
+
+        // GET by default
+        endpoints.forEach {
+            if (it.method == null) {
+                it.method = Method.GET
+            }
+        }
+
+        return endpoints
+    }
+
+    private fun mapHooks(
+        app: App,
+        hook: Type
+    ): List<Endpoint> =
+        when (hook) {
+            Type.CONTEXT_MENU -> app.contextMenu
+            Type.CREATE_NEW -> app.createNew
+        }
+
+    private fun filterMimetype(
+        mimetype: String,
+        mimetypeFilter: String?
+    ): Boolean =
+        mimetypeFilter?.split(",")?.any {
+            mimetype.startsWith(it.trim())
+        } ?: true
+
     // Etag for capabilities
     var etag: String? = ""
 
@@ -140,5 +193,6 @@ class OCCapability {
 
     companion object {
         private const val VERSION_DOT = "."
+        const val CLIENT_INTEGRATION_VERSION = 0.1
     }
 }

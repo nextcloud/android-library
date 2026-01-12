@@ -23,6 +23,7 @@ import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+import com.owncloud.android.lib.resources.status.Type;
 
 import org.junit.Test;
 
@@ -161,4 +162,17 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
             assertTrue(capability.isWCFEnabled().isFalse());
         }
     }
+    
+    @Test
+    public void testClientIntegration() {
+        // get capabilities
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertNotNull(result.getResultData());
+
+        OCCapability capability = result.getResultData();
+
+        assertEquals(1, capability.getClientIntegrationEndpoints(Type.CONTEXT_MENU, "application/pdf").size());
+        assertEquals(0, capability.getClientIntegrationEndpoints(Type.CREATE_NEW, "").size());
+    } 
 }
