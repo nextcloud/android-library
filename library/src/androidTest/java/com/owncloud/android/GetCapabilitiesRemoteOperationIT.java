@@ -166,13 +166,13 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     @Test
     public void testClientIntegration() {
         // get capabilities
-        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
-        assertNotNull(result.getSingleData());
+        assertNotNull(result.getResultData());
 
-        OCCapability capability = (OCCapability) result.getSingleData();
+        OCCapability capability = result.getResultData();
 
-        assertEquals(5, capability.getClientIntegrationEndpoints(Type.CONTEXT_MENU, "").size());
-        assertEquals(2, capability.getClientIntegrationEndpoints(Type.CREATE_NEW, "").size());
+        assertEquals(1, capability.getClientIntegrationEndpoints(Type.CONTEXT_MENU, "application/pdf").size());
+        assertEquals(0, capability.getClientIntegrationEndpoints(Type.CREATE_NEW, "").size());
     } 
 }

@@ -144,7 +144,7 @@ class OCCapability {
         val endpoints =
             apps.values
                 .filter { it.version <= CLIENT_INTEGRATION_VERSION }
-                .map { mapHooks(it, hook) }
+                .mapNotNull { mapHooks(it, hook) }
                 .flatMap { it.toList() }
                 .filter { filterMimetype(mimetype, it.mimetypeFilter) }
 

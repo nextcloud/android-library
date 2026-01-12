@@ -14,10 +14,11 @@ enum class E2EVersion(
     V1_1("1.1"),
     V1_2("1.2"),
     V2_0("2.0"),
+    V2_1("2.1"),
     UNKNOWN("");
 
     companion object {
         @JvmStatic
-        fun fromValue(v: String): E2EVersion = E2EVersion.values().firstOrNull { it.value == v } ?: UNKNOWN
+        fun fromValue(v: String): E2EVersion = entries.firstOrNull { it.value == v } ?: UNKNOWN
     }
 }
