@@ -79,8 +79,7 @@ class FilesDownloadLimitIT : AbstractIT() {
         }
     }
 
-    private fun getCapability(): OCCapability =
-        GetCapabilitiesRemoteOperation().execute(nextcloudClient).singleData as OCCapability
+    private fun getCapability(): OCCapability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData
 
     private fun createTestFile(): Boolean {
         val localPath = createFile("test")

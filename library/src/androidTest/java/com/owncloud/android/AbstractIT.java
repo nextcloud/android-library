@@ -345,10 +345,10 @@ public abstract class AbstractIT {
     }
 
     protected void testOnlyOnServer(OwnCloudVersion version) {
-        final var result = new GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient);
-        if (result.isSuccess() && result.getSingleData() instanceof OCCapability ocCapability) {
-            assumeTrue(ocCapability.getVersion().isNewerOrEqual(version));
+        final var result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        
+        if (result.isSuccess()) {
+            assumeTrue(result.getResultData().getVersion().isNewerOrEqual(version));
         } else {
             assumeFalse(true);
         }

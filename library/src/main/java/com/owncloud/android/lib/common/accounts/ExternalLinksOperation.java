@@ -56,9 +56,8 @@ public class ExternalLinksOperation extends RemoteOperation {
 
         try {
             // check capabilities
-            RemoteOperation getCapabilities = new GetCapabilitiesRemoteOperation();
-            RemoteOperationResult capabilitiesResult = getCapabilities.execute(client);
-            OCCapability capability = (OCCapability) capabilitiesResult.getData().get(0);
+            RemoteOperationResult<OCCapability> getCapabilities = new GetCapabilitiesRemoteOperation().execute(client);
+            OCCapability capability = getCapabilities.getResultData();
 
             if (capability.getExternalLinks().isTrue()) {
 

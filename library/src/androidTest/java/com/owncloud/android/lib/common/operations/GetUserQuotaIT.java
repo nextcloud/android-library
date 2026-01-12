@@ -41,8 +41,7 @@ public class GetUserQuotaIT extends AbstractIT {
 
         assertNotNull(quota);
 
-        OCCapability capability = (OCCapability) new GetCapabilitiesRemoteOperation()
-            .execute(nextcloudClient).getSingleData();
+        OCCapability capability = new GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData();
 
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_31)) {
             assertEquals(SPACE_UNLIMITED, quota.getFree());
