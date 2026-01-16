@@ -11,7 +11,7 @@
 
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.13.2'
+        classpath 'com.android.tools.build:gradle:9.0.0'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.4.8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8"
@@ -29,9 +29,6 @@ repositories {
 android {
     compileSdk = 36
 
-    lintOptions {
-        abortOnError = false
-    }
 
     packagingOptions {
         resources {
@@ -49,6 +46,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     namespace = 'com.owncloud.android.lib.sampleclient'
+    lint {
+        abortOnError false
+    }
 }
 
 dependencies {
