@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Tài khoản đã tồn tại khi tạo tài khoản mới</string>
+    <string name="account_not_the_same">Đã xác thực bằng một tài khoản khác với tài khoản đang cập nhật</string>
+    <string name="bad_oc_version">Không tìm thấy phiên bản Nextcloud hợp lệ trên máy chủ</string>
+    <string name="connect_timeout_exception">Ngoại lệ hết thời gian kết nối</string>
+    <string name="exception_using_account"> Lỗi xảy ra khi sử dụng tài khoản</string>
+    <string name="file_locked">Tệp hiện đang bị khóa bởi người dùng hoặc tiến trình khác</string>
+    <string name="file_not_found">Tệp cục bộ không tồn tại</string>
+    <string name="http_violation">Vi phạm HTTP</string>
+    <string name="instance_not_configured">Máy chủ Nextcloud chưa được cấu hình!</string>
+    <string name="invalid_character_in_name">Tên tệp chứa ký tự không được phép</string>
+    <string name="json_exception">Ngoại lệ JSON</string>
+    <string name="local_storage_full">Bộ nhớ máy đã đầy</string>
+    <string name="local_storage_not_moved">Lỗi khi di chuyển tệp đến thư mục đích</string>
+    <string name="malformed_url_exception">Ngoại lệ URL không hợp lệ</string>
+    <string name="message_install_client_cert">Bạn có muốn cài đặt chứng chỉ TLS cho máy khách không\?</string>
+    <string name="no_network_connection">Không có kết nối mạng</string>
+    <string name="notification_channel_name">Kết nối tới Nextcloud</string>
+    <string name="notification_message_select_client_cert">Chọn chứng chỉ máy khách cho %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Chọn chứng chỉ máy khách</string>
+    <string name="operation_cancelled">Thao tác đã bị người gọi hủy</string>
+    <string name="operation_cancelled_by_the_caller">Thao tác đã bị người gọi hủy</string>
+    <string name="operation_finished_http_code">Thao tác kết thúc với mã trạng thái HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">Ngoại lệ socket</string>
+    <string name="socket_timeout_exception">Ngoại lệ hết thời gian socket</string>
+    <string name="ssl_exception">Ngoại lệ SSL</string>
+    <string name="ssl_recoverable_exception">Ngoại lệ SSL có thể khôi phục</string>
+    <string name="sync_conflict">Xung đột đồng bộ hóa</string>
+    <string name="title_no_client_cert">Không tìm thấy chứng chỉ máy khách</string>
+    <string name="unexpected_exception">Ngoại lệ không mong đợi</string>
+    <string name="unexpected_webdav_exception">Ngoại lệ WebDAV không mong đợi</string>
+    <string name="unknown_host_exception">Ngoại lệ máy chủ không xác định</string>
+    <string name="unrecovered_transport_exception">Ngoại lệ truyền tải không thể khôi phục</string>
+</resources>
