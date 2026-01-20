@@ -7,6 +7,8 @@
  ~ SPDX-License-Identifier: MIT
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -60,7 +62,130 @@
         android:layout_height="@dimen/frame_height"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_above="@+id/button_download"></FrameLayout>
+        android:layout_above="@+id/button_download">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/button_speed_test"
+                    style="@style/ButtonStyle"
+                    android:text="Speed test"
+                    android:layout_gravity="center"
+                    android:onClick="onClickHandler" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/layout_upload_section"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/text_upload_label"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="Upload"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/text_upload_completion"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="0%"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/text_upload_speed"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="0 kBps"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/text_upload_elapsed"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="0 ms"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_download_section"
+                    android:orientation="vertical"
+                    android:layout_gravity="right|center_vertical|end"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/text_download_label"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="Download"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/text_download_completion"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="0%"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/text_download_speed"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="0 kBps"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/text_download_elapsed"
+                        style="@style/ProgressStyle"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:text="0 ms"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <Button
         android:id="@id/button_download"
