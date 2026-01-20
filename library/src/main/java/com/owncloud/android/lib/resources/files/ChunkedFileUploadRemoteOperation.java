@@ -9,6 +9,7 @@ package com.owncloud.android.lib.resources.files;
 import android.text.TextUtils;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
 import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
 import com.owncloud.android.lib.common.network.WebdavEntry;
@@ -36,6 +37,9 @@ import java.util.Objects;
 
 import androidx.annotation.VisibleForTesting;
 
+import java.security.MessageDigest;
+import java.nio.ByteBuffer;
+import java.math.BigInteger;
 
 public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
 
@@ -216,6 +220,12 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
             moveMethod = new MoveMethod(originUri, destinationUri, true);
             moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
 
+            File localFile = new File(localPath);
+            String hash = FileUtils.getHashFromFile(this, localFile, "SHA-256");
+            if(hash != null) {
+                putMethod.addRequestHeader("X-Content-Hash", hash);
+            }
+
             if (creationTimestamp != null && creationTimestamp > 0) {
                 moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
             }
@@ -289,6 +299,24 @@ public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation 
 
             if (token != null) {
                 putMethod.addRequestHeader(E2E_TOKEN, token);
+            }
+
+            if (OwnCloudClientManagerFactory.getHashCheck()) {
+                try (RandomAccessFile hashRaf = new RandomAccessFile(file, "r")) {
+                    MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+                    FileChannel hashChannel = hashRaf.getChannel();
+                    ByteBuffer buf = ByteBuffer.allocate((int) chunk.getLength());
+                    hashChannel.position(chunk.getStart());
+                    hashChannel.read(buf);
+                    md.update(buf.array());
+
+                    String chunkHash = String.format("%064x", new BigInteger(1, md.digest()));
+
+                    putMethod.addRequestHeader("X-Content-Hash", chunkHash);
+                } catch (Exception e) {
+                    Log_OC.w(TAG, "Could not compute chunk hash");
+                }
             }
 
             status = client.executeMethod(putMethod);
