@@ -8,10 +8,12 @@
 package com.owncloud.android.lib.resources.assistant.v2.model
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 data class TranslationLanguage(val name: String, val code: String)
 
+@Serializable
 data class TranslationRequest(
     @SerialName("origin_language")
     val originLanguage: String,
