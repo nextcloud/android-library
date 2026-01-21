@@ -1,30 +1,36 @@
 /*
- * Nextcloud Android Library
+ * Nextcloud - Android Client
  *
  * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 package com.owncloud.android.lib.resources.assistant.v2.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.Json
 
 data class TranslationLanguage(val name: String, val code: String)
 
 data class TranslationRequest(
-    @SerializedName("origin_language")
+    @SerialName("origin_language")
     val originLanguage: String,
 
-    @SerializedName("max_tokens")
+    @SerialName("max_tokens")
     val maxTokens: Double,
 
     val model: String,
 
-    @SerializedName("target_language")
+    @SerialName("target_language")
     val targetLanguage: String,
 
     val input: String
-)
+) {
+    fun toJson(): String {
+        val json = Json { prettyPrint = true }
+        return json.encodeToString(this)
+    }
+}
 
 data class TranslationModel(
     val model: String,
