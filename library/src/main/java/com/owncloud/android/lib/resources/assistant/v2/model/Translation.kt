@@ -26,12 +26,7 @@ data class TranslationRequest(
     @SerialName("target_language")
     val targetLanguage: String,
     val input: String
-) : java.io.Serializable {
-    fun toJson(): String {
-        val json = Json { prettyPrint = true }
-        return json.encodeToString(this)
-    }
-}
+) : java.io.Serializable
 
 data class TranslationModel(
     val model: String,
