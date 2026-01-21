@@ -11,23 +11,22 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-data class TranslationLanguage(val name: String, val code: String)
+data class TranslationLanguage(
+    val name: String,
+    val code: String
+)
 
 @Serializable
 data class TranslationRequest(
     @SerialName("origin_language")
     val originLanguage: String,
-
     @SerialName("max_tokens")
     val maxTokens: Double,
-
     val model: String,
-
     @SerialName("target_language")
     val targetLanguage: String,
-
     val input: String
-) {
+) : java.io.Serializable {
     fun toJson(): String {
         val json = Json { prettyPrint = true }
         return json.encodeToString(this)
@@ -45,8 +44,10 @@ data class TranslationLanguages(
 )
 
 fun TaskTypeData.toTranslationLanguages(): TranslationLanguages {
-    fun List<EnumValue>?.toTranslationLanguageList() = this.orEmpty()
-        .map { TranslationLanguage(it.name, it.value) }
+    fun List<EnumValue>?.toTranslationLanguageList() =
+        this
+            .orEmpty()
+            .map { TranslationLanguage(it.name, it.value) }
 
     return TranslationLanguages(
         originLanguages = inputShapeEnumValues?.get("origin_language").toTranslationLanguageList(),

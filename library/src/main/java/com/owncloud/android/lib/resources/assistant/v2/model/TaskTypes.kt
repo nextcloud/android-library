@@ -22,7 +22,7 @@ data class TaskTypeData(
     val optionalInputShapeEnumValues: Map<String, List<EnumValue>>? = null,
     val inputShapeEnumValues: Map<String, List<EnumValue>>? = null,
     val outputShapeEnumValues: Map<String, List<EnumValue>>? = null,
-    val optionalOutputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    val optionalOutputShapeEnumValues: Map<String, List<EnumValue>>? = null
 ) {
     private val chatTaskName = "Chat"
     private val translateTaskName = "Translate"

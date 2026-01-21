@@ -16,34 +16,33 @@ import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
+import java.io.Serializable
 
-class CreateTaskRemoteOperationV2(
+open class CreateTaskRemoteOperationV2(
     private val input: String,
     private val taskType: TaskTypeData
 ) : RemoteOperation<Void>() {
-    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+    protected open fun buildRequestBody(): HashMap<String, Serializable?> {
         val inputField = hashMapOf("input" to input)
 
-        val requestBody =
-            hashMapOf(
-                "input" to inputField,
-                "type" to taskType.id,
-                "appId" to "assistant",
-                "customId" to ""
-            )
+        return hashMapOf(
+            "input" to inputField,
+            "type" to taskType.id,
+            "appId" to "assistant",
+            "customId" to ""
+        )
+    }
 
-        val json = gson.toJson(requestBody)
-
+    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+        val json = gson.toJson(buildRequestBody())
         val request = json.toRequestBody("application/json".toMediaTypeOrNull())
-
         val postMethod = PostMethod(client.baseUri.toString() + TAG_URL, true, request)
-
         val status = postMethod.execute(client)
 
         return if (status == HttpStatus.SC_OK) {
-            RemoteOperationResult<Void>(true, postMethod)
+            RemoteOperationResult(true, postMethod)
         } else {
-            RemoteOperationResult<Void>(false, postMethod)
+            RemoteOperationResult(false, postMethod)
         }
     }
 
