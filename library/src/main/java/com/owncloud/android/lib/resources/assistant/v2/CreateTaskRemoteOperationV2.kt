@@ -13,28 +13,31 @@ import com.nextcloud.operations.PostMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
+import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
-import java.io.Serializable
 
 open class CreateTaskRemoteOperationV2(
     private val input: String,
     private val taskType: TaskTypeData
 ) : RemoteOperation<Void>() {
-    protected open fun buildRequestBody(): HashMap<String, Serializable?> {
+    protected open fun buildRequestBody(): String {
         val inputField = hashMapOf("input" to input)
 
-        return hashMapOf(
-            "input" to inputField,
-            "type" to taskType.id,
-            "appId" to "assistant",
-            "customId" to ""
-        )
+        val body =
+            hashMapOf(
+                "input" to inputField,
+                "type" to taskType.id,
+                "appId" to "assistant",
+                "customId" to ""
+            )
+
+        return Json.encodeToString(body)
     }
 
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        val json = gson.toJson(buildRequestBody())
+        val json = buildRequestBody()
         val request = json.toRequestBody("application/json".toMediaTypeOrNull())
         val postMethod = PostMethod(client.baseUri.toString() + TAG_URL, true, request)
         val status = postMethod.execute(client)
