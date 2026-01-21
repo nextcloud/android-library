@@ -17,7 +17,12 @@ data class TaskTypeData(
     val name: String,
     val description: String?,
     val inputShape: Map<String, Shape>,
-    val outputShape: Map<String, Shape>
+    val outputShape: Map<String, Shape>,
+    val optionalInputShapeDefaults: Map<String, Any>? = null,
+    val optionalInputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    val inputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    val outputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    val optionalOutputShapeEnumValues: Map<String, List<EnumValue>>? = null,
 ) {
     private val chatTaskName = "Chat"
     private val translateTaskName = "Translate"
@@ -38,6 +43,11 @@ data class TaskTypeData(
             )
     }
 }
+
+data class EnumValue(
+    val name: String,
+    val value: String
+)
 
 data class Shape(
     val name: String,
