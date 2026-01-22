@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.resources.albums
@@ -48,7 +48,6 @@ class RemoveAlbumRemoteOperation
                         sessionTimeOut.readTimeOut,
                         sessionTimeOut.connectionTimeOut
                     )
-                delete.responseBodyAsString
                 result =
                     RemoteOperationResult<Any>(
                         delete.succeeded() || status == HttpStatus.SC_NOT_FOUND,
