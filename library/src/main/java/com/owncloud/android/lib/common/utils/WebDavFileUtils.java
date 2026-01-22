@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: MIT
@@ -72,11 +72,16 @@ public class WebDavFileUtils {
      *                   folder and its direct children.
      * @param client     Client instance to the remote server where the data were
      *                   retrieved.
-     * @return
+     * @return           list of remote file
      */
     public List<RemoteFile> readAlbumData(MultiStatus remoteData, OwnCloudClient client) {
         String baseUrl = client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId();
-        String encodedPath = Uri.parse(baseUrl).getEncodedPath();
+        Uri uri = Uri.parse(baseUrl);
+        if (uri == null) {
+            return Collections.emptyList();
+        }
+
+        String encodedPath = uri.getEncodedPath();
         if (encodedPath == null) {
             return Collections.emptyList();
         }
