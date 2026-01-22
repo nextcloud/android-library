@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.resources.albums
@@ -47,8 +47,6 @@ class CopyFileToAlbumRemoteOperation @JvmOverloads constructor(
         if (mTargetRemotePath == mSrcRemotePath) {
             // nothing to do!
             result = RemoteOperationResult(ResultCode.OK)
-        } else if (mTargetRemotePath.startsWith(mSrcRemotePath)) {
-            result = RemoteOperationResult(ResultCode.INVALID_COPY_INTO_DESCENDANT)
         } else {
             /** perform remote operation */
             var copyMethod: CopyMethod? = null
