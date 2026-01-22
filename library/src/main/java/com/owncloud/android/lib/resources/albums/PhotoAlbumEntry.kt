@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -15,9 +15,8 @@ import org.apache.jackrabbit.webdav.property.DavPropertySet
 import org.apache.jackrabbit.webdav.xml.Namespace
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class PhotoAlbumEntry(
     response: MultiStatusResponse
@@ -29,7 +28,6 @@ class PhotoAlbumEntry(
     private val dateRange: String?
 
     companion object {
-        private val dateFormat = SimpleDateFormat("MMM yyyy", Locale.US)
         private const val MILLIS = 1000L
     }
 
@@ -70,27 +68,27 @@ class PhotoAlbumEntry(
 
     val albumName: String
         get() {
-            return href
-                .removeSuffix("/")
-                .substringAfterLast("/")
-                .takeIf { it.isNotEmpty() } ?: ""
+            // use decoder to show correct path
+            return URLDecoder.decode(
+                href
+                    .removeSuffix("/")
+                    .substringAfterLast("/")
+                    .takeIf { it.isNotEmpty() } ?: "", StandardCharsets.UTF_8.name())
         }
 
-    val createdDate: String
+    val createdDate: Long
         get() {
-            val currentDate = Date(System.currentTimeMillis())
-
+            val defaultTimeStamp = System.currentTimeMillis()
             return try {
-                val obj = JSONObject(dateRange ?: return dateFormat.format(currentDate))
+                val obj = JSONObject(dateRange ?: return defaultTimeStamp)
                 val startTimestamp = obj.optLong("start", 0)
                 if (startTimestamp > 0) {
-                    dateFormat.format(Date(startTimestamp * MILLIS))
+                    startTimestamp * MILLIS
                 } else {
-                    dateFormat.format(currentDate)
+                    defaultTimeStamp
                 }
-            } catch (e: JSONException) {
-                e.printStackTrace()
-                dateFormat.format(currentDate)
+            } catch (_: JSONException) {
+                defaultTimeStamp
             }
         }
 }
