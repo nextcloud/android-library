@@ -25,10 +25,11 @@ open class CreateTaskRemoteOperationV2(
     private val taskType: TaskTypeData
 ) : RemoteOperation<Void>() {
     protected open fun buildRequestBody(): String {
-        val request = CreateTaskRequest(
-            input = InputField(input),
-            type = taskType.id
-        )
+        val request =
+            CreateTaskRequest(
+                input = InputField(input),
+                type = taskType.id
+            )
 
         return Json.encodeToString(request)
     }
