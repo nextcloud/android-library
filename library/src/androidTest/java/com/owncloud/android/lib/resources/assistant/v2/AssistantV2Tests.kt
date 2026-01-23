@@ -83,7 +83,9 @@ class AssistantV2Tests : AbstractIT() {
         val taskType = getTaskType()
         val selectedTaskType = getSelectedTaskType()
 
-        assertTrue(CreateTaskRemoteOperationV2(input, taskType).execute(nextcloudClient).isSuccess)
+        val createTaskOperation = CreateTaskRemoteOperationV2(input, taskType)
+        val createTaskOperationResult = createTaskOperation.execute(nextcloudClient)
+        assertTrue(createTaskOperationResult.isSuccess)
 
         var result = GetTaskListRemoteOperationV2(selectedTaskType).execute(nextcloudClient)
         assertTrue(result.isSuccess)
