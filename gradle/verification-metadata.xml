@@ -94,6 +94,7 @@
             <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.1"/>
             <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.2"/>
             <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.3"/>
+            <trusting group="com.mebigfatguy.sb-contrib" name="sb-contrib" version="7.7.4"/>
          </trusted-key>
          <trusted-key id="41CD49B4EF5876F9E9F691DABAC30622339994C4" group="org.jspecify" name="jspecify" version="1.0.0"/>
          <trusted-key id="44F4797A52C336FA666CD9271DE461528F1F1B2A" group="org.apache.jackrabbit"/>
