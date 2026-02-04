@@ -197,9 +197,11 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
                     result.message
                 )
             }
+
             capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_21) -> {
                 assertEquals("Password needs to be at least 8 characters long.", result.message)
             }
+
             else -> {
                 assertEquals("Password needs to be at least 8 characters long", result.message)
             }

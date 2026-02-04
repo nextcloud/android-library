@@ -393,11 +393,12 @@ class WebdavEntry constructor(
             if (prop?.value != null) {
                 tags =
                     when (prop.value) {
-                        is ArrayList<*> ->
+                        is ArrayList<*> -> {
                             (prop.value as ArrayList<*>)
                                 .filterIsInstance<Element>()
                                 .map { parseTag(it) }
                                 .toTypedArray()
+                        }
 
                         is Element -> {
                             val element = (prop.value as Element)
@@ -405,7 +406,9 @@ class WebdavEntry constructor(
                             arrayOf(tag)
                         }
 
-                        else -> emptyArray()
+                        else -> {
+                            emptyArray()
+                        }
                     }
             }
 

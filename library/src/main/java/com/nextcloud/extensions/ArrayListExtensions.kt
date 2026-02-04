@@ -20,10 +20,14 @@ inline fun <reified T> ArrayList<*>.processXmlData(tagName: String): T? {
                 Float::class -> {
                     textContent.toFloatOrNull() as? T
                 }
+
                 Double::class -> {
                     textContent.toDoubleOrNull() as? T
                 }
-                else -> textContent as? T
+
+                else -> {
+                    textContent as? T
+                }
             }
         }
     }
