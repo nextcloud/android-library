@@ -25,7 +25,9 @@ data class Task(
     val lastUpdated: Int? = null,
     val scheduledAt: Int? = null,
     val endedAt: Int? = null
-)
+) {
+    fun isTranslate(): Boolean = (type == "core:text2text:translate")
+}
 
 data class TaskInput(
     var input: String? = null

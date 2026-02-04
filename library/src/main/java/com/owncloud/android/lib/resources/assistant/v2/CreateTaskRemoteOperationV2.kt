@@ -13,37 +13,42 @@ import com.nextcloud.operations.PostMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.put
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
 
-class CreateTaskRemoteOperationV2(
+open class CreateTaskRemoteOperationV2(
     private val input: String,
     private val taskType: TaskTypeData
 ) : RemoteOperation<Void>() {
-    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+    protected open fun buildRequestBody(): String {
         val inputField = hashMapOf("input" to input)
 
-        val requestBody =
-            hashMapOf(
-                "input" to inputField,
-                "type" to taskType.id,
-                "appId" to "assistant",
-                "customId" to ""
-            )
+        val jsonObject =
+            buildJsonObject {
+                put("input", Json.encodeToJsonElement(inputField))
+                put("type", taskType.id)
+                put("appId", "assistant")
+                put("customId", "")
+            }
 
-        val json = gson.toJson(requestBody)
+        return Json.encodeToString(jsonObject)
+    }
 
+    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+        val json = buildRequestBody()
         val request = json.toRequestBody("application/json".toMediaTypeOrNull())
-
         val postMethod = PostMethod(client.baseUri.toString() + TAG_URL, true, request)
-
         val status = postMethod.execute(client)
 
         return if (status == HttpStatus.SC_OK) {
-            RemoteOperationResult<Void>(true, postMethod)
+            RemoteOperationResult(true, postMethod)
         } else {
-            RemoteOperationResult<Void>(false, postMethod)
+            RemoteOperationResult(false, postMethod)
         }
     }
 

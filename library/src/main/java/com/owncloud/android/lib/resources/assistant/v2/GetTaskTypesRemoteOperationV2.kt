@@ -71,7 +71,7 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
                         ?.types
                         ?.map { (key, value) -> value.copy(id = value.id ?: key) }
                         ?.filter { taskType ->
-                            isSingleTextInputOutput(taskType) || taskType.isChat()
+                            isSingleTextInputOutput(taskType) || taskType.isChat() || taskType.isTranslate()
                         }?.sortedByDescending { it.isChat() }
 
                 result = RemoteOperationResult(true, getMethod)
