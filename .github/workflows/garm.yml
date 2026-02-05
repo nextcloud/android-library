@@ -27,8 +27,8 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                server: [ stable30 ] # [ master, stable29 ]
-                api-level: [ 27 ] # [ 18, 27 ]
+                server: [ master ] # [ stable20, stable32, master ]
+                api-level: [ 36 ] # [ 21, 36 ]
         steps:
             -   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
