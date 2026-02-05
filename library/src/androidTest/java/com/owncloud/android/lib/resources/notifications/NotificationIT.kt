@@ -8,6 +8,7 @@
 package com.owncloud.android.lib.resources.notifications
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Test

@@ -24,6 +24,7 @@ import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.junit.BeforeClass;
@@ -92,6 +93,12 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
     @Test
     public void testFileSearchEverything() throws IOException {
+        // on newer server we have Talk folder
+        int offset = 0;
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
+            offset = 1;
+        }
+
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
@@ -106,7 +113,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(11, result.getResultData().size());
+        assertEquals(offset + 10, result.getResultData().size());
     }
 
     @Test
@@ -208,6 +215,12 @@ public class SearchRemoteOperationIT extends AbstractIT {
      */
     @Test
     public void testRecentlyModifiedSearch() throws IOException {
+        // on newer server we have Talk folder
+        int offset = 0;
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
+            offset = 1;
+        }
+
         long now = System.currentTimeMillis() / MILLI_TO_SECOND;
         String filePath = createFile("image");
         assertTrue(new UploadFileRemoteOperation(filePath, "/image.jpg", "image/jpg", now - 50)
@@ -232,7 +245,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(4, result.getResultData().size());
+        assertEquals(offset + 3, result.getResultData().size());
 
         assertEquals("/video.mp4", result.getResultData().get(0).getRemotePath());
         assertEquals("/pdf.pdf", result.getResultData().get(1).getRemotePath());
@@ -423,6 +436,13 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
     @Test
     public void showOnlyFolders() throws IOException {
+        // on newer server we have Talk folder
+        // on NC16 groupfolder is also returned
+        int offset = 0;
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
+            offset = 1;
+        }
+
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
@@ -436,13 +456,13 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
         RemoteOperationResult<List<RemoteFile>> result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(1, result.getResultData().size());
+        assertEquals(0 + offset, result.getResultData().size());
 
         assertTrue(new CreateFolderRemoteOperation("/folder/", false).execute(client).isSuccess());
 
         result = sut.execute(client);
         assertTrue(result.isSuccess());
-        assertEquals(2, result.getResultData().size());
+        assertEquals(1 + offset, result.getResultData().size());
         assertEquals("/folder/", result.getResultData().get(0).getRemotePath());
     }
 
