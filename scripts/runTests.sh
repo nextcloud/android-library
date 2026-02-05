@@ -8,6 +8,7 @@
 scripts/wait_for_emulator.sh
 adb logcat -c
 adb logcat > logcat.txt &
+./gradlew assembleDebug
 ./gradlew jacocoTestDebugUnitTestReport
 ./gradlew installDebugAndroidTest
 ./gradlew createDebugCoverageReport
