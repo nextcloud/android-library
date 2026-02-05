@@ -65,3 +65,11 @@ cd /var/www/html/apps/assistant; source ~/.bashrc; make
 php /var/www/html/occ app:enable -f assistant
 
 php /var/www/html/occ app:enable -f testing
+
+git clone --depth 1 https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/
+php /var/www/html/occ app:enable -f files_downloadlimit
+
+git clone --depth 1 -b master https://github.com/nextcloud/recommendations.git /var/www/html/apps/recommendations/
+php /var/www/html/occ app:enable -f recommendations
+
+php /var/www/html/occ config:system:set ratelimit.protection.enabled --value false --type bool
