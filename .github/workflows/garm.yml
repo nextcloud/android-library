@@ -81,8 +81,6 @@ jobs:
                     done
 
             -   name: gplay
-                env:
-                    SHOT_TEST: "true"
                 uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
                 with:
                     api-level: ${{ matrix.api-level }}
