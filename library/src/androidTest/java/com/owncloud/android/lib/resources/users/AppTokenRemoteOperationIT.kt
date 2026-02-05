@@ -58,8 +58,6 @@ class AppTokenRemoteOperationIT : AbstractIT() {
 
     @Test
     fun deleteAppPassword() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_17)
-
         val arguments = InstrumentationRegistry.getArguments()
         val username: String = arguments.getString("TEST_SERVER_USERNAME", "")
         val password: String = arguments.getString("TEST_SERVER_PASSWORD", "")

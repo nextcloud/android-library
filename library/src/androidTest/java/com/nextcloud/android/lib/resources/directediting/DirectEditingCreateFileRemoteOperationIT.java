@@ -18,11 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DirectEditingCreateFileRemoteOperationIT extends AbstractIT {
-    @BeforeClass
-    public static void beforeClass() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
-    }
-
     @Test
     public void createEmptyFile() {
         RemoteOperationResult<String> result = new DirectEditingCreateFileRemoteOperation("/test.md",

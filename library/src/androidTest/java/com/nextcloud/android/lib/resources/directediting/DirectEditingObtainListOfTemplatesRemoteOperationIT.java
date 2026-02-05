@@ -21,10 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DirectEditingObtainListOfTemplatesRemoteOperationIT extends AbstractIT {
-    @BeforeClass
-    public static void beforeClass() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
-    }
 
     @Test
     public void testGetAll() {
