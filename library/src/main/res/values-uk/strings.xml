@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name="account_not_new">Обліковий запис присутній під час створення нового</string>
-    <string name="account_not_the_same">Авторизовано за допомогою облікового запису, який відрізняється від того, який оновлюється</string>
+    <string name="account_not_the_same">Ви увійшли за допомогою облікового запису, який відрізняється від того, який оновлюється</string>
     <string name="bad_oc_version">На цьому сервері не знайдено дійсну версію Nextcloud</string>
     <string name="connect_timeout_exception">Вичерпано час з\'єднання</string>
     <string name="exception_using_account">Виняток з використанням облікового запису</string>
