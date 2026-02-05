@@ -65,6 +65,7 @@ services:
   - name: server-master
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     commands:
+      - rm /etc/apt/sources.list.d/php.list
       - apt-get update && apt-get install -y composer
       - mkdir /var/www/.nvm /var/www/.npm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
@@ -187,6 +188,7 @@ services:
     environment:
         SERVER_VERSION: stable32
     commands:
+      - rm /etc/apt/sources.list.d/php.list
       - apt-get update && apt-get install -y composer
       - mkdir /var/www/.nvm /var/www/.npm; touch /var/www/.bashrc; chown -R 33:33 /var/www/.nvm /var/www/.npm /var/www/.bashrc
       - su www-data -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash"
@@ -245,6 +247,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 2195ba559c458a941b5b20a602e1a1a931a7e02509e17a05fe2135deec7fc17e
+hmac: 828e44f1fb916caed5fc723c2a817d2c649e97aadea3165cccf3ed1c5f973a05
 
 ...
