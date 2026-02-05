@@ -25,10 +25,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class RichWorkspaceDirectEditingRemoteOperationIT extends AbstractIT {
-    @BeforeClass
-    public static void beforeClass() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
-    }
 
     @Test
     public void getEditLinkForRoot() {

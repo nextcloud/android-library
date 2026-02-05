@@ -147,8 +147,6 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testShareToGroupSharees() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
-
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -190,8 +188,6 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testOneSharees() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
-
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -227,8 +223,6 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testTwoShareesOnParent() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
-
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
@@ -277,8 +271,6 @@ public class FileIT extends AbstractIT {
 
     @Test
     public void testTwoSharees() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_17);
-
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());

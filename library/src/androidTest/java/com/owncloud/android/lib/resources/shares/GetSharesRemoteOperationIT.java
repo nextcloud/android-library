@@ -155,8 +155,6 @@ public class GetSharesRemoteOperationIT extends AbstractIT {
 
     @Test
     public void sharedWithMe() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_19);
-
         GetSharesRemoteOperation sut = new GetSharesRemoteOperation();
         GetSharesRemoteOperation sutSharedWithMe = new GetSharesRemoteOperation(true);
 

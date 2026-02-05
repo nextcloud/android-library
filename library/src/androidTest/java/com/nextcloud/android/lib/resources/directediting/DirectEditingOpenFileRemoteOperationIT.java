@@ -24,11 +24,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DirectEditingOpenFileRemoteOperationIT extends AbstractIT {
-    @BeforeClass
-    public static void beforeClass() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
-    }
-
     @Test
     public void openFile() throws IOException {
         // create file

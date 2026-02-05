@@ -25,8 +25,8 @@ import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 public class UpdateMetadataRemoteOperationIT extends AbstractIT {
     //@Test
     public void uploadAndModifyV1() {
-        // tests only for NC19+
-        testOnlyOnServer(OwnCloudVersion.nextcloud_19);
+        // tests only for NC20+
+        testOnlyOnServer(OwnCloudVersion.nextcloud_20);
 
         // E2E server app checks for official NC client with >=3.13.0, 
         // and blocks all other clients, e.g. 3rd party apps using this lib

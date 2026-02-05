@@ -26,7 +26,6 @@ import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -96,8 +95,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testFileSearchEverything() throws IOException {
         // on newer server we have Talk folder
         int offset = 0;
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
-            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_17.getMajorVersionNumber()) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
             offset = 1;
         }
 
@@ -209,14 +207,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         assertEquals(2, result.getResultData().size());
 
         assertEquals(remotePath, result.getResultData().get(0).getRemotePath());
-
-        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_17)) {
-            assertEquals(sharedRemotePath, result.getResultData().get(1).getRemotePath());
-        } else {
-            // on NC16 we have a bug that each file ends with "/"
-            sharedRemotePath += "/";
-            assertEquals(sharedRemotePath, result.getResultData().get(1).getRemotePath());
-        }
+        assertEquals(sharedRemotePath, result.getResultData().get(1).getRemotePath());
     }
 
     /**
@@ -226,8 +217,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
     public void testRecentlyModifiedSearch() throws IOException {
         // on newer server we have Talk folder
         int offset = 0;
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
-            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_17.getMajorVersionNumber()) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
             offset = 1;
         }
 
@@ -420,8 +410,6 @@ public class SearchRemoteOperationIT extends AbstractIT {
 
     @Test
     public void testGallerySearch() throws IOException {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_18);
-
         for (int i = 0; i < 10; i++) {
             String filePath = createFile("image" + i);
             String remotePath = "/image" + i + ".jpg";
@@ -451,8 +439,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         // on newer server we have Talk folder
         // on NC16 groupfolder is also returned
         int offset = 0;
-        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20) ||
-            capability.getVersion().getMajorVersionNumber() == NextcloudVersion.nextcloud_17.getMajorVersionNumber()) {
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_20)) {
             offset = 1;
         }
 
