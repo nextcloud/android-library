@@ -19,12 +19,8 @@ class GetRecommendationsRemoteOperationIT : AbstractIT() {
         testOnlyOnServer(NextcloudVersion.nextcloud_31)
         assertTrue(CreateFolderRemoteOperation("/test/", true).execute(client).isSuccess)
 
-        val sut = GetRecommendationsRemoteOperation().execute(nextcloudClient)
-        
-        assertTrue(sut.exception.message, sut.isSuccess)
+        val result = GetRecommendationsRemoteOperation().execute(nextcloudClient).resultData
 
-        val result = sut.resultData
-        
         assertTrue(result.enabled)
         assertTrue(result.recommendations.isNotEmpty())
     }
