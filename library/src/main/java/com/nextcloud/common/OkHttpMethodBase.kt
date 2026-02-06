@@ -9,6 +9,7 @@
  */
 package com.nextcloud.common
 
+import com.nextcloud.common.OkHttpMethodBase.Companion.UNKNOWN_STATUS_CODE
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.utils.Log_OC
@@ -83,6 +84,8 @@ abstract class OkHttpMethodBase(
     }
 
     fun getResponseBodyAsString(): String = response?.body?.string() ?: ""
+
+    fun getResponseBodyAsStream() = response?.body?.byteStream()
 
     fun getResponseContentLength(): Long = response?.body?.contentLength() ?: -1
 
