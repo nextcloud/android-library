@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import com.nextcloud.common.DNSCache;
 import com.nextcloud.common.NextcloudUriDelegate;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.owncloud.android.lib.common.interceptor.ClientInterceptor;
 import com.owncloud.android.lib.common.network.AdvancedX509KeyManager;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -66,6 +67,7 @@ public class OwnCloudClient extends HttpClient {
     private int mInstanceNumber;
 
     private AdvancedX509KeyManager keyManager;
+    private final ClientInterceptor interceptor = new ClientInterceptor();
 
     /**
      * Constructor
@@ -93,7 +95,6 @@ public class OwnCloudClient extends HttpClient {
         getParams().setParameter(PARAM_SINGLE_COOKIE_HEADER, PARAM_SINGLE_COOKIE_HEADER_VALUE);
 
         applyProxySettings();
-
         clearCredentials();
     }
 
@@ -141,6 +142,7 @@ public class OwnCloudClient extends HttpClient {
      * @param connectionTimeout Timeout to set for connection establishment
      */
     public int executeMethod(HttpMethodBase method, int readTimeout, int connectionTimeout) throws IOException {
+        interceptor.interceptHttpMethodBaseRequest(method);
 
         int oldSoTimeout = getParams().getSoTimeout();
         int oldConnectionTimeout = getHttpConnectionManager().getParams().getConnectionTimeout();
@@ -158,6 +160,9 @@ public class OwnCloudClient extends HttpClient {
                 Log_OC.e(TAG, "Received http status 400 for " + uri + " -> removing client certificate");
                 keyManager.removeKeys(uri);
             }
+
+            interceptor.interceptHttpMethodBaseResponse(method, httpStatus);
+
             return httpStatus;
         } finally {
             getParams().setSoTimeout(oldSoTimeout);
@@ -175,6 +180,7 @@ public class OwnCloudClient extends HttpClient {
      */
     @Override
     public int executeMethod(HttpMethod method) throws IOException {
+        interceptor.interceptHttpMethodRequest(method);
         final String hostname = method.getURI().getHost();
 
         try {
@@ -207,6 +213,7 @@ public class OwnCloudClient extends HttpClient {
 //	        logCookiesAtState("after");
 //	        logSetCookiesAtResponse(method.getResponseHeaders());
 
+            interceptor.interceptHttpMethodResponse(method, status);
             return status;
 
         } catch (SocketTimeoutException | ConnectException e) {
