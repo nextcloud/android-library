@@ -45,19 +45,25 @@ class ElementTypeAdapter :
             val prefix = "com.nextcloud.android.lib.resources.clientintegration"
             val cls: Class<out Element> =
                 when (typeName) {
-                    "Button" ->
+                    "Button" -> {
                         Class.forName("$prefix.LayoutButton") as Class<out Element>
+                    }
 
-                    "Text" ->
+                    "Text" -> {
                         Class.forName("$prefix.LayoutText") as Class<out Element>
+                    }
 
-                    "Image" ->
+                    "Image" -> {
                         Class.forName("$prefix.LayoutImage") as Class<out Element>
+                    }
 
-                    "URL" ->
+                    "URL" -> {
                         Class.forName("$prefix.LayoutURL") as Class<out Element>
+                    }
 
-                    else -> return null
+                    else -> {
+                        return null
+                    }
                 }
 
             return Gson().fromJson(json, cls)
