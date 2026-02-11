@@ -8,19 +8,13 @@
  */
 package com.owncloud.android;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
 import com.nextcloud.android.lib.resources.files.ToggleFileLockRemoteOperation;
 import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
@@ -40,7 +34,6 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -57,7 +50,13 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import okhttp3.Credentials;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Common base for all integration tests
@@ -113,20 +112,20 @@ public abstract class AbstractIT {
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
 
-        waitForServer(client, url);
+        waitForServer(nextcloudClient, url);
         testConnection();
     }
 
-    private static void waitForServer(OwnCloudClient client, Uri baseUrl) {
+    private static void waitForServer(NextcloudClient client, Uri baseUrl) {
         String statusUrl = baseUrl + "/status.php";
         GetMethod get;
         int maxRetries = 3;
 
         for (int i = 0; i < maxRetries; i++) {
-            get = new GetMethod(statusUrl);
+            get = new GetMethod(statusUrl, false);
 
             try {
-                if (client.executeMethod(get) == HttpStatus.SC_OK) {
+                if (client.execute(get) == HttpStatus.SC_OK) {
                     Log_OC.d(TAG, "Server is ready");
                     return;
                 }
