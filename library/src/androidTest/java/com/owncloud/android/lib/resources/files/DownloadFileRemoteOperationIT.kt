@@ -27,7 +27,7 @@ class DownloadFileRemoteOperationIT : AbstractIT() {
 
         assertTrue(
             DownloadFileRemoteOperation(remotePath, context.externalCacheDir?.absolutePath)
-                .execute(client)
+                .execute(nextcloudClient)
                 .isSuccess
         )
 

@@ -15,7 +15,7 @@ package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
 
-import androidx.annotation.Nullable;
+import com.nextcloud.common.OkHttpMethodBase;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("FS")
@@ -239,12 +240,6 @@ public class WebdavUtils {
         return rawEtag;
     }
 
-
-    /**
-     *
-     * @param method
-     * @return
-     */
     public static String getEtagFromResponse(HttpMethod method) {
         Header eTag = method.getResponseHeader("OC-ETag");
         if (eTag == null) {
@@ -263,4 +258,21 @@ public class WebdavUtils {
         return result;
     }
 
+    public static String getEtagFromResponse(OkHttpMethodBase method) {
+        String eTag = method.getResponseHeader("OC-ETag");
+        if (eTag == null) {
+            eTag = method.getResponseHeader("oc-etag");
+        }
+        if (eTag == null) {
+            eTag = method.getResponseHeader("ETag");
+        }
+        if (eTag == null) {
+            eTag = method.getResponseHeader("etag");
+        }
+        String result = "";
+        if (eTag != null) {
+            result = parseEtag(eTag);
+        }
+        return result;
+    }
 }
