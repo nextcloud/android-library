@@ -19,7 +19,7 @@ class RegisterAccountDeviceForWebPushOperation(
     val endpoint: String,
     val auth: String,
     val uaPublicKey: String,
-    val apptypes: List<String>
+    val appTypes: List<String>
 ): RemoteOperation<Void>() {
 
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
@@ -29,7 +29,7 @@ class RegisterAccountDeviceForWebPushOperation(
             val body = JSONRequestBody(ENDPOINT, endpoint)
             body.put(AUTH, auth)
             body.put(UA_PUBLIC_KEY, uaPublicKey)
-            body.put(APPTYPES, apptypes.joinToString(","))
+            body.put(APPTYPES, appTypes.joinToString(","))
             post = PostMethod("${client.baseUri}$OCS_ROUTE", true, body.get())
 
             val status = client.execute(post)
@@ -63,7 +63,7 @@ class RegisterAccountDeviceForWebPushOperation(
         private const val ENDPOINT = "endpoint"
         private const val AUTH = "auth"
         private const val UA_PUBLIC_KEY = "uaPublicKey"
-        private const val APPTYPES = "apptypes"
+        private const val APPTYPES = "appTypes"
 
         private val TAG = RegisterAccountDeviceForWebPushOperation::class.java.getSimpleName()
     }
