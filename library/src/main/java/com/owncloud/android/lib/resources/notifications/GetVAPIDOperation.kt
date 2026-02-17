@@ -16,6 +16,7 @@ import com.owncloud.android.lib.resources.notifications.models.VapidResponse
 import org.json.JSONObject
 
 class GetVAPIDOperation : RemoteOperation<VapidResponse>() {
+    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<VapidResponse> {
         var result: RemoteOperationResult<VapidResponse>
         var get: GetMethod? = null

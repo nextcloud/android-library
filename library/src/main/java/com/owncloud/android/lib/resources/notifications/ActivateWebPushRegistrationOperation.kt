@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection
 class ActivateWebPushRegistrationOperation(
     val activationToken: String
 ) : RemoteOperation<Void>() {
+    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var result: RemoteOperationResult<Void>
         var post: PostMethod? = null

@@ -15,6 +15,7 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import org.apache.commons.httpclient.util.HttpURLConnection
 
 class UnregisterAccountDeviceForWebPushOperation : RemoteOperation<Void>() {
+    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var result: RemoteOperationResult<Void>
         var delete: DeleteMethod? = null

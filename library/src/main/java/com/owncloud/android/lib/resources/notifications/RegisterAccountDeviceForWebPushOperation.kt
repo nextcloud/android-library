@@ -21,6 +21,7 @@ class RegisterAccountDeviceForWebPushOperation(
     val uaPublicKey: String,
     val appTypes: List<String>
 ) : RemoteOperation<Void>() {
+    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var result: RemoteOperationResult<Void>
         var post: PostMethod? = null
