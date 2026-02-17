@@ -15,8 +15,7 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.notifications.models.VapidResponse
 import org.json.JSONObject
 
-class GetVAPIDOperation(): RemoteOperation<VapidResponse>() {
-
+class GetVAPIDOperation : RemoteOperation<VapidResponse>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<VapidResponse> {
         var result: RemoteOperationResult<VapidResponse>
         var get: GetMethod? = null
@@ -28,10 +27,11 @@ class GetVAPIDOperation(): RemoteOperation<VapidResponse>() {
 
             if (get.isSuccess()) {
                 result = RemoteOperationResult(true, get)
-                val vapid = JSONObject(response)
-                    .getJSONObject(OCS)
-                    .getJSONObject(DATA)
-                    .getString(VAPID)
+                val vapid =
+                    JSONObject(response)
+                        .getJSONObject(OCS)
+                        .getJSONObject(DATA)
+                        .getString(VAPID)
                 result.resultData = VapidResponse(vapid)
                 Log_OC.d(TAG, "VAPID key found: $vapid")
             } else {

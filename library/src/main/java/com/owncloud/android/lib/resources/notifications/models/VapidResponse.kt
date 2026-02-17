@@ -7,4 +7,6 @@
 
 package com.owncloud.android.lib.resources.notifications.models
 
-data class VapidResponse(val vapid: String)
+data class VapidResponse(
+    val vapid: String
+)

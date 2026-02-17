@@ -20,8 +20,7 @@ class RegisterAccountDeviceForWebPushOperation(
     val auth: String,
     val uaPublicKey: String,
     val appTypes: List<String>
-): RemoteOperation<Void>() {
-
+) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var result: RemoteOperationResult<Void>
         var post: PostMethod? = null
@@ -39,10 +38,12 @@ class RegisterAccountDeviceForWebPushOperation(
                     Log_OC.d(TAG, "New web push registration created (status=201)")
                     result = RemoteOperationResult(true, post)
                 }
+
                 HttpURLConnection.HTTP_OK -> {
                     Log_OC.d(TAG, "Web push registration already activated (status=200)")
                     result = RemoteOperationResult(true, post)
                 }
+
                 else -> {
                     Log_OC.e(TAG, "Web push registration refused (status=$status): $response")
                     result = RemoteOperationResult(false, post)

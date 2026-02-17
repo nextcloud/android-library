@@ -17,8 +17,7 @@ import org.apache.commons.httpclient.util.HttpURLConnection
 
 class ActivateWebPushRegistrationOperation(
     val activationToken: String
-): RemoteOperation<Void>() {
-
+) : RemoteOperation<Void>() {
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
         var result: RemoteOperationResult<Void>
         var post: PostMethod? = null
@@ -33,10 +32,12 @@ class ActivateWebPushRegistrationOperation(
                     Log_OC.d(TAG, "Web push registration activated (status=202)")
                     result = RemoteOperationResult(true, post)
                 }
+
                 HttpURLConnection.HTTP_OK -> {
                     Log_OC.d(TAG, "Web push registration already activated (status=200)")
                     result = RemoteOperationResult(true, post)
                 }
+
                 else -> {
                     Log_OC.d(TAG, "Cannot activate web push registration (status=$status): $response")
                     result = RemoteOperationResult(false, post)
