@@ -1,11 +1,14 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.common.utils;
+
+import android.net.Uri;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.network.WebdavEntry;
@@ -15,6 +18,8 @@ import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * WebDav helper.
@@ -58,5 +63,39 @@ public class WebDavFileUtils {
         }
 
         return mFolderAndFiles;
+    }
+
+    /**
+     * Read the data retrieved from the server about the contents of the target folder
+     *
+     * @param remoteData Full response got from the server with the data of the target
+     *                   folder and its direct children.
+     * @param client     Client instance to the remote server where the data were
+     *                   retrieved.
+     * @return           list of remote file
+     */
+    public List<RemoteFile> readAlbumData(MultiStatus remoteData, OwnCloudClient client) {
+        String baseUrl = client.getBaseUri() + "/remote.php/dav/photos/" + client.getUserId();
+        Uri uri = Uri.parse(baseUrl);
+        if (uri == null) {
+            return Collections.emptyList();
+        }
+
+        String encodedPath = uri.getEncodedPath();
+        if (encodedPath == null) {
+            return Collections.emptyList();
+        }
+
+        final var responses = remoteData.getResponses();
+        List<RemoteFile> files = new ArrayList<>(Math.max(0, responses.length - 1));
+
+        // reading from 1 as 0th item will be just the root album path
+        for (int i = 1; i < responses.length; i++) {
+            WebdavEntry entry = new WebdavEntry(responses[i], encodedPath);
+            RemoteFile remoteFile = new RemoteFile(entry);
+            files.add(remoteFile);
+        }
+
+        return files;
     }
 }
