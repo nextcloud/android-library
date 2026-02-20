@@ -101,6 +101,7 @@ services:
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
+      - su www-data -c "cd /var/www/html/apps/notifications; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test -d test"
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
@@ -222,6 +223,7 @@ services:
       - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
       - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
+      - su www-data -c "cd /var/www/html/apps/notifications; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f notifications"
       - su www-data -c "php /var/www/html/occ notification:generate test test"
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
@@ -247,6 +249,6 @@ trigger:
     - pull_request
 ---
 kind: signature
-hmac: 828e44f1fb916caed5fc723c2a817d2c649e97aadea3165cccf3ed1c5f973a05
+hmac: d51bba0f9e5754b040cc2a99847a261a21e283074dabffa811f0c0eaf11f6968
 
 ...
