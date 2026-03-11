@@ -11,6 +11,8 @@ import android.os.Build
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
+import com.owncloud.android.lib.resources.status.OCCapability
 import junit.framework.TestCase.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -32,6 +34,11 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun upload() {
+        val ocCapability =
+            GetCapabilitiesRemoteOperation()
+                .execute(nextcloudClient)
+                .singleData as OCCapability
+
         // create file
         val filePath = createFile("text")
         val remotePath = "/test.md"
