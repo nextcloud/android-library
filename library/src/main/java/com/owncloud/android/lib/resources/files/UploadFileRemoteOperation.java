@@ -137,6 +137,17 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     @Override
     protected RemoteOperationResult<String> run(OwnCloudClient client) {
         RemoteOperationResult<String> result;
+
+        // check quota
+        long fileLength = new File(localPath).length();
+        RemoteOperationResult checkEnoughQuotaResult =
+                new CheckEnoughQuotaRemoteOperation(remotePath, fileLength)
+                        .run(client);
+
+        if (!checkEnoughQuotaResult.isSuccess()) {
+            return new RemoteOperationResult<>(checkEnoughQuotaResult.getCode());
+        }
+
         DefaultHttpMethodRetryHandler oldRetryHandler =
                 (DefaultHttpMethodRetryHandler) client.getParams().getParameter(HttpMethodParams.RETRY_HANDLER);
 
