@@ -13,7 +13,6 @@ import com.nextcloud.operations.DeleteMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.resources.users.DeletePrivateKeyRemoteOperation
 import java.io.IOException
 import java.net.HttpURLConnection
 
@@ -42,7 +41,7 @@ class DeleteTaskRemoteOperationV1(
     }
 
     companion object {
-        private val TAG = DeletePrivateKeyRemoteOperation::class.java.simpleName
+        private val TAG = DeleteTaskRemoteOperationV1::class.java.simpleName
         private const val DIRECT_ENDPOINT =
             "/ocs/v2.php/textprocessing/task/"
     }
