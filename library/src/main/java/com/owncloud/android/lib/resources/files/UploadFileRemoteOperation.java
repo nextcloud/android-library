@@ -211,6 +211,12 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
             }
 
             putMethod.setRequestEntity(entity);
+
+            String Hash = FileUtils.getHashFromFile(this, f, "SHA-256");
+            if(Hash != null){
+                putMethod.addRequestHeader("X-Content-Hash", Hash);
+            }
+          
             status = client.executeMethod(putMethod);
 
             result = new RemoteOperationResult<>(isSuccess(status), putMethod);
