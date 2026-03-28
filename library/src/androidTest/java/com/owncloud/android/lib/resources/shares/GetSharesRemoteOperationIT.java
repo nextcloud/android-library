@@ -27,6 +27,7 @@ import com.owncloud.android.lib.resources.files.ToggleFavoriteRemoteOperation;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
+import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import junit.framework.TestCase;
 
