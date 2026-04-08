@@ -22,8 +22,8 @@
     <string name="operation_cancelled">A hívó megszakította a műveletet</string>
     <string name="operation_cancelled_by_the_caller">A hívó megszakította a műveletet</string>
     <string name="operation_finished_http_code">A művelet HTTP %1$d (%2$s) állapotkóddal befejezve</string>
-    <string name="socket_exception">Socket hiba</string>
-    <string name="socket_timeout_exception">Socket időtúllépési hiba</string>
+    <string name="socket_exception">Foglalathiba</string>
+    <string name="socket_timeout_exception">Időtúllépési hiba a foglalatnál</string>
     <string name="ssl_exception">SSL kivétel</string>
     <string name="ssl_recoverable_exception">Helyreállítható SSL kivétel</string>
     <string name="sync_conflict">Szinkronizációs ütközés</string>
