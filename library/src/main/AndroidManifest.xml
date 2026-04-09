@@ -26,10 +26,7 @@
          TLS client certificate when context is not able to start an Activity. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
-    <application
-        android:usesCleartextTraffic="true"
-        tools:targetApi="m">
-
+    <application android:usesCleartextTraffic="true">
         <activity
             android:name=".common.network.SelectClientCertificateHelperActivity"
             android:exported="false" />
