@@ -510,35 +510,33 @@ public class AdvancedX509KeyManager
    }
 
    private void startActivityNotification(@NonNull Intent intent, int decisionId, @NonNull String message) {
-      int flags = 0;
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-         flags |= PendingIntent.FLAG_IMMUTABLE;
-      }
-      final PendingIntent call = PendingIntent.getActivity(context, 0, intent, flags);
-      NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-         NotificationChannel channel = new NotificationChannel(
-                 NOTIFICATION_CHANNEL_ID,
-                 context.getString(R.string.notification_channel_name),
-                 NotificationManager.IMPORTANCE_DEFAULT);
-         notificationManager.createNotificationChannel(channel);
-      }
-      final Notification notification = new NotificationCompat
-              .Builder(context, NOTIFICATION_CHANNEL_ID)
-              .setContentTitle(context.getString(R.string.notification_title_select_client_cert))
-              .setContentText(message)
-              .setTicker(message)
-              .setSmallIcon(android.R.drawable.ic_lock_lock)
-              .setWhen(System.currentTimeMillis())
-              .setContentIntent(call)
-              .setAutoCancel(true)
-              .build();
+       int flags = 0;
+       flags |= PendingIntent.FLAG_IMMUTABLE;
+       final PendingIntent call = PendingIntent.getActivity(context, 0, intent, flags);
+       NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           NotificationChannel channel = new NotificationChannel(
+               NOTIFICATION_CHANNEL_ID,
+               context.getString(R.string.notification_channel_name),
+               NotificationManager.IMPORTANCE_DEFAULT);
+           notificationManager.createNotificationChannel(channel);
+       }
+       final Notification notification = new NotificationCompat
+           .Builder(context, NOTIFICATION_CHANNEL_ID)
+           .setContentTitle(context.getString(R.string.notification_title_select_client_cert))
+           .setContentText(message)
+           .setTicker(message)
+           .setSmallIcon(android.R.drawable.ic_lock_lock)
+           .setWhen(System.currentTimeMillis())
+           .setContentIntent(call)
+           .setAutoCancel(true)
+           .build();
 
-      if (ActivityCompat.checkSelfPermission(context, POST_NOTIFICATIONS) == PERMISSION_GRANTED) {
-         notificationManager.notify(NOTIFICATION_ID + decisionId, notification);
-      } else {
-         Log_OC.w(TAG, "Cannot send notification due to missing permission.");
-      }
+       if (ActivityCompat.checkSelfPermission(context, POST_NOTIFICATIONS) == PERMISSION_GRANTED) {
+           notificationManager.notify(NOTIFICATION_ID + decisionId, notification);
+       } else {
+           Log_OC.w(TAG, "Cannot send notification due to missing permission.");
+       }
    }
 
    /**
