@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Paskyra jau egzistuoja kuriant naują</string>
+    <string name="account_not_the_same">Autentifikuota naudojant kitą paskyrą nei ta, kuri atnaujinama</string>
+    <string name="bad_oc_version">Serveryje nerasta galiojančios „Nextcloud“ versijos</string>
+    <string name="connect_timeout_exception">Prisijungimo skirtojo laiko išimtis</string>
+    <string name="exception_using_account">Išimtis naudojant paskyrą</string>
+    <string name="file_locked">Failas šiuo metu yra užrakintas kito naudotojo ar proceso</string>
+    <string name="file_not_found">Vietinio failo nėra</string>
+    <string name="http_violation">HTTP pažeidimas</string>
+    <string name="instance_not_configured">„Nextcloud“ serveris nesukonfigūruotas!</string>
+    <string name="invalid_character_in_name">Failo pavadinime yra draudžiamas simbolis</string>
+    <string name="json_exception">JSON išimtis</string>
+    <string name="local_storage_full">Vietinė saugykla pilna</string>
+    <string name="local_storage_not_moved">Klaida perkeliant failą į galutinį katalogą</string>
+    <string name="malformed_url_exception">Netinkamai suformuoto URL išimtis</string>
+    <string name="message_install_client_cert">Ar norite įdiegti TLS kliento liudijimą\?</string>
+    <string name="no_network_connection">Nėra tinklo ryšio</string>
+    <string name="notification_channel_name">„Nextcloud“ prisijungimas</string>
+    <string name="notification_message_select_client_cert">Pasirinkite kliento sertifikatą %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Pasirinkite kliento sertifikatą</string>
+    <string name="operation_cancelled">Skambintojas atšaukė operaciją</string>
+    <string name="operation_cancelled_by_the_caller">Skambintojas atšaukė operaciją</string>
+    <string name="operation_finished_http_code">Operacija baigta su HTTP būsenos kodu %1$d(%2$s)</string>
+    <string name="socket_exception">Tinklo ryšio klaida</string>
+    <string name="socket_timeout_exception">Baigėsi užklausos laikas</string>
+    <string name="ssl_exception">SSL išimtis</string>
+    <string name="ssl_recoverable_exception">SSL atkuriama išimtis</string>
+    <string name="sync_conflict">Sinchronizavimo konfliktas</string>
+    <string name="title_no_client_cert">Nerasta kliento sertifikato</string>
+    <string name="unexpected_exception">Netikėta išimtis</string>
+    <string name="unexpected_webdav_exception">Nenumatyta WebDAV išimtis</string>
+    <string name="unknown_host_exception">Nežinomo serverio (mazgo) klaida</string>
+    <string name="unrecovered_transport_exception">Nepataisoma duomenų perdavimo klaida</string>
+</resources>
