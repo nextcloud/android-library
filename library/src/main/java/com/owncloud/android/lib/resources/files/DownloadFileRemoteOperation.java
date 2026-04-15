@@ -102,7 +102,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 long transferred = 0;
 
                 String contentLength = getMethod.getResponseHeader("Content-Length");
-                long totalToTransfer = (contentLength != null) ?Long.parseLong(contentLength) : 0;
+                long totalToTransfer = (contentLength != null) ? Long.parseLong(contentLength) : 0;
 
                 byte[] bytes = new byte[4096];
                 int readResult;
