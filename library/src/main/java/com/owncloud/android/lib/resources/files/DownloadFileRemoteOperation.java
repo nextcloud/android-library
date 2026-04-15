@@ -109,7 +109,6 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 while ((readResult = bis.read(bytes)) != -1) {
                     synchronized (mCancellationRequested) {
                         if (mCancellationRequested.get()) {
-                            // getMethod.abort();
                             throw new OperationCancelledException();
                         }
                     }
