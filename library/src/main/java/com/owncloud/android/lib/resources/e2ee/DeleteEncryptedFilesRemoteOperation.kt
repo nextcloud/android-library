@@ -15,7 +15,6 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import org.apache.commons.httpclient.HttpStatus
 
 class DeleteEncryptedFilesRemoteOperation : RemoteOperation<Unit>() {
-
     @Deprecated("Deprecated in Java")
     @Suppress("Detekt.TooGenericExceptionCaught", "DEPRECATION")
     override fun run(client: NextcloudClient): RemoteOperationResult<Unit> {

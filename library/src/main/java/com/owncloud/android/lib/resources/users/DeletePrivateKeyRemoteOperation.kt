@@ -15,27 +15,22 @@ import com.owncloud.android.lib.common.utils.Log_OC
 import java.io.IOException
 import java.net.HttpURLConnection
 
-/**
- * Remote operation performing to delete the private key for an user
- */
-class DeletePrivateKeyRemoteOperation : RemoteOperation<Void>() {
-    /**
-     * @param client Client object
-     */
-    override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
+class DeletePrivateKeyRemoteOperation : RemoteOperation<Unit>() {
+    @Deprecated("Deprecated in Java")
+    @Suppress("Detekt.TooGenericExceptionCaught", "DEPRECATION")
+    override fun run(client: NextcloudClient): RemoteOperationResult<Unit> {
         var postMethod: DeleteMethod? = null
-        var result: RemoteOperationResult<Void>
+        var result: RemoteOperationResult<Unit>
         try {
-            // remote request
             postMethod =
                 DeleteMethod(
                     client.baseUri.toString() + PRIVATE_KEY_URL,
                     true
                 )
             val status = client.execute(postMethod)
-            result = RemoteOperationResult<Void>(status == HttpURLConnection.HTTP_OK, postMethod)
+            result = RemoteOperationResult<Unit>(status == HttpURLConnection.HTTP_OK, postMethod)
         } catch (e: IOException) {
-            result = RemoteOperationResult<Void>(e)
+            result = RemoteOperationResult<Unit>(e)
             Log_OC.e(TAG, "Deletion of private key failed: " + result.logMessage, result.exception)
         } finally {
             postMethod?.releaseConnection()
