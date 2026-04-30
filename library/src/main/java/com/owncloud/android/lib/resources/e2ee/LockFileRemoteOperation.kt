@@ -1,111 +1,100 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2017 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources.e2ee;
+package com.owncloud.android.lib.resources.e2ee
 
-import com.nextcloud.common.SessionTimeOut;
-import com.nextcloud.common.SessionTimeOutKt;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
+import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.operations.RemoteOperation
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.commons.httpclient.methods.Utf8PostMethod
+import org.json.JSONObject
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.Utf8PostMethod;
-import org.json.JSONObject;
+class LockFileRemoteOperation(
+    private val localId: Long,
+    private val counter: Long = DEFAULT_COUNTER,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
+) : RemoteOperation<String>() {
+    @JvmOverloads
+    constructor(localId: Long, sessionTimeOut: SessionTimeOut = defaultSessionTimeOut) : this(
+        localId,
+        DEFAULT_COUNTER,
+        sessionTimeOut
+    )
 
-
-/**
- * Lock a file
- */
-public class LockFileRemoteOperation extends RemoteOperation<String> {
-
-    private static final String TAG = LockFileRemoteOperation.class.getSimpleName();
-    private static final String LOCK_FILE_URL = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/";
-
-    private static final String COUNTER_HEADER = "X-NC-E2EE-COUNTER";
-
-    private final long localId;
-    private final long counter;
-
-    private static final long defaultCounter = -1;
-
-    // JSON node names
-    private static final String NODE_OCS = "ocs";
-    private static final String NODE_DATA = "data";
-
-    private final SessionTimeOut sessionTimeOut;
-
-    /**
-     * Constructor
-     */
-    public LockFileRemoteOperation(long localId, long counter) {
-        this(localId, counter, SessionTimeOutKt.getDefaultSessionTimeOut());
-    }
-
-    public LockFileRemoteOperation(long localId) {
-        this(localId, SessionTimeOutKt.getDefaultSessionTimeOut());
-    }
-
-    public LockFileRemoteOperation(long localId, SessionTimeOut sessionTimeOut) {
-        this(localId, defaultCounter, sessionTimeOut);
-    }
-
-    public LockFileRemoteOperation(long localId, long counter, SessionTimeOut sessionTimeOut) {
-        this.localId = localId;
-        this.counter = counter;
-        this.sessionTimeOut = sessionTimeOut;
-    }
-
-    /**
-     * @param client Client object
-     */
-    @Override
-    protected RemoteOperationResult<String> run(OwnCloudClient client) {
-        RemoteOperationResult<String> result;
-        Utf8PostMethod postMethod = null;
-
-        try {
-            postMethod = new Utf8PostMethod(client.getBaseUri() + LOCK_FILE_URL + localId + JSON_FORMAT);
-
-            // remote request
-            postMethod.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
-            postMethod.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED);
-
-            if (counter > 0) {
-                postMethod.addRequestHeader(COUNTER_HEADER, String.valueOf(counter));
+    @Deprecated("Deprecated in Java")
+    @Suppress("Detekt.TooGenericExceptionCaught", "DEPRECATION")
+    override fun run(client: OwnCloudClient): RemoteOperationResult<String> =
+        runCatching { lockFile(client) }
+            .getOrElse { e ->
+                Log_OC.e(TAG, "Lock file with id $localId failed", e)
+                RemoteOperationResult(e as? Exception ?: RuntimeException(e))
             }
 
-            int status = client.executeMethod(postMethod, sessionTimeOut.getReadTimeOut(), sessionTimeOut.getConnectionTimeOut());
+    private fun lockFile(client: OwnCloudClient): RemoteOperationResult<String> {
+        val (status, postMethod) = executeWithFallback(client)
 
-            if (status == HttpStatus.SC_OK) {
-                String response = postMethod.getResponseBodyAsString();
-
-                // Parse the response
-                JSONObject respJSON = new JSONObject(response);
-                String token = respJSON
-                        .getJSONObject(NODE_OCS)
-                        .getJSONObject(NODE_DATA)
-                        .getString(E2E_TOKEN);
-
-                result = new RemoteOperationResult<>(true, postMethod);
-                result.setResultData(token);
-            } else {
-                result = new RemoteOperationResult<>(false, postMethod);
-                client.exhaustResponse(postMethod.getResponseBodyAsStream());
-            }
-        } catch (Exception e) {
-            result = new RemoteOperationResult<>(e);
-            Log_OC.e(TAG, "Lock file with id " + localId + " failed: " + result.getLogMessage(), result.getException());
-        } finally {
-            if (postMethod != null) {
-                postMethod.releaseConnection();
-            }
+        return if (status == HttpStatus.SC_OK) {
+            buildSuccessResult(postMethod)
+        } else {
+            client.exhaustResponse(postMethod.getResponseBodyAsStream())
+            RemoteOperationResult(false, postMethod)
+        }.also {
+            postMethod.releaseConnection()
         }
-        return result;
+    }
+
+    /**
+     * Tries the v2 endpoint first, falling back to v1 on 404/500.
+     * Returns the final status code and the method used.
+     */
+    private fun executeWithFallback(client: OwnCloudClient): Pair<Int, Utf8PostMethod> {
+        val v2Method = buildPostMethod(client, LOCK_FILE_URL_V2)
+        val v2Status = client.executeMethod(v2Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
+
+        val needsFallback = v2Status == HttpStatus.SC_NOT_FOUND || v2Status == HttpStatus.SC_INTERNAL_SERVER_ERROR
+        if (!needsFallback) return v2Status to v2Method
+
+        v2Method.releaseConnection()
+        val v1Method = buildPostMethod(client, LOCK_FILE_URL_V1)
+        val v1Status = client.executeMethod(v1Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
+        return v1Status to v1Method
+    }
+
+    private fun buildPostMethod(
+        client: OwnCloudClient,
+        baseUrl: String
+    ) = Utf8PostMethod("${client.baseUri}$baseUrl$localId$JSON_FORMAT").apply {
+        addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
+        addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
+        if (counter > 0) addRequestHeader(COUNTER_HEADER, counter.toString())
+    }
+
+    private fun buildSuccessResult(postMethod: Utf8PostMethod): RemoteOperationResult<String> {
+        val token =
+            JSONObject(postMethod.getResponseBodyAsString())
+                .getJSONObject(NODE_OCS)
+                .getJSONObject(NODE_DATA)
+                .getString(E2E_TOKEN)
+
+        return RemoteOperationResult<String>(true, postMethod).apply {
+            resultData = token
+        }
+    }
+
+    companion object {
+        private val TAG = LockFileRemoteOperation::class.java.simpleName
+        private const val LOCK_FILE_URL_V1 = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/"
+        private const val LOCK_FILE_URL_V2 = "/ocs/v2.php/apps/end_to_end_encryption/api/v2/lock/"
+        private const val COUNTER_HEADER = "X-NC-E2EE-COUNTER"
+        private const val DEFAULT_COUNTER: Long = -1
+        private const val NODE_OCS = "ocs"
+        private const val NODE_DATA = "data"
     }
 }
