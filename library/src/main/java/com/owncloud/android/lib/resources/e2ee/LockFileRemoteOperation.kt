@@ -98,7 +98,6 @@ class LockFileRemoteOperation(
         baseUrl: String
     ) = Utf8PostMethod("${client.baseUri}$baseUrl$localId$JSON_FORMAT").apply {
         addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
-
     }
 
     private fun buildSuccessResult(postMethod: Utf8PostMethod): RemoteOperationResult<String> {
