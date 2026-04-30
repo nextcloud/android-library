@@ -13,6 +13,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import org.apache.commons.httpclient.HttpStatus
+import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.httpclient.methods.Utf8PostMethod
 import org.json.JSONObject
 
@@ -72,8 +73,17 @@ class LockFileRemoteOperation(
         baseUrl: String
     ) = Utf8PostMethod("${client.baseUri}$baseUrl$localId$JSON_FORMAT").apply {
         addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
-        addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
-        if (counter > 0) addRequestHeader(COUNTER_HEADER, counter.toString())
+        addRequestHeader(CONTENT_TYPE, "application/json")
+        addRequestHeader("Accept", "application/json, text/plain, */*")
+        addRequestHeader(E2EE_SUPPORTED_HEADER, "true")
+        addRequestHeader(REQUESTED_WITH_HEADER, "XMLHttpRequest")
+        val counter = if (counter > 0) {
+            counter
+        } else {
+            DEFAULT_COUNTER
+        }
+        addRequestHeader(COUNTER_HEADER, counter.toString())
+        setRequestEntity(StringRequestEntity("{}", "application/json", "UTF-8"))
     }
 
     private fun buildSuccessResult(postMethod: Utf8PostMethod): RemoteOperationResult<String> {
@@ -93,7 +103,9 @@ class LockFileRemoteOperation(
         private const val LOCK_FILE_URL_V1 = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/lock/"
         private const val LOCK_FILE_URL_V2 = "/ocs/v2.php/apps/end_to_end_encryption/api/v2/lock/"
         private const val COUNTER_HEADER = "X-NC-E2EE-COUNTER"
-        private const val DEFAULT_COUNTER: Long = -1
+        private const val E2EE_SUPPORTED_HEADER = "x-e2ee-supported"
+        private const val REQUESTED_WITH_HEADER = "x-requested-with"
+        private const val DEFAULT_COUNTER: Long = 1
         private const val NODE_OCS = "ocs"
         private const val NODE_DATA = "data"
     }
