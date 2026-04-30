@@ -56,7 +56,6 @@ class LockFileRemoteOperation(
      * Returns the final status code and the method used.
      */
     private fun executeWithFallback(client: OwnCloudClient): Pair<Int, Utf8PostMethod> {
-        val v2Counter = counter
         val v2Method = buildPostMethod(client, LOCK_FILE_URL_V2).apply {
             addRequestHeader("Accept", "application/json, text/plain, */*")
             addRequestHeader(CONTENT_TYPE, "application/json")
@@ -77,17 +76,9 @@ class LockFileRemoteOperation(
         val needsFallback = (v2Status == HttpStatus.SC_NOT_FOUND || v2Status == HttpStatus.SC_INTERNAL_SERVER_ERROR)
         if (!needsFallback) return v2Status to v2Method
 
-        // default counter for v1 was -1L
-        if (v2Counter == 1L) {
-            counter = -1L
-        }
-
         v2Method.releaseConnection()
         val v1Method = buildPostMethod(client, LOCK_FILE_URL_V1).apply {
             addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
-            if (counter > 0) {
-                addRequestHeader(COUNTER_HEADER, counter.toString())
-            }
         }
         val v1Status = client.executeMethod(v1Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
         return v1Status to v1Method
