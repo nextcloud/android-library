@@ -77,11 +77,12 @@ class LockFileRemoteOperation(
         addRequestHeader("Accept", "application/json, text/plain, */*")
         addRequestHeader(E2EE_SUPPORTED_HEADER, "true")
         addRequestHeader(REQUESTED_WITH_HEADER, "XMLHttpRequest")
-        val counter = if (counter > 0) {
-            counter
-        } else {
-            DEFAULT_COUNTER
-        }
+        val counter =
+            if (counter > 0) {
+                counter
+            } else {
+                DEFAULT_COUNTER
+            }
         addRequestHeader(COUNTER_HEADER, counter.toString())
         setRequestEntity(StringRequestEntity("{}", "application/json", "UTF-8"))
     }
