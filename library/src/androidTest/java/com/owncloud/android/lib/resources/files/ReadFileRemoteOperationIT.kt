@@ -114,7 +114,9 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         val remoteFile = result.data[0] as RemoteFile
 
         @Suppress("Detekt.MagicNumber")
-        assertEquals(ImageDimension(451f, 529f), remoteFile.imageDimension)
+        if (isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+            assertEquals(ImageDimension(451f, 529f), remoteFile.imageDimension)
+        }
 
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 

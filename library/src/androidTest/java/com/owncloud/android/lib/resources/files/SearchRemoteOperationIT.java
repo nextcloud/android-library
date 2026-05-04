@@ -24,6 +24,7 @@ import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.shares.CreateShareRemoteOperation;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
+import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.junit.BeforeClass;
@@ -200,7 +201,16 @@ public class SearchRemoteOperationIT extends AbstractIT {
         assertEquals(2, result.getResultData().size());
 
         assertEquals(remotePath, result.getResultData().get(0).getRemotePath());
-        assertEquals(sharedRemotePath, result.getResultData().get(1).getRemotePath());
+
+        String expectedSharedRemotePath;
+        if (isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+            expectedSharedRemotePath = sharedRemotePath;
+        } else {
+            // Bug: shared search ends with "/" even for files
+            expectedSharedRemotePath = sharedRemotePath + "/";
+        }
+        assertEquals(expectedSharedRemotePath, result.getResultData().get(1).getRemotePath());
+
     }
 
     /**

@@ -9,10 +9,17 @@ package com.owncloud.android.lib.resources.users
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.e2ee.DeleteEncryptedFilesRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class DeleteE2ERemoteOperationIT : AbstractIT() {
+    @Before
+    fun before() {
+        testOnlyOnServer(NextcloudVersion.nextcloud_34)
+    }
+
     @Test
     fun testDeleteEncryptedFiles() {
         val sut = DeleteEncryptedFilesRemoteOperation()
