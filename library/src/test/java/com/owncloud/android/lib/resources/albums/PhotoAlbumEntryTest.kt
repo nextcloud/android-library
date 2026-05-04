@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2025-2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -51,6 +51,6 @@ class PhotoAlbumEntryTest {
     // Helper method to create a stub entry
     private fun createTestEntry(href: String): PhotoAlbumEntry {
         val response = MultiStatusResponse(href, 200)
-        return PhotoAlbumEntry(response)
+        return PhotoAlbumEntry("https://www.example.com/",response)
     }
 }

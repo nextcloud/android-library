@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2025-2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.resources.albums
@@ -51,7 +51,7 @@ class ReadAlbumsRemoteOperation
                     val albumsList =
                         propfind.responseBodyAsMultiStatus.responses
                             .filter { it.status[0].statusCode == HttpStatus.SC_OK }
-                            .map { res -> PhotoAlbumEntry(res) }
+                            .map { res -> PhotoAlbumEntry(client.baseUri.toString(), res) }
                     result = RemoteOperationResult<List<PhotoAlbumEntry>>(true, propfind)
                     result.resultData = albumsList
                 } else {
