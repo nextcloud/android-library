@@ -150,11 +150,11 @@ steps:
       - ./gradlew assembleDebug
       - ./scripts/wait_for_emulator.sh
       - ./scripts/wait_for_server.sh server-stable-latest
-      - scripts/deleteOutdatedComments.sh "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
-      - scripts/deleteOutdatedComments.sh "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
-      - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - scripts/deleteOutdatedComments.sh "stable-latest" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - scripts/deleteOutdatedComments.sh "stable-latest" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable-latest" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew installDebugAndroidTest
-      - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+      - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable-latest" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
       - ./gradlew combinedTestReport
       - curl -Os https://uploader.codecov.io/latest/linux/codecov
       - chmod +x codecov
@@ -187,7 +187,7 @@ services:
   - name: server-stable-latest
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
-        SERVER_VERSION: stable33
+        SERVER_VERSION: stable32
     commands:
       - rm /etc/apt/sources.list.d/php.list
       - apt-get update && apt-get install -y composer
@@ -229,7 +229,7 @@ services:
       - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
-      - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+      - su www-data -c "git clone --depth 1 https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
       - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
@@ -272,11 +272,11 @@ steps:
           - ./gradlew assembleDebug
           - ./scripts/wait_for_emulator.sh
           - ./scripts/wait_for_server.sh server-stable-oldest
-          - scripts/deleteOutdatedComments.sh "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
-          - scripts/deleteOutdatedComments.sh "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
-          - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+          - scripts/deleteOutdatedComments.sh "stable-oldest" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+          - scripts/deleteOutdatedComments.sh "stable-oldest" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+          - ./gradlew jacocoTestDebugUnitTestReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable-oldest" "Unit" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
           - ./gradlew installDebugAndroidTest
-          - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
+          - ./gradlew createDebugCoverageReport || scripts/uploadReport.sh $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER "stable-oldest" "IT" $DRONE_PULL_REQUEST $GIT_USERNAME $GIT_TOKEN
           - ./gradlew combinedTestReport
           - curl -Os https://uploader.codecov.io/latest/linux/codecov
           - chmod +x codecov

@@ -165,6 +165,9 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
     
     @Test
     public void testClientIntegration() {
+        // only on NC32+
+        testOnlyOnServer(NextcloudVersion.nextcloud_32);
+        
         // get capabilities
         RemoteOperationResult<OCCapability> result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
         assertTrue(result.isSuccess());
