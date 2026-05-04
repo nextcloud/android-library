@@ -107,7 +107,7 @@ services:
       - su www-data -c "git clone --depth 1 https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
       - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f photos"
-      - su www-data -c "git clone --depth 1 https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
+      - su www-data -c "git clone --depth 1 -b main https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
       - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
       - su www-data -c "php /var/www/html/occ app:enable -f assistant"
       - su www-data -c "php /var/www/html/occ app:enable -f testing"
@@ -364,6 +364,6 @@ trigger:
         - pull_request
 ---
 kind: signature
-hmac: 2989789c55e48203877fd375190326ca816c47b754b9d45534703a2f0aaf96fb
+hmac: 242dd823e43429cdcc284b604e9284651c38c270002ce05e4fa930ee6041645d
 
 ...
