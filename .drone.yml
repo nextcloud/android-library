@@ -187,7 +187,7 @@ services:
   - name: server-stable-latest
     image: ghcr.io/nextcloud/continuous-integration-shallow-server:latest
     environment:
-        SERVER_VERSION: stable32
+        SERVER_VERSION: stable33
     commands:
       - rm /etc/apt/sources.list.d/php.list
       - apt-get update && apt-get install -y composer
@@ -364,6 +364,6 @@ trigger:
         - pull_request
 ---
 kind: signature
-hmac: 764d4af282a5c8e9be4ecec3932cf07984206a734c179c370fca8d43bc30f586
+hmac: b26e47fc03b18d8521973aa42f47b82f98b0c61c1836a99e454e9792dbee02ae
 
 ...
