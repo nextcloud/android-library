@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-FileCopyrightText: 2025-2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2023 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2023 Álvaro Brey <alvaro.brey@nextcloud.com>
@@ -688,6 +688,7 @@ class WebdavEntry constructor(
         const val PROPERTY_LOCATION = "location"
         const val PROPERTY_DATE_RANGE = "dateRange"
         const val PROPERTY_COLLABORATORS = "collaborators"
+        const val COLLABORATORS_SHARE_LABEL = "label"
         private const val IS_ENCRYPTED = "1"
         private const val CODE_PROP_NOT_FOUND = 404
     }
