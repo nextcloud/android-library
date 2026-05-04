@@ -307,7 +307,7 @@ steps:
 
 services:
     - name: server-stable-oldest
-      image: ghcr.io/nextcloud/continuous-integration-shallow-server@sha256:51d2afe82596956558322235c1339c68705e234e9fd52a90111c01278bdb2bd2
+      image: ghcr.io/nextcloud/continuous-integration-shallow-server-php7.4:1
       environment:
           SERVER_VERSION: stable20
       commands:
@@ -338,25 +338,18 @@ services:
           - su www-data -c "php /var/www/html/occ app:enable password_policy"
           - su www-data -c "php /var/www/html/occ app:enable external"
           - su www-data -c 'php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"'
-          - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/"
-          - su www-data -c "php /var/www/html/occ app:enable files_lock"
           - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/groupfolders.git /var/www/html/apps/groupfolders/"
           - su www-data -c "php /var/www/html/occ app:enable -f groupfolders"
           - su www-data -c "php /var/www/html/occ groupfolders:create groupfolder"
           - su www-data -c "php /var/www/html/occ groupfolders:group 1 users"
           - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/notifications.git /var/www/html/apps/notifications/"
-          - su www-data -c "cd /var/www/html/apps/notifications; composer install --no-dev"
+          - su www-data -c "cd /var/www/html/apps/notifications"
           - su www-data -c "php /var/www/html/occ app:enable -f notifications"
           - su www-data -c "php /var/www/html/occ notification:generate test test"
           - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/photos.git /var/www/html/apps/photos/"
-          - su www-data -c "cd /var/www/html/apps/photos; composer install --no-dev"
+          - su www-data -c "cd /var/www/html/apps/photos"
           - su www-data -c "php /var/www/html/occ app:enable -f photos"
-          - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/"
-          - su www-data -c "cd /var/www/html/apps/assistant; source ~/.bashrc; composer install --no-dev"
-          - su www-data -c "php /var/www/html/occ app:enable assistant"
           - su www-data -c "php /var/www/html/occ app:enable -f testing"
-          - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/"
-          - su www-data -c "php /var/www/html/occ app:enable -f files_downloadlimit"
           - su www-data -c "git clone --depth 1 -b $SERVER_VERSION https://github.com/nextcloud/recommendations.git /var/www/html/apps/recommendations/"
           - su www-data -c "php /var/www/html/occ app:enable recommendations"
           - su www-data -c "php /var/www/html/occ config:system:set ratelimit.protection.enabled --value false --type bool"
@@ -371,6 +364,6 @@ trigger:
         - pull_request
 ---
 kind: signature
-hmac: d0e52f2475fcb45e591f4bc5d44618ff48528c109294e1d58c237add521d0b51
+hmac: 1beebdbec1e86c50c861349ad0db285d191f4d61bcad489e103b404b52961a34
 
 ...
