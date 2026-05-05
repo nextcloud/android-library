@@ -8,6 +8,7 @@
 package com.owncloud.android.lib.resources.users
 
 import com.owncloud.android.AbstractIT
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -40,7 +41,13 @@ class StatusIT : AbstractIT() {
         val result0 = SetStatusRemoteOperation(StatusType.ONLINE).execute(nextcloudClient)
         assertTrue("SetStatusRemoteOperation failed: " + result0.logMessage, result0.isSuccess)
 
-        for (statusType in StatusType.values()) {
+        val status = StatusType.entries.toMutableList()
+
+        if (!isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+            status.remove(StatusType.BUSY)
+        }
+
+        for (statusType in status) {
             val result1 = GetStatusRemoteOperation().run(nextcloudClient)
             assertTrue("GetStatusRemoteOperation failed: " + result1.logMessage, result1.isSuccess)
 
