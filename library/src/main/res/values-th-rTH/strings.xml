@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">บัญชีดังกล่าวมีอยู่แล้วเมื่อสร้างบัญชีใหม่</string>
+    <string name="account_not_the_same">ยืนยันตัวตนด้วยบัญชีอื่นที่ไม่ใช่บัญชีที่กำลังอัปเดต</string>
+    <string name="bad_oc_version">ไม่พบเวอร์ชัน Nextcloud ที่ใช้งานได้บนเซิร์ฟเวอร์</string>
+    <string name="connect_timeout_exception">ผิดพลาดหมดเวลาการเชื่อมต่อ</string>
+    <string name="exception_using_account">เกิดข้อผิดพลาดขณะใช้งานบัญชี</string>
+    <string name="file_locked">ไฟล์ถูกล็อกโดยผู้ใช้หรือกระบวนการอื่นอยู่ขณะนี้</string>
+    <string name="file_not_found">ไฟล์ในเครื่องไม่มีอยู่จริง</string>
+    <string name="http_violation">ละเมิด HTTP</string>
+    <string name="instance_not_configured">เซิร์ฟเวอร์ Nextcloud ยังไม่ได้ตั้งค่า!</string>
+    <string name="invalid_character_in_name">ชื่อไฟล์มีอักขระต้องห้าม</string>
+    <string name="json_exception">ข้อผิดพลาด JSON</string>
+    <string name="local_storage_full">พื้นที่จัดเก็บข้อมูลภายในเครื่องเต็ม</string>
+    <string name="local_storage_not_moved">เกิดข้อผิดพลาดขณะย้ายไฟล์ไปยังไดเร็กทอรีสุดท้าย</string>
+    <string name="malformed_url_exception">ผิดพลาด URL ผิดรูปแบบ</string>
+    <string name="message_install_client_cert">คุณต้องการติดตั้งใบรับรองไคลเอ็นต์ TLS หรือไม่\?</string>
+    <string name="no_network_connection">ไม่มีการเชื่อมต่อเครือข่าย</string>
+    <string name="notification_channel_name">เชื่อมต่อ Nextcloud</string>
+    <string name="notification_message_select_client_cert">เลือกใบรับรองไคลเอ็นต์สำหรับ %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">เลือกใบรับรองไคลเอ็นต์</string>
+    <string name="operation_cancelled">การดำเนินการถูกยกเลิกโดยผู้โทร</string>
+    <string name="operation_cancelled_by_the_caller">การดำเนินการถูกยกเลิกโดยผู้โทร</string>
+    <string name="operation_finished_http_code">การดำเนินการเสร็จสิ้นด้วยรหัสสถานะ HTTP %1$d (%2$s)</string>
+    <string name="socket_exception">ข้อผิดพลาดของซ็อกเก็ต</string>
+    <string name="socket_timeout_exception">ข้อผิดพลาดหมดเวลาการเชื่อมต่อซ็อกเก็ต</string>
+    <string name="ssl_exception">ข้อยกเว้น SSL</string>
+    <string name="ssl_recoverable_exception">ข้อยกเว้นที่กู้คืนได้ของ SSL</string>
+    <string name="sync_conflict">ความขัดแย้งในการซิงโครไนซ์</string>
+    <string name="title_no_client_cert">ไม่พบใบรับรองไคลเอ็นต์</string>
+    <string name="unexpected_exception">ข้อผิดพลาดที่ไม่คาดคิด</string>
+    <string name="unexpected_webdav_exception">เกิดข้อผิดพลาด WebDAV ที่ไม่คาดคิด</string>
+    <string name="unknown_host_exception">ข้อผิดพลาดที่ไม่รู้จักของโฮสต์</string>
+    <string name="unrecovered_transport_exception">ข้อผิดพลาดในการขนส่งที่ไม่สามารถกู้คืนได้</string>
+</resources>

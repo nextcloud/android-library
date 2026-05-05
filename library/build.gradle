@@ -18,8 +18,8 @@ buildscript {
         junit_version = '4.13.2'
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.1.1'
-        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.0'
+        classpath 'com.android.tools.build:gradle:9.2.0'
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8"
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
@@ -65,7 +65,7 @@ dependencies {
     api 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'com.github.bitfireAT:dav4jvm:2.2.1'
     // in transition phase, we use old and new libs
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.13.2'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.14.0'
     implementation 'androidx.annotation:annotation:1.10.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
