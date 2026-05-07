@@ -56,20 +56,21 @@ class LockFileRemoteOperation(
      * Returns the final status code and the method used.
      */
     private fun executeWithFallback(client: OwnCloudClient): Pair<Int, Utf8PostMethod> {
-        val v2Method = buildPostMethod(client, LOCK_FILE_URL_V2).apply {
-            addRequestHeader("Accept", "application/json, text/plain, */*")
-            addRequestHeader(CONTENT_TYPE, "application/json")
-            addRequestHeader(E2EE_SUPPORTED_HEADER, "true")
-            addRequestHeader(REQUESTED_WITH_HEADER, "XMLHttpRequest")
-            setRequestEntity(StringRequestEntity("{}", "application/json", "UTF-8"))
-            val counter =
-                if (counter > 0) {
-                    counter
-                } else {
-                    DEFAULT_COUNTER
-                }
-            addRequestHeader(COUNTER_HEADER, counter.toString())
-        }
+        val v2Method =
+            buildPostMethod(client, LOCK_FILE_URL_V2).apply {
+                addRequestHeader("Accept", "application/json, text/plain, */*")
+                addRequestHeader(CONTENT_TYPE, "application/json")
+                addRequestHeader(E2EE_SUPPORTED_HEADER, "true")
+                addRequestHeader(REQUESTED_WITH_HEADER, "XMLHttpRequest")
+                setRequestEntity(StringRequestEntity("{}", "application/json", "UTF-8"))
+                val counter =
+                    if (counter > 0) {
+                        counter
+                    } else {
+                        DEFAULT_COUNTER
+                    }
+                addRequestHeader(COUNTER_HEADER, counter.toString())
+            }
 
         val v2Status = client.executeMethod(v2Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
 
@@ -77,9 +78,10 @@ class LockFileRemoteOperation(
         if (!needsFallback) return v2Status to v2Method
 
         v2Method.releaseConnection()
-        val v1Method = buildPostMethod(client, LOCK_FILE_URL_V1).apply {
-            addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
-        }
+        val v1Method =
+            buildPostMethod(client, LOCK_FILE_URL_V1).apply {
+                addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
+            }
         val v1Status = client.executeMethod(v1Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
         return v1Status to v1Method
     }
