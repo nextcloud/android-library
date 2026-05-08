@@ -11,6 +11,7 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -62,7 +63,10 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
 
         assertNotNull(firstResult)
         assertEquals(remotePath, firstResult?.remotePath())
-        assertEquals(fileId.toString(), firstResult?.fileId())
+
+        if (isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+            assertEquals(fileId.toString(), firstResult?.fileId())
+        }
     }
 
     @Test

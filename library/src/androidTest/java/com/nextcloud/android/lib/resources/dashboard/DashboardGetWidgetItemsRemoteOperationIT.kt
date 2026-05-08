@@ -52,6 +52,9 @@ class DashboardGetWidgetItemsRemoteOperationIT : AbstractIT() {
 
     @Test
     fun getEmptyItems() {
+        // only on NC25+
+        testOnlyOnServer(NextcloudVersion.nextcloud_25)
+
         val widgetId = "nonExistingWidget"
         val result =
             DashboardGetWidgetItemsRemoteOperation(widgetId, LIMIT_SIZE).execute(nextcloudClient)

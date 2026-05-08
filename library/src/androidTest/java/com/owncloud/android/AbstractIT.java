@@ -36,7 +36,6 @@ import com.owncloud.android.lib.resources.files.RemoveFileRemoteOperation;
 import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.GetStatusRemoteOperation;
-import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -351,6 +350,16 @@ public abstract class AbstractIT {
             assumeTrue(result.getResultData().getVersion().isNewerOrEqual(version));
         } else {
             assumeFalse(true);
+        }
+    }
+
+    protected boolean isServerAtLeast(OwnCloudVersion version) {
+        final var result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+
+        if (result.isSuccess()) {
+            return result.getResultData().getVersion().isNewerOrEqual(version);
+        } else {
+            return false;
         }
     }
 }
