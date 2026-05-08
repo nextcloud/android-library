@@ -99,6 +99,8 @@ class WebdavEntry constructor(
     var livePhoto: String? = null
         private set
     var fileDownloadLimit = emptyList<FileDownloadLimit>()
+    var shareTypes = emptyList<Int>()
+    var shareAttributes: String = ""
 
     private val gson = Gson()
 
@@ -479,6 +481,33 @@ class WebdavEntry constructor(
             }
 
             parseLockProperties(ncNamespace, propSet)
+
+            // OC share-types property <oc:share-types>
+            prop = propSet[EXTENDED_PROPERTY_SHARE_TYPES, ocNamespace]
+            if (prop != null && prop.value != null) {
+                shareTypes =
+                    when (prop.value) {
+                        is ArrayList<*> -> {
+                            (prop.value as ArrayList<*>)
+                                .filterIsInstance<Element>()
+                                .mapNotNull { it.firstChild?.nodeValue?.toIntOrNull() }
+                        }
+
+                        is Element -> {
+                            listOfNotNull((prop.value as Element).firstChild?.nodeValue?.toIntOrNull())
+                        }
+
+                        else -> {
+                            emptyList()
+                        }
+                    }
+            }
+
+            // NC share-attributes property <nc:share-attributes>
+            prop = propSet[EXTENDED_PROPERTY_SHARE_ATTRIBUTES, ncNamespace]
+            if (prop != null && prop.value != null) {
+                shareAttributes = prop.value.toString()
+            }
         } else {
             Log_OC.e("WebdavEntry", "General error, no status for webdav response")
         }
@@ -671,6 +700,8 @@ class WebdavEntry constructor(
         const val EXTENDED_PROPERTY_METADATA_LIVE_PHOTO = "metadata-files-live-photo"
 
         const val EXTENDED_PROPERTY_FILE_DOWNLOAD_LIMITS = "share-download-limits"
+        const val EXTENDED_PROPERTY_SHARE_TYPES = "share-types"
+        const val EXTENDED_PROPERTY_SHARE_ATTRIBUTES = "share-attributes"
 
         const val EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE = "metadata-photos-size"
         const val EXTENDED_PROPERTY_METADATA_PHOTOS_GPS = "metadata-photos-gps"
