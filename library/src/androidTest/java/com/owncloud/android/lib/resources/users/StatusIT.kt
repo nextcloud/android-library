@@ -9,21 +9,14 @@ package com.owncloud.android.lib.resources.users
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.NextcloudVersion
-import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 
 class StatusIT : AbstractIT() {
     companion object {
         const val SECOND_IN_MILLIS = 1000
         const val HOUR_IN_MINUTES = 3600
-    }
-
-    @Before
-    fun before() {
-        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
     }
 
     @Test
@@ -43,7 +36,7 @@ class StatusIT : AbstractIT() {
 
         val status = StatusType.entries.toMutableList()
 
-        if (!isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+        if (!isServerAtLeast(NextcloudVersion.nextcloud_22)) {
             status.remove(StatusType.BUSY)
         }
 

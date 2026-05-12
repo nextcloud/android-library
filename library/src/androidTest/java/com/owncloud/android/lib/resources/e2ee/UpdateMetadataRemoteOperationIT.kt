@@ -23,9 +23,6 @@ import org.junit.Assert
 class UpdateMetadataRemoteOperationIT : AbstractIT() {
     // @Test
     fun uploadAndModifyV1() {
-        // tests only for NC19+
-        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
-
         // E2E server app checks for official NC client with >=3.13.0,
         // and blocks all other clients, e.g. 3rd party apps using this lib
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0")
@@ -107,9 +104,6 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
 
     // @Test
     fun uploadAndModifyV2() {
-        // tests only for NC19+
-        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
-
         // E2E server app checks for official NC client with >=3.13.0,
         // and blocks all other clients, e.g. 3rd party apps using this lib
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0")

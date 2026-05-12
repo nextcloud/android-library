@@ -20,8 +20,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 public class OwnCloudVersion implements Comparable<OwnCloudVersion>, Parcelable {
-    public static final OwnCloudVersion nextcloud_20 = new OwnCloudVersion(0x14000000); // 20.0
-
     private static final int MAX_DOTS = 3;
 
     // format is in version

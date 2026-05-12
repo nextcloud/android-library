@@ -107,13 +107,8 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         assertSame(CapabilityBooleanType.UNKNOWN, capability.getDropAccount());
 
         // user status
-        if (capability.getVersion().isNewerOrEqual(OwnCloudVersion.nextcloud_20)) {
-            assertTrue(capability.getUserStatus().isTrue());
-            assertTrue(capability.getUserStatusSupportsEmoji().isTrue());
-        } else {
-            assertFalse(capability.getUserStatus().isTrue());
-            assertFalse(capability.getUserStatusSupportsEmoji().isTrue());
-        }
+        assertTrue(capability.getUserStatus().isTrue());
+        assertTrue(capability.getUserStatusSupportsEmoji().isTrue());
 
         // locking
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_24)) {

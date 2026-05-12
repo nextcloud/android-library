@@ -20,9 +20,6 @@ import org.junit.Test
 class SearchProvidersRemoteOperationIT : AbstractIT() {
     @Test
     fun getSearchProviders() {
-        // only on NC20+
-        testOnlyOnServer(OwnCloudVersion.nextcloud_20)
-
         val result = nextcloudClient.execute(UnifiedSearchProvidersRemoteOperation())
         assertTrue(result.isSuccess)
 
@@ -32,17 +29,5 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
         assertTrue(providers.providers.isNotEmpty())
         assertNotNull(providers.providers.find { it.name == "Files" })
         assertNull(providers.providers.find { it.name == "RandomSearchProvider" })
-    }
-
-    @Test
-    fun getSearchProvidersOnOldServer() {
-        // only on < NC20
-        val ocCapability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData
-        assumeTrue(
-            ocCapability.version.isOlderThan(OwnCloudVersion.nextcloud_20)
-        )
-
-        val result = nextcloudClient.execute(UnifiedSearchProvidersRemoteOperation())
-        assertFalse(result.isSuccess)
     }
 }
