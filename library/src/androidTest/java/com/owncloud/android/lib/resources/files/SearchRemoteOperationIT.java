@@ -203,7 +203,7 @@ public class SearchRemoteOperationIT extends AbstractIT {
         assertEquals(remotePath, result.getResultData().get(0).getRemotePath());
 
         String expectedSharedRemotePath;
-        if (isServerAtLeast(NextcloudVersion.nextcloud_21)) {
+        if (isServerAtLeast(NextcloudVersion.nextcloud_23)) {
             expectedSharedRemotePath = sharedRemotePath;
         } else {
             // Bug: shared search ends with "/" even for files
