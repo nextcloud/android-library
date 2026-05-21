@@ -60,8 +60,6 @@ class RemoteFile :
     var hidden = false
     var livePhoto: String? = null
     var fileDownloadLimit: List<FileDownloadLimit> = emptyList()
-    var shareTypes: List<Int> = emptyList()
-    var shareAttributes: String = ""
 
     constructor() {
         resetData()
@@ -118,8 +116,6 @@ class RemoteFile :
         livePhoto = we.livePhoto
         hidden = we.hidden
         fileDownloadLimit = we.fileDownloadLimit
-        shareTypes = we.shareTypes
-        shareAttributes = we.shareAttributes
     }
 
     /**
