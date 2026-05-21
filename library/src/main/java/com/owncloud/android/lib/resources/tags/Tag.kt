@@ -7,8 +7,12 @@
  */
 package com.owncloud.android.lib.resources.tags
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Tag(
     val id: String,
     val name: String,
     val color: String?
-)
+) : Parcelable
