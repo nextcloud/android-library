@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">创建的新帐户已存在</string>
+    <string name="account_not_the_same">使用与更新帐户不同的帐户进行验证</string>
+    <string name="bad_oc_version">服务器上未找到有效的 Nextcloud 版本</string>
+    <string name="connect_timeout_exception">连接超时异常</string>
+    <string name="exception_using_account">使用账户时发生异常</string>
+    <string name="file_locked">当前文件已被其他用户或进程锁定</string>
+    <string name="file_not_found">本地文件不存在</string>
+    <string name="http_violation">HTTP违规</string>
+    <string name="instance_not_configured">Nextcloud服务未配置！</string>
+    <string name="invalid_character_in_name">此文件名包含禁用的字符</string>
+    <string name="json_exception">JSON异常</string>
+    <string name="local_storage_full">本地存储已满</string>
+    <string name="local_storage_not_moved">将文件移动到目标目录时出错</string>
+    <string name="malformed_url_exception">URL格式错误</string>
+    <string name="message_install_client_cert">你想安装 TLS 客户端证书吗？</string>
+    <string name="no_network_connection">没有网络连接</string>
+    <string name="notification_channel_name">Nextcloud 连接</string>
+    <string name="notification_message_select_client_cert">选择 %1$s:%2$d 的客户端证书</string>
+    <string name="notification_title_select_client_cert">选择客户端证书</string>
+    <string name="operation_cancelled">呼叫者取消操作</string>
+    <string name="operation_cancelled_by_the_caller">呼叫者取消操作</string>
+    <string name="operation_finished_http_code">操作已完成，HTTP状态码 %1$d (%2$s)</string>
+    <string name="socket_exception">Socket异常</string>
+    <string name="socket_timeout_exception">Socket连接超时</string>
+    <string name="ssl_exception">SSL异常</string>
+    <string name="ssl_recoverable_exception">SSL 可恢复异常</string>
+    <string name="sync_conflict">同步冲突</string>
+    <string name="title_no_client_cert">未找到客户端证书</string>
+    <string name="unexpected_exception">意外错误</string>
+    <string name="unexpected_webdav_exception">意外的WebDAV异常</string>
+    <string name="unknown_host_exception">未知主机异常</string>
+    <string name="unrecovered_transport_exception">未恢复的传输异常</string>
+</resources>
