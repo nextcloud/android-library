@@ -113,6 +113,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
     // v1 notifications
     private static final String NODE_NOTIFICATIONS = "notifications";
     private static final String PROPERTY_OCSENDPOINT = "ocs-endpoints";
+    private static final String PROPERTY_PUSH = "push";
+    private static final String PROPERTY_WEBPUSH = "webpush";
 
     // v2 notifications
     private static final String PROPERTY_ICONS = "icons";
@@ -548,11 +550,19 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
                     JSONObject respNotifications = respCapabilities.getJSONObject(NODE_NOTIFICATIONS);
                     JSONArray respNotificationSupportArray = respNotifications.getJSONArray(
                             PROPERTY_OCSENDPOINT);
+                    JSONArray respNotificationPushArray = respNotifications.getJSONArray(PROPERTY_PUSH);
                     for (int i = 0; i < respNotificationSupportArray.length(); i++) {
                         String propertyString = respNotificationSupportArray.getString(i);
                         if (PROPERTY_RICH_STRINGS.equals(propertyString)
                                 || PROPERTY_ICONS.equals((propertyString))) {
                             capability.setSupportsNotificationsV2(CapabilityBooleanType.TRUE);
+                            break;
+                        }
+                    }
+                    for (int i = 0; i < respNotificationPushArray.length(); i++) {
+                        String propertyString = respNotificationPushArray.getString(i);
+                        if (PROPERTY_WEBPUSH.equals(propertyString)) {
+                            capability.setSupportsWebPush(CapabilityBooleanType.TRUE);
                             break;
                         }
                     }
