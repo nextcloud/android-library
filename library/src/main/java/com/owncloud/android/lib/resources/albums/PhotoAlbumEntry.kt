@@ -1,0 +1,94 @@
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2026 TSI-mc <surinder.kumar@t-systems.com>
+ * SPDX-License-Identifier: MIT
+ */
+
+package com.owncloud.android.lib.resources.albums
+
+import com.owncloud.android.lib.common.network.WebdavEntry
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.jackrabbit.webdav.MultiStatusResponse
+import org.apache.jackrabbit.webdav.property.DavPropertyName
+import org.apache.jackrabbit.webdav.property.DavPropertySet
+import org.apache.jackrabbit.webdav.xml.Namespace
+import org.json.JSONException
+import org.json.JSONObject
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+
+class PhotoAlbumEntry(
+    response: MultiStatusResponse
+) {
+    val href: String
+    val lastPhoto: Long
+    val nbItems: Int
+    val location: String?
+    private val dateRange: String?
+
+    companion object {
+        private const val MILLIS = 1000L
+    }
+
+    init {
+
+        href = response.href
+
+        val properties = response.getProperties(HttpStatus.SC_OK)
+
+        this.lastPhoto = parseLong(parseString(properties, WebdavEntry.PROPERTY_LAST_PHOTO))
+        this.nbItems = parseInt(parseString(properties, WebdavEntry.PROPERTY_NB_ITEMS))
+        this.location = parseString(properties, WebdavEntry.PROPERTY_LOCATION)
+        this.dateRange = parseString(properties, WebdavEntry.PROPERTY_DATE_RANGE)
+    }
+
+    private fun parseString(
+        props: DavPropertySet,
+        name: String
+    ): String? {
+        val propName = DavPropertyName.create(name, Namespace.getNamespace("nc", WebdavEntry.NAMESPACE_NC))
+        val prop = props[propName]
+        return if (prop != null && prop.value != null) prop.value.toString() else null
+    }
+
+    private fun parseInt(value: String?): Int =
+        try {
+            value?.toInt() ?: 0
+        } catch (_: NumberFormatException) {
+            0
+        }
+
+    private fun parseLong(value: String?): Long =
+        try {
+            value?.toLong() ?: 0L
+        } catch (_: NumberFormatException) {
+            0L
+        }
+
+    val albumName: String
+        get() {
+            // use decoder to show correct path
+            return URLDecoder.decode(
+                href
+                    .removeSuffix("/")
+                    .substringAfterLast("/")
+                    .takeIf { it.isNotEmpty() } ?: "", StandardCharsets.UTF_8.name())
+        }
+
+    val createdDate: Long
+        get() {
+            val defaultTimeStamp = System.currentTimeMillis()
+            return try {
+                val obj = JSONObject(dateRange ?: return defaultTimeStamp)
+                val startTimestamp = obj.optLong("start", 0)
+                if (startTimestamp > 0) {
+                    startTimestamp * MILLIS
+                } else {
+                    defaultTimeStamp
+                }
+            } catch (_: JSONException) {
+                defaultTimeStamp
+            }
+        }
+}
