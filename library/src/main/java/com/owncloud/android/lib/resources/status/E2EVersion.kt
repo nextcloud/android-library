@@ -8,17 +8,19 @@
 package com.owncloud.android.lib.resources.status
 
 enum class E2EVersion(
-    val value: String
+    val values: List<String>
 ) {
-    V1_0("1.0"),
-    V1_1("1.1"),
-    V1_2("1.2"),
-    V2_0("2.0"),
-    V2_1("2.1"),
-    UNKNOWN("");
+    V1_0(listOf("1", "1.0")),
+    V1_1(listOf("1.1")),
+    V1_2(listOf("1.2")),
+    V2_0(listOf("2", "2.0")),
+    V2_1(listOf("2.1")),
+    UNKNOWN(listOf(""));
+
+    val value: String = values.last()
 
     companion object {
         @JvmStatic
-        fun fromValue(v: String): E2EVersion = entries.firstOrNull { it.value == v } ?: UNKNOWN
+        fun fromValue(v: String?): E2EVersion = entries.find { v in it.values } ?: UNKNOWN
     }
 }
