@@ -163,7 +163,10 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
 
     //recommendations
     private static final String NODE_RECOMMENDATIONS = "recommendations";
-    
+
+    // sharing
+    private static final String NODE_SHARING = "sharing";
+
     // needed for checking compatible filenames
     private static final String FORBIDDEN_FILENAME_CHARACTERS = "forbidden_filename_characters";
     private static final String FORBIDDEN_FILENAMES = "forbidden_filenames";
@@ -798,6 +801,11 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
                     }
                 } else {
                     capability.setRecommendations(CapabilityBooleanType.FALSE);
+                }
+
+                if (respCapabilities.has(NODE_SHARING)) {
+                    JSONObject sharingCapability = respCapabilities.getJSONObject(NODE_SHARING);
+                    capability.setSharingJson(sharingCapability.toString());
                 }
 
                 // notes folder
