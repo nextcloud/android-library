@@ -27,6 +27,34 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_IS_ENCRYPTED;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_NAME_LOCAL_ID;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_MOUNT_TYPE;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_OWNER_ID;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_OWNER_DISPLAY_NAME;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_UNREAD_COMMENTS;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_NOTE;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_SHAREES;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_SHARE_TYPES;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_SHARE_ATTRIBUTES;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_HIDDEN;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_RICH_WORKSPACE;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_SYSTEM_TAGS;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_CREATION_TIME;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_UPLOAD_TIME;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_METADATA_LIVE_PHOTO;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_FILE_DOWNLOAD_LIMITS;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_METADATA_PHOTOS_GPS;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_METADATA_SIZE;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_METADATA_GPS;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_TYPE;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_OWNER_EDITOR;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_TIME;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_TIMEOUT;
+import static com.owncloud.android.lib.common.network.WebdavEntry.EXTENDED_PROPERTY_LOCK_TOKEN;
 import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_NC;
 import static com.owncloud.android.lib.common.network.WebdavEntry.NAMESPACE_OC;
 
@@ -100,10 +128,40 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         Element quotaAvailableElement = query.createElementNS(DAV_NAMESPACE, "d:quota-available-bytes");
         Element permissionsElement = query.createElementNS(NAMESPACE_OC, "oc:permissions");
         Element remoteIdElement = query.createElementNS(NAMESPACE_OC, "oc:id");
+        Element localIdElement = query.createElementNS(NAMESPACE_OC, "oc:" + EXTENDED_PROPERTY_NAME_LOCAL_ID);
         Element sizeElement = query.createElementNS(NAMESPACE_OC, "oc:size");
         Element favoriteElement = query.createElementNS(NAMESPACE_OC, "oc:favorite");
         Element previewElement = query.createElementNS(NAMESPACE_OC, "nc:has-preview");
         Element encryptedElement = query.createElementNS(NAMESPACE_NC, EXTENDED_PROPERTY_IS_ENCRYPTED);
+
+        // Additional properties parsed by WebdavEntry
+        Element ownerIdElement = query.createElementNS(NAMESPACE_OC, "oc:" + EXTENDED_PROPERTY_OWNER_ID);
+        Element ownerDisplayNameElement = query.createElementNS(NAMESPACE_OC, "oc:" + EXTENDED_PROPERTY_OWNER_DISPLAY_NAME);
+        Element unreadCommentsElement = query.createElementNS(NAMESPACE_OC, "oc:" + EXTENDED_PROPERTY_UNREAD_COMMENTS);
+        Element shareTypesElement = query.createElementNS(NAMESPACE_OC, "oc:" + EXTENDED_PROPERTY_SHARE_TYPES);
+        Element mountTypeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_MOUNT_TYPE);
+        Element noteElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_NOTE);
+        Element shareesElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_SHAREES);
+        Element shareAttributesElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_SHARE_ATTRIBUTES);
+        Element hiddenElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_HIDDEN);
+        Element richWorkspaceElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_RICH_WORKSPACE);
+        Element systemTagsElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_SYSTEM_TAGS);
+        Element creationTimeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_CREATION_TIME);
+        Element uploadTimeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_UPLOAD_TIME);
+        Element livePhotoElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_METADATA_LIVE_PHOTO);
+        Element downloadLimitsElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_FILE_DOWNLOAD_LIMITS);
+        Element metaPhotosSizeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_METADATA_PHOTOS_SIZE);
+        Element metaPhotosGpsElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_METADATA_PHOTOS_GPS);
+        Element metaSizeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_METADATA_SIZE);
+        Element metaGpsElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_METADATA_GPS);
+        Element lockElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK);
+        Element lockOwnerTypeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_OWNER_TYPE);
+        Element lockOwnerElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_OWNER);
+        Element lockOwnerDisplayNameElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_OWNER_DISPLAY_NAME);
+        Element lockOwnerEditorElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_OWNER_EDITOR);
+        Element lockTimeElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_TIME);
+        Element lockTimeoutElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_TIMEOUT);
+        Element lockTokenElement = query.createElementNS(NAMESPACE_NC, "nc:" + EXTENDED_PROPERTY_LOCK_TOKEN);
 
         if (searchType != SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
             selectPropsElement.appendChild(displayNameElement);
@@ -122,8 +180,41 @@ public class NcSearchMethod extends org.apache.jackrabbit.webdav.client.methods.
         selectPropsElement.appendChild(lastModifiedElement);
         selectPropsElement.appendChild(etagElement);
         selectPropsElement.appendChild(remoteIdElement);
+        selectPropsElement.appendChild(localIdElement);
         selectPropsElement.appendChild(favoriteElement);
         selectPropsElement.appendChild(permissionsElement);
+
+        // Common additional properties for all search types
+        selectPropsElement.appendChild(ownerIdElement);
+        selectPropsElement.appendChild(ownerDisplayNameElement);
+        selectPropsElement.appendChild(unreadCommentsElement);
+        selectPropsElement.appendChild(shareTypesElement);
+        selectPropsElement.appendChild(mountTypeElement);
+        selectPropsElement.appendChild(noteElement);
+        selectPropsElement.appendChild(shareesElement);
+        selectPropsElement.appendChild(shareAttributesElement);
+        selectPropsElement.appendChild(hiddenElement);
+        selectPropsElement.appendChild(richWorkspaceElement);
+        selectPropsElement.appendChild(systemTagsElement);
+        selectPropsElement.appendChild(creationTimeElement);
+        selectPropsElement.appendChild(uploadTimeElement);
+        selectPropsElement.appendChild(livePhotoElement);
+        selectPropsElement.appendChild(downloadLimitsElement);
+        selectPropsElement.appendChild(metaPhotosSizeElement);
+        selectPropsElement.appendChild(metaPhotosGpsElement);
+        selectPropsElement.appendChild(metaSizeElement);
+        selectPropsElement.appendChild(metaGpsElement);
+        selectPropsElement.appendChild(lockElement);
+        selectPropsElement.appendChild(lockOwnerTypeElement);
+        selectPropsElement.appendChild(lockOwnerElement);
+        selectPropsElement.appendChild(lockOwnerDisplayNameElement);
+        selectPropsElement.appendChild(lockOwnerEditorElement);
+        selectPropsElement.appendChild(lockTimeElement);
+        selectPropsElement.appendChild(lockTimeoutElement);
+        selectPropsElement.appendChild(lockTokenElement);
+        if (searchType != SearchRemoteOperation.SearchType.GALLERY_SEARCH) {
+            selectPropsElement.appendChild(previewElement);
+        }
 
         Element fromElement = query.createElementNS(DAV_NAMESPACE, "d:from");
         Element scopeElement = query.createElementNS(DAV_NAMESPACE, "d:scope");

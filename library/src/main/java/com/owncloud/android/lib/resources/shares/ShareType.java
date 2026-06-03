@@ -50,6 +50,12 @@ public enum ShareType {
         return value;
     }
 
+    public boolean isLink() {
+        return this == INTERNAL
+            || this == NEW_PUBLIC_LINK
+            || this == PUBLIC_LINK;
+    }
+
     public static ShareType fromValue(int value) {
         switch (value) {
             case -3:

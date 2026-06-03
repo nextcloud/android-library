@@ -682,6 +682,8 @@ class WebdavEntry constructor(
         const val SHAREES_SHARE_TYPE = "type"
         const val PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes"
         const val PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes"
+        const val EXTENDED_PROPERTY_SHARE_TYPES = "share-types"
+        const val EXTENDED_PROPERTY_SHARE_ATTRIBUTES = "share-attributes"
         private const val IS_ENCRYPTED = "1"
         private const val CODE_PROP_NOT_FOUND = 404
     }
