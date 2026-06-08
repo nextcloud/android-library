@@ -80,11 +80,11 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
         return result;
     }
 
-
     private int downloadFile(NextcloudClient client, File targetFile) throws IOException, OperationCancelledException, CreateLocalFileException {
         int status;
         boolean savedFile = false;
         getMethod = new GetMethod(client.getFilesDavUri(remotePath), false);
+        getMethod.addRequestHeader("Accept-Encoding", "identity");
         Iterator<OnDatatransferProgressListener> it;
 
         FileOutputStream fos = null;
@@ -102,7 +102,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                 long transferred = 0;
 
                 String contentLength = getMethod.getResponseHeader("Content-Length");
-                long totalToTransfer = (contentLength != null) ? Long.parseLong(contentLength) : 0;
+                long totalToTransfer = (contentLength != null) ? Long.parseLong(contentLength) : -1;
 
                 byte[] bytes = new byte[4096];
                 int readResult;
@@ -122,16 +122,13 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                         }
                     }
                 }
+
                 // Check if the file is completed
                 // if transfer-encoding: chunked we cannot check if the file is complete
                 String transferEncodingHeader = getMethod.getResponseHeader("Transfer-Encoding");
-                boolean transferEncoding = false;
+                boolean transferEncoding = "chunked".equalsIgnoreCase(transferEncodingHeader);
 
-                if (transferEncodingHeader != null) {
-                    transferEncoding = "chunked".equals(transferEncodingHeader);
-                }
-                
-                if (transferred == totalToTransfer || transferEncoding) {  
+                if (transferred == totalToTransfer || transferEncoding) {
                     savedFile = true;
                     String modificationTime = getMethod.getResponseHeader("Last-Modified");
                     if (modificationTime == null) {
@@ -145,7 +142,7 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
                     }
 
                     eTag = WebdavUtils.getEtagFromResponse(getMethod);
-                    if (eTag.length() == 0) {
+                    if (eTag.isEmpty()) {
                         Log_OC.e(TAG, "Could not read eTag from response downloading " + remotePath);
                     }
 
@@ -154,9 +151,14 @@ public class DownloadFileRemoteOperation extends RemoteOperation {
         } finally {
             if (fos != null) fos.close();
             if (!savedFile && targetFile.exists()) {
-                targetFile.delete();
+                boolean isDeleted = targetFile.delete();
+                if (isDeleted) {
+                    Log_OC.i(TAG, "target file is deleted");
+                }
             }
-            getMethod.releaseConnection();    // let the connection available for other methods
+
+            // let the connection available for other methods
+            getMethod.releaseConnection();
         }
         return status;
     }
