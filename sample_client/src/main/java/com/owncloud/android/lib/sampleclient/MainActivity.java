@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.res.AssetManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -21,6 +22,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
@@ -126,7 +129,9 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
                 startRemoteDeletion();
                 break;
             case R.id.button_download:
-                startDownload();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startDownload();
+                }
                 break;
             case R.id.button_delete_local:
                 startLocalDeletion();
@@ -169,6 +174,7 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
         removeOperation.execute(mClient, this, mHandler);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void startDownload() {
         File downFolder = new File(getCacheDir(), getString(R.string.download_folder_path));
         downFolder.mkdir();
@@ -176,7 +182,7 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
         File fileToUpload = upFolder.listFiles()[0];
         String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName();
         DownloadFileRemoteOperation downloadOperation = new DownloadFileRemoteOperation(remotePath, downFolder.getAbsolutePath());
-        downloadOperation.addDatatransferProgressListener(this);
+        downloadOperation.addProgressListener(this);
         downloadOperation.execute(mClient, this, mHandler);
     }
 
