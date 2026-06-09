@@ -22,6 +22,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("NestedBlockDepth", "TooGenericExceptionCaught", "ThrowsCount")
@@ -30,7 +31,7 @@ class DownloadFileRemoteOperation(
     private val remotePath: String,
     private val temporalFolderPath: String?
 ) : RemoteOperation<Any>() {
-    private val dataTransferListeners: MutableSet<OnDatatransferProgressListener?> = HashSet()
+    private val dataTransferListeners = ConcurrentHashMap.newKeySet<OnDatatransferProgressListener>()
     private val cancellationRequested = AtomicBoolean(false)
     var modificationTimestamp: Long = 0
         private set
@@ -134,11 +135,11 @@ class DownloadFileRemoteOperation(
 
     // region public methods
     fun addProgressListener(listener: OnDatatransferProgressListener) {
-        synchronized(dataTransferListeners) { dataTransferListeners.add(listener) }
+        dataTransferListeners.add(listener)
     }
 
     fun removeProgressListener(listener: OnDatatransferProgressListener) {
-        synchronized(dataTransferListeners) { dataTransferListeners.remove(listener) }
+        dataTransferListeners.remove(listener)
     }
 
     fun cancel() {
