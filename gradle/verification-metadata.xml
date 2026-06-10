@@ -193,6 +193,7 @@
             <trusting group="org.dom4j" name="dom4j" version="2.1.4"/>
             <trusting group="org.dom4j" name="dom4j" version="2.2.0"/>
          </trusted-key>
+         <trusted-key id="8FCD23073248F3C28EF9F80380EF47E549604C05" group="jaxen"/>
          <trusted-key id="90EE19787A7BCF6FD37A1E9180C08B1C29100955" group="com.squareup" name="javawriter"/>
          <trusted-key id="95115197C5227C0887299D000F9FE62F88E938D8" group="com.google.dagger" name="dagger" version="2.48"/>
          <trusted-key id="9857C388D7D1D9D031274CD0A5DEF5A76F94A471" group="^com[.]github[.]spotbugs($|([.].*))" regex="true"/>
@@ -290,6 +291,7 @@
          <trusted-key id="F4DD59C90148BDC52BEB90A4530AA5F25C25011F">
             <trusting group="commons-codec"/>
             <trusting group="commons-io"/>
+            <trusting group="org.apache.bcel" name="bcel" version="6.12.0"/>
             <trusting group="org.apache.commons"/>
          </trusted-key>
          <trusted-key id="FA77DCFEF2EE6EB2DEBEDD2C012579464D01C06A" group="org.apache" name="apache"/>
