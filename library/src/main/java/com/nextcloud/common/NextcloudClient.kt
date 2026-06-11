@@ -1,7 +1,8 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2019-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2019-2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2019-2024 Tobias Kaminsky
  * SPDX-FileCopyrightText: 2023 Elv1zz <elv1zz.git@gmail.com>
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
@@ -205,6 +206,18 @@ class NextcloudClient private constructor(
         } else {
             method.addRequestHeader("Destination", redirectedDestination)
         }
+    }
+
+    fun withSessionTimeOut(sessionTimeOut: SessionTimeOut): NextcloudClient {
+        val newClient =
+            client
+                .newBuilder()
+                .readTimeout(sessionTimeOut.readTimeOut.toLong(), TimeUnit.MILLISECONDS)
+                .connectTimeout(sessionTimeOut.connectionTimeOut.toLong(), TimeUnit.MILLISECONDS)
+                // needed to prevent cancellation, seems like default value not applied
+                .callTimeout(0, TimeUnit.MILLISECONDS)
+                .build()
+        return NextcloudClient(delegate, credentials, newClient, context)
     }
 
     fun getUserIdEncoded(): String = delegate.userIdEncoded!!
