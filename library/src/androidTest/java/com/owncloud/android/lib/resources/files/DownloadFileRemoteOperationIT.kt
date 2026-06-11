@@ -8,6 +8,7 @@
  */
 package com.owncloud.android.lib.resources.files
 
+import com.nextcloud.common.NextcloudClient
 import com.owncloud.android.AbstractIT
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
