@@ -207,6 +207,16 @@ class NextcloudClient private constructor(
         }
     }
 
+    fun withSessionTimeOut(sessionTimeOut: SessionTimeOut): NextcloudClient {
+        val newClient =
+            client
+                .newBuilder()
+                .readTimeout(sessionTimeOut.readTimeOut.toLong(), TimeUnit.MILLISECONDS)
+                .connectTimeout(sessionTimeOut.connectionTimeOut.toLong(), TimeUnit.MILLISECONDS)
+                .build()
+        return NextcloudClient(delegate, credentials, newClient, context)
+    }
+
     fun getUserIdEncoded(): String = delegate.userIdEncoded!!
 
     fun getUserIdPlain(): String = delegate.userId!!

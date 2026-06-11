@@ -9,6 +9,8 @@ package com.owncloud.android.lib.resources.files
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.nextcloud.common.NextcloudClient
+import com.nextcloud.common.SessionTimeOut
+import com.nextcloud.common.defaultSessionTimeOut
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.network.OnDatatransferProgressListener
 import com.owncloud.android.lib.common.network.WebdavUtils
@@ -29,7 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 @RequiresApi(Build.VERSION_CODES.O)
 class DownloadFileRemoteOperation(
     private val remotePath: String,
-    private val temporalFolderPath: String?
+    private val temporalFolderPath: String?,
+    private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
 ) : RemoteOperation<Any>() {
     private val dataTransferListeners = ConcurrentHashMap.newKeySet<OnDatatransferProgressListener>()
     private val cancellationRequested = AtomicBoolean(false)
@@ -63,7 +66,7 @@ class DownloadFileRemoteOperation(
         client: NextcloudClient,
         targetPath: Path
     ): Int {
-        val status = client.execute(getMethod)
+        val status = client.withSessionTimeOut(sessionTimeOut).execute(getMethod)
         if (!isSuccess(status)) {
             getMethod.releaseConnection()
             return status
