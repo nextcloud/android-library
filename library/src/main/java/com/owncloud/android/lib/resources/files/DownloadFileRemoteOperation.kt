@@ -68,7 +68,7 @@ class DownloadFileRemoteOperation
             client: NextcloudClient,
             targetPath: Path
         ): Int {
-            val sessionTimeOut = fileSizeInBytes?.let { calculateSessionTimeOut(it) } ?: defaultSessionTimeOut
+            val sessionTimeOut = calculateSessionTimeOut(fileSizeInBytes)
             val downloadClient = client.withSessionTimeOut(sessionTimeOut)
             val status = downloadClient.execute(getMethod)
             if (!isSuccess(status)) {
@@ -86,7 +86,8 @@ class DownloadFileRemoteOperation
             return status
         }
 
-        private fun calculateSessionTimeOut(fileSizeInBytes: Long): SessionTimeOut {
+        private fun calculateSessionTimeOut(fileSizeInBytes: Long?): SessionTimeOut {
+            fileSizeInBytes ?: return defaultSessionTimeOut
             if (fileSizeInBytes <= 0) return defaultSessionTimeOut
             val readTimeOut =
                 (READ_TIMEOUT_PER_GB * fileSizeInBytes / BYTES_PER_GB_LONG)
