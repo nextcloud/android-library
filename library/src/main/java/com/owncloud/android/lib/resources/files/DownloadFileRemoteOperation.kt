@@ -86,6 +86,7 @@ class DownloadFileRemoteOperation
             return status
         }
 
+        @Suppress("ReturnCount")
         private fun calculateSessionTimeOut(fileSizeInBytes: Long?): SessionTimeOut {
             fileSizeInBytes ?: return defaultSessionTimeOut
             if (fileSizeInBytes <= 0) return defaultSessionTimeOut
