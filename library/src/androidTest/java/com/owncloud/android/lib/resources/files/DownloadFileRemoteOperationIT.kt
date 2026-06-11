@@ -192,7 +192,13 @@ class DownloadFileRemoteOperationIT : AbstractIT() {
                 .addInterceptor(ChunkDelayInterceptor(delayMs = 100))
                 .build()
         val slowNextcloudClient =
-            NextcloudClient(url, nextcloudClient.getUserIdPlain(), nextcloudClient.credentials, slowOkHttpClient, nextcloudClient.context)
+            NextcloudClient(
+                url,
+                nextcloudClient.getUserIdPlain(),
+                nextcloudClient.credentials,
+                slowOkHttpClient,
+                nextcloudClient.context
+            )
 
         assertTrue(
             DownloadFileRemoteOperation(remotePath, cacheDir)
@@ -206,7 +212,9 @@ class DownloadFileRemoteOperationIT : AbstractIT() {
     /**
      * Used for create delay for test
      */
-    private class ChunkDelayInterceptor(private val delayMs: Long) : Interceptor {
+    private class ChunkDelayInterceptor(
+        private val delayMs: Long
+    ) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val response = chain.proceed(chain.request())
             val body = response.body
