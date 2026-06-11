@@ -8,7 +8,15 @@
  */
 package com.owncloud.android.lib.resources.files
 
+import com.nextcloud.common.NextcloudClient
 import com.owncloud.android.AbstractIT
+import okhttp3.Interceptor
+import okhttp3.Response
+import okhttp3.ResponseBody
+import okio.Buffer
+import okio.BufferedSource
+import okio.ForwardingSource
+import okio.buffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
@@ -166,5 +174,63 @@ class DownloadFileRemoteOperationIT : AbstractIT() {
         val expectedFile = File(cacheDir + remotePath)
         assertTrue("Downloaded file should exist at expected path", expectedFile.exists())
         assertTrue("Downloaded file should not be empty", expectedFile.length() >= 0)
+    }
+
+    @Test
+    fun downloadLargeFileSucceedsWithNoCallTimeout() {
+        val filePath = createFile("large_no_call_timeout", 1000)
+        val remotePath = "/large_no_call_timeout.txt"
+        assertTrue(
+            UploadFileRemoteOperation(filePath, remotePath, "text/plain", RANDOM_MTIME)
+                .execute(client)
+                .isSuccess
+        )
+
+        val slowOkHttpClient =
+            nextcloudClient.client
+                .newBuilder()
+                .addInterceptor(ChunkDelayInterceptor(delayMs = 100))
+                .build()
+        val slowNextcloudClient =
+            NextcloudClient(url, nextcloudClient.getUserIdPlain(), nextcloudClient.credentials, slowOkHttpClient, nextcloudClient.context)
+
+        assertTrue(
+            DownloadFileRemoteOperation(remotePath, cacheDir)
+                .execute(slowNextcloudClient)
+                .isSuccess
+        )
+
+        assertEquals(File(filePath).length(), File(cacheDir + remotePath).length())
+    }
+
+    /**
+     * Used for create delay for test
+     */
+    private class ChunkDelayInterceptor(private val delayMs: Long) : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val response = chain.proceed(chain.request())
+            val body = response.body
+            val slowSource =
+                object : ForwardingSource(body.source()) {
+                    override fun read(
+                        sink: Buffer,
+                        byteCount: Long
+                    ): Long {
+                        Thread.sleep(delayMs)
+                        return super.read(sink, byteCount)
+                    }
+                }
+            val slowBody =
+                object : ResponseBody() {
+                    private val bufferedSource: BufferedSource = slowSource.buffer()
+
+                    override fun contentType() = body.contentType()
+
+                    override fun contentLength() = body.contentLength()
+
+                    override fun source() = bufferedSource
+                }
+            return response.newBuilder().body(slowBody).build()
+        }
     }
 }
