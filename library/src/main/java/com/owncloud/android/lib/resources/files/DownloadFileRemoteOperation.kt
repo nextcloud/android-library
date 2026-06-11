@@ -115,6 +115,9 @@ class DownloadFileRemoteOperation
                     throw CreateLocalFileException(targetPath.toString(), ex)
                 }
 
+            val totalToTransfer = fileSizeInBytes ?: 0L
+            var totalBytesRead = 0L
+
             BufferedInputStream(responseStream).use { bis ->
                 outputStream.use { fos ->
                     val buffer = ByteArray(BUFFER_SIZE)
@@ -122,6 +125,15 @@ class DownloadFileRemoteOperation
                     while (bis.read(buffer).also { bytesRead = it } != -1) {
                         if (cancellationRequested.get()) throw OperationCancelledException()
                         fos.write(buffer, 0, bytesRead)
+                        totalBytesRead += bytesRead
+                        dataTransferListeners.forEach { listener ->
+                            listener.onTransferProgress(
+                                bytesRead.toLong(),
+                                totalBytesRead,
+                                totalToTransfer,
+                                targetPath.toString()
+                            )
+                        }
                     }
                 }
             }

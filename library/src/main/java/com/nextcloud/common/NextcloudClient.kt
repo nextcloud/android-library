@@ -214,6 +214,9 @@ class NextcloudClient private constructor(
                 .newBuilder()
                 .readTimeout(sessionTimeOut.readTimeOut.toLong(), TimeUnit.MILLISECONDS)
                 .connectTimeout(sessionTimeOut.connectionTimeOut.toLong(), TimeUnit.MILLISECONDS)
+
+                // needed to prevent cancellation, seems like default value not applied
+                .callTimeout(0, TimeUnit.MILLISECONDS)
                 .build()
         return NextcloudClient(delegate, credentials, newClient, context)
     }
