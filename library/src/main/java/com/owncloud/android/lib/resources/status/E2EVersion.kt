@@ -20,6 +20,8 @@ enum class E2EVersion(
     val value: String = values.last()
 
     companion object {
+        fun max(): E2EVersion = V2_1
+
         @JvmStatic
         fun fromValue(v: String?): E2EVersion = entries.find { v in it.values } ?: UNKNOWN
     }
