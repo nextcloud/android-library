@@ -8,8 +8,6 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.google.gson.annotations.SerializedName
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -34,9 +32,8 @@ data class Conversation(
     }
 
     @OptIn(ExperimentalTime::class)
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun titleRepresentation(): String {
-        return if (title != null) {
+    fun titleRepresentation(): String =
+        if (title != null) {
             title
         } else {
             val instant = Instant.fromEpochSeconds(timestamp)
@@ -47,7 +44,6 @@ data class Conversation(
                     .ofPattern(TITLE_PRESENTATION_TIME_PATTERN, Locale.getDefault())
                     .withZone(deviceZone)
 
-            return formatter.format(instant.toJavaInstant())
+            formatter.format(instant.toJavaInstant())
         }
-    }
 }

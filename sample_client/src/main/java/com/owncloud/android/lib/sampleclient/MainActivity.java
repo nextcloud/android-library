@@ -23,8 +23,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
-
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
@@ -129,9 +127,7 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
                 startRemoteDeletion();
                 break;
             case R.id.button_download:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startDownload();
-                }
+                startDownload();
                 break;
             case R.id.button_delete_local:
                 startLocalDeletion();
@@ -174,7 +170,6 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
         removeOperation.execute(mClient, this, mHandler);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void startDownload() {
         File downFolder = new File(getCacheDir(), getString(R.string.download_folder_path));
         downFolder.mkdir();

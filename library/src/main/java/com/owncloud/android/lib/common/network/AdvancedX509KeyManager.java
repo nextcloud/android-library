@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.security.KeyChain;
 import android.security.KeyChainException;
 import android.util.SparseArray;
@@ -514,13 +513,11 @@ public class AdvancedX509KeyManager
        flags |= PendingIntent.FLAG_IMMUTABLE;
        final PendingIntent call = PendingIntent.getActivity(context, 0, intent, flags);
        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-           NotificationChannel channel = new NotificationChannel(
-               NOTIFICATION_CHANNEL_ID,
-               context.getString(R.string.notification_channel_name),
-               NotificationManager.IMPORTANCE_DEFAULT);
-           notificationManager.createNotificationChannel(channel);
-       }
+       NotificationChannel channel = new NotificationChannel(
+           NOTIFICATION_CHANNEL_ID,
+           context.getString(R.string.notification_channel_name),
+           NotificationManager.IMPORTANCE_DEFAULT);
+       notificationManager.createNotificationChannel(channel);
        final Notification notification = new NotificationCompat
            .Builder(context, NOTIFICATION_CHANNEL_ID)
            .setContentTitle(context.getString(R.string.notification_title_select_client_cert))

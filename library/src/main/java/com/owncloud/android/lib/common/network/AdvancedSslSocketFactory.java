@@ -89,14 +89,12 @@ public class AdvancedSslSocketFactory implements SecureProtocolSocketFactory {
 
     /*
     private void logSslInfo() {
-    	if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
-	    	Log_OC.v(TAG, "SUPPORTED SSL PARAMETERS");
-	    	logSslParameters(mSslContext.getSupportedSSLParameters());
-	    	Log_OC.v(TAG, "DEFAULT SSL PARAMETERS");
-	    	logSslParameters(mSslContext.getDefaultSSLParameters());
-	    	Log_OC.i(TAG, "CURRENT PARAMETERS");
-	    	Log_OC.i(TAG, "Protocol: " + mSslContext.getProtocol());
-    	}
+    	Log_OC.v(TAG, "SUPPORTED SSL PARAMETERS");
+	    logSslParameters(mSslContext.getSupportedSSLParameters());
+	    Log_OC.v(TAG, "DEFAULT SSL PARAMETERS");
+	    logSslParameters(mSslContext.getDefaultSSLParameters());
+	    Log_OC.i(TAG, "CURRENT PARAMETERS");
+	    Log_OC.i(TAG, "Protocol: " + mSslContext.getProtocol());
     	Log_OC.i(TAG, "PROVIDER");
     	logSecurityProvider(mSslContext.getProvider());
 	}

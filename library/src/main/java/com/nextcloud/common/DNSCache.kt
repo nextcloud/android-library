@@ -8,7 +8,6 @@
  */
 package com.nextcloud.common
 
-import android.os.Build
 import androidx.annotation.VisibleForTesting
 import com.nextcloud.android.lib.core.Clock
 import com.nextcloud.android.lib.core.ClockImpl
@@ -76,17 +75,12 @@ object DNSCache {
         hostname: String,
         preferIPV4: Boolean
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            cache.compute(hostname) { _, old ->
-                val addresses =
-                    old?.addresses?.let {
-                        sortAddresses(it, preferIPV4)
-                    } ?: emptyList()
-                DNSInfo(addresses, preferIPV4)
-            }
-        } else {
-            val addresses = cache[hostname]?.addresses?.let { sortAddresses(it, preferIPV4) } ?: emptyList()
-            cache[hostname] = DNSInfo(addresses, preferIPV4)
+        cache.compute(hostname) { _, old ->
+            val addresses =
+                old?.addresses?.let {
+                    sortAddresses(it, preferIPV4)
+                } ?: emptyList()
+            DNSInfo(addresses, preferIPV4)
         }
     }
 
