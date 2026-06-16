@@ -161,6 +161,9 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
     private static final String NODE_SECURITY_GUARD = "security_guard";
     private static final String NODE_DIAGNOSTICS = "diagnostics";
 
+    // governance
+    private static final String NODE_GOVERNANCE = "governance";
+
     //recommendations
     private static final String NODE_RECOMMENDATIONS = "recommendations";
     
@@ -769,6 +772,13 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
                     }
                 } else {
                     capability.setSecurityGuard(CapabilityBooleanType.FALSE);
+                }
+
+                // governance
+                if (respCapabilities.has(NODE_GOVERNANCE)) {
+                    capability.setGovernance(CapabilityBooleanType.TRUE);
+                } else {
+                    capability.setGovernance(CapabilityBooleanType.FALSE);
                 }
 
                 // files download limits
