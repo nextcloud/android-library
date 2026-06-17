@@ -20,7 +20,7 @@ enum class E2EVersion(
 
     val value: String = values.last()
 
-    var unknownValue: String? = ""
+    var unknownValue: String? = null
 
     companion object {
         fun max(): E2EVersion = V2_1
