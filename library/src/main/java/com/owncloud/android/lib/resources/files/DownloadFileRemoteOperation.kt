@@ -6,8 +6,6 @@
  */
 package com.owncloud.android.lib.resources.files
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.common.SessionTimeOut
 import com.nextcloud.common.defaultSessionTimeOut
@@ -28,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("NestedBlockDepth", "TooGenericExceptionCaught", "ThrowsCount")
-@RequiresApi(Build.VERSION_CODES.O)
 class DownloadFileRemoteOperation
     @JvmOverloads
     constructor(
