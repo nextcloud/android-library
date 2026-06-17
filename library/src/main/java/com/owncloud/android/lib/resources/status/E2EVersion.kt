@@ -1,7 +1,8 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2023-2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
@@ -19,10 +20,14 @@ enum class E2EVersion(
 
     val value: String = values.last()
 
+    var unknownValue: String? = ""
+
     companion object {
         fun max(): E2EVersion = V2_1
 
         @JvmStatic
-        fun fromValue(v: String?): E2EVersion = entries.find { v in it.values } ?: UNKNOWN
+        fun fromValue(v: String?): E2EVersion =
+            entries.find { v in it.values }
+                ?: UNKNOWN.also { it.unknownValue = v }
     }
 }
