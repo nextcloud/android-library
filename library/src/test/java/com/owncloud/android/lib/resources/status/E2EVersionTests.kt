@@ -61,6 +61,13 @@ class E2EVersionTests {
     }
 
     @Test
+    fun testFromValueWhenGiven3Dot0ShouldReturnTrue() {
+        val version = E2EVersion.fromValue("3.0")
+        assertEquals(E2EVersion.UNKNOWN, version)
+        assertEquals("3.0", version.unknownValue)
+    }
+
+    @Test
     fun testValues() {
         assertEquals(E2EVersion.V1_0.value, "1.0")
         assertEquals(E2EVersion.V1_1.value, "1.1")
