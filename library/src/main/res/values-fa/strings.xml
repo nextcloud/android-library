@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">هنگام ایجاد حساب جدید، حساب از قبل موجود است</string>
+    <string name="account_not_the_same">با حسابی متفاوت از حسابی که به‌روزرسانی می‌کند، تأیید اعتبار شده است</string>
+    <string name="bad_oc_version">هیچ نسخه معتبری از نکست کلود در سرور یافت نشد</string>
+    <string name="connect_timeout_exception">استثنای زمان اتصال</string>
+    <string name="exception_using_account">استثنا هنگام استفاده از حساب</string>
+    <string name="file_locked">فایل در حال حاضر توسط کاربر یا فرآیند دیگری قفل شده است</string>
+    <string name="file_not_found">فایل محلی وجود ندارد</string>
+    <string name="http_violation">نقض HTTP</string>
+    <string name="instance_not_configured">سرور نکست‌کلود پیکربندی نشده است!</string>
+    <string name="invalid_character_in_name">نام فایل شامل یک کاراکتر ممنوعه است</string>
+    <string name="json_exception">استثنای JSON</string>
+    <string name="local_storage_full">فضای محلی پر است</string>
+    <string name="local_storage_not_moved">خطا هنگام انتقال فایل به دایرکتوری نهایی</string>
+    <string name="malformed_url_exception">استثنای URL ناقص</string>
+    <string name="message_install_client_cert">آیا می‌خواهید گواهی کلاینت TLS نصب کنید؟</string>
+    <string name="no_network_connection">هیچ ارتباطی با شبکه برقرار نیست</string>
+    <string name="notification_channel_name">اتصال نکست‌کلود</string>
+    <string name="notification_message_select_client_cert">انتخاب گواهی کلاینت برای%1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">انتخاب گواهی مشتری</string>
+    <string name="operation_cancelled">عملیات توسط تماس گیرنده لغو شد</string>
+    <string name="operation_cancelled_by_the_caller">عملیات توسط تماس گیرنده لغو شد</string>
+    <string name="operation_finished_http_code">عملیات با کد%1$d وضعیت HTTP (%2$s) به پایان رسید</string>
+    <string name="socket_exception">استثنای سوکت</string>
+    <string name="socket_timeout_exception">استثنای تایم اوت سوکت</string>
+    <string name="ssl_exception">استثنا SSL</string>
+    <string name="ssl_recoverable_exception">استثنای قابل بازیابی SSL</string>
+    <string name="sync_conflict">تداخل همگام‌سازی</string>
+    <string name="title_no_client_cert">هیچ گواهی کاربری یافت نشد</string>
+    <string name="unexpected_exception">استثنای غیرمنتظره</string>
+    <string name="unexpected_webdav_exception">استثنای غیرمنتظره WebDAV</string>
+    <string name="unknown_host_exception">استثنای میزبان ناشناخته</string>
+    <string name="unrecovered_transport_exception">استثنای انتقال بازیابی نشده</string>
+</resources>
