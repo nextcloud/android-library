@@ -20,14 +20,14 @@ jobs:
         runs-on: ubuntu-24.04
         services:
             server:
-                image: ${{ matrix.server == 'stable22' && 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.0:1' || 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.2:1' }}
+                image: ${{ matrix.server == 'stable22' && 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.0:1' || 'ghcr.io/nextcloud/continuous-integration-shallow-server-php8.3:latest' }}
                 options: --name server
                 ports:
                     - 80:80
         strategy:
             fail-fast: false
             matrix:
-                server: [ stable22, stable33, master ]
+                server: [ stable22, stable34, master ]
                 api-level: [ 29 ] # [ 21, 36 ]
         steps:
             -   uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
