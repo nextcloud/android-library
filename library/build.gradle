@@ -34,7 +34,6 @@ plugins {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 apply from: "$rootProject.projectDir/jacoco.gradle"
@@ -159,12 +158,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
-	
-    kotlinOptions {
-        jvmTarget = '17'
+
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
     }
 
     testOptions {
@@ -182,6 +183,12 @@ android {
     }
 
     namespace = 'com.owncloud.android.lib'
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 tasks.register("combinedTestReport", JacocoReport) {
