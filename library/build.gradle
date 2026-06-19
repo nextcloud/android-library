@@ -123,7 +123,7 @@ tasks.withType(SpotBugsTask){task ->
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     buildTypes {
         debug {
