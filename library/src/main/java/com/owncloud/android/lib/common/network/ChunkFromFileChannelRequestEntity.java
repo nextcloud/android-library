@@ -1,7 +1,8 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2018-2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2018-2019 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-FileCopyrightText: 2014-2015 ownCloud Inc.
  * SPDX-FileCopyrightText: 2014 David A. Velasco <dvelasco@solidgear.es>
@@ -20,7 +21,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 
@@ -37,7 +37,6 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     private long mOffset;
     private long mTransferred;
     private final Set<OnDatatransferProgressListener> mDataTransferListeners = new HashSet<>();
-    private ByteBuffer mBuffer = ByteBuffer.allocate(4096);
 
     public ChunkFromFileChannelRequestEntity(final FileChannel channel, final String contentType, long offset, 
                                              long chunkSize, final File file) {
@@ -94,52 +93,50 @@ public class ChunkFromFileChannelRequestEntity implements RequestEntity, Progres
     }
 
     public void writeRequest(final OutputStream out) throws IOException {
-        int readCount;
-        Iterator<OnDatatransferProgressListener> progressListenerIterator;
+        mChannel.position(mOffset);
+        long maxCount = Math.min(mOffset + length, mChannel.size());
+        long remaining = maxCount - mOffset;
 
-        try {
-            mChannel.position(mOffset);
-            long size = mFile.length();
-            if (size == 0) {
-                size = -1;
-            }
-            long maxCount = Math.min(mOffset + length, mChannel.size());
-            while (mChannel.position() < maxCount) {
-                readCount = mChannel.read(mBuffer);
-                try {
-                    out.write(mBuffer.array(), 0, readCount);
-                } catch (IOException io) {
-                    // work-around try catch to filter exception in writing
-                    throw new FileRequestEntity.WriteException(io);
-                }
-                mBuffer.clear();
-                if (mTransferred < maxCount) {  // condition to avoid accumulate progress for repeated chunks
-                    mTransferred += readCount;
-                }
-                synchronized (mDataTransferListeners) {
-                    progressListenerIterator = mDataTransferListeners.iterator();
+        long rawSize = mFile.length();
+        long fileSize = rawSize > 0 ? rawSize : -1;
 
-                    while (progressListenerIterator.hasNext()) {
-                        progressListenerIterator.next().onTransferProgress(readCount, mTransferred, size, 
-                                                                           mFile.getAbsolutePath());
-                    }
-                }
-            }
+        byte[] buffer = new byte[4096];
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
 
-        } catch (IOException io) {
-            // any read problem will be handled as if the file is not there
-            if (io instanceof FileNotFoundException) {
-                throw io;
-            } else {
+        while (remaining > 0) {
+            int toRead = (int) Math.min(buffer.length, remaining);
+            int bytesRead;
+
+            byteBuffer.position(0);
+            byteBuffer.limit(toRead);
+
+            try {
+                bytesRead = mChannel.read(byteBuffer);
+            } catch (IOException e) {
                 FileNotFoundException fnf = new FileNotFoundException("Exception reading source file");
-                fnf.initCause(io);
+                fnf.initCause(e);
                 throw fnf;
             }
 
-        } catch (FileRequestEntity.WriteException we) {
-            throw we.getWrapped();
+            if (bytesRead <= 0) {
+                break;
+            }
+
+            out.write(buffer, 0, bytesRead);
+            remaining -= bytesRead;
+
+            if (mTransferred < maxCount) {
+                mTransferred += bytesRead;
+            }
+            notifyTransferProgress(bytesRead, fileSize);
         }
-            
     }
 
+    private void notifyTransferProgress(int bytesRead, long fileSize) {
+        synchronized (mDataTransferListeners) {
+            for (OnDatatransferProgressListener listener : mDataTransferListeners) {
+                listener.onTransferProgress(bytesRead, mTransferred, fileSize, mFile.getAbsolutePath());
+            }
+        }
+    }
 }
