@@ -73,6 +73,7 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
     private static final String PROPERTY_MESSAGE = "message";
 
     private static final String PROPERTY_POLLINTERVAL = "pollinterval";
+    private static final String PROPERTY_MOD_REWRITE_WORKING = "mod-rewrite-working";
 
     private static final String PROPERTY_MAJOR = "major";
     private static final String PROPERTY_MINOR = "minor";
@@ -365,6 +366,12 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
                 if (respCapabilities.has(NODE_CORE)) {
                     JSONObject respCore = respCapabilities.getJSONObject(NODE_CORE);
                     capability.setCorePollInterval(respCore.getInt(PROPERTY_POLLINTERVAL));
+
+                    if (respCore.has(PROPERTY_MOD_REWRITE_WORKING)) {
+                        capability.setModRewriteWorking(CapabilityBooleanType.fromBooleanValue(
+                                respCore.getBoolean(PROPERTY_MOD_REWRITE_WORKING)));
+                    }
+
                     Log_OC.d(TAG, "*** Added " + NODE_CORE);
                 }
 
