@@ -19,6 +19,7 @@ import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_CONNECTION_
 import com.owncloud.android.lib.common.OwnCloudClientFactory.DEFAULT_DATA_TIMEOUT_LONG
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.common.accounts.AccountUtils
+import com.owncloud.android.lib.common.interceptor.ClientInterceptor
 import com.owncloud.android.lib.common.network.AdvancedX509KeyManager
 import com.owncloud.android.lib.common.network.AdvancedX509TrustManager
 import com.owncloud.android.lib.common.network.NetworkUtils
@@ -44,6 +45,7 @@ class NextcloudClient private constructor(
     val context: Context
 ) : NextcloudUriProvider by delegate {
     var followRedirects = true
+    private val interceptor = ClientInterceptor()
 
     constructor(
         baseUri: Uri,
@@ -127,6 +129,7 @@ class NextcloudClient private constructor(
 
     @Throws(IOException::class)
     fun execute(method: OkHttpMethodBase): Int {
+        interceptor.interceptOkHttpMethodBaseRequest(method)
         val httpStatus = method.execute(this)
         if (httpStatus == HttpStatus.SC_BAD_REQUEST) {
             val uri = method.uri
@@ -138,7 +141,10 @@ class NextcloudClient private constructor(
 
     internal fun execute(request: Request): ResponseOrError =
         try {
+            interceptor.interceptOkHttp3Request(request)
             val response = client.newCall(request).execute()
+            interceptor.interceptOkHttp3Response(response)
+
             if (response.code == HttpStatus.SC_BAD_REQUEST) {
                 val url = request.url
                 Log_OC.e(TAG, "Received http status 400 for $url -> removing client certificate")
@@ -151,6 +157,7 @@ class NextcloudClient private constructor(
 
     @Throws(IOException::class)
     fun followRedirection(method: OkHttpMethodBase): RedirectionPath {
+        interceptor.interceptOkHttpMethodBaseRequest(method)
         var redirectionsCount = 0
         var status = method.getStatusCode()
         val result = RedirectionPath(status, OwnCloudClient.MAX_REDIRECTIONS_COUNT)
@@ -180,6 +187,7 @@ class NextcloudClient private constructor(
                 }
 
                 status = method.execute(this)
+                interceptor.interceptOkHttpMethodBaseResponse(method, status)
                 result.addStatus(status)
                 redirectionsCount++
             } else {
