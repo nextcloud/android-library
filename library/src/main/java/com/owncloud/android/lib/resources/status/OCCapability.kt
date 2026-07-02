@@ -44,6 +44,9 @@ class OCCapability {
     // Core PollInterval
     var corePollInterval: Int = 0
 
+    // Mod-rewrite working (clean URLs without index.php)
+    var modRewriteWorking = CapabilityBooleanType.UNKNOWN
+
     // Files Sharing
     var filesSharingApiEnabled = CapabilityBooleanType.UNKNOWN
     var filesSharingPublicEnabled = CapabilityBooleanType.UNKNOWN
