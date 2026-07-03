@@ -41,10 +41,6 @@ abstract class OkHttpMethodBase(
     private val requestBuilder: Request.Builder = Request.Builder()
     private var request: Request? = null
 
-    init {
-        requestHeaders["http.protocol.single-cookie-header"] = "true"
-    }
-
     @Throws(IllegalStateException::class)
     private fun buildQueryParameter(): HttpUrl {
         val httpBuilder =
