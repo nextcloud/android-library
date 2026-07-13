@@ -38,6 +38,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private static final String PARAM_PERMISSIONS = "permissions";
     private static final String PARAM_NOTE = "note";
     private static final String PARAM_ATTRIBUTES = "attributes";
+    private static final String PARAM_SEND_PASSWORD_BY_TALK = "sendPasswordByTalk";
 
     private final String remoteFilePath;
     private final ShareType shareType;
@@ -48,6 +49,7 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
     private boolean getShareDetails;
     private String note;
     private String attributes;
+    private Boolean sendPasswordByTalk;
 
     /**
      * Constructor
@@ -134,6 +136,10 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
         getShareDetails = set;
     }
 
+    public void setSendPasswordByTalk(Boolean sendPasswordByTalk) {
+        this.sendPasswordByTalk = sendPasswordByTalk;
+    }
+
     @Override
     protected RemoteOperationResult<List<OCShare>> run(OwnCloudClient client) {
         RemoteOperationResult<List<OCShare>> result;
@@ -166,6 +172,10 @@ public class CreateShareRemoteOperation extends RemoteOperation<List<OCShare>> {
 
             if (!TextUtils.isEmpty(attributes)) {
                 post.addParameter(PARAM_ATTRIBUTES, attributes);
+            }
+
+            if (sendPasswordByTalk != null) {
+                post.addParameter(PARAM_SEND_PASSWORD_BY_TALK, Boolean.toString(sendPasswordByTalk));
             }
 
             post.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
