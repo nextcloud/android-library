@@ -33,7 +33,9 @@ android {
     packagingOptions {
         resources {
             excludes += 'META-INF/versions/9/OSGI-INF/MANIFEST*'
+            excludes += 'META-INF/LICENSE.md'
             pickFirst 'MANIFEST.MF' // workaround for duplicated manifest on some dependencies
+            pickFirst 'LICENSE.md' // workaround for duplicated LICENSE.md on some dependencies
         }
     }
 
