@@ -3,6 +3,11 @@ name: add-remote-endpoint
 description: Use when adding a new remote/network endpoint (a RemoteOperation / OCSRemoteOperation) to this Nextcloud Android library, or when the user says "add an endpoint", "new remote operation", "implement this API call", or "wire up <OCS/ocs> API". Scaffolds the models, constants, operation, and tests following the governance package conventions and the standards in AGENTS.md.
 ---
 
+<!--
+ ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: MIT
+-->
+
 # Add a remote endpoint
 
 Implement a new `RemoteOperation` for this library the way the existing ones are written. The full,

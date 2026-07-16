@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: MIT
+-->
 # Agent Instructions — Implementing Network Endpoints
 
 Standards for adding new remote/network endpoints to this mixed Java + Kotlin networking library

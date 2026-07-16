@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: MIT
+-->
 # CLAUDE.md
 
 Nextcloud Android **library** — the networking/SDK layer (`RemoteOperation`s against Nextcloud/OCS
