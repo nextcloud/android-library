@@ -7,6 +7,7 @@
 
 package com.nextcloud.android.lib.resources.governance
 
+import com.nextcloud.android.lib.resources.governance.model.LabelType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

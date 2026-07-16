@@ -8,6 +8,10 @@
 package com.nextcloud.android.lib.resources.governance
 
 import kotlinx.serialization.decodeFromString
+import com.nextcloud.android.lib.resources.governance.model.LabelScope
+import com.nextcloud.android.lib.resources.governance.model.RetentionLabelInfo
+import com.owncloud.android.lib.ocs.OcsResponse
+import com.owncloud.android.lib.ocs.ocsJson
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -42,8 +46,8 @@ class RetentionLabelInfoParsingTest {
             """.trimIndent()
 
         val labels =
-            governanceJson
-                .decodeFromString<GovernanceOcsResponse<List<RetentionLabelInfo>>>(json)
+            ocsJson
+                .decodeFromString<OcsResponse<List<RetentionLabelInfo>>>(json)
                 .ocs
                 .data
 

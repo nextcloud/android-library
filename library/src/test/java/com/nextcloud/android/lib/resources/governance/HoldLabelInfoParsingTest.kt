@@ -8,6 +8,10 @@
 package com.nextcloud.android.lib.resources.governance
 
 import kotlinx.serialization.decodeFromString
+import com.nextcloud.android.lib.resources.governance.model.HoldLabelInfo
+import com.nextcloud.android.lib.resources.governance.model.LabelScope
+import com.owncloud.android.lib.ocs.OcsResponse
+import com.owncloud.android.lib.ocs.ocsJson
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -42,8 +46,8 @@ class HoldLabelInfoParsingTest {
             """.trimIndent()
 
         val labels =
-            governanceJson
-                .decodeFromString<GovernanceOcsResponse<List<HoldLabelInfo>>>(json)
+            ocsJson
+                .decodeFromString<OcsResponse<List<HoldLabelInfo>>>(json)
                 .ocs
                 .data
 

@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.nextcloud.android.lib.resources.governance
+package com.nextcloud.android.lib.resources.governance.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
