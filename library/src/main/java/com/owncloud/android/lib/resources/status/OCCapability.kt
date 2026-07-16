@@ -113,6 +113,9 @@ class OCCapability {
     // Security guard
     var securityGuard = CapabilityBooleanType.UNKNOWN
 
+    // Governance
+    var governance = CapabilityBooleanType.UNKNOWN
+
     // Recommendations
     var recommendations = CapabilityBooleanType.UNKNOWN
 
