@@ -16,5 +16,5 @@ data class RetentionLabelInfo(
     val priority: Long,
     val description: String,
     val color: String,
-    val scopes: List<LabelScope>
+    val scopes: List<LabelScope> = emptyList()
 )

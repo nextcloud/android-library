@@ -16,5 +16,5 @@ data class SensitivityLabelInfo(
     val priority: Long,
     val description: String,
     val color: String,
-    val scopes: List<SensitivityLabelScope>
+    val scopes: List<SensitivityLabelScope> = emptyList()
 )

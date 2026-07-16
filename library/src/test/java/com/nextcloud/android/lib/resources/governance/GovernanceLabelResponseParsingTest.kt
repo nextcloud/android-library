@@ -7,9 +7,8 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import kotlinx.serialization.decodeFromString
 import com.nextcloud.android.lib.resources.governance.model.GovernanceLabelResponse
-import com.owncloud.android.lib.ocs.OcsResponse
+import com.owncloud.android.lib.ocs.OcsKotlinResponse
 import com.owncloud.android.lib.ocs.ocsJson
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -28,7 +27,7 @@ class GovernanceLabelResponseParsingTest {
             """.trimIndent()
 
         val data =
-            ocsJson.decodeFromString<OcsResponse<GovernanceLabelResponse>>(json).ocs.data
+            ocsJson.decodeFromString<OcsKotlinResponse<GovernanceLabelResponse>>(json).ocs.data
 
         assertEquals("Label applied", data.message)
     }

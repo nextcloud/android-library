@@ -7,10 +7,9 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import kotlinx.serialization.decodeFromString
 import com.nextcloud.android.lib.resources.governance.model.SensitivityLabelInfo
 import com.nextcloud.android.lib.resources.governance.model.SensitivityLabelScope
-import com.owncloud.android.lib.ocs.OcsResponse
+import com.owncloud.android.lib.ocs.OcsKotlinResponse
 import com.owncloud.android.lib.ocs.ocsJson
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -47,7 +46,7 @@ class SensitivityLabelInfoParsingTest {
 
         val labels =
             ocsJson
-                .decodeFromString<OcsResponse<List<SensitivityLabelInfo>>>(json)
+                .decodeFromString<OcsKotlinResponse<List<SensitivityLabelInfo>>>(json)
                 .ocs
                 .data
 

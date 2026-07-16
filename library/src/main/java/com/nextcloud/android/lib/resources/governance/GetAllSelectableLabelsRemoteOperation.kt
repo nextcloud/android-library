@@ -12,7 +12,7 @@ import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.OcsResponse
+import com.owncloud.android.lib.ocs.OcsKotlinResponse
 import com.owncloud.android.lib.ocs.SEPARATOR
 import com.owncloud.android.lib.ocs.ocsJson
 import com.owncloud.android.lib.resources.OCSRemoteOperation
@@ -34,7 +34,7 @@ class GetAllSelectableLabelsRemoteOperation(
             if (status != HttpStatus.SC_OK) {
                 return RemoteOperationResult(false, getMethod)
             }
-            val response = ocsJson.decodeFromString<OcsResponse<EntityLabels>>(
+            val response = ocsJson.decodeFromString<OcsKotlinResponse<EntityLabels>>(
                 getMethod.getResponseBodyAsString()
             )
             val data = response.ocs.data

@@ -26,11 +26,11 @@ internal val ocsJson = Json { ignoreUnknownKeys = true }
  * shared by every OCS endpoint. Reusable for any endpoint whose payload type [T] is `@Serializable`.
  */
 @Serializable
-internal data class OcsResponse<T>(
-    val ocs: Ocs<T>
+internal data class OcsKotlinResponse<T>(
+    val ocs: OcsKotlin<T>
 )
 
 @Serializable
-internal data class Ocs<T>(
+internal data class OcsKotlin<T>(
     val data: T
 )
