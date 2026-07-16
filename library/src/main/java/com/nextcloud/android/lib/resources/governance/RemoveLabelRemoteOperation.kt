@@ -37,9 +37,10 @@ class RemoveLabelRemoteOperation(
             if (status != HttpStatus.SC_OK) {
                 return RemoteOperationResult(false, deleteMethod)
             }
-            val response = ocsJson.decodeFromString<OcsKotlinResponse<GovernanceLabelResponse>>(
-                deleteMethod.getResponseBodyAsString()
-            )
+            val response =
+                ocsJson.decodeFromString<OcsKotlinResponse<GovernanceLabelResponse>>(
+                    deleteMethod.getResponseBodyAsString()
+                )
             val data = response.ocs.data
             RemoteOperationResult<GovernanceLabelResponse>(true, deleteMethod).apply { resultData = data }
         } catch (e: Exception) {

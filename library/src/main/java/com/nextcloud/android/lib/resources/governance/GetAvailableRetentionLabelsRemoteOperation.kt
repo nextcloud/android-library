@@ -35,9 +35,10 @@ class GetAvailableRetentionLabelsRemoteOperation(
             if (status != HttpStatus.SC_OK) {
                 return RemoteOperationResult(false, getMethod)
             }
-            val response = ocsJson.decodeFromString<OcsKotlinResponse<List<RetentionLabelInfo>>>(
-                getMethod.getResponseBodyAsString()
-            )
+            val response =
+                ocsJson.decodeFromString<OcsKotlinResponse<List<RetentionLabelInfo>>>(
+                    getMethod.getResponseBodyAsString()
+                )
             val data = response.ocs.data
             RemoteOperationResult<List<RetentionLabelInfo>>(true, getMethod).apply { resultData = data }
         } catch (e: Exception) {

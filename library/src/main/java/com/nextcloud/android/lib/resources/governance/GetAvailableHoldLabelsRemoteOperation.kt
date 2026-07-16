@@ -35,9 +35,10 @@ class GetAvailableHoldLabelsRemoteOperation(
             if (status != HttpStatus.SC_OK) {
                 return RemoteOperationResult(false, getMethod)
             }
-            val response = ocsJson.decodeFromString<OcsKotlinResponse<List<HoldLabelInfo>>>(
-                getMethod.getResponseBodyAsString()
-            )
+            val response =
+                ocsJson.decodeFromString<OcsKotlinResponse<List<HoldLabelInfo>>>(
+                    getMethod.getResponseBodyAsString()
+                )
             val data = response.ocs.data
             RemoteOperationResult<List<HoldLabelInfo>>(true, getMethod).apply { resultData = data }
         } catch (e: Exception) {

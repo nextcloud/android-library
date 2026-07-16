@@ -34,9 +34,10 @@ class GetEntityLabelsRemoteOperation(
             if (status != HttpStatus.SC_OK) {
                 return RemoteOperationResult(false, getMethod)
             }
-            val response = ocsJson.decodeFromString<OcsKotlinResponse<EntityLabels>>(
-                getMethod.getResponseBodyAsString()
-            )
+            val response =
+                ocsJson.decodeFromString<OcsKotlinResponse<EntityLabels>>(
+                    getMethod.getResponseBodyAsString()
+                )
             val data = response.ocs.data
             RemoteOperationResult<EntityLabels>(true, getMethod).apply { resultData = data }
         } catch (e: Exception) {

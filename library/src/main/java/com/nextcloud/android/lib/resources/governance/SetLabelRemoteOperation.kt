@@ -42,9 +42,10 @@ class SetLabelRemoteOperation(
             if (status != HttpStatus.SC_OK) {
                 return RemoteOperationResult(false, postMethod)
             }
-            val response = ocsJson.decodeFromString<OcsKotlinResponse<GovernanceLabelResponse>>(
-                postMethod.getResponseBodyAsString()
-            )
+            val response =
+                ocsJson.decodeFromString<OcsKotlinResponse<GovernanceLabelResponse>>(
+                    postMethod.getResponseBodyAsString()
+                )
             val data = response.ocs.data
             RemoteOperationResult<GovernanceLabelResponse>(true, postMethod).apply { resultData = data }
         } catch (e: Exception) {
