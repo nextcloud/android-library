@@ -116,24 +116,19 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
 
 
     public void onClickHandler(View button) {
-        switch (button.getId()) {
-            case R.id.button_refresh:
-                startRefresh();
-                break;
-            case R.id.button_upload:
-                startUpload();
-                break;
-            case R.id.button_delete_remote:
-                startRemoteDeletion();
-                break;
-            case R.id.button_download:
-                startDownload();
-                break;
-            case R.id.button_delete_local:
-                startLocalDeletion();
-                break;
-            default:
-                Toast.makeText(this, R.string.youre_doing_it_wrong, Toast.LENGTH_SHORT).show();
+        int id = button.getId();
+        if (id == R.id.button_refresh) {
+            startRefresh();
+        } else if (id == R.id.button_upload) {
+            startUpload();
+        } else if (id == R.id.button_delete_remote) {
+            startRemoteDeletion();
+        } else if (id == R.id.button_download) {
+            startDownload();
+        } else if (id == R.id.button_delete_local) {
+            startLocalDeletion();
+        } else {
+            Toast.makeText(this, R.string.youre_doing_it_wrong, Toast.LENGTH_SHORT).show();
         }
     }
 
