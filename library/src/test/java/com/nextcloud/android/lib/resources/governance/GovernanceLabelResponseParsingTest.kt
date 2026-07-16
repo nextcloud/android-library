@@ -7,12 +7,8 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import com.google.gson.Gson
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
-import com.owncloud.android.lib.ocs.ServerResponse
+import kotlinx.serialization.decodeFromString
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class GovernanceLabelResponseParsingTest {
@@ -28,12 +24,9 @@ class GovernanceLabelResponseParsingTest {
             }
             """.trimIndent()
 
-        val element = JsonParser.parseString(json)
-        val type = object : TypeToken<ServerResponse<GovernanceLabelResponse>>() {}.type
-        val response: ServerResponse<GovernanceLabelResponse> = Gson().fromJson(element, type)
+        val data =
+            governanceJson.decodeFromString<GovernanceOcsResponse<GovernanceLabelResponse>>(json).ocs.data
 
-        val data = response.ocs?.data
-        assertNotNull(data)
-        assertEquals("Label applied", data!!.message)
+        assertEquals("Label applied", data.message)
     }
 }

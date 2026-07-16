@@ -7,14 +7,14 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.DeleteMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
+import kotlinx.serialization.SerializationException
 import org.apache.commons.httpclient.HttpStatus
+import java.io.IOException
 
 /**
  * Remove a label from an entity
@@ -25,46 +25,37 @@ class RemoveLabelRemoteOperation(
     private val labelType: LabelType,
     private val labelId: String
 ) : OCSRemoteOperation<GovernanceLabelResponse>() {
-    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<GovernanceLabelResponse> {
-        var result: RemoteOperationResult<GovernanceLabelResponse>
-        var deleteMethod: DeleteMethod? = null
-        try {
-            deleteMethod =
-                DeleteMethod(
-                    client.baseUri.toString() + ENDPOINT + entityType + "/" + entityId + "/" +
-                        labelType.value + "/" + labelId + JSON_FORMAT,
-                    true
-                )
+        val deleteMethod =
+            DeleteMethod(
+                client.baseUri.toString() + ENDPOINT + entityType + "/" + entityId + "/" +
+                    labelType.value + "/" + labelId + JSON_FORMAT,
+                true
+            )
+        return try {
             val status = client.execute(deleteMethod)
             if (status == HttpStatus.SC_OK) {
-                val response =
-                    getServerResponse(
-                        deleteMethod,
-                        object : TypeToken<ServerResponse<GovernanceLabelResponse>>() {}
-                    )?.ocs?.data
-
-                if (response != null) {
-                    result = RemoteOperationResult(true, deleteMethod)
-                    result.resultData = response
-                } else {
-                    result = RemoteOperationResult(false, deleteMethod)
-                }
+                val response = governanceJson.decodeFromString<GovernanceOcsResponse<GovernanceLabelResponse>>(
+                    deleteMethod.getResponseBodyAsString()
+                )
+                val data = response.ocs.data
+                RemoteOperationResult<GovernanceLabelResponse>(true, deleteMethod).apply { resultData = data }
             } else {
-                result = RemoteOperationResult(false, deleteMethod)
+                RemoteOperationResult(false, deleteMethod)
             }
-        } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(
-                TAG,
-                "Remove label from entity failed: " + result.logMessage,
-                result.exception
-            )
+        } catch (e: SerializationException) {
+            failure(e)
+        } catch (e: IOException) {
+            failure(e)
         } finally {
-            deleteMethod?.releaseConnection()
+            deleteMethod.releaseConnection()
         }
-        return result
     }
+
+    private fun failure(e: Exception): RemoteOperationResult<GovernanceLabelResponse> =
+        RemoteOperationResult<GovernanceLabelResponse>(e).also {
+            Log_OC.e(TAG, "Remove label from entity failed: " + it.logMessage, it.exception)
+        }
 
     companion object {
         private val TAG = RemoveLabelRemoteOperation::class.java.simpleName

@@ -7,6 +7,9 @@
 
 package com.nextcloud.android.lib.resources.governance
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GovernanceLabelResponse(
     val message: String
 )

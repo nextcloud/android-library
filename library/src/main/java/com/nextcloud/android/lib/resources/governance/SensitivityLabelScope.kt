@@ -7,12 +7,14 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class SensitivityLabelScope {
-    @SerializedName("FILES")
+    @SerialName("FILES")
     FILES,
 
-    @SerializedName("MAILS")
+    @SerialName("MAILS")
     MAILS
 }

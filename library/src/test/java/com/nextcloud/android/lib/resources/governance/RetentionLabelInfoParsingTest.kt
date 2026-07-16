@@ -7,12 +7,8 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import com.google.gson.Gson
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
-import com.owncloud.android.lib.ocs.ServerResponse
+import kotlinx.serialization.decodeFromString
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class RetentionLabelInfoParsingTest {
@@ -45,13 +41,13 @@ class RetentionLabelInfoParsingTest {
             }
             """.trimIndent()
 
-        val element = JsonParser.parseString(json)
-        val type = object : TypeToken<ServerResponse<List<RetentionLabelInfo>>>() {}.type
-        val response: ServerResponse<List<RetentionLabelInfo>> = Gson().fromJson(element, type)
+        val labels =
+            governanceJson
+                .decodeFromString<GovernanceOcsResponse<List<RetentionLabelInfo>>>(json)
+                .ocs
+                .data
 
-        val labels = response.ocs?.data
-        assertNotNull(labels)
-        assertEquals(2, labels!!.size)
+        assertEquals(2, labels.size)
 
         val first = labels[0]
         assertEquals("keep-10-years", first.id)

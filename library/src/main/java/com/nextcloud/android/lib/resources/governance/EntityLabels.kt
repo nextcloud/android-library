@@ -7,6 +7,9 @@
 
 package com.nextcloud.android.lib.resources.governance
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class EntityLabels(
     val sensitivity: List<SensitivityLabelInfo>,
     val retention: List<RetentionLabelInfo>,

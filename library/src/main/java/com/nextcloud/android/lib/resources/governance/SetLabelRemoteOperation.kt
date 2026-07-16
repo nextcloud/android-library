@@ -7,16 +7,16 @@
 
 package com.nextcloud.android.lib.resources.governance
 
-import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PostMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.ServerResponse
 import com.owncloud.android.lib.resources.OCSRemoteOperation
+import kotlinx.serialization.SerializationException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
+import java.io.IOException
 
 /**
  * Apply a label to an entity
@@ -27,48 +27,39 @@ class SetLabelRemoteOperation(
     private val labelType: LabelType,
     private val labelId: String
 ) : OCSRemoteOperation<GovernanceLabelResponse>() {
-    @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<GovernanceLabelResponse> {
-        var result: RemoteOperationResult<GovernanceLabelResponse>
-        var postMethod: PostMethod? = null
-        try {
-            val body = "".toRequestBody("application/json".toMediaTypeOrNull())
-            postMethod =
-                PostMethod(
-                    client.baseUri.toString() + ENDPOINT + entityType + "/" + entityId + "/" +
-                        labelType.value + "/" + labelId + JSON_FORMAT,
-                    true,
-                    body
-                )
+        val body = "".toRequestBody("application/json".toMediaTypeOrNull())
+        val postMethod =
+            PostMethod(
+                client.baseUri.toString() + ENDPOINT + entityType + "/" + entityId + "/" +
+                    labelType.value + "/" + labelId + JSON_FORMAT,
+                true,
+                body
+            )
+        return try {
             val status = client.execute(postMethod)
             if (status == HttpStatus.SC_OK) {
-                val response =
-                    getServerResponse(
-                        postMethod,
-                        object : TypeToken<ServerResponse<GovernanceLabelResponse>>() {}
-                    )?.ocs?.data
-
-                if (response != null) {
-                    result = RemoteOperationResult(true, postMethod)
-                    result.resultData = response
-                } else {
-                    result = RemoteOperationResult(false, postMethod)
-                }
+                val response = governanceJson.decodeFromString<GovernanceOcsResponse<GovernanceLabelResponse>>(
+                    postMethod.getResponseBodyAsString()
+                )
+                val data = response.ocs.data
+                RemoteOperationResult<GovernanceLabelResponse>(true, postMethod).apply { resultData = data }
             } else {
-                result = RemoteOperationResult(false, postMethod)
+                RemoteOperationResult(false, postMethod)
             }
-        } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(
-                TAG,
-                "Apply label to entity failed: " + result.logMessage,
-                result.exception
-            )
+        } catch (e: SerializationException) {
+            failure(e)
+        } catch (e: IOException) {
+            failure(e)
         } finally {
-            postMethod?.releaseConnection()
+            postMethod.releaseConnection()
         }
-        return result
     }
+
+    private fun failure(e: Exception): RemoteOperationResult<GovernanceLabelResponse> =
+        RemoteOperationResult<GovernanceLabelResponse>(e).also {
+            Log_OC.e(TAG, "Apply label to entity failed: " + it.logMessage, it.exception)
+        }
 
     companion object {
         private val TAG = SetLabelRemoteOperation::class.java.simpleName
