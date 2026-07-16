@@ -33,6 +33,7 @@ class GetAvailableSensitivityLabelsRemoteOperation(
         return try {
             val status = client.execute(getMethod)
             if (status != HttpStatus.SC_OK) {
+                Log_OC.e(TAG, "Get available sensitivity labels failed with status code: $status")
                 return RemoteOperationResult(false, getMethod)
             }
             val response = ocsJson.decodeFromString<OcsKotlinResponse<List<SensitivityLabelInfo>>>(
