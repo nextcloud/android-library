@@ -40,6 +40,7 @@ class SetLabelRemoteOperation(
         return try {
             val status = client.execute(postMethod)
             if (status != HttpStatus.SC_OK) {
+                Log_OC.e(TAG, "Apply label to entity failed with status code: $status")
                 return RemoteOperationResult(false, postMethod)
             }
             val response =
