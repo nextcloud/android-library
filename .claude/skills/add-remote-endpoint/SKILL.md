@@ -66,13 +66,22 @@ Add unit tests beside the existing ones in
 parsing tests — feed a sample OCS JSON string through `ocsJson.decodeFromString<OcsResponse<…>>(json)`
 and assert the decoded fields.
 
+Add integration test that makes the actual API call and add an instrumented test under
+`library/src/androidTest/java/com/nextcloud/android/lib/resources/<feature>/` that runs the operation
+against a live server and asserts the `RemoteOperationResult` (mirror the existing `*IT` tests).
+
 ## 6. Verify
+
+Verify — `detekt`, `spotlessKotlinCheck`, and `lint` (see `.github/workflows/check.yml`):
 
 ```bash
 ./gradlew :library:compileDebugKotlin
 ./gradlew :library:testDebugUnitTest --tests "com.nextcloud.android.lib.resources.<feature>.*"
 ./gradlew :library:detekt
+./gradlew :library:spotlessKotlinCheck
+./gradlew :library:lint
 ```
 
-All three must pass. Check lines are ≤ 120 (spotless check can't be relied on — see AGENTS.md). Then
-review the diff against the "Definition of done" checklist in AGENTS.md and remove anything unrelated.
+All must pass. Check lines are ≤ 120 (spotless check can't always be relied on locally — see
+AGENTS.md). Then review the diff against the "Definition of done" checklist in AGENTS.md and remove
+anything unrelated.

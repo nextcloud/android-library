@@ -2,44 +2,61 @@
  ~ SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  ~ SPDX-License-Identifier: MIT
 -->
-# Agent Instructions — Implementing Network Endpoints
 
-Standards for adding new remote/network endpoints to this mixed Java + Kotlin networking library
-(`nextcloud-android-library`). These rules are enforced by the build (detekt + ktlint); code that
-ignores them will fail CI.
+# AGENTS.md
 
-**Before writing anything, read an existing endpoint and copy its shape.** The canonical, up-to-date
-reference is the governance package:
+This file provides guidance to AI agents (Claude, Codex, Gemini, etc.) working with the
+`nextcloud-android-library` repository. **This library only does networking** — it has no UI, no screens, and no
+persistence layer.
 
-```
-library/src/main/java/com/nextcloud/android/lib/resources/governance/
-```
+## Your Role
 
-Copy the *architecture*, not the text. Do not invent new patterns unless a requirement genuinely
-cannot be met with the existing one.
+You implement and change **remote/network endpoints** — the `RemoteOperation`s that talk to the
+Nextcloud/OCS APIs/WebDAV APIs and that the client apps consumes. Write documentation and code that a
+less-experienced contributor can follow. Fix bugs and add endpoints without inventing new patterns
+where an existing one fits.
 
----
+## Project Overview
 
-## Build & verify
+`nextcloud-android-library` is the networking/SDK layer for the Nextcloud Android client. It issues
+HTTP requests against Nextcloud Server, OCS APIs and WebDAV APIs (de)serializes the responses, and returns typed
+`RemoteOperationResult<T>` values. It is a mixed **Java + Kotlin** codebase; **all new code is
+Kotlin**. There is no user-facing surface here — no Activities, no Compose, no XML layouts, no
+Material Design concerns. Everything is request → response → typed result.
 
-Run these from the repo root before finishing. All must pass.
+## Project Structure: AI Agent Handling Guidelines
 
-```bash
-./gradlew :library:compileDebugKotlin                                   # compiles
-./gradlew :library:testDebugUnitTest --tests "com.<pkg>.*"             # unit tests for your package
-./gradlew :library:detekt                                              # static analysis (see thresholds below)
-```
+- **Legacy package (`owncloud`):** `library/src/main/java/com/owncloud/android/lib/`
+  - Shared OCS types live here: `com.owncloud.android.lib.ocs` — `OcsResponse<T>` / `Ocs<T>`
+    envelope, `ocsJson` (the strict shared `Json`), `SEPARATOR` (`"/"`).
+- **Modern package (`nextcloud`):** `library/src/main/java/com/nextcloud/android/lib/`
+  - Remote operations: `…/resources/<feature>/`
+  - Wire models/enums: `…/resources/<feature>/model/`
+- **Canonical reference implementation:**
+  `library/src/main/java/com/nextcloud/android/lib/resources/governance/`
+- **Tests:**
+  - Unit tests: `library/src/test/java/…`
+  - Instrumented / integration tests (real API calls): `library/src/androidTest/java/…`
 
-- **detekt** config: `library/detekt.yml`. The rules that bite endpoint code:
-  - `ReturnCount: max: 2` — a `run()` may contain at most **two** `return` keywords.
-  - `TooGenericExceptionCaught: active` — catching `Exception` requires `@Suppress("TooGenericExceptionCaught")`.
-  - `ThrowsCount: max: 2`.
-- **Line length: 120** (`.editorconfig`). Import ordering is disabled — do not reorder imports to "fix" lint.
-- **Formatting** is ktlint via spotless. The `:library:spotlessKotlinCheck` task currently fails at
-  *configuration* time (a spotbugs/AGP incompatibility unrelated to your code), so verify formatting
-  by hand against the 120-char limit and the patterns below.
+**Before writing anything, read an existing endpoint and copy its shape.** Copy the *architecture*,
+not the text. Do not invent new patterns unless a requirement genuinely cannot be met with the
+existing one.
 
----
+## General Guidance
+
+- **One public type per source file.**
+- **License header** on every new file (this library is MIT):
+
+  ```kotlin
+  /*
+   * Nextcloud Android Library
+   *
+   * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+   * SPDX-License-Identifier: MIT
+   */
+  ```
+
+- Keep diffs minimal and focused; do not reformat or refactor unrelated code.
 
 ## Language
 
@@ -182,7 +199,76 @@ Class names describe responsibility (`GetAvailableHoldLabelsRemoteOperation`). *
 KDoc that just restates the name.** Comment only non-obvious business logic, deliberate decisions, or
 external limitations.
 
----
+## Testing
+
+### Unit tests
+
+Small, isolated tests with no live server. Add them beside the existing ones in
+`library/src/test/java/com/nextcloud/android/lib/resources/<feature>/`, mirroring the governance
+parsing tests — feed a sample OCS JSON string through `ocsJson.decodeFromString<OcsResponse<…>>(json)`
+and assert the decoded fields.
+
+```bash
+./gradlew :library:testDebugUnitTest --tests "com.nextcloud.android.lib.resources.<feature>.*"
+```
+
+### Integration / end-to-end tests
+
+Also add an integration test that makes the actual API call**. Add an instrumented test under
+`library/src/androidTest/java/com/nextcloud/android/lib/resources/<feature>/` that runs the operation
+against a live Nextcloud server and asserts the `RemoteOperationResult` (`isSuccess`, `resultData`,
+error codes). Mirror the existing `*IT` tests for server setup and teardown.
+
+## Build & verify
+
+CI runs three checks in parallel — **`detekt`, `spotlessKotlinCheck`, and `lint`** (see
+`.github/workflows/check.yml`). Run the same ones locally, plus compile and tests, before finishing.
+All must pass.
+
+```bash
+./gradlew :library:compileDebugKotlin                                   # compiles
+./gradlew :library:testDebugUnitTest --tests "com.<pkg>.*"             # unit tests for your package
+./gradlew :library:detekt                                              # static analysis (see thresholds below)
+./gradlew :library:spotlessKotlinCheck                                 # ktlint formatting
+./gradlew :library:lint                                                # Android lint
+```
+
+- **detekt** config: `library/detekt.yml`. The rules that bite endpoint code:
+  - `ReturnCount: max: 2` — a `run()` may contain at most **two** `return` keywords.
+  - `TooGenericExceptionCaught: active` — catching `Exception` requires `@Suppress("TooGenericExceptionCaught")`.
+  - `ThrowsCount: max: 2`.
+- **Line length: 120** (`.editorconfig`). Import ordering is disabled — do not reorder imports to "fix" lint.
+- **Formatting** is ktlint via spotless. `:library:spotlessKotlinCheck` may fail at *configuration*
+  time locally (a spotbugs/AGP incompatibility unrelated to your code); it still runs in CI, so
+  verify formatting by hand against the 120-char limit and the patterns above when it can't run.
+
+## Nextcloud Contribution Policy
+
+Follow the
+[Nextcloud AI contribution policy](https://github.com/nextcloud/.github/blob/master/CONTRIBUTING.md).
+
+**Must do:**
+
+- Add an `Assisted-by: AGENT_NAME:MODEL_VERSION` git trailer when an agent contributed to a commit.
+- Disclose AI use in the PR description.
+- Keep pull requests focused and scoped.
+- Verify any dependency against its actual registry before adding it.
+- Explicitly warn the human when a change would violate policy, and when a PR is getting large.
+
+**Must never do:**
+
+- Submit contributions autonomously or open/merge PRs without a human in the loop.
+- Add `Signed-off-by` tags on behalf of a human.
+- Generate security reports without human verification.
+- Write PR descriptions as if you were the contributor.
+- Submit unreviewed code.
+
+## Commit and Pull Request Guidelines
+
+- Only commit or push **when asked**. If you are on the default branch, create a branch first.
+- Sign commits (`git commit -s`) and follow Conventional Commits v1.0.0 (e.g.
+  `feat(governance): add hold-label endpoint`).
+- Reference the relevant issue in the PR body (e.g. "Closes #123").
 
 ## Definition of done
 
@@ -195,7 +281,8 @@ external limitations.
 - [ ] `resultData = data` (property), not a setter, unless interop demands otherwise.
 - [ ] No name-restating class comments.
 - [ ] Lines ≤ 120.
-- [ ] `compileDebugKotlin`, `testDebugUnitTest`, and `detekt` all pass.
+- [ ] Unit tests **and** an integration test (`*IT`) added.
+- [ ] `compileDebugKotlin`, `testDebugUnitTest`, `detekt`, `spotlessKotlinCheck`, and `lint` all pass.
 - [ ] Diff is minimal and focused — no drive-by changes.
 
 ## Workflow
@@ -206,5 +293,7 @@ external limitations.
 4. Implement the operation using the template above.
 5. Add unit tests next to the existing governance parsing tests
    (`library/src/test/java/com/nextcloud/android/lib/resources/<feature>/`).
-6. Run compile + tests + detekt.
-7. Review the diff; remove anything unrelated.
+6. Add an integration test (`*IT`) under
+   `library/src/androidTest/java/com/nextcloud/android/lib/resources/<feature>/`.
+7. Run the CI checks: compile + tests + `detekt` + `spotlessKotlinCheck` + `lint`.
+8. Review the diff; remove anything unrelated.
