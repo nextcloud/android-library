@@ -67,6 +67,7 @@ class OCShare :
         }
     var note: String? = null
     var isHideFileDownload = false
+    var isSendPasswordByTalk = false
     var label: String? = null
     var isHasPreview = false
     var mimetype: String? = null
@@ -110,6 +111,7 @@ class OCShare :
         isPasswordProtected = false
         note = ""
         isHideFileDownload = false
+        isSendPasswordByTalk = false
         label = ""
         isHasPreview = false
         mimetype = ""
@@ -152,6 +154,7 @@ class OCShare :
         isPasswordProtected = source.readInt() == 1
         note = source.readString()
         isHideFileDownload = source.readInt() == 1
+        isSendPasswordByTalk = source.readInt() == 1
         label = source.readString()
         isHasPreview = source.readInt() == 1
         mimetype = source.readString()
@@ -184,6 +187,7 @@ class OCShare :
         dest.writeInt(if (isPasswordProtected) 1 else 0)
         dest.writeString(note)
         dest.writeInt(if (isHideFileDownload) 1 else 0)
+        dest.writeInt(if (isSendPasswordByTalk) 1 else 0)
         dest.writeString(label)
         dest.writeInt(if (isHasPreview) 1 else 0)
         dest.writeString(mimetype)
