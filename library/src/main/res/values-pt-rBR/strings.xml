@@ -30,6 +30,6 @@
     <string name="title_no_client_cert">Nenhum certificado de cliente foi encontrado</string>
     <string name="unexpected_exception">Exceção inesperada</string>
     <string name="unexpected_webdav_exception">Exceção inesperada de WebDAV</string>
-    <string name="unknown_host_exception">Exceção de host desconhecido</string>
+    <string name="unknown_host_exception">Exceção de hospedeiro desconhecido</string>
     <string name="unrecovered_transport_exception">Exceção de transporte não recuperado</string>
 </resources>
