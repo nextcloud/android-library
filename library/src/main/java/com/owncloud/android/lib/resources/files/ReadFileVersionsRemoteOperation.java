@@ -18,6 +18,7 @@ import com.owncloud.android.lib.resources.files.model.FileVersion;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
@@ -112,16 +113,17 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation<ArrayList<F
      * @param client     Client instance to the remote server where the data were retrieved.
      */
     private void readData(MultiStatus remoteData, OwnCloudClient client) {
-        versions = new ArrayList<>();
+        MultiStatusResponse[] responses = remoteData.getResponses();
+        versions = new ArrayList<>(responses.length);
 
         // parse data from remote folder
         String splitElement = client.getDavUri().getPath();
 
         // loop to update every child
-        for (int i = 1; i < remoteData.getResponses().length; ++i) {
+        for (int i = 1; i < responses.length; ++i) {
             versions.add(new FileVersion(
                     localId,
-                    new WebdavEntry(remoteData.getResponses()[i], splitElement))
+                    new WebdavEntry(responses[i], splitElement))
             );
         }
     }
