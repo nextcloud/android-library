@@ -17,6 +17,7 @@ import com.owncloud.android.lib.resources.files.model.RemoteFile;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 
 import java.util.ArrayList;
@@ -80,6 +81,10 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
                 client.exhaustResponse(query.getResponseBodyAsStream());
                 result = new RemoteOperationResult(false, query);
             }
+        } catch (OutOfMemoryError e) {
+            mFolderAndFiles = null;
+            result = new RemoteOperationResult(
+                    new Exception("Not enough memory to read the contents of " + mRemotePath, e));
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
         } finally {
@@ -120,17 +125,20 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
      * @return
      */
     private void readData(MultiStatus remoteData, OwnCloudClient client) {
-        mFolderAndFiles = new ArrayList<>();
+        MultiStatusResponse[] responses = remoteData.getResponses();
+        String davUriPath = client.getFilesDavUri().getEncodedPath();
 
-        // parse data from remote folder 
-        WebdavEntry we = new WebdavEntry(remoteData.getResponses()[0], client.getFilesDavUri().getEncodedPath());
+        mFolderAndFiles = new ArrayList<>(responses.length);
+
+        // parse data from remote folder
+        WebdavEntry we = new WebdavEntry(responses[0], davUriPath);
         mFolderAndFiles.add(new RemoteFile(we));
 
         // loop to update every child
         RemoteFile remoteFile;
-        for (int i = 1; i < remoteData.getResponses().length; ++i) {
+        for (int i = 1; i < responses.length; ++i) {
             /// new OCFile instance with the data from the server
-            we = new WebdavEntry(remoteData.getResponses()[i], client.getFilesDavUri().getEncodedPath());
+            we = new WebdavEntry(responses[i], davUriPath);
             remoteFile = new RemoteFile(we);
             mFolderAndFiles.add(remoteFile);
         }
