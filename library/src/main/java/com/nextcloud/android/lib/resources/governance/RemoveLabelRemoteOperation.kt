@@ -35,6 +35,7 @@ class RemoveLabelRemoteOperation(
         return try {
             val status = client.execute(deleteMethod)
             if (status != HttpStatus.SC_OK) {
+                Log_OC.e(TAG, "Remove label from entity failed with status code: $status")
                 return RemoteOperationResult(false, deleteMethod)
             }
             val response =
