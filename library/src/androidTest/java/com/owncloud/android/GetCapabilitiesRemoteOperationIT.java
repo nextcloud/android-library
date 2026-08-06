@@ -95,6 +95,25 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         checkCapability(capability, nextcloudClient.getUserId());
     }
 
+    @Test
+    public void testFilesSharing() {
+        // get capabilities
+        RemoteOperationResult result = new GetCapabilitiesRemoteOperation().execute(nextcloudClient);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData() != null && result.getData().size() == 1);
+
+        OCCapability capability = (OCCapability) result.getData().get(0);
+
+        // share by mail
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_23)) {
+            assertTrue(capability.getFilesSharingByMail().isTrue());
+            assertTrue(capability.getFilesSharingByMailSendPasswordByMail().isTrue());
+        } else {
+            assertTrue("Value is:" + capability.getFilesSharingByMail(), capability.getFilesSharingByMail().isTrue());
+            assertTrue(capability.getFilesSharingByMailSendPasswordByMail().isUnknown());
+        }
+    }
+
     private void checkCapability(OCCapability capability, String userId) {
         assertTrue(capability.getActivity().isTrue());
         assertTrue(capability.getFilesSharingApiEnabled().isTrue());
