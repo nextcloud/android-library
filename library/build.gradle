@@ -62,7 +62,7 @@ configurations {
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 
-    implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
+    implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.22.4'
     api 'com.squareup.okhttp3:okhttp:5.4.0'
     implementation 'com.github.bitfireAT:dav4jvm:3.0.2'
     // in transition phase, we use old and new libs
