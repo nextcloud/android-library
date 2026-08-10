@@ -33,6 +33,7 @@ class GetAvailableHoldLabelsRemoteOperation(
         return try {
             val status = client.execute(getMethod)
             if (status != HttpStatus.SC_OK) {
+                Log_OC.e(TAG, "Get available hold labels failed with status code: $status")
                 return RemoteOperationResult(false, getMethod)
             }
             val response =
