@@ -238,6 +238,23 @@ public class WebdavUtils {
         return propertySet;
     }
 
+    /**
+     * Builds a DavPropertyNameSet for the items of a photo album.
+     * <p>
+     * Same as {@link #getAllPropSet()} but without {@code oc:permissions}: the photos DAV endpoint cannot resolve
+     * that property for album items and answers the whole PROPFIND with HTTP 500 (server side TypeError) when it
+     * is requested.
+     *
+     * @return properties supported by the album items endpoint
+     */
+    public static DavPropertyNameSet getAlbumItemPropSet() {
+        DavPropertyNameSet propSet = new DavPropertyNameSet(getAllPropSet());
+        propSet.remove(DavPropertyName.create(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS,
+                                              Namespace.getNamespace(WebdavEntry.NAMESPACE_OC)));
+
+        return propSet;
+    }
+
 
     /**
      *

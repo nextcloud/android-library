@@ -40,7 +40,7 @@ class ReadAlbumItemsRemoteOperation
                 query =
                     PropFindMethod(
                         url,
-                        WebdavUtils.getAllPropSet(), // PropFind Properties
+                        WebdavUtils.getAlbumItemPropSet(), // PropFind Properties
                         DavConstants.DEPTH_1
                     )
                 val status =
