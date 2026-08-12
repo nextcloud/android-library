@@ -140,7 +140,9 @@ class PhotoAlbumEntry(
                 href
                     .removeSuffix("/")
                     .substringAfterLast("/")
-                    .takeIf { it.isNotEmpty() } ?: "", StandardCharsets.UTF_8.name())
+                    .takeIf { it.isNotEmpty() } ?: "",
+                StandardCharsets.UTF_8.name()
+            )
         }
 
     val createdDate: Long
@@ -160,4 +162,9 @@ class PhotoAlbumEntry(
         }
 }
 
-data class Collaborators(val id: String?, val label: String?, val type: ShareType?, val shareLink: String?)
+data class Collaborators(
+    val id: String?,
+    val label: String?,
+    val type: ShareType?,
+    val shareLink: String?
+)

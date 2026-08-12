@@ -46,13 +46,13 @@ class ToggleAlbumFavoriteRemoteOperation
             var propPatchMethod: PropPatchMethod? = null
             val newProps = DavPropertySet()
             val removeProperties = DavPropertyNameSet()
-                val favoriteProperty =
-                    DefaultDavProperty<Any>(
-                        "oc:favorite",
-                        if(markAsFavorite) "1" else "0",
-                        Namespace.getNamespace(WebdavEntry.NAMESPACE_OC)
-                    )
-                newProps.add(favoriteProperty)
+            val favoriteProperty =
+                DefaultDavProperty<Any>(
+                    "oc:favorite",
+                    if (markAsFavorite) "1" else "0",
+                    Namespace.getNamespace(WebdavEntry.NAMESPACE_OC)
+                )
+            newProps.add(favoriteProperty)
 
             val webDavUrl = "${client.davUri}/photos/"
             val encodedPath = "${client.userId}${WebdavUtils.encodePath(this.filePath)}"

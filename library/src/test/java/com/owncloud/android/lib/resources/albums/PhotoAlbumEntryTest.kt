@@ -51,6 +51,6 @@ class PhotoAlbumEntryTest {
     // Helper method to create a stub entry
     private fun createTestEntry(href: String): PhotoAlbumEntry {
         val response = MultiStatusResponse(href, 200)
-        return PhotoAlbumEntry("https://www.example.com/",response)
+        return PhotoAlbumEntry("https://www.example.com/", response)
     }
 }
