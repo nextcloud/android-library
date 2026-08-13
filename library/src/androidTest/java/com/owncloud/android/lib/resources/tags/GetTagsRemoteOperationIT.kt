@@ -7,6 +7,7 @@
  */
 package com.owncloud.android.lib.resources.tags
 
+import com.nextcloud.operations.DeleteMethod
 import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.network.WebdavEntry
@@ -16,6 +17,7 @@ import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.jackrabbit.webdav.client.methods.PropPatchMethod
@@ -23,11 +25,40 @@ import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
 import org.apache.jackrabbit.webdav.property.DavPropertySet
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty
 import org.apache.jackrabbit.webdav.xml.Namespace
+import org.junit.After
 import org.junit.Test
 
 class GetTagsRemoteOperationIT : AbstractIT() {
     companion object {
         const val TAG_LENGTH = 10
+        const val TAG_URL = "/remote.php/dav/systemtags/"
+    }
+
+    private val createdTags = mutableListOf<Tag>()
+
+    @After
+    fun deleteCreatedTags() {
+        createdTags.forEach {
+            DeleteMethod(client.baseUri.toString() + TAG_URL + it.id, true).execute(nextcloudClient)
+        }
+        createdTags.clear()
+    }
+
+    private fun createTag(): Tag {
+        val name = RandomStringGenerator.make(TAG_LENGTH)
+        assertTrue(
+            CreateTagRemoteOperation(name)
+                .execute(nextcloudClient)
+                .isSuccess
+        )
+
+        val result = GetTagsRemoteOperation().execute(client)
+        assertTrue(result.isSuccess)
+
+        val tag = result.resultData.find { it.name == name }
+        assertNotNull(tag)
+
+        return tag!!.also { createdTags.add(it) }
     }
 
     @Test
@@ -40,17 +71,8 @@ class GetTagsRemoteOperationIT : AbstractIT() {
 
         val count = sut.resultData.size
 
-        assertTrue(
-            CreateTagRemoteOperation(RandomStringGenerator.make(TAG_LENGTH))
-                .execute(nextcloudClient)
-                .isSuccess
-        )
-
-        assertTrue(
-            CreateTagRemoteOperation(RandomStringGenerator.make(TAG_LENGTH))
-                .execute(nextcloudClient)
-                .isSuccess
-        )
+        val tag1 = createTag()
+        val tag2 = createTag()
 
         sut = GetTagsRemoteOperation().execute(client)
         assertTrue(sut.isSuccess)
@@ -59,8 +81,6 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         // add color to one tag
         val plainColor = "ff00ff"
         val colorWithHex = "#$plainColor"
-        val tag1 = sut.resultData.sortedBy { it.id }.last()
-        val tag2 = sut.resultData.sortedBy { it.id }[sut.resultData.count() - 2]
         val newProps = DavPropertySet()
         newProps.add(
             DefaultDavProperty(
@@ -71,15 +91,18 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         )
         val propPatchMethod =
             PropPatchMethod(
-                client.baseUri.toString() + "/remote.php/dav/systemtags/" + tag1.id,
+                client.baseUri.toString() + TAG_URL + tag1.id,
                 newProps,
                 DavPropertyNameSet()
             )
-        assertTrue(client.executeMethod(propPatchMethod) == HttpStatus.SC_MULTI_STATUS)
+        val propPatchStatus = client.executeMethod(propPatchMethod)
+        propPatchMethod.releaseConnection()
+        assertEquals(HttpStatus.SC_MULTI_STATUS, propPatchStatus)
 
         sut = GetTagsRemoteOperation().execute(client)
-
+        assertTrue(sut.isSuccess)
         assertEquals(colorWithHex, sut.resultData.find { it.id == tag1.id }?.color)
+        assertEquals(null, sut.resultData.find { it.id == tag2.id }?.color)
 
         // add colored tag to file
         val tagFolder = "/coloredFolder/"
