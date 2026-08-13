@@ -7,7 +7,6 @@
  */
 package com.owncloud.android.lib.resources.tags
 
-import com.nextcloud.operations.DeleteMethod
 import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.network.WebdavEntry
@@ -20,6 +19,7 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.apache.commons.httpclient.HttpStatus
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod
 import org.apache.jackrabbit.webdav.client.methods.PropPatchMethod
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
 import org.apache.jackrabbit.webdav.property.DavPropertySet
@@ -39,7 +39,9 @@ class GetTagsRemoteOperationIT : AbstractIT() {
     @After
     fun deleteCreatedTags() {
         createdTags.forEach {
-            DeleteMethod(client.baseUri.toString() + TAG_URL + it.id, true).execute(nextcloudClient)
+            val deleteMethod = DeleteMethod(client2.baseUri.toString() + TAG_URL + it.id)
+            client2.executeMethod(deleteMethod)
+            deleteMethod.releaseConnection()
         }
         createdTags.clear()
     }
@@ -78,7 +80,6 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         assertTrue(sut.isSuccess)
         assertEquals(count + 2, sut.resultData.size)
 
-        // add color to one tag
         val plainColor = "ff00ff"
         val colorWithHex = "#$plainColor"
         val newProps = DavPropertySet()
@@ -91,11 +92,11 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         )
         val propPatchMethod =
             PropPatchMethod(
-                client.baseUri.toString() + TAG_URL + tag1.id,
+                client2.baseUri.toString() + TAG_URL + tag1.id,
                 newProps,
                 DavPropertyNameSet()
             )
-        val propPatchStatus = client.executeMethod(propPatchMethod)
+        val propPatchStatus = client2.executeMethod(propPatchMethod)
         propPatchMethod.releaseConnection()
         assertEquals(HttpStatus.SC_MULTI_STATUS, propPatchStatus)
 
