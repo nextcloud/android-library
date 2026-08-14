@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2015 ownCloud Inc.
  * SPDX-License-Identifier: MIT
  */
@@ -18,86 +19,62 @@ import org.apache.jackrabbit.webdav.DavConstants
 import org.apache.jackrabbit.webdav.MultiStatus
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 
-class ReadFolderRemoteOperation(private val remotePath: String?) : RemoteOperation<Any?>() {
-    private var folderAndFiles: ArrayList<Any?>? = null
 
-    override fun run(client: OwnCloudClient): RemoteOperationResult<*> {
-        var result: RemoteOperationResult<*>? = null
+class ReadFolderRemoteOperation(private val remotePath: String) : RemoteOperation<Any>() {
+    @Deprecated("Deprecated in Java")
+    @Suppress("TooGenericExceptionCaught", "DEPRECATION")
+    override fun run(client: OwnCloudClient): RemoteOperationResult<Any> {
         var query: PropFindMethod? = null
 
-        try {
-            query = PropFindMethod(
-                client.getFilesDavUri(remotePath),
-                WebdavUtils.getAllPropSet(),
-                DavConstants.DEPTH_1
-            )
-            val status = client.executeMethod(query)
+        val result =
+            try {
+                query =
+                    PropFindMethod(
+                        client.getFilesDavUri(remotePath),
+                        WebdavUtils.getAllPropSet(),
+                        DavConstants.DEPTH_1
+                    )
+                val status = client.executeMethod(query)
 
-            val isSuccess = (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK)
-
-            if (isSuccess) {
-                val dataInServer = query.getResponseBodyAsMultiStatus()
-                readData(dataInServer, client)
-                result = RemoteOperationResult<Any?>(true, query)
-                if (result.isSuccess) {
-                    result.data = folderAndFiles
-                }
-            } else {
-                client.exhaustResponse(query.getResponseBodyAsStream())
-                result = RemoteOperationResult<Any?>(false, query)
-            }
-        } catch (e: OutOfMemoryError) {
-            folderAndFiles = null
-            Log_OC.e(TAG, "Not enough memory to read the content of $remotePath", e)
-            result = RemoteOperationResult<Any?>(RemoteOperationResult.ResultCode.OUT_OF_MEMORY)
-        } catch (e: Exception) {
-            result = RemoteOperationResult<Any?>(e)
-        } finally {
-            query?.releaseConnection()
-
-            if (result == null) {
-                result = RemoteOperationResult<Any?>(Exception("unknown error"))
-                Log_OC.e(TAG, "Synchronized $remotePath: failed")
-            } else {
-                if (result.isSuccess) {
-                    Log_OC.i(TAG, "Synchronized " + remotePath + ": " + result.getLogMessage())
+                if (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK) {
+                    val folderAndFiles = readData(query.responseBodyAsMultiStatus, client)
+                    RemoteOperationResult<Any>(true, query).apply { data = folderAndFiles }
                 } else {
-                    if (result.isException) {
-                        Log_OC.e(
-                            TAG, "Synchronized " + remotePath + ": " + result.getLogMessage(),
-                            result.exception
-                        )
-                    } else {
-                        Log_OC.e(TAG, "Synchronized " + remotePath + ": " + result.getLogMessage())
-                    }
+                    client.exhaustResponse(query.responseBodyAsStream)
+                    RemoteOperationResult(false, query)
                 }
+            } catch (e: OutOfMemoryError) {
+                Log_OC.e(TAG, "Not enough memory to read the content of $remotePath", e)
+                RemoteOperationResult(RemoteOperationResult.ResultCode.OUT_OF_MEMORY)
+            } catch (e: Exception) {
+                RemoteOperationResult(e)
+            } finally {
+                query?.releaseConnection()
             }
-        }
 
-        return result
+        return result.also { log(it) }
     }
 
-    fun isMultiStatus(status: Int): Boolean {
-        return (status == HttpStatus.SC_MULTI_STATUS)
-    }
+    fun isMultiStatus(status: Int): Boolean = status == HttpStatus.SC_MULTI_STATUS
 
-    private fun readData(remoteData: MultiStatus, client: OwnCloudClient) {
+    private fun readData(remoteData: MultiStatus, client: OwnCloudClient): ArrayList<Any> {
         val responses = remoteData.responses
-        val davUriPath = client.filesDavUri.encodedPath
-        folderAndFiles = ArrayList(responses.size)
+        val davUriPath = client.filesDavUri.encodedPath.orEmpty()
 
-        var we = WebdavEntry(responses[0]!!, davUriPath!!)
-        folderAndFiles!!.add(RemoteFile(we))
+        return responses.mapTo(ArrayList(responses.size)) { RemoteFile(WebdavEntry(it, davUriPath)) }
+    }
 
-        var remoteFile: RemoteFile?
-        for (i in 1..<responses.size) {
-            we = WebdavEntry(responses[i]!!, davUriPath)
-            remoteFile = RemoteFile(we)
-            folderAndFiles!!.add(remoteFile)
+    @Suppress("DEPRECATION")
+    private fun log(result: RemoteOperationResult<Any>) {
+        val message = "Synchronized $remotePath: ${result.logMessage}"
+        when {
+            result.isSuccess -> Log_OC.i(TAG, message)
+            result.isException -> Log_OC.e(TAG, message, result.exception)
+            else -> Log_OC.e(TAG, message)
         }
     }
 
     companion object {
-        private val TAG: String = ReadFolderRemoteOperation::class.java.getSimpleName()
+        private val TAG: String = ReadFolderRemoteOperation::class.java.simpleName
     }
 }
