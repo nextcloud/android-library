@@ -11,6 +11,7 @@ package com.owncloud.android.lib.resources.files
 import com.owncloud.android.lib.common.OwnCloudClient
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.common.utils.WebDavFileUtils
 import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.OCCapability
@@ -94,10 +95,17 @@ class SearchRemoteOperation(
             } finally {
                 searchMethod.releaseConnection()
             }
+        } catch (e: OutOfMemoryError) {
+            Log_OC.e(TAG, "Not enough memory to read the search result", e)
+            RemoteOperationResult(RemoteOperationResult.ResultCode.OUT_OF_MEMORY)
         } catch (e: Exception) {
             RemoteOperationResult(e)
         } finally {
             optionsMethod.releaseConnection()
         }
+    }
+
+    companion object {
+        private val TAG: String = SearchRemoteOperation::class.java.simpleName
     }
 }

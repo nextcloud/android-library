@@ -689,7 +689,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         } else if (mCode == ResultCode.LOCKED) {
             return "File is currently locked by another user or process";
         } else if (mCode == ResultCode.OUT_OF_MEMORY) {
-            return "Not enough memory to read the contents";
+            return "Not enough memory to read the content";
         }
 
         return "Operation finished with HTTP status code " + mHttpCode + " (" +

@@ -80,6 +80,10 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation<List<Tras
                 client.exhaustResponse(query.getResponseBodyAsStream());
                 result = new RemoteOperationResult<>(false, query);
             }
+        } catch (OutOfMemoryError e) {
+            folderAndFiles = null;
+            Log_OC.e(TAG, "Not enough memory to read the content of " + remotePath, e);
+            result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OUT_OF_MEMORY);
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
         } finally {

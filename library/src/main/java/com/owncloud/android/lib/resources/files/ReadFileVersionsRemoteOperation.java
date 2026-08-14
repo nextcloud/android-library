@@ -80,6 +80,10 @@ public class ReadFileVersionsRemoteOperation extends RemoteOperation<ArrayList<F
                 client.exhaustResponse(query.getResponseBodyAsStream());
                 result = new RemoteOperationResult<>(false, query);
             }
+        } catch (OutOfMemoryError e) {
+            versions = null;
+            Log_OC.e(TAG, "Not enough memory to read the versions of " + localId, e);
+            result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OUT_OF_MEMORY);
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
         } finally {

@@ -83,6 +83,7 @@ public class ReadFolderRemoteOperation extends RemoteOperation {
             }
         } catch (OutOfMemoryError e) {
             mFolderAndFiles = null;
+            Log_OC.e(TAG, "Not enough memory to read the content of " + mRemotePath, e);
             result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OUT_OF_MEMORY);
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);

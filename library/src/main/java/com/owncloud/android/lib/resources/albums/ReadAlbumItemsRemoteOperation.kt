@@ -48,6 +48,9 @@ class ReadAlbumItemsRemoteOperation
                         client.exhaustResponse(propFind.responseBodyAsStream)
                         RemoteOperationResult(false, propFind)
                     }
+                } catch (e: OutOfMemoryError) {
+                    Log_OC.e(TAG, "Not enough memory to read the content of $remotePath", e)
+                    RemoteOperationResult(RemoteOperationResult.ResultCode.OUT_OF_MEMORY)
                 } catch (e: Exception) {
                     RemoteOperationResult(e)
                 } finally {
