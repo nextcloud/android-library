@@ -39,5 +39,6 @@
     <string name="file_not_found">Local file does not exist</string>
     <string name="sync_conflict">Synchronization conflict</string>
     <string name="file_locked">File is currently locked by another user or process</string>
+    <string name="out_of_memory">Not enough memory to read the content</string>
     <string name="operation_finished_http_code">Operation finished with HTTP status code %1$d (%2$s)</string>
 </resources>
