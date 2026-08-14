@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2023 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
@@ -220,6 +221,36 @@ public class WebdavUtils {
         propSet.add(DavPropertyName.GETCONTENTTYPE);
         propSet.add(DavPropertyName.RESOURCETYPE);
         propSet.add(DavPropertyName.GETCONTENTLENGTH);
+
+        return propSet;
+    }
+
+    public static DavPropertyNameSet getAlbumPropSet() {
+        DavPropertyNameSet propertySet = new DavPropertyNameSet();
+        Namespace ncNamespace = Namespace.getNamespace("nc", WebdavEntry.NAMESPACE_NC);
+
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LAST_PHOTO, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_NB_ITEMS, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LOCATION, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_DATE_RANGE, ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_COLLABORATORS, ncNamespace));
+
+        return propertySet;
+    }
+
+    /**
+     * Builds a DavPropertyNameSet for the items of a photo album.
+     * <p>
+     * Same as {@link #getAllPropSet()} but without {@code oc:permissions}: the photos DAV endpoint cannot resolve
+     * that property for album items and answers the whole PROPFIND with HTTP 500 (server side TypeError) when it
+     * is requested.
+     *
+     * @return properties supported by the album items endpoint
+     */
+    public static DavPropertyNameSet getAlbumItemPropSet() {
+        DavPropertyNameSet propSet = new DavPropertyNameSet(getAllPropSet());
+        propSet.remove(DavPropertyName.create(WebdavEntry.EXTENDED_PROPERTY_NAME_PERMISSIONS,
+                                              Namespace.getNamespace(WebdavEntry.NAMESPACE_OC)));
 
         return propSet;
     }
