@@ -227,9 +227,9 @@ public class WebdavUtils {
 
     public static DavPropertyNameSet getAlbumPropSet() {
         DavPropertyNameSet propertySet = new DavPropertyNameSet();
-        Namespace ncNamespace = Namespace.getNamespace("nc",WebdavEntry.NAMESPACE_NC);
+        Namespace ncNamespace = Namespace.getNamespace("nc", WebdavEntry.NAMESPACE_NC);
 
-        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LAST_PHOTO,ncNamespace));
+        propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LAST_PHOTO, ncNamespace));
         propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_NB_ITEMS, ncNamespace));
         propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_LOCATION, ncNamespace));
         propertySet.add(DavPropertyName.create(WebdavEntry.PROPERTY_DATE_RANGE, ncNamespace));
@@ -254,7 +254,6 @@ public class WebdavUtils {
 
         return propSet;
     }
-
 
     /**
      *

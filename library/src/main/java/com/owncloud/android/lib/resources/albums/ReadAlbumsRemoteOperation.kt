@@ -1,12 +1,12 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2025-2026 TSI-mc <surinder.kumar@t-systems.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.resources.albums
 
-import android.text.TextUtils
 import com.nextcloud.common.SessionTimeOut
 import com.nextcloud.common.defaultSessionTimeOut
 import com.owncloud.android.lib.common.OwnCloudClient
@@ -18,55 +18,56 @@ import org.apache.commons.httpclient.HttpStatus
 import org.apache.jackrabbit.webdav.DavConstants
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 
+/**
+ * Reads every album of the user, or a single one when [albumRemotePath] is given.
+ */
 class ReadAlbumsRemoteOperation
     @JvmOverloads
     constructor(
-        private val mAlbumRemotePath: String? = null,
+        private val albumRemotePath: String? = null,
         private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
     ) : RemoteOperation<List<PhotoAlbumEntry>>() {
-        /**
-         * Performs the operation.
-         *
-         * @param client Client object to communicate with the remote ownCloud server.
-         */
         @Deprecated("Deprecated in Java")
-        @Suppress("TooGenericExceptionCaught")
+        @Suppress("TooGenericExceptionCaught", "DEPRECATION")
         override fun run(client: OwnCloudClient): RemoteOperationResult<List<PhotoAlbumEntry>> {
-            var propfind: PropFindMethod? = null
-            var result: RemoteOperationResult<List<PhotoAlbumEntry>>
-            var url = "${client.baseUri}/remote.php/dav/photos/${client.userId}/albums"
-            if (!TextUtils.isEmpty(mAlbumRemotePath)) {
-                url += WebdavUtils.encodePath(mAlbumRemotePath)
-            }
-            try {
-                propfind = PropFindMethod(url, WebdavUtils.getAlbumPropSet(), DavConstants.DEPTH_1)
+            var propFind: PropFindMethod? = null
+            return try {
+                val url =
+                    if (albumRemotePath.isNullOrEmpty()) {
+                        client.albumsDavUri
+                    } else {
+                        client.albumUri(albumRemotePath)
+                    }
+                propFind = PropFindMethod(url, WebdavUtils.getAlbumPropSet(), DavConstants.DEPTH_1)
                 val status =
-                    client.executeMethod(
-                        propfind,
-                        sessionTimeOut.readTimeOut,
-                        sessionTimeOut.connectionTimeOut
-                    )
-                val isSuccess = status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK
-                if (isSuccess) {
-                    val albumsList =
-                        propfind.responseBodyAsMultiStatus.responses
-                            .filter { it.status[0].statusCode == HttpStatus.SC_OK }
-                            .map { res -> PhotoAlbumEntry(client.baseUri.toString(), res) }
-                    result = RemoteOperationResult<List<PhotoAlbumEntry>>(true, propfind)
-                    result.resultData = albumsList
+                    client.executeMethod(propFind, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
+
+                if (isMultiStatusOrOk(status)) {
+                    RemoteOperationResult<List<PhotoAlbumEntry>>(true, propFind).apply {
+                        resultData = propFind.albums(client)
+                    }
                 } else {
-                    result = RemoteOperationResult<List<PhotoAlbumEntry>>(false, propfind)
-                    client.exhaustResponse(propfind.responseBodyAsStream)
+                    client.exhaustResponse(propFind.responseBodyAsStream)
+                    RemoteOperationResult(false, propFind)
                 }
             } catch (e: Exception) {
-                result = RemoteOperationResult<List<PhotoAlbumEntry>>(e)
-                Log_OC.e(TAG, "Read album failed: ${result.logMessage}", result.exception)
+                failure(e)
             } finally {
-                propfind?.releaseConnection()
+                propFind?.releaseConnection()
             }
-
-            return result
         }
+
+        private fun PropFindMethod.albums(client: OwnCloudClient): List<PhotoAlbumEntry> =
+            responseBodyAsMultiStatus
+                .responses
+                .filter { it.status?.firstOrNull()?.statusCode == HttpStatus.SC_OK }
+                .map { PhotoAlbumEntry(client.baseUri.toString(), it) }
+
+        @Suppress("DEPRECATION")
+        private fun failure(e: Exception): RemoteOperationResult<List<PhotoAlbumEntry>> =
+            RemoteOperationResult<List<PhotoAlbumEntry>>(e).also {
+                Log_OC.e(TAG, "Read album failed: ${it.logMessage}", it.exception)
+            }
 
         companion object {
             private val TAG: String = ReadAlbumsRemoteOperation::class.java.simpleName
