@@ -19,8 +19,9 @@ import org.apache.jackrabbit.webdav.DavConstants
 import org.apache.jackrabbit.webdav.MultiStatus
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
 
-
-class ReadFolderRemoteOperation(private val remotePath: String) : RemoteOperation<Any>() {
+class ReadFolderRemoteOperation(
+    private val remotePath: String
+) : RemoteOperation<Any>() {
     @Deprecated("Deprecated in Java")
     @Suppress("TooGenericExceptionCaught", "DEPRECATION")
     override fun run(client: OwnCloudClient): RemoteOperationResult<Any> {
@@ -57,7 +58,10 @@ class ReadFolderRemoteOperation(private val remotePath: String) : RemoteOperatio
 
     fun isMultiStatus(status: Int): Boolean = status == HttpStatus.SC_MULTI_STATUS
 
-    private fun readData(remoteData: MultiStatus, client: OwnCloudClient): ArrayList<Any> {
+    private fun readData(
+        remoteData: MultiStatus,
+        client: OwnCloudClient
+    ): ArrayList<Any> {
         val responses = remoteData.responses
         val davUriPath = client.filesDavUri.encodedPath.orEmpty()
 
