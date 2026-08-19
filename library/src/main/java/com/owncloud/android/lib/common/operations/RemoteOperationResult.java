@@ -139,6 +139,7 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
         CANNOT_CREATE_FILE,
         LOCKED,
         SIGNING_TOS_NEEDED,
+        OUT_OF_MEMORY,
 
         // Cancelled by user
         USER_CANCELLED
@@ -687,6 +688,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             return "Synchronization conflict";
         } else if (mCode == ResultCode.LOCKED) {
             return "File is currently locked by another user or process";
+        } else if (mCode == ResultCode.OUT_OF_MEMORY) {
+            return "Not enough memory to read the content";
         }
 
         return "Operation finished with HTTP status code " + mHttpCode + " (" +
@@ -782,6 +785,8 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
 
         } else if (mCode == ResultCode.LOCKED) {
             return context.getString(R.string.file_locked);
+        } else if (mCode == ResultCode.OUT_OF_MEMORY) {
+            return context.getString(R.string.out_of_memory);
         }
 
         return context.getString(R.string.operation_finished_http_code, mHttpCode, isSuccess() ? "success" : "fail");

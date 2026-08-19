@@ -18,6 +18,7 @@ import com.owncloud.android.lib.resources.trashbin.model.TrashbinFile;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 
@@ -79,6 +80,10 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation<List<Tras
                 client.exhaustResponse(query.getResponseBodyAsStream());
                 result = new RemoteOperationResult<>(false, query);
             }
+        } catch (OutOfMemoryError e) {
+            folderAndFiles = null;
+            Log_OC.e(TAG, "Not enough memory to read the content of " + remotePath, e);
+            result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.OUT_OF_MEMORY);
         } catch (Exception e) {
             result = new RemoteOperationResult<>(e);
         } finally {
@@ -113,15 +118,16 @@ public class ReadTrashbinFolderRemoteOperation extends RemoteOperation<List<Tras
      * @param client     Client instance to the remote server where the data were retrieved.
      */
     private void readData(MultiStatus remoteData, OwnCloudClient client) {
-        folderAndFiles = new ArrayList<>();
+        MultiStatusResponse[] responses = remoteData.getResponses();
+        folderAndFiles = new ArrayList<>(responses.length);
 
         // parse data from remote folder
         WebdavEntry we;
         String splitElement = client.getDavUri().getPath();
 
         // loop to update every child
-        for (int i = 1; i < remoteData.getResponses().length; ++i) {
-            we = new WebdavEntry(remoteData.getResponses()[i], splitElement);
+        for (int i = 1; i < responses.length; ++i) {
+            we = new WebdavEntry(responses[i], splitElement);
             folderAndFiles.add(new TrashbinFile(we, client.getUserId()));
         }
     }

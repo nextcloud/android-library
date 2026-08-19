@@ -29,7 +29,7 @@ class ToggleEncryptionRemoteOperation
         @Deprecated("Deprecated in Java")
         @Suppress("Detekt.TooGenericExceptionCaught", "DEPRECATION")
         override fun run(client: OwnCloudClient): RemoteOperationResult<Unit> {
-            val folderResult = ReadFolderRemoteOperation(remotePath).execute(client)
+            val folderResult = ReadFolderRemoteOperation(remotePath.orEmpty()).execute(client)
             if (folderResult.isSuccess && folderResult.getData().size > 1) {
                 return RemoteOperationResult(false, "Non empty", HttpStatus.SC_FORBIDDEN)
             }
