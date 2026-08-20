@@ -139,7 +139,7 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     private fun createUploadFolder(client: OwnCloudClient) {
         val createFolder = MkColMethod(uploadFolderUri)
         createFolder.addRequestHeader(DESTINATION_HEADER, destinationUri)
-        client.executeMethod(createFolder, CREATE_FOLDER_READ_TIMEOUT, CREATE_FOLDER_CONNECTION_TIMEOUT)
+        client.executeMethod(createFolder, CREATE_FOLDER_READ_TIMEOUT, DO_NOT_CHANGE_DEFAULT)
     }
 
     private fun uploadedChunks(client: OwnCloudClient, dataInServer: MultiStatus): UploadedChunks {
@@ -227,7 +227,7 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
             put.addRequestHeader(DESTINATION_HEADER, destinationUri)
             token?.let { put.addRequestHeader(E2E_TOKEN, it) }
 
-            val status = client.executeMethod(put)
+            val status = client.executeMethod(put, calculateChunkTimeout(chunk.length), DO_NOT_CHANGE_DEFAULT)
             val result = RemoteOperationResult<String>(isSuccess(status), put)
 
             client.exhaustResponse(put.responseBodyAsStream)
@@ -282,6 +282,13 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
         return max(assembleTimeMin, min((assembleTimePerGB * fileSizeInGb).toInt(), assembleTimeMax))
     }
 
+    @VisibleForTesting
+    fun calculateChunkTimeout(chunkLength: Long): Int {
+        val chunkSizeInMib = chunkLength / BYTES_PER_MIB
+
+        return max(CHUNK_TIMEOUT_MIN, min((CHUNK_TIMEOUT_PER_MIB * chunkSizeInMib).toInt(), CHUNK_TIMEOUT_MAX))
+    }
+
     private data class UploadedChunks(val nextByte: Long, val lastId: Int)
 
     companion object {
@@ -306,8 +313,11 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
 
         private const val ASSEMBLED_FILE_SUFFIX = "/.file"
         private const val CREATE_FOLDER_READ_TIMEOUT = 30_000
-        private const val CREATE_FOLDER_CONNECTION_TIMEOUT = 5_000
         private const val DO_NOT_CHANGE_DEFAULT = -1
+        private const val CHUNK_TIMEOUT_MIN = 60_000
+        private const val CHUNK_TIMEOUT_MAX = 10 * 60 * 1000
+        private const val CHUNK_TIMEOUT_PER_MIB = 1_000
+        private const val BYTES_PER_MIB = 1024.0 * 1024.0
         private const val BYTES_PER_GB = 1e9
         private val TAG = ChunkedFileUploadRemoteOperation::class.java.simpleName
 
