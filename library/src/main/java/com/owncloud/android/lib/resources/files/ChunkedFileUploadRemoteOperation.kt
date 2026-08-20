@@ -178,29 +178,31 @@ class ChunkedFileUploadRemoteOperation
             client: OwnCloudClient,
             file: File,
             uploaded: UploadedChunks
-        ): RemoteOperationResult<String>? {
-            val chunkSize = chunkSize(onWifiConnection, serverMaxChunkSize)
-            var nextByte = uploaded.nextByte
-            var lastId = uploaded.lastId
-            var failure: RemoteOperationResult<String>? = null
-
-            while (failure == null && nextByte + 1 < file.length()) {
-                // determine size of next chunk
-                val chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize)
-                val chunkResult = uploadChunk(client, chunk)
-
-                failure =
-                    when {
-                        !chunkResult.isSuccess -> chunkResult
-                        cancellationRequested.get() -> RemoteOperationResult(OperationCancelledException())
-                        else -> null
-                    }
-
-                nextByte += chunk.length
+        ): RemoteOperationResult<String>? =
+            remainingChunks(file.length(), uploaded).firstNotNullOfOrNull { chunk ->
+                uploadChunk(client, chunk).failureOrNull()
             }
 
-            return failure
+        private fun remainingChunks(
+            fileLength: Long,
+            uploaded: UploadedChunks
+        ): Sequence<Chunk> {
+            val chunkSize = chunkSize(onWifiConnection, serverMaxChunkSize)
+            val firstId = uploaded.lastId + 1
+
+            // everything below uploaded.nextByte is already on the server, and a single trailing byte is not chunked
+            return (uploaded.nextByte until fileLength - 1 step chunkSize)
+                .asSequence()
+                .mapIndexed { index, startByte -> calcNextChunk(fileLength, firstId + index, startByte, chunkSize) }
         }
+
+        /** The result to report, or `null` when the chunk went through and the upload may continue. */
+        private fun RemoteOperationResult<String>.failureOrNull(): RemoteOperationResult<String>? =
+            when {
+                !isSuccess -> this
+                cancellationRequested.get() -> RemoteOperationResult(OperationCancelledException())
+                else -> null
+            }
 
         private fun assemble(
             client: OwnCloudClient,
