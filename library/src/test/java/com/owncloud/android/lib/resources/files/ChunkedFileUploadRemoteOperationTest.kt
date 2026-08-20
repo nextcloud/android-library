@@ -19,7 +19,7 @@ import kotlin.math.ceil
 
 class ChunkedFileUploadRemoteOperationTest {
     @Mock
-    var file: File? = null
+    lateinit var file: File
 
     @Test
     fun testAssembleTimeout() {
@@ -35,39 +35,39 @@ class ChunkedFileUploadRemoteOperationTest {
             )
 
         // 0b
-        Mockito.`when`(file!!.length()).thenReturn(0L)
+        Mockito.`when`(file.length()).thenReturn(0L)
         assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
 
         // 100b
-        Mockito.`when`(file!!.length()).thenReturn(100L)
+        Mockito.`when`(file.length()).thenReturn(100L)
         assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
 
         // 1Mb
-        Mockito.`when`(file!!.length()).thenReturn(1 * MB)
+        Mockito.`when`(file.length()).thenReturn(1 * MB)
         assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
 
         // 100Mb
-        Mockito.`when`(file!!.length()).thenReturn(100 * MB)
+        Mockito.`when`(file.length()).thenReturn(100 * MB)
         assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
 
         // 1Gb
-        Mockito.`when`(file!!.length()).thenReturn(1 * GB)
+        Mockito.`when`(file.length()).thenReturn(1 * GB)
         assertEquals(sut.ASSEMBLE_TIME_PER_GB, sut.calculateAssembleTimeout(file))
 
         // 2Gb
-        Mockito.`when`(file!!.length()).thenReturn(2 * GB)
+        Mockito.`when`(file.length()).thenReturn(2 * GB)
         assertEquals((2 * sut.ASSEMBLE_TIME_PER_GB), sut.calculateAssembleTimeout(file))
 
         // 5Gb
-        Mockito.`when`(file!!.length()).thenReturn(5 * GB)
+        Mockito.`when`(file.length()).thenReturn(5 * GB)
         assertEquals((5 * sut.ASSEMBLE_TIME_PER_GB), sut.calculateAssembleTimeout(file))
 
         // 50Gb
-        Mockito.`when`(file!!.length()).thenReturn(50 * GB)
+        Mockito.`when`(file.length()).thenReturn(50 * GB)
         assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file))
 
         // 500Gb
-        Mockito.`when`(file!!.length()).thenReturn(500 * GB)
+        Mockito.`when`(file.length()).thenReturn(500 * GB)
         assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file))
     }
 

@@ -4,337 +4,305 @@
  * SPDX-FileCopyrightText: 2015 ownCloud Inc.
  * SPDX-License-Identifier: MIT
  */
-package com.owncloud.android.lib.resources.files;
+package com.owncloud.android.lib.resources.files
 
-import android.text.TextUtils;
+import androidx.annotation.VisibleForTesting
+import androidx.core.text.isDigitsOnly
+import com.owncloud.android.lib.common.OwnCloudClient
+import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity
+import com.owncloud.android.lib.common.network.ProgressiveDataTransfer
+import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.common.network.WebdavUtils
+import com.owncloud.android.lib.common.operations.OperationCancelledException
+import com.owncloud.android.lib.common.operations.RemoteOperationResult
+import com.owncloud.android.lib.common.utils.Log_OC
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler
+import org.apache.commons.httpclient.methods.PutMethod
+import org.apache.commons.httpclient.params.HttpMethodParams
+import org.apache.jackrabbit.webdav.DavConstants
+import org.apache.jackrabbit.webdav.MultiStatus
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod
+import org.apache.jackrabbit.webdav.client.methods.MoveMethod
+import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
+import java.io.Closeable
+import java.io.File
+import java.io.IOException
+import java.io.RandomAccessFile
+import java.nio.channels.FileChannel
+import java.util.Locale
+import kotlin.math.max
+import kotlin.math.min
 
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.network.ChunkFromFileChannelRequestEntity;
-import com.owncloud.android.lib.common.network.ProgressiveDataTransfer;
-import com.owncloud.android.lib.common.network.WebdavEntry;
-import com.owncloud.android.lib.common.network.WebdavUtils;
-import com.owncloud.android.lib.common.operations.OperationCancelledException;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
+@Suppress("LongParameterList")
+class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
+    storagePath: String?,
+    remotePath: String?,
+    mimeType: String?,
+    requiredEtag: String?,
+    lastModificationTimestamp: Long,
+    private val onWifiConnection: Boolean,
+    token: String? = null,
+    creationTimestamp: Long? = null,
+    disableRetries: Boolean = true
+) : UploadFileRemoteOperation(
+    storagePath,
+    remotePath,
+    mimeType,
+    requiredEtag,
+    lastModificationTimestamp,
+    creationTimestamp,
+    token,
+    disableRetries
+) {
+    @Suppress("VariableNaming", "MagicNumber")
+    @JvmField
+    val ASSEMBLE_TIME_MIN: Int = 30 * 1000 // 30s
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.jackrabbit.webdav.DavConstants;
-import org.apache.jackrabbit.webdav.MultiStatus;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-import org.apache.jackrabbit.webdav.client.methods.MoveMethod;
-import org.apache.jackrabbit.webdav.client.methods.PropFindMethod;
+    @Suppress("VariableNaming", "MagicNumber")
+    @JvmField
+    val ASSEMBLE_TIME_MAX: Int = 30 * 60 * 1000 // 30min
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.util.Locale;
-import java.util.Objects;
+    @Suppress("VariableNaming", "MagicNumber")
+    @JvmField
+    val ASSEMBLE_TIME_PER_GB: Int = 3 * 60 * 1000 // 3 min
 
-import androidx.annotation.VisibleForTesting;
+    private lateinit var uploadFolderUri: String
+    private lateinit var destinationUri: String
+    private var moveMethod: MoveMethod? = null
 
+    constructor(
+        storagePath: String?,
+        remotePath: String?,
+        mimeType: String?,
+        requiredEtag: String?,
+        lastModificationTimestamp: Long,
+        creationTimestamp: Long?,
+        onWifiConnection: Boolean,
+        disableRetries: Boolean
+    ) : this(
+        storagePath,
+        remotePath,
+        mimeType,
+        requiredEtag,
+        lastModificationTimestamp,
+        onWifiConnection,
+        null,
+        creationTimestamp,
+        disableRetries
+    )
 
-public class ChunkedFileUploadRemoteOperation extends UploadFileRemoteOperation {
+    @Suppress("TooGenericExceptionCaught")
+    override fun run(client: OwnCloudClient): RemoteOperationResult<String> {
+        val oldRetryHandler = client.params
+            .getParameter(HttpMethodParams.RETRY_HANDLER) as? DefaultHttpMethodRetryHandler
 
-    public static final long CHUNK_SIZE_MOBILE = 10240000;
-    public static final long CHUNK_SIZE_WIFI = 40960000;
-    public static final String DESTINATION_HEADER = "Destination";
-    public static final int CHUNK_NAME_LENGTH = 6;
-    private static final String TAG = ChunkedFileUploadRemoteOperation.class.getSimpleName();
-    public final int ASSEMBLE_TIME_MIN = 30 * 1000; // 30s
-    public final int ASSEMBLE_TIME_MAX = 30 * 60 * 1000; // 30min
-    public final int ASSEMBLE_TIME_PER_GB = 3 * 60 * 1000; // 3 min
-    private final boolean onWifiConnection;
-    private String uploadFolderUri;
-    private String destinationUri;
-
-    public ChunkedFileUploadRemoteOperation(String storagePath,
-                                            String remotePath,
-                                            String mimeType,
-                                            String requiredEtag,
-                                            long lastModificationTimestamp,
-                                            boolean onWifiConnection) {
-        this(storagePath, remotePath, mimeType, requiredEtag, lastModificationTimestamp, onWifiConnection, null);
-    }
-
-    public ChunkedFileUploadRemoteOperation(String storagePath,
-                                            String remotePath,
-                                            String mimeType,
-                                            String requiredEtag,
-                                            long lastModificationTimestamp,
-                                            Long creationTimestamp,
-                                            boolean onWifiConnection,
-                                            boolean disableRetries) {
-        this(storagePath,
-             remotePath,
-             mimeType,
-             requiredEtag,
-             lastModificationTimestamp,
-             onWifiConnection,
-             null,
-             creationTimestamp,
-             disableRetries);
-    }
-
-    public ChunkedFileUploadRemoteOperation(String storagePath,
-                                            String remotePath,
-                                            String mimeType,
-                                            String requiredEtag,
-                                            long lastModificationTimestamp,
-                                            boolean onWifiConnection,
-                                            String token) {
-        this(storagePath,
-             remotePath,
-             mimeType,
-             requiredEtag,
-             lastModificationTimestamp,
-             onWifiConnection,
-             token,
-             null,
-             true);
-    }
-
-    public ChunkedFileUploadRemoteOperation(String storagePath,
-                                            String remotePath,
-                                            String mimeType,
-                                            String requiredEtag,
-                                            long lastModificationTimestamp,
-                                            boolean onWifiConnection,
-                                            String token,
-                                            Long creationTimestamp,
-                                            boolean disableRetries) {
-        super(storagePath,
-              remotePath,
-              mimeType,
-              requiredEtag,
-              lastModificationTimestamp,
-              creationTimestamp,
-              token,
-              disableRetries);
-        this.onWifiConnection = onWifiConnection;
-    }
-
-    protected static Chunk calcNextChunk(long fileSize, int chunkId, long startByte, long chunkSize) {
-        if (chunkId < 0 || String.valueOf(chunkId).length() > CHUNK_NAME_LENGTH) {
-            throw new IllegalArgumentException(
-                    "chunkId must not exceed length specified in CHUNK_NAME_LENGTH (" + CHUNK_NAME_LENGTH + ")");
-        }
-
-        long length = startByte + chunkSize > fileSize ? fileSize - startByte : chunkSize;
-        return new Chunk(chunkId, startByte, length);
-    }
-
-    @Override
-    protected RemoteOperationResult run(OwnCloudClient client) {
-        RemoteOperationResult result;
-        DefaultHttpMethodRetryHandler oldRetryHandler = (DefaultHttpMethodRetryHandler) client.getParams()
-                .getParameter(HttpMethodParams.RETRY_HANDLER);
-        File file = new File(localPath);
-        MoveMethod moveMethod = null;
-        try {
+        return try {
             if (disableRetries) {
                 // prevent that uploads are retried automatically by network library
-                client.getParams()
-                        .setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+                client.params.setParameter(HttpMethodParams.RETRY_HANDLER, DefaultHttpMethodRetryHandler(0, false))
             }
 
-            // chunk length
-            long chunkSize;
-            if (onWifiConnection) {
-                chunkSize = CHUNK_SIZE_WIFI;
-            } else {
-                chunkSize = CHUNK_SIZE_MOBILE;
-            }
-
-            uploadFolderUri = client.getUploadUri() + "/" + client.getUserId() + "/" + FileUtils.md5Sum(file);
-
-            destinationUri = client.getDavUri() + "/files/" + client.getUserId() + WebdavUtils.encodePath(remotePath);
-
-            // create folder
-            MkColMethod createFolder = new MkColMethod(uploadFolderUri);
-
-            createFolder.addRequestHeader(DESTINATION_HEADER, destinationUri);
-
-            client.executeMethod(createFolder, 30000, 5000);
-
-            // list chunks
-            PropFindMethod listChunks = new PropFindMethod(uploadFolderUri,
-                                                           WebdavUtils.getChunksPropSet(),
-                                                           DavConstants.DEPTH_1);
-
-            client.executeMethod(listChunks);
-
-            if (!listChunks.succeeded()) {
-                return new RemoteOperationResult(listChunks.succeeded(), listChunks);
-            }
-
-            MultiStatus dataInServer = listChunks.getResponseBodyAsMultiStatus();
-
-            // determine chunks already on server
-            // chunks are assumed to be uploaded linearly, starting at 0B
-            long nextByte = 0;
-            int lastId = 0;
-            for (MultiStatusResponse response : dataInServer.getResponses()) {
-                WebdavEntry we = new WebdavEntry(response, Objects.requireNonNull(client.getUploadUri().getPath()));
-                String name = we.getName();
-
-                // filter out any objects not matching expected chunk name
-                if (!we.isDirectory() && name != null && (name.length() <= CHUNK_NAME_LENGTH) &&
-                        TextUtils.isDigitsOnly(name)) {
-                    // is part of upload
-                    int id = Integer.parseInt(name);
-                    if (id > lastId) {
-                        lastId = id;
-                    }
-                    nextByte += we.getContentLength();
-                }
-            }
-
-            // iteratively upload remaining chunks
-            while (nextByte + 1 < file.length()) {
-                // determine size of next chunk
-                Chunk chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize);
-
-                RemoteOperationResult chunkResult = uploadChunk(client, chunk);
-                if (!chunkResult.isSuccess()) {
-                    return chunkResult;
-                }
-
-                if (cancellationRequested.get()) {
-                    return new RemoteOperationResult(new OperationCancelledException());
-                }
-
-                nextByte += chunk.getLength();
-            }
-
-            // assemble
-            String originUri = uploadFolderUri + "/.file";
-
-            moveMethod = new MoveMethod(originUri, destinationUri, true);
-            moveMethod.addRequestHeader(OC_X_OC_MTIME_HEADER, String.valueOf(lastModificationTimestamp));
-
-            if (creationTimestamp != null && creationTimestamp > 0) {
-                moveMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
-            }
-
-            if (token != null) {
-                moveMethod.addRequestHeader(E2E_TOKEN, token);
-            }
-
-            final int DO_NOT_CHANGE_DEFAULT = -1;
-            int moveResult = client.executeMethod(moveMethod, calculateAssembleTimeout(file), DO_NOT_CHANGE_DEFAULT);
-
-            result = new RemoteOperationResult(isSuccess(moveResult), moveMethod);
-        } catch (Exception e) {
-            if (putMethod != null && putMethod.isAborted()) {
-                if (cancellationRequested.get() && cancellationReason != null) {
-                    result = new RemoteOperationResult(cancellationReason);
-                } else {
-                    result = new RemoteOperationResult(new OperationCancelledException());
-                }
-            } else if (moveMethod != null && moveMethod.isAborted()) {
-                if (cancellationRequested.get() && cancellationReason != null) {
-                    result = new RemoteOperationResult(cancellationReason);
-                } else {
-                    result = new RemoteOperationResult(new OperationCancelledException());
-                }
-            } else {
-                result = new RemoteOperationResult(e);
-            }
+            uploadAndAssemble(client)
+        } catch (e: Exception) {
+            cancelledOrFailed(e)
         } finally {
             if (disableRetries) {
                 // reset previous retry handler
-                client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, oldRetryHandler);
+                client.params.setParameter(HttpMethodParams.RETRY_HANDLER, oldRetryHandler)
             }
         }
-        return result;
     }
 
-    private RemoteOperationResult uploadChunk(OwnCloudClient client, Chunk chunk) throws IOException {
-        int status;
-        RemoteOperationResult result;
+    private fun uploadAndAssemble(client: OwnCloudClient): RemoteOperationResult<String> {
+        val file = File(localPath)
+        val userId = client.userId
 
-        FileChannel channel = null;
-        RandomAccessFile raf = null;
+        uploadFolderUri = "${client.uploadUri}/$userId/${FileUtils.md5Sum(file)}"
+        destinationUri = "${client.davUri}/files/$userId${WebdavUtils.encodePath(remotePath)}"
 
-        File file = new File(localPath);
+        createUploadFolder(client)
 
-        try {
-            raf = new RandomAccessFile(file, "r");
-            channel = raf.getChannel();
-            entity = new ChunkFromFileChannelRequestEntity(channel,
-                                                           mimeType,
-                                                           chunk.getStart(),
-                                                           chunk.getLength(),
-                                                           file);
+        val listChunks = PropFindMethod(uploadFolderUri, WebdavUtils.getChunksPropSet(), DavConstants.DEPTH_1)
+        client.executeMethod(listChunks)
 
-            synchronized (dataTransferListeners) {
-                ((ProgressiveDataTransfer) entity).addDataTransferProgressListeners(dataTransferListeners);
+        if (!listChunks.succeeded()) {
+            return RemoteOperationResult(false, listChunks)
+        }
+
+        val uploaded = uploadedChunks(client, listChunks.responseBodyAsMultiStatus)
+
+        return uploadRemainingChunks(client, file, uploaded) ?: assemble(client, file)
+    }
+
+    private fun createUploadFolder(client: OwnCloudClient) {
+        val createFolder = MkColMethod(uploadFolderUri)
+        createFolder.addRequestHeader(DESTINATION_HEADER, destinationUri)
+        client.executeMethod(createFolder, CREATE_FOLDER_READ_TIMEOUT, CREATE_FOLDER_CONNECTION_TIMEOUT)
+    }
+
+    private fun uploadedChunks(client: OwnCloudClient, dataInServer: MultiStatus): UploadedChunks {
+        val uploadPath = requireNotNull(client.uploadUri.path)
+        var nextByte = 0L
+        var lastId = 0
+
+        for (response in dataInServer.responses) {
+            val entry = WebdavEntry(response, uploadPath)
+            val chunkId = entry.chunkId() ?: continue
+
+            lastId = max(lastId, chunkId)
+            nextByte += entry.contentLength
+        }
+
+        return UploadedChunks(nextByte, lastId)
+    }
+
+    /** Id of the chunk this entry holds, or `null` for any object not matching the expected chunk name. */
+    private fun WebdavEntry.chunkId(): Int? = name
+        ?.takeIf { !isDirectory && it.length <= CHUNK_NAME_LENGTH && it.isDigitsOnly() }
+        ?.toIntOrNull()
+
+    private fun uploadRemainingChunks(
+        client: OwnCloudClient,
+        file: File,
+        uploaded: UploadedChunks
+    ): RemoteOperationResult<String>? {
+        val chunkSize = if (onWifiConnection) CHUNK_SIZE_WIFI else CHUNK_SIZE_MOBILE
+        var nextByte = uploaded.nextByte
+        var lastId = uploaded.lastId
+        var failure: RemoteOperationResult<String>? = null
+
+        while (failure == null && nextByte + 1 < file.length()) {
+            // determine size of next chunk
+            val chunk = calcNextChunk(file.length(), ++lastId, nextByte, chunkSize)
+            val chunkResult = uploadChunk(client, chunk)
+
+            failure = when {
+                !chunkResult.isSuccess -> chunkResult
+                cancellationRequested.get() -> RemoteOperationResult(OperationCancelledException())
+                else -> null
+            }
+
+            nextByte += chunk.length
+        }
+
+        return failure
+    }
+
+    private fun assemble(client: OwnCloudClient, file: File): RemoteOperationResult<String> {
+        val move = MoveMethod(uploadFolderUri + ASSEMBLED_FILE_SUFFIX, destinationUri, true)
+        moveMethod = move
+
+        move.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp.toString())
+        creationTimestamp?.takeIf { it > 0 }?.let { move.addRequestHeader(OC_X_OC_CTIME_HEADER, it.toString()) }
+        token?.let { move.addRequestHeader(E2E_TOKEN, it) }
+
+        val status = client.executeMethod(move, calculateAssembleTimeout(file), DO_NOT_CHANGE_DEFAULT)
+
+        return RemoteOperationResult(isSuccess(status), move)
+    }
+
+    @Throws(IOException::class)
+    private fun uploadChunk(client: OwnCloudClient, chunk: Chunk): RemoteOperationResult<String> {
+        val file = File(localPath)
+        var raf: RandomAccessFile? = null
+        var channel: FileChannel? = null
+
+        return try {
+            raf = RandomAccessFile(file, "r")
+            channel = raf.channel
+            entity = ChunkFromFileChannelRequestEntity(channel, mimeType, chunk.start, chunk.length, file)
+
+            synchronized(dataTransferListeners) {
+                (entity as ProgressiveDataTransfer).addDataTransferProgressListeners(dataTransferListeners)
             }
 
             // pad chunk name to 6 digits
-            String chunkUri =
-                    uploadFolderUri + "/" + String.format(Locale.ROOT, "%0" + CHUNK_NAME_LENGTH + "d", chunk.getId());
+            val chunkName = String.format(Locale.ROOT, "%0${CHUNK_NAME_LENGTH}d", chunk.id)
 
-            if (putMethod != null) {
-                putMethod.releaseConnection(); // let the connection available for other methods
-            }
+            putMethod?.releaseConnection() // let the connection available for other methods
 
-            putMethod = createPutMethod(chunkUri);
+            val put = createPutMethod("$uploadFolderUri/$chunkName")
+            put.addRequestHeader(DESTINATION_HEADER, destinationUri)
+            token?.let { put.addRequestHeader(E2E_TOKEN, it) }
 
-            putMethod.addRequestHeader(DESTINATION_HEADER, destinationUri);
+            val status = client.executeMethod(put)
+            val result = RemoteOperationResult<String>(isSuccess(status), put)
 
-            if (token != null) {
-                putMethod.addRequestHeader(E2E_TOKEN, token);
-            }
+            client.exhaustResponse(put.responseBodyAsStream)
+            Log_OC.d(
+                TAG,
+                "Upload of $localPath to $remotePath, chunk id: ${chunk.id} from ${chunk.start} " +
+                    "size: ${chunk.length}, HTTP result status $status"
+            )
 
-            status = client.executeMethod(putMethod);
-
-            result = new RemoteOperationResult(isSuccess(status), putMethod);
-
-            client.exhaustResponse(putMethod.getResponseBodyAsStream());
-            Log_OC.d(TAG,
-                     "Upload of " + localPath + " to " + remotePath + ", chunk id: " + chunk.getId() + " from " +
-                             chunk.getStart() + " size: " + chunk.getLength() + ", HTTP result status " + status);
+            result
         } finally {
-            if (channel != null) {
-                try {
-                    channel.close();
-                } catch (IOException e) {
-                    Log_OC.e(TAG, "Error closing file channel!", e);
-                }
-            }
-            if (raf != null) {
-                try {
-                    raf.close();
-                } catch (IOException e) {
-                    Log_OC.e(TAG, "Error closing file access!", e);
-                }
-            }
-            if (putMethod != null) {
-                putMethod.releaseConnection(); // let the connection available for other methods
-            }
+            channel.closeQuietly("Error closing file channel!")
+            raf.closeQuietly("Error closing file access!")
+            putMethod?.releaseConnection()
         }
-        return result;
     }
 
-    private PutMethod createPutMethod(String uriPrefix) {
-        putMethod = new PutMethod(uriPrefix);
-        putMethod.setRequestEntity(entity);
+    private fun createPutMethod(uri: String): PutMethod {
+        val put = PutMethod(uri)
+        putMethod = put
+        put.requestEntity = entity
+
         if (cancellationRequested.get()) {
-            putMethod.abort(); // next method will throw an exception
+            put.abort() // next method will throw an exception
         }
 
-        return putMethod;
+        return put
+    }
+
+    private fun cancelledOrFailed(e: Exception): RemoteOperationResult<String> = when {
+        putMethod?.isAborted == true || moveMethod?.isAborted == true ->
+            cancellationReason
+                ?.takeIf { cancellationRequested.get() }
+                ?.let { RemoteOperationResult(it) }
+                ?: RemoteOperationResult(OperationCancelledException())
+
+        else -> RemoteOperationResult(e)
+    }
+
+    private fun Closeable?.closeQuietly(errorMessage: String) {
+        try {
+            this?.close()
+        } catch (e: IOException) {
+            Log_OC.e(TAG, errorMessage, e)
+        }
     }
 
     @VisibleForTesting
-    public int calculateAssembleTimeout(File file) {
-        final double fileSizeInGb = file.length() / 1e9;
+    fun calculateAssembleTimeout(file: File): Int {
+        val fileSizeInGb = file.length() / BYTES_PER_GB
 
-        return Math.max(ASSEMBLE_TIME_MIN, Math.min((int) (ASSEMBLE_TIME_PER_GB * fileSizeInGb), ASSEMBLE_TIME_MAX));
+        return max(ASSEMBLE_TIME_MIN, min((ASSEMBLE_TIME_PER_GB * fileSizeInGb).toInt(), ASSEMBLE_TIME_MAX))
+    }
+
+    private data class UploadedChunks(val nextByte: Long, val lastId: Int)
+
+    companion object {
+        const val CHUNK_SIZE_MOBILE: Long = 10240000
+        const val CHUNK_SIZE_WIFI: Long = 40960000
+        const val DESTINATION_HEADER: String = "Destination"
+        const val CHUNK_NAME_LENGTH: Int = 6
+
+        private const val ASSEMBLED_FILE_SUFFIX = "/.file"
+        private const val CREATE_FOLDER_READ_TIMEOUT = 30_000
+        private const val CREATE_FOLDER_CONNECTION_TIMEOUT = 5_000
+        private const val DO_NOT_CHANGE_DEFAULT = -1
+        private const val BYTES_PER_GB = 1e9
+        private val TAG = ChunkedFileUploadRemoteOperation::class.java.simpleName
+
+        internal fun calcNextChunk(fileSize: Long, chunkId: Int, startByte: Long, chunkSize: Long): Chunk {
+            require(chunkId >= 0 && chunkId.toString().length <= CHUNK_NAME_LENGTH) {
+                "chunkId must not exceed length specified in CHUNK_NAME_LENGTH ($CHUNK_NAME_LENGTH)"
+            }
+
+            val length = if (startByte + chunkSize > fileSize) fileSize - startByte else chunkSize
+
+            return Chunk(chunkId, startByte, length)
+        }
     }
 }
