@@ -44,7 +44,8 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     private val onWifiConnection: Boolean,
     token: String? = null,
     creationTimestamp: Long? = null,
-    disableRetries: Boolean = true
+    disableRetries: Boolean = true,
+    private val serverMaxChunkSize: Long = SERVER_MAX_CHUNK_SIZE_UNKNOWN
 ) : UploadFileRemoteOperation(
     storagePath,
     remotePath,
@@ -68,6 +69,7 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     private lateinit var destinationUri: String
     private var moveMethod: MoveMethod? = null
 
+    @JvmOverloads
     constructor(
         storagePath: String?,
         remotePath: String?,
@@ -76,7 +78,8 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
         lastModificationTimestamp: Long,
         creationTimestamp: Long?,
         onWifiConnection: Boolean,
-        disableRetries: Boolean
+        disableRetries: Boolean,
+        serverMaxChunkSize: Long = SERVER_MAX_CHUNK_SIZE_UNKNOWN
     ) : this(
         storagePath,
         remotePath,
@@ -86,7 +89,8 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
         onWifiConnection,
         null,
         creationTimestamp,
-        disableRetries
+        disableRetries,
+        serverMaxChunkSize
     )
 
     @Suppress("TooGenericExceptionCaught")
@@ -164,7 +168,7 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
         file: File,
         uploaded: UploadedChunks
     ): RemoteOperationResult<String>? {
-        val chunkSize = if (onWifiConnection) CHUNK_SIZE_WIFI else CHUNK_SIZE_MOBILE
+        val chunkSize = chunkSize(onWifiConnection, serverMaxChunkSize)
         var nextByte = uploaded.nextByte
         var lastId = uploaded.lastId
         var failure: RemoteOperationResult<String>? = null
@@ -283,8 +287,22 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     companion object {
         const val CHUNK_SIZE_MOBILE: Long = 10240000
         const val CHUNK_SIZE_WIFI: Long = 40960000
+        const val SERVER_MAX_CHUNK_SIZE_UNKNOWN: Long = -1
         const val DESTINATION_HEADER: String = "Destination"
         const val CHUNK_NAME_LENGTH: Int = 6
+
+        @JvmStatic
+        fun chunkSize(onWifiConnection: Boolean, serverMaxChunkSize: Long): Long {
+            if (serverMaxChunkSize <= 0) {
+                return if (onWifiConnection) CHUNK_SIZE_WIFI else CHUNK_SIZE_MOBILE
+            }
+
+            return serverMaxChunkSize
+        }
+
+        @JvmStatic
+        fun chunkedUploadThreshold(serverMaxChunkSize: Long): Long =
+            chunkSize(onWifiConnection = false, serverMaxChunkSize = serverMaxChunkSize)
 
         private const val ASSEMBLED_FILE_SUFFIX = "/.file"
         private const val CREATE_FOLDER_READ_TIMEOUT = 30_000
