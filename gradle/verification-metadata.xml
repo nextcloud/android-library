@@ -149,6 +149,7 @@
          <trusted-key id="5989BAF76217B843D66BE55B2D0E1FB8FE4B68B4" group="org.eclipse.jetty" name="jetty-bom" version="9.4.54.v20240208"/>
          <trusted-key id="5CBA19E56141E78D54BF716F08A4A4958D61FC3D" group="com.sksamuel.scrimage"/>
          <trusted-key id="5DCEB296690BD5101756F2441F8CF885D537A431" group="com.nhaarman.mockitokotlin2" name="mockito-kotlin" version="2.2.0"/>
+         <trusted-key id="5DD80B0DDCCBE005F0A47FD66751E1A6E2001B8D" group="^com[.]squareup($|([.].*))" regex="true"/>
          <trusted-key id="5F6C2148AD4911FE308110E5F0D0AE433308B042" group="io.gitlab.arturbosch.detekt"/>
          <trusted-key id="600D21219963F228200A72375365A8A69292AF1A" group="org.scala-lang.modules" name="scala-xml_2.13" version="2.1.0"/>
          <trusted-key id="600EA202B1EC682F4A788E5AAC7A514BC9F9BB70" group="io.opencensus" name="opencensus-api" version="0.31.0"/>
