@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.nextcloud.android.lib.resources.clientintegration.App
 import com.nextcloud.android.lib.resources.clientintegration.Endpoint
+import kotlinx.serialization.json.Json
 
 /**
  * Contains data of the Capabilities for an account, from the Capabilities API
@@ -135,6 +136,8 @@ class OCCapability {
 
     // client integration
     var clientIntegrationJson: String? = null
+
+    var sharingJson: String? = null
 
     fun getClientIntegrationEndpoints(
         hook: Type,
