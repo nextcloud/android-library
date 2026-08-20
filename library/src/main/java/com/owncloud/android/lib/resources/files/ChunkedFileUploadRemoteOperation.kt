@@ -330,6 +330,10 @@ class ChunkedFileUploadRemoteOperation
                 return serverMaxChunkSize
             }
 
+            @JvmStatic
+            fun chunkedUploadThreshold(serverMaxChunkSize: Long): Long =
+                chunkSize(onWifiConnection = false, serverMaxChunkSize = serverMaxChunkSize)
+
             private const val ASSEMBLED_FILE_SUFFIX = "/.file"
             private const val CREATE_FOLDER_READ_TIMEOUT = 30_000
             private const val DO_NOT_CHANGE_DEFAULT = -1
