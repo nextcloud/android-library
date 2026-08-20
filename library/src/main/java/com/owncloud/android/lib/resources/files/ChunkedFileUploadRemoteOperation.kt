@@ -285,8 +285,8 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     private data class UploadedChunks(val nextByte: Long, val lastId: Int)
 
     companion object {
-        const val CHUNK_SIZE_MOBILE: Long = 10240000
-        const val CHUNK_SIZE_WIFI: Long = 40960000
+        const val MIN_CHUNK_SIZE: Long = 10240000
+        const val DEFAULT_CHUNK_SIZE: Long = 40960000
         const val SERVER_MAX_CHUNK_SIZE_UNKNOWN: Long = -1
         const val DESTINATION_HEADER: String = "Destination"
         const val CHUNK_NAME_LENGTH: Int = 6
@@ -294,7 +294,7 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
         @JvmStatic
         fun chunkSize(onWifiConnection: Boolean, serverMaxChunkSize: Long): Long {
             if (serverMaxChunkSize <= 0) {
-                return if (onWifiConnection) CHUNK_SIZE_WIFI else CHUNK_SIZE_MOBILE
+                return if (onWifiConnection) DEFAULT_CHUNK_SIZE else MIN_CHUNK_SIZE
             }
 
             return serverMaxChunkSize

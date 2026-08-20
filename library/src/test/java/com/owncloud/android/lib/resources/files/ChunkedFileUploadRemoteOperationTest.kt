@@ -92,8 +92,8 @@ class ChunkedFileUploadRemoteOperationTest {
     @Test
     fun testChunking() {
         listOf(1 * MB, 10 * MB, 100 * MB, 1 * GB).forEach { length ->
-            checkChunks(length, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE, 0)
-            checkChunks(length, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI, 0)
+            checkChunks(length, ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE, 0)
+            checkChunks(length, ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE, 0)
         }
     }
 
@@ -102,8 +102,8 @@ class ChunkedFileUploadRemoteOperationTest {
         // test chunking with offset (chunks already on server)
         // -2: last byte missing (because the file starts at 0B, file.length() at 1; 1B offset)
         listOf(1, 1 * MB, 10 * MB, 100 * MB, 256 * MB, 1 * GB - 2).forEach { offset ->
-            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE, offset)
-            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI, offset)
+            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE, offset)
+            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE, offset)
         }
     }
 
@@ -121,7 +121,7 @@ class ChunkedFileUploadRemoteOperationTest {
                     length,
                     ++id,
                     nextByte,
-                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI
+                    ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE
                 )
 
             chunks.add(chunk)
@@ -135,7 +135,7 @@ class ChunkedFileUploadRemoteOperationTest {
                     length,
                     ++id,
                     nextByte,
-                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE
+                    ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE
                 )
 
             chunks.add(chunk)
@@ -144,11 +144,11 @@ class ChunkedFileUploadRemoteOperationTest {
 
         // calculate expected number of chunks
         var expectedChunkCount =
-            ceil((length / 2) / ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI.toFloat())
+            ceil((length / 2) / ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE.toFloat())
         expectedChunkCount +=
             ceil(
-                (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI) /
-                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE.toFloat()
+                (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE) /
+                    ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE.toFloat()
             )
         assertEquals(expectedChunkCount.toInt(), chunks.size)
 
