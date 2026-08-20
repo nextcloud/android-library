@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2015 ownCloud Inc.
  * SPDX-License-Identifier: MIT
  */
@@ -54,17 +55,14 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     token,
     disableRetries
 ) {
-    @Suppress("VariableNaming", "MagicNumber")
     @JvmField
-    val ASSEMBLE_TIME_MIN: Int = 30 * 1000 // 30s
+    val assembleTimeMin: Int = 30 * 1000 // 30s
 
-    @Suppress("VariableNaming", "MagicNumber")
     @JvmField
-    val ASSEMBLE_TIME_MAX: Int = 30 * 60 * 1000 // 30min
+    val assembleTimeMax: Int = 30 * 60 * 1000 // 30min
 
-    @Suppress("VariableNaming", "MagicNumber")
     @JvmField
-    val ASSEMBLE_TIME_PER_GB: Int = 3 * 60 * 1000 // 3 min
+    val assembleTimePerGB: Int = 3 * 60 * 1000 // 3 min
 
     private lateinit var uploadFolderUri: String
     private lateinit var destinationUri: String
@@ -277,7 +275,7 @@ class ChunkedFileUploadRemoteOperation @JvmOverloads constructor(
     fun calculateAssembleTimeout(file: File): Int {
         val fileSizeInGb = file.length() / BYTES_PER_GB
 
-        return max(ASSEMBLE_TIME_MIN, min((ASSEMBLE_TIME_PER_GB * fileSizeInGb).toInt(), ASSEMBLE_TIME_MAX))
+        return max(assembleTimeMin, min((assembleTimePerGB * fileSizeInGb).toInt(), assembleTimeMax))
     }
 
     private data class UploadedChunks(val nextByte: Long, val lastId: Int)
