@@ -22,6 +22,7 @@
     <string name="operation_cancelled">İşlem çağıran tarafından iptal edildi</string>
     <string name="operation_cancelled_by_the_caller">İşlem çağıran tarafından iptal edildi</string>
     <string name="operation_finished_http_code">İşlem %1$d (%2$s) HTTP durum koduyla tamamlandı</string>
+    <string name="out_of_memory">İçeriği okumak için bellek yetersiz</string>
     <string name="socket_exception">Soket sorunu</string>
     <string name="socket_timeout_exception">Soket zaman aşımı sorunu</string>
     <string name="ssl_exception">SSL sorunu</string>
