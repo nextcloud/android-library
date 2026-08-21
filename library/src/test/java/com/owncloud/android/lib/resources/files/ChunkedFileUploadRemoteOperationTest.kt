@@ -19,7 +19,7 @@ import kotlin.math.ceil
 
 class ChunkedFileUploadRemoteOperationTest {
     @Mock
-    var file: File? = null
+    lateinit var file: File
 
     @Test
     fun testAssembleTimeout() {
@@ -35,40 +35,40 @@ class ChunkedFileUploadRemoteOperationTest {
             )
 
         // 0b
-        Mockito.`when`(file!!.length()).thenReturn(0L)
-        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(0L)
+        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
 
         // 100b
-        Mockito.`when`(file!!.length()).thenReturn(100L)
-        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(100L)
+        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
 
         // 1Mb
-        Mockito.`when`(file!!.length()).thenReturn(1 * MB)
-        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(1 * MB)
+        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
 
         // 100Mb
-        Mockito.`when`(file!!.length()).thenReturn(100 * MB)
-        assertEquals(sut.ASSEMBLE_TIME_MIN, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(100 * MB)
+        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
 
         // 1Gb
-        Mockito.`when`(file!!.length()).thenReturn(1 * GB)
-        assertEquals(sut.ASSEMBLE_TIME_PER_GB, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(1 * GB)
+        assertEquals(sut.assembleTimePerGB, sut.calculateAssembleTimeout(file))
 
         // 2Gb
-        Mockito.`when`(file!!.length()).thenReturn(2 * GB)
-        assertEquals((2 * sut.ASSEMBLE_TIME_PER_GB), sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(2 * GB)
+        assertEquals((2 * sut.assembleTimePerGB), sut.calculateAssembleTimeout(file))
 
         // 5Gb
-        Mockito.`when`(file!!.length()).thenReturn(5 * GB)
-        assertEquals((5 * sut.ASSEMBLE_TIME_PER_GB), sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(5 * GB)
+        assertEquals((5 * sut.assembleTimePerGB), sut.calculateAssembleTimeout(file))
 
         // 50Gb
-        Mockito.`when`(file!!.length()).thenReturn(50 * GB)
-        assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(50 * GB)
+        assertEquals(sut.assembleTimeMax, sut.calculateAssembleTimeout(file))
 
         // 500Gb
-        Mockito.`when`(file!!.length()).thenReturn(500 * GB)
-        assertEquals(sut.ASSEMBLE_TIME_MAX, sut.calculateAssembleTimeout(file))
+        Mockito.`when`(file.length()).thenReturn(500 * GB)
+        assertEquals(sut.assembleTimeMax, sut.calculateAssembleTimeout(file))
     }
 
     @Test
@@ -92,8 +92,8 @@ class ChunkedFileUploadRemoteOperationTest {
     @Test
     fun testChunking() {
         listOf(1 * MB, 10 * MB, 100 * MB, 1 * GB).forEach { length ->
-            checkChunks(length, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE, 0)
-            checkChunks(length, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI, 0)
+            checkChunks(length, ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE, 0)
+            checkChunks(length, ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE, 0)
         }
     }
 
@@ -102,8 +102,8 @@ class ChunkedFileUploadRemoteOperationTest {
         // test chunking with offset (chunks already on server)
         // -2: last byte missing (because the file starts at 0B, file.length() at 1; 1B offset)
         listOf(1, 1 * MB, 10 * MB, 100 * MB, 256 * MB, 1 * GB - 2).forEach { offset ->
-            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE, offset)
-            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI, offset)
+            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE, offset)
+            checkChunks(1 * GB, ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE, offset)
         }
     }
 
@@ -121,7 +121,7 @@ class ChunkedFileUploadRemoteOperationTest {
                     length,
                     ++id,
                     nextByte,
-                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI
+                    ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE
                 )
 
             chunks.add(chunk)
@@ -135,7 +135,7 @@ class ChunkedFileUploadRemoteOperationTest {
                     length,
                     ++id,
                     nextByte,
-                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE
+                    ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE
                 )
 
             chunks.add(chunk)
@@ -144,11 +144,11 @@ class ChunkedFileUploadRemoteOperationTest {
 
         // calculate expected number of chunks
         var expectedChunkCount =
-            ceil((length / 2) / ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI.toFloat())
+            ceil((length / 2) / ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE.toFloat())
         expectedChunkCount +=
             ceil(
-                (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.CHUNK_SIZE_WIFI) /
-                    ChunkedFileUploadRemoteOperation.CHUNK_SIZE_MOBILE.toFloat()
+                (length - expectedChunkCount * ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE) /
+                    ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE.toFloat()
             )
         assertEquals(expectedChunkCount.toInt(), chunks.size)
 

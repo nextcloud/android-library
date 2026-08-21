@@ -94,6 +94,8 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
     private static final String PROPERTY_INCOMING = "incoming";
 
     private static final String PROPERTY_BIGFILECHUNKING = "bigfilechunking";
+    private static final String NODE_CHUNKED_UPLOAD = "chunked_upload";
+    private static final String PROPERTY_CHUNKED_UPLOAD_MAX_SIZE = "max_size";
     private static final String PROPERTY_UNDELETE = "undelete";
     private static final String PROPERTY_VERSIONING = "versioning";
 
@@ -456,6 +458,16 @@ public class GetCapabilitiesRemoteOperation extends RemoteOperation<OCCapability
                     // Add files
                     capability.setFilesBigFileChunking(CapabilityBooleanType.fromBooleanValue(
                             respFiles.getBoolean(PROPERTY_BIGFILECHUNKING)));
+
+                    if (respFiles.has(NODE_CHUNKED_UPLOAD)) {
+                        JSONObject respChunkedUpload = respFiles.getJSONObject(NODE_CHUNKED_UPLOAD);
+
+                        if (respChunkedUpload.has(PROPERTY_CHUNKED_UPLOAD_MAX_SIZE)) {
+                            capability.setChunkedUploadMaxSize(
+                                    respChunkedUpload.getLong(PROPERTY_CHUNKED_UPLOAD_MAX_SIZE));
+                        }
+                    }
+
                     if (respFiles.has(PROPERTY_UNDELETE)) {
                         capability.setFilesUndelete(CapabilityBooleanType.fromBooleanValue(
                                 respFiles.getBoolean(PROPERTY_UNDELETE)));
