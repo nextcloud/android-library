@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Vom Anrufer abgebrochener Vorgang</string>
     <string name="operation_cancelled_by_the_caller">Vom Anrufer abgebrochener Vorgang</string>
     <string name="operation_finished_http_code">Vorgang beendet mit HTTP-Statuscode %1$d (%2$s)</string>
+    <string name="out_of_memory">Nicht genug Speicher, um den Inhalt zu lesen</string>
     <string name="socket_exception">Socket-Ausnahme</string>
     <string name="socket_timeout_exception">Socket-Timeout-Ausnahme</string>
     <string name="ssl_exception">SSL-Ausnahme</string>

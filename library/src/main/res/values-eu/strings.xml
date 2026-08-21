@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Eragiketa bertan behera utzi du deitzaileak</string>
     <string name="operation_cancelled_by_the_caller">Eragiketa bertan behera utzi du deitzaileak</string>
     <string name="operation_finished_http_code">Eragiketa amaitu da HTTP egoera kodea %1$d (%2$s) dela</string>
+    <string name="out_of_memory">Ez dago memoria nahikorik edukia irakurtzeko</string>
     <string name="socket_exception">Socket salbuespena</string>
     <string name="socket_timeout_exception">Socket-aren denbora-muga salbuespena</string>
     <string name="ssl_exception">SSL salbuespena</string>

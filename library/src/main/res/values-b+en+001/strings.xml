@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Operation cancelled by the caller</string>
     <string name="operation_cancelled_by_the_caller">Operation cancelled by the caller</string>
     <string name="operation_finished_http_code">Operation finished with HTTP status code %1$d (%2$s)</string>
+    <string name="out_of_memory">Not enough memory to read the content</string>
     <string name="socket_exception">Socket exception</string>
     <string name="socket_timeout_exception">Socket timeout exception</string>
     <string name="ssl_exception">SSL exception</string>
