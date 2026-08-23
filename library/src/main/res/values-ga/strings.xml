@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Oibríocht curtha ar ceal ag an nglaoiteoir</string>
     <string name="operation_cancelled_by_the_caller">Oibríocht curtha ar ceal ag an nglaoiteoir</string>
     <string name="operation_finished_http_code">Críochnaíodh an oibríocht le cód stádais HTTP %1$d (%2$s)</string>
+    <string name="out_of_memory">Gan dóthain cuimhne chun an t-ábhar a léamh</string>
     <string name="socket_exception">Eisceacht soicéad</string>
     <string name="socket_timeout_exception">Eisceacht teorainn ama soicéad</string>
     <string name="ssl_exception">Eisceacht SSL</string>
