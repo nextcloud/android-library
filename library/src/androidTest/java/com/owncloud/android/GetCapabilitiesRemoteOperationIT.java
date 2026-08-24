@@ -11,6 +11,7 @@ package com.owncloud.android;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -160,6 +161,12 @@ public class GetCapabilitiesRemoteOperationIT extends AbstractIT {
         // wcf
         if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_32)) {
             assertTrue(capability.isWCFEnabled().isFalse());
+        }
+
+        // chunked file size support
+        if (capability.getVersion().isNewerOrEqual(NextcloudVersion.nextcloud_31)) {
+            assertNotEquals(OCCapability.CHUNKED_UPLOAD_MAX_SIZE_UNKNOWN, capability.getChunkedUploadMaxSize());
+            assertTrue(capability.getChunkedUploadMaxSize() > 5 * 1024 * 1024);
         }
     }
     
