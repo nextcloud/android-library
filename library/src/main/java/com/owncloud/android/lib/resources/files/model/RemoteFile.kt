@@ -22,9 +22,7 @@ import java.io.Serializable
  *
  * @author masensio
  */
-class RemoteFile :
-    Parcelable,
-    Serializable {
+class RemoteFile() : Parcelable, Serializable {
     var remotePath: String? = null
     var mimeType: String? = null
     var length: Long = 0
@@ -44,6 +42,7 @@ class RemoteFile :
     var unreadCommentsCount = 0
     var isHasPreview = false
     var note: String? = null
+    var name: String? = null
     var sharees: Array<ShareeUser>? = null
     var richWorkspace: String? = null
     var isLocked = false
@@ -54,16 +53,14 @@ class RemoteFile :
     var lockOwnerEditor: String? = null
     var lockTimeout: Long = 0
     var lockToken: String? = null
-    var tags: Array<Tag?>? = null
+    var tags: Array<Tag?> = emptyArray()
     var imageDimension: ImageDimension? = null
     var geoLocation: GeoLocation? = null
     var hidden = false
     var livePhoto: String? = null
     var fileDownloadLimit: List<FileDownloadLimit> = emptyList()
 
-    constructor() {
-        resetData()
-    }
+   
 
     /**
      * Create new [RemoteFile] with given path.
@@ -73,8 +70,7 @@ class RemoteFile :
      *
      * @param path The remote path of the file.
      */
-    constructor(path: String?) {
-        resetData()
+    constructor(path: String?) : this() {
         require(!(path.isNullOrEmpty() || !path.startsWith(FileUtils.PATH_SEPARATOR))) {
             "Trying to create a OCFile with a non valid remote path: $path"
         }
@@ -145,7 +141,7 @@ class RemoteFile :
         lockTimestamp = 0
         lockTimeout = 0
         lockToken = null
-        tags = null
+        tags = emptyArray()
         hidden = false
         livePhoto = null
         fileDownloadLimit = emptyList()
@@ -156,7 +152,7 @@ class RemoteFile :
      *
      * @param source The source parcel
      */
-    private constructor(source: Parcel) {
+    private constructor(source: Parcel) : this() {
         readFromParcel(source)
     }
 

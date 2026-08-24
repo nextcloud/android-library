@@ -55,7 +55,7 @@ class NextcloudClientTest {
         val exception = RuntimeException("test exception")
         val operation =
             object : RemoteOperation<String>() {
-                override fun run(client: NextcloudClient?): RemoteOperationResult<String> = throw exception
+                override suspend fun run(client: NextcloudClient?): RemoteOperationResult<String> = throw exception
             }
 
         // WHEN

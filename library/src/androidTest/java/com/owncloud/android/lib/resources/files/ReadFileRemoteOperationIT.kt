@@ -12,7 +12,6 @@ import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertEquals
@@ -23,14 +22,17 @@ import org.junit.Test
 class ReadFileRemoteOperationIT : AbstractIT() {
     @Test
     fun readRemoteFolder() {
-        val remotePath = "/test/"
+        val remotePath = "/folder/"
 
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
-
+        var result = ReadFileRemoteOperation(remotePath).execute(client)
         assertTrue(result.isSuccess)
-        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+        assertEquals(remotePath, result.resultData.remotePath)
+        
+        result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        assertTrue(result.isSuccess)
+        assertEquals(remotePath, result.resultData.remotePath)
     }
 
     @Test
@@ -70,11 +72,11 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
         assertTrue(movieFileResult.isSuccess)
-        val movieRemoteFile = movieFileResult.data[0] as RemoteFile
+        val movieRemoteFile = movieFileResult.resultData
 
         val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(client)
         assertTrue(livePhotoResult.isSuccess)
-        val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
+        val livePhotoRemoteFile = livePhotoResult.resultData
 
         assertEquals(livePhotoRemoteFile.livePhoto, movieRemoteFile.remotePath)
         assertTrue(movieRemoteFile.hidden)
@@ -91,10 +93,13 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
-
+        var result = ReadFileRemoteOperation(remotePath).execute(client)
         assertTrue(result.isSuccess)
-        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+        assertEquals(remotePath, result.resultData.remotePath)
+
+        result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        assertTrue(result.isSuccess)
+        assertEquals(remotePath, result.resultData.remotePath)
     }
 
     @Test
@@ -111,7 +116,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         val result = ReadFileRemoteOperation(remotePath).execute(client)
 
         assertTrue(result.isSuccess)
-        val remoteFile = result.data[0] as RemoteFile
+        val remoteFile = result.resultData
 
         @Suppress("Detekt.MagicNumber")
         if (isServerAtLeast(NextcloudVersion.nextcloud_23)) {
@@ -142,7 +147,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
 
         var result = ReadFileRemoteOperation(remotePath).execute(client)
-        val remoteFile = result.data[0] as RemoteFile
+        val remoteFile = result.resultData
 
         assertTrue(result.isSuccess)
         assertFalse(remoteFile.isEncrypted)
@@ -160,6 +165,6 @@ class ReadFileRemoteOperationIT : AbstractIT() {
 
         // re-read
         result = ReadFileRemoteOperation(remotePath).execute(client)
-        assertEquals(true, (result.data[0] as RemoteFile).isEncrypted)
+        assertEquals(true, result.resultData.isEncrypted)
     }
 }

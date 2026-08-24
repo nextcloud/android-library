@@ -191,6 +191,14 @@ class NextcloudClient private constructor(
         return result
     }
 
+    fun disabledRedirectClient(): OkHttpClient {
+        return client
+            .newBuilder()
+            .followRedirects(false)
+            .authenticator(NextcloudAuthenticator(credentials))
+            .build()
+    }
+
     private fun setRedirectedDestinationHeader(
         method: OkHttpMethodBase,
         location: String,
