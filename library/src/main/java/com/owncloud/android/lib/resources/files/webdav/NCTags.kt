@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -11,13 +11,16 @@ import androidx.annotation.VisibleForTesting
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.propertyName
+import at.bitfire.dav4jvm.XmlUtils.readText
 import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.resources.tags.Tag
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCTags private constructor(val tags: Array<Tag?>) : Property {
+class NCTags private constructor(
+    val tags: Array<Tag?>
+) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
@@ -77,19 +80,19 @@ class NCTags private constructor(val tags: Array<Tag?>) : Property {
                 if (eventType != XmlPullParser.TEXT) {
                     when (parser.propertyName().toString()) {
                         "http://nextcloud.org/ns:id" -> {
-                            id = parser.text
+                            id = readText(parser).orEmpty()
                         }
 
                         "http://nextcloud.org/ns:name" -> {
-                            name = parser.text
+                            name = readText(parser).orEmpty()
                         }
 
                         "http://nextcloud.org/ns:color" -> {
-                            color = parser.text
+                            color = readText(parser).orEmpty()
                         }
                     }
                 }
-                
+
                 eventType = parser.next()
             }
 

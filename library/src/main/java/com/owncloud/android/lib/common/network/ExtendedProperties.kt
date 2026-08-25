@@ -1,15 +1,17 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2024 ZetaTom <70907959+ZetaTom@users.noreply.github.com>
+ * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
  * SPDX-License-Identifier: MIT
  */
 package com.owncloud.android.lib.common.network
 
 import at.bitfire.dav4jvm.Property
 
-enum class ExtendedProperties(val value: String, val namespace: String) {
+enum class ExtendedProperties(
+    val value: String,
+    val namespace: String
+) {
     CREATION_TIME("creation_time", WebdavUtils.NAMESPACE_NC),
     COMMENTS_READ_MARKER("readMarker", WebdavUtils.NAMESPACE_NC),
     DISPLAY_NAME("display-name", WebdavUtils.NAMESPACE_OC),
@@ -54,7 +56,5 @@ enum class ExtendedProperties(val value: String, val namespace: String) {
     UNREAD_COMMENTS("comments-unread", WebdavUtils.NAMESPACE_OC),
     UPLOAD_TIME("upload_time", WebdavUtils.NAMESPACE_NC);
 
-    fun toPropertyName(): Property.Name {
-        return Property.Name(namespace, value)
-    }
+    fun toPropertyName(): Property.Name = Property.Name(namespace, value)
 }

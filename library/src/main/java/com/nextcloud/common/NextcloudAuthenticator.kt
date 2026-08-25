@@ -12,7 +12,9 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 
-class NextcloudAuthenticator(private val credentials: String) : Authenticator {
+class NextcloudAuthenticator(
+    private val credentials: String
+) : Authenticator {
     @Suppress("ReturnCount")
     override fun authenticate(
         route: Route?,
@@ -39,7 +41,8 @@ class NextcloudAuthenticator(private val credentials: String) : Authenticator {
             countedResponse = countedResponse.priorResponse
         }
 
-        return response.request.newBuilder()
+        return response.request
+            .newBuilder()
             .header(authenticatorType, credentials)
             .build()
     }

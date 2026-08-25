@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -11,19 +11,20 @@ import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.propertyName
+import at.bitfire.dav4jvm.XmlUtils.readText
 import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCMetadataPhotosGPS private constructor(val geoLocation: GeoLocation) : Property {
+class NCMetadataPhotosGPS private constructor(
+    val geoLocation: GeoLocation
+) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
-        override fun create(parser: XmlPullParser): Property {
-            return NCMetadataPhotosGPS(parseText(parser))
-        }
+        override fun create(parser: XmlPullParser): Property = NCMetadataPhotosGPS(parseText(parser))
 
         @Suppress("NestedBlockDepth")
         private fun parseText(parser: XmlPullParser): GeoLocation {
@@ -37,8 +38,8 @@ class NCMetadataPhotosGPS private constructor(val geoLocation: GeoLocation) : Pr
                 while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                     if (eventType != XmlPullParser.TEXT) {
                         when (parser.propertyName().name) {
-                            "latitude" -> parser.text?.let { latitude = it.toDouble() }
-                            "longitude" -> parser.text?.let { longitude = it.toDouble() }
+                            "latitude" -> readText(parser)?.let { latitude = it.toDouble() }
+                            "longitude" -> readText(parser)?.let { longitude = it.toDouble() }
                         }
                     }
 

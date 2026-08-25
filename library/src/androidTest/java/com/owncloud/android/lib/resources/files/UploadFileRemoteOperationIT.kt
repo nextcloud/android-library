@@ -52,10 +52,10 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         assertTrue(uploadResult.isSuccess)
 
         // ReadFileRemoteOperation
-        var result = ReadFileRemoteOperation(remotePath).execute(client)
+        val result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
         assertTrue(result.isSuccess)
 
-        var remoteFile = result.data[0] as RemoteFile
+        var remoteFile = result.resultData
 
         assertEquals(remotePath, remoteFile.remotePath)
         assertEquals(creationTimestamp, remoteFile.creationTimestamp)

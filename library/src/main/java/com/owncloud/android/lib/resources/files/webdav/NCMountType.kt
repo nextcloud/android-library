@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -9,17 +9,20 @@ package com.owncloud.android.lib.resources.files.webdav
 
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
+import at.bitfire.dav4jvm.XmlUtils
 import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.common.network.WebdavEntry
 import org.xmlpull.v1.XmlPullParser
 
-class NCMountType private constructor(val mountType: WebdavEntry.MountType) : Property {
+class NCMountType private constructor(
+    val mountType: WebdavEntry.MountType
+) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
         override fun create(parser: XmlPullParser): NCMountType {
             // <!ELEMENT <nc:mount-type> (#PCDATA) >
-            val type = parser.text
+            val type = XmlUtils.readText(parser)
             return NCMountType(
                 when (type) {
                     "external" -> WebdavEntry.MountType.EXTERNAL

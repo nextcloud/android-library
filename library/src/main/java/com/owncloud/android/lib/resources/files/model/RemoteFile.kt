@@ -22,7 +22,9 @@ import java.io.Serializable
  *
  * @author masensio
  */
-class RemoteFile() : Parcelable, Serializable {
+class RemoteFile() :
+    Parcelable,
+    Serializable {
     var remotePath: String? = null
     var mimeType: String? = null
     var length: Long = 0
@@ -41,7 +43,7 @@ class RemoteFile() : Parcelable, Serializable {
     var ownerDisplayName: String? = null
     var unreadCommentsCount = 0
     var isHasPreview = false
-    var note: String? = null
+    var note: String? = ""
     var name: String? = null
     var sharees: Array<ShareeUser>? = null
     var richWorkspace: String? = null
@@ -59,8 +61,6 @@ class RemoteFile() : Parcelable, Serializable {
     var hidden = false
     var livePhoto: String? = null
     var fileDownloadLimit: List<FileDownloadLimit> = emptyList()
-
-   
 
     /**
      * Create new [RemoteFile] with given path.

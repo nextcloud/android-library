@@ -1,24 +1,26 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2024 ZetaTom <70907959+ZetaTom@users.noreply.github.com>
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
-package com.owncloud.android.lib.common.network
+package com.nextcloud.common
 
 import android.net.Uri
-import at.bitfire.dav4jvm.PropertyRegistry.register
+import at.bitfire.dav4jvm.PropertyRegistry
+import at.bitfire.dav4jvm.Response
 import at.bitfire.dav4jvm.property.CreationDate
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.GetContentLength
 import at.bitfire.dav4jvm.property.GetContentType
+import at.bitfire.dav4jvm.property.GetETag
 import at.bitfire.dav4jvm.property.ResourceType
 import com.google.gson.Gson
+import com.owncloud.android.lib.common.network.WebdavEntry
+import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.files.webdav.NCCreationTime
 import com.owncloud.android.lib.resources.files.webdav.NCEncrypted
-import com.owncloud.android.lib.resources.files.webdav.NCEtag
 import com.owncloud.android.lib.resources.files.webdav.NCFavorite
 import com.owncloud.android.lib.resources.files.webdav.NCGetLastModified
 import com.owncloud.android.lib.resources.files.webdav.NCHidden
@@ -53,13 +55,11 @@ import com.owncloud.android.lib.resources.files.webdav.OCLocalId
 import com.owncloud.android.lib.resources.files.webdav.OCOwnerDisplayName
 import com.owncloud.android.lib.resources.files.webdav.OCOwnerId
 import com.owncloud.android.lib.resources.files.webdav.OCSize
-import org.apache.commons.httpclient.HttpMethod
-import java.text.ParseException
+import java.net.URLDecoder
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
-object WebdavUtils2 {
+object WebDavUtils {
     const val NAMESPACE_OC = "http://owncloud.org/ns"
     const val NAMESPACE_NC = "http://nextcloud.org/ns"
 
@@ -86,7 +86,7 @@ object WebdavUtils2 {
                 GetContentLength.NAME,
                 NCGetLastModified.NAME,
                 CreationDate.NAME,
-                NCEtag.NAME,
+                GetETag.NAME,
                 NCPermissions.NAME,
                 OCLocalId.NAME,
                 OCId.NAME,
@@ -129,7 +129,7 @@ object WebdavUtils2 {
                 GetContentLength.NAME,
                 NCGetLastModified.NAME,
                 CreationDate.NAME,
-                NCEtag.NAME,
+                GetETag.NAME,
                 NCPermissions.NAME,
                 OCLocalId.NAME,
                 OCId.NAME,
@@ -188,64 +188,12 @@ object WebdavUtils2 {
             )
     }
 
-    fun parseResponseDate(date: String?): Date? {
-        for (format in DATETIME_FORMATS) {
-            try {
-                date?.let { return format.parse(it) }
-            } catch (e: ParseException) {
-                // wrong format
-            }
-        }
-        return null
-    }
-
-    /**
-     * Encodes a path according to URI RFC 2396.
-     *
-     *
-     * If the received path doesn't start with "/", the method adds it.
-     *
-     * @param remoteFilePath Path
-     * @return Encoded path according to RFC 2396, always starting with "/"
-     */
-    fun encodePath(remoteFilePath: String?): String {
-        val encodedPath = Uri.encode(remoteFilePath, "/")
-        if (!encodedPath.startsWith("/")) {
-            return "/$encodedPath"
-        }
-        return encodedPath
-    }
-
-    fun parseEtag(etag: String?): String {
-        if (etag.isNullOrEmpty()) {
-            return ""
-        }
-        return etag.removeSuffix("-gzip").removeSurrounding("\"")
-    }
-
-    fun getEtagFromResponse(method: HttpMethod): String {
-        var eTag = method.getResponseHeader("OC-ETag")
-        if (eTag == null) {
-            eTag = method.getResponseHeader("oc-etag")
-        }
-        if (eTag == null) {
-            eTag = method.getResponseHeader("ETag")
-        }
-        if (eTag == null) {
-            eTag = method.getResponseHeader("etag")
-        }
-        if (eTag != null) {
-            return parseEtag(eTag.value)
-        }
-        return ""
-    }
-
     fun registerCustomFactories() {
         val list =
             listOf(
-                NCCreationTime.Factory(),
+                // NCCreationTime.Factory(),
                 NCEncrypted.Factory(),
-                NCEtag.Factory(),
+                GetETag.Factory(),
                 NCFavorite.Factory(),
                 NCGetLastModified.Factory(),
                 NCHidden.Factory(),
@@ -281,6 +229,189 @@ object WebdavUtils2 {
                 OCOwnerId.Factory(),
                 OCSize.Factory()
             )
-        register(list)
+        PropertyRegistry.register(list)
+    }
+
+    @Suppress("LongMethod")
+    fun parseResponse(
+        response: Response,
+        filesDavUri: Uri
+    ): RemoteFile {
+        val remoteFile = RemoteFile()
+
+        val path = "/" + URLDecoder.decode(response.href.toString().substringAfter(filesDavUri.toString()), "UTF-8")
+
+        for (property in response.properties) {
+            when (property) {
+                is DisplayName -> {
+                    remoteFile.name = property.displayName ?: ""
+                }
+
+                is GetContentLength -> {
+                    remoteFile.length = property.contentLength
+                }
+
+                is GetContentType -> {
+                    remoteFile.mimeType = (property.type ?: "").toString()
+                }
+
+                is ResourceType -> {
+                    if (property.types.contains(ResourceType.COLLECTION)) {
+                        remoteFile.mimeType = WebdavEntry.DIR_TYPE
+                    }
+                }
+
+                is NCCreationTime -> {
+                    remoteFile.creationTimestamp = property.creationTime
+                }
+
+                is NCEncrypted -> {
+                    remoteFile.isEncrypted = property.encrypted
+                }
+
+                is GetETag -> {
+                    remoteFile.etag = property.eTag
+                }
+
+                is NCFavorite -> {
+                    remoteFile.isFavorite = property.favorite
+                }
+
+                is NCGetLastModified -> {
+                    remoteFile.modifiedTimestamp = property.lastModified
+                }
+
+                is NCHidden -> {
+                    remoteFile.hidden = property.hidden
+                }
+
+                is NCLock -> {
+                    remoteFile.isLocked = property.locked
+                }
+
+                is NCLockOwner -> {
+                    remoteFile.lockOwner = property.lockOwner
+                }
+
+                is NCLockOwnerDisplayName -> {
+                    remoteFile.lockOwnerDisplayName = property.lockOwnerDisplayName
+                }
+
+                is NCLockOwnerEditor -> {
+                    remoteFile.lockOwnerEditor = property.lockOwnerEditor
+                }
+
+                is NCLockOwnerType -> {
+                    remoteFile.lockType = property.lockOwnerType
+                }
+
+                is NCLockTime -> {
+                    remoteFile.lockTimestamp = property.lockTime
+                }
+
+                is NCLockTimeout -> {
+                    remoteFile.lockTimeout = property.lockTimeout
+                }
+
+                is NCLockToken -> {
+                    remoteFile.lockToken = property.lockToken
+                }
+
+                is NCMetadataGPS -> {
+                    remoteFile.geoLocation = property.geoLocation
+                }
+
+                is NCMetadataLivePhoto -> {
+                    remoteFile.livePhoto = property.livePhoto
+                }
+
+                is NCMetadataPhotosGPS -> {
+                    remoteFile.geoLocation = property.geoLocation
+                }
+
+                is NCMetadataPhotosSize -> {
+                    remoteFile.imageDimension = property.imageDimension
+                }
+
+                is NCMetadataSize -> {
+                    remoteFile.imageDimension = property.imageDimension
+                }
+
+                is NCMountType -> {
+                    remoteFile.mountType = property.mountType
+                }
+
+                is NCNote -> {
+                    remoteFile.note = property.note
+                }
+
+                is NCPermissions -> {
+                    remoteFile.permissions = property.permissions
+                }
+
+                is NCPreview -> {
+                    remoteFile.isHasPreview = property.preview
+                }
+
+                is NCRichWorkspace -> {
+                    remoteFile.richWorkspace = property.richWorkspace
+                }
+
+                is NCSharees -> {
+                    remoteFile.sharees = property.sharees
+                }
+
+                is NCTags -> {
+                    remoteFile.tags = property.tags
+                }
+
+                is NCTrashbinDeletionTime -> { /* TODO */ }
+
+                is NCTrashbinFilename -> { /* TODO */ }
+
+                is NCTrashbinLocation -> { /* TODO */ }
+
+                is NCUploadTime -> {
+                    remoteFile.uploadTimestamp = property.uploadTime
+                }
+
+                is OCCommentsUnread -> {
+                    remoteFile.unreadCommentsCount = property.commentsCount
+                }
+
+                is OCDisplayName -> {
+                    remoteFile.name = property.displayName
+                }
+
+                is OCId -> {
+                    remoteFile.remoteId = property.id
+                }
+
+                is OCLocalId -> {
+                    remoteFile.localId = property.localId
+                }
+
+                is OCOwnerDisplayName -> {
+                    remoteFile.ownerDisplayName = property.ownerDisplayName ?: ""
+                }
+
+                is OCOwnerId -> {
+                    remoteFile.ownerId = property.ownerId ?: ""
+                }
+
+                is OCSize -> {
+                    remoteFile.size = property.size
+                }
+            }
+        }
+
+        remoteFile.remotePath = path
+
+        // displayName not set - get from path
+        if (remoteFile.name?.isEmpty() == true) {
+            remoteFile.name = path.substringAfterLast("/")
+        }
+
+        return remoteFile
     }
 }

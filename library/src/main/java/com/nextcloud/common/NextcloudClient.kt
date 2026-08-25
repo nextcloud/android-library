@@ -82,6 +82,8 @@ class NextcloudClient private constructor(
                 Log_OC.d(this, "Proxy settings: $proxyHost:$proxyPort")
             }
 
+            val userAgent = OwnCloudClientManagerFactory.getUserAgent()
+
             return OkHttpClient
                 .Builder()
                 .cookieJar(CookieJar.NO_COOKIES)
@@ -94,7 +96,15 @@ class NextcloudClient private constructor(
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .fastFallback(true)
                 .proxy(proxy)
-                .build()
+                .addNetworkInterceptor { chain ->
+                    chain.proceed(
+                        chain
+                            .request()
+                            .newBuilder()
+                            .header("User-Agent", userAgent)
+                            .build()
+                    )
+                }.build()
         }
     }
 
@@ -191,13 +201,12 @@ class NextcloudClient private constructor(
         return result
     }
 
-    fun disabledRedirectClient(): OkHttpClient {
-        return client
+    fun disabledRedirectClient(): OkHttpClient =
+        client
             .newBuilder()
             .followRedirects(false)
             .authenticator(NextcloudAuthenticator(credentials))
             .build()
-    }
 
     private fun setRedirectedDestinationHeader(
         method: OkHttpMethodBase,

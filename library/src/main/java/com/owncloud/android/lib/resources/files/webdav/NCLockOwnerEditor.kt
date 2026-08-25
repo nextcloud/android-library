@@ -11,18 +11,21 @@ package com.owncloud.android.lib.resources.files.webdav
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
+import at.bitfire.dav4jvm.XmlUtils.readText
 import com.owncloud.android.lib.common.network.ExtendedProperties
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCLockOwnerEditor private constructor(val lockOwnerEditor: String?) : Property {
+class NCLockOwnerEditor private constructor(
+    val lockOwnerEditor: String?
+) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
         override fun create(parser: XmlPullParser): Property {
             try {
-                val text = parser.text
+                val text = readText(parser)
                 if (!text.isNullOrEmpty()) {
                     return NCLockOwnerEditor(text)
                 }

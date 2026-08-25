@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -11,6 +11,7 @@ import androidx.annotation.VisibleForTesting
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.propertyName
+import at.bitfire.dav4jvm.XmlUtils.readText
 import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.resources.shares.ShareType
 import com.owncloud.android.lib.resources.shares.ShareeUser
@@ -18,7 +19,9 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
+class NCSharees private constructor(
+    val sharees: Array<ShareeUser>
+) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
@@ -79,15 +82,15 @@ class NCSharees private constructor(val sharees: Array<ShareeUser>) : Property {
                 if (eventType != XmlPullParser.TEXT) {
                     when (parser.propertyName()) {
                         ExtendedProperties.SHAREES_ID.toPropertyName() -> {
-                            userId = parser.text
+                            userId = readText(parser)
                         }
 
                         ExtendedProperties.SHAREES_DISPLAY_NAME.toPropertyName() -> {
-                            displayName = parser.text
+                            displayName = readText(parser)
                         }
 
                         ExtendedProperties.SHAREES_SHARE_TYPE.toPropertyName() -> {
-                            shareType = ShareType.fromValue(parser.text?.toInt() ?: 0)
+                            shareType = ShareType.fromValue(readText(parser)?.toInt() ?: 0)
                         }
                     }
                 }

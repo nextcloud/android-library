@@ -1,7 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: MIT
  */
 
@@ -11,19 +11,20 @@ import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.propertyName
+import at.bitfire.dav4jvm.XmlUtils.readText
 import com.owncloud.android.lib.common.network.ExtendedProperties
 import com.owncloud.android.lib.resources.files.model.ImageDimension
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class NCMetadataPhotosSize private constructor(val imageDimension: ImageDimension) : Property {
+class NCMetadataPhotosSize private constructor(
+    val imageDimension: ImageDimension
+) : Property {
     class Factory : PropertyFactory {
         override fun getName() = NAME
 
-        override fun create(parser: XmlPullParser): Property {
-            return NCMetadataPhotosSize(parseText(parser))
-        }
+        override fun create(parser: XmlPullParser): Property = NCMetadataPhotosSize(parseText(parser))
 
         @Suppress("NestedBlockDepth")
         private fun parseText(parser: XmlPullParser): ImageDimension {
@@ -37,8 +38,8 @@ class NCMetadataPhotosSize private constructor(val imageDimension: ImageDimensio
                 while (eventType != XmlPullParser.END_TAG || parser.depth != depth) {
                     if (eventType != XmlPullParser.TEXT) {
                         when (parser.propertyName().name) {
-                            "width" -> parser.text?.let { width = it.toFloat() }
-                            "height" -> parser.text?.let { height = it.toFloat() }
+                            "width" -> readText(parser)?.let { width = it.toFloat() }
+                            "height" -> readText(parser)?.let { height = it.toFloat() }
                         }
                     }
 

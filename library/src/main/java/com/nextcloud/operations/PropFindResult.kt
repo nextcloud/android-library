@@ -15,7 +15,5 @@ data class PropFindResult(
     var root: RemoteFile = RemoteFile(),
     val children: MutableList<RemoteFile> = mutableListOf()
 ) {
-    fun getContent(): List<RemoteFile> {
-        return listOf(root) + children
-    }
+    fun getContent(): List<RemoteFile> = listOf(root) + children
 }
