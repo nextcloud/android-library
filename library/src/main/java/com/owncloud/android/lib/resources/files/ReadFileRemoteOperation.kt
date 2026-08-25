@@ -91,7 +91,7 @@ class ReadFileRemoteOperation
             return result
         }
 
-        @Suppress("SpreadOperator")
+        @Suppress("SpreadOperator", "Detekt.TooGenericExceptionCaught")
         override fun run(client: NextcloudClient): RemoteOperationResult<RemoteFile> {
             WebDavUtils.registerCustomFactories()
 
@@ -100,18 +100,22 @@ class ReadFileRemoteOperation
 
             val davCollection = DavCollection(client.disabledRedirectClient(), location)
 
-            davCollection.propfind(depth = 1, *WebDavUtils.PROPERTYSETS.ALL) { response, _ ->
-                if (response.isSuccess()) {
-                    result = WebDavUtils.parseResponse(response, client.getFilesDavUri("/").toUri())
+            try {
+                davCollection.propfind(depth = 1, *WebDavUtils.PROPERTYSETS.ALL) { response, _ ->
+                    if (response.isSuccess()) {
+                        result = WebDavUtils.parseResponse(response, client.getFilesDavUri("/").toUri())
+                    }
                 }
-            }
 
-            return if (result == null) {
-                RemoteOperationResult<RemoteFile>(RemoteOperationResult.ResultCode.UNKNOWN_ERROR)
-            } else {
-                RemoteOperationResult<RemoteFile>(RemoteOperationResult.ResultCode.OK).apply {
-                    resultData = result
+                return if (result == null) {
+                    RemoteOperationResult<RemoteFile>(RemoteOperationResult.ResultCode.UNKNOWN_ERROR)
+                } else {
+                    RemoteOperationResult<RemoteFile>(RemoteOperationResult.ResultCode.OK).apply {
+                        resultData = result
+                    }
                 }
+            } catch (e: Exception) {
+                return RemoteOperationResult<RemoteFile>(e)
             }
         }
 

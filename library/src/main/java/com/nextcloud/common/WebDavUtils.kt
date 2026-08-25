@@ -10,7 +10,6 @@ package com.nextcloud.common
 import android.net.Uri
 import at.bitfire.dav4jvm.PropertyRegistry
 import at.bitfire.dav4jvm.Response
-import at.bitfire.dav4jvm.property.CreationDate
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.GetContentLength
 import at.bitfire.dav4jvm.property.GetContentType
@@ -19,7 +18,7 @@ import at.bitfire.dav4jvm.property.ResourceType
 import com.google.gson.Gson
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.resources.files.model.RemoteFile
-import com.owncloud.android.lib.resources.files.webdav.NCCreationTime
+import com.owncloud.android.lib.resources.files.webdav.NCCreationDate
 import com.owncloud.android.lib.resources.files.webdav.NCEncrypted
 import com.owncloud.android.lib.resources.files.webdav.NCFavorite
 import com.owncloud.android.lib.resources.files.webdav.NCGetLastModified
@@ -85,7 +84,7 @@ object WebDavUtils {
                 ResourceType.NAME,
                 GetContentLength.NAME,
                 NCGetLastModified.NAME,
-                CreationDate.NAME,
+                NCCreationDate.NAME,
                 GetETag.NAME,
                 NCPermissions.NAME,
                 OCLocalId.NAME,
@@ -101,7 +100,7 @@ object WebDavUtils {
                 NCNote.NAME,
                 NCSharees.NAME,
                 NCRichWorkspace.NAME,
-                NCCreationTime.NAME,
+                NCCreationDate.NAME,
                 NCUploadTime.NAME,
                 NCLock.NAME,
                 NCLockOwnerType.NAME,
@@ -128,7 +127,7 @@ object WebDavUtils {
                 ResourceType.NAME,
                 GetContentLength.NAME,
                 NCGetLastModified.NAME,
-                CreationDate.NAME,
+                NCCreationDate.NAME,
                 GetETag.NAME,
                 NCPermissions.NAME,
                 OCLocalId.NAME,
@@ -137,7 +136,6 @@ object WebDavUtils {
                 NCFavorite.NAME,
                 NCPreview.NAME,
                 NCSharees.NAME,
-                NCCreationTime.NAME,
                 NCUploadTime.NAME,
                 NCLock.NAME,
                 NCLockOwnerType.NAME,
@@ -175,7 +173,7 @@ object WebDavUtils {
                 ResourceType.NAME,
                 GetContentLength.NAME,
                 NCGetLastModified.NAME,
-                CreationDate.NAME,
+                NCCreationDate.NAME,
                 OCId.NAME,
                 OCSize.NAME
             )
@@ -191,7 +189,7 @@ object WebDavUtils {
     fun registerCustomFactories() {
         val list =
             listOf(
-                // NCCreationTime.Factory(),
+                NCCreationDate.Factory(),
                 NCEncrypted.Factory(),
                 GetETag.Factory(),
                 NCFavorite.Factory(),
@@ -261,8 +259,8 @@ object WebDavUtils {
                     }
                 }
 
-                is NCCreationTime -> {
-                    remoteFile.creationTimestamp = property.creationTime
+                is NCCreationDate -> {
+                    remoteFile.creationTimestamp = property.creationDate
                 }
 
                 is NCEncrypted -> {

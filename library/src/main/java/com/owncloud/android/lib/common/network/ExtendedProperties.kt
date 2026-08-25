@@ -12,7 +12,6 @@ enum class ExtendedProperties(
     val value: String,
     val namespace: String
 ) {
-    CREATION_TIME("creation_time", WebdavUtils.NAMESPACE_NC),
     COMMENTS_READ_MARKER("readMarker", WebdavUtils.NAMESPACE_NC),
     DISPLAY_NAME("display-name", WebdavUtils.NAMESPACE_OC),
     FAVORITE("favorite", WebdavUtils.NAMESPACE_OC),
