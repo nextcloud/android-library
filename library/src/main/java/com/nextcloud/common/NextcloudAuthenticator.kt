@@ -1,8 +1,7 @@
 /*
  * Nextcloud Android Library
  *
- * SPDX-FileCopyrightText: 2022-2024 Nextcloud GmbH and Nextcloud contributors
- * SPDX-FileCopyrightText: 2022 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2026 Your Name <your@email.com>
  * SPDX-License-Identifier: MIT
  */
 package com.nextcloud.common
