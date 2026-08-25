@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Skambintojas atšaukė operaciją</string>
     <string name="operation_cancelled_by_the_caller">Skambintojas atšaukė operaciją</string>
     <string name="operation_finished_http_code">Operacija baigta su HTTP būsenos kodu %1$d(%2$s)</string>
+    <string name="out_of_memory">Nepakanka atminties turiniui nuskaityti</string>
     <string name="socket_exception">Tinklo ryšio klaida</string>
     <string name="socket_timeout_exception">Baigėsi užklausos laikas</string>
     <string name="ssl_exception">SSL išimtis</string>

@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Дію скасовано зі сторони абонента, що викликає</string>
     <string name="operation_cancelled_by_the_caller">Дію скасовано зі сторони абонента, що викликає</string>
     <string name="operation_finished_http_code">Операцію виконано із кодом статусу HTTP %1$d (%2$s)</string>
+    <string name="out_of_memory">Недостатньо пам\'яті для отримання вмісту</string>
     <string name="socket_exception">Виняток із сокетом</string>
     <string name="socket_timeout_exception">Вичерпано час сокету</string>
     <string name="ssl_exception">Виняток SSL</string>
