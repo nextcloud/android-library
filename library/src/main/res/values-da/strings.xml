@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Handling annulleret af den, der ringer op</string>
     <string name="operation_cancelled_by_the_caller">Handling annulleret af den, der ringer op</string>
     <string name="operation_finished_http_code">Handling afsluttet med HTTP statuskode %1$d (%2$s)</string>
+    <string name="out_of_memory">Ikke nok hukommelse til at læse indholdet</string>
     <string name="socket_exception">Socket undtagelse</string>
     <string name="socket_timeout_exception">Undtagelse for socket timeout</string>
     <string name="ssl_exception">SSL undtagelse</string>
