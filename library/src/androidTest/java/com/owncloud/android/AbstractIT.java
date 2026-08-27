@@ -72,6 +72,7 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
+    protected static NextcloudClient nextcloudClient2;
     protected static Context context;
     protected static Uri url;
 
@@ -98,9 +99,14 @@ public abstract class AbstractIT {
         // and blocks all other clients, e.g. 3rd party apps using this lib
         OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0");
 
+        // Account 1
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         client.setUserId(loginName); // for test same as userId
+
+        String userId = loginName; // for test same as userId
+        String credentials = Credentials.basic(loginName, password);
+        nextcloudClient = new NextcloudClient(url, userId, credentials, context);
 
         // second user to test internal sharing
         String loginName2 = arguments.getString("TEST_SERVER_USERNAME2");
@@ -110,9 +116,8 @@ public abstract class AbstractIT {
         client2.setCredentials(new OwnCloudBasicCredentials(loginName2, password2));
         client2.setUserId(loginName2); // for test same as userId
 
-        String userId = loginName; // for test same as userId
-        String credentials = Credentials.basic(loginName, password);
-        nextcloudClient = new NextcloudClient(url, userId, credentials, context);
+        String credentials2 = Credentials.basic(loginName2, password2);
+        nextcloudClient = new NextcloudClient(url, loginName2, credentials2, context);
 
         waitForServer(client, url);
         testConnection();
@@ -264,12 +269,12 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        removeOnClient(client);
-        removeOnClient(client2);
+        removeOnClient(nextcloudClient);
+        removeOnClient(nextcloudClient2);
     }
 
-    private void removeOnClient(OwnCloudClient client) {
-        final var result = new ReadFolderRemoteOperation("/").execute(client);
+    private void removeOnClient(NextcloudClient nextcloudClient) {
+        final var result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.getLogMessage(context), result.isSuccess());
 
         for (Object object : result.getData()) {

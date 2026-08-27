@@ -66,7 +66,7 @@ class UploadFileRemoteOperationIT : AbstractIT() {
         )
 
         // ReadFolderRemoteOperation
-        var result2 = ReadFolderRemoteOperation(remotePath).execute(client)
+        var result2 = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
         assertTrue(result2.isSuccess)
 
         remoteFile = result2.data[0] as RemoteFile
