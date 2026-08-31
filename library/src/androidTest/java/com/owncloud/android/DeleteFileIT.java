@@ -38,7 +38,7 @@ public class DeleteFileIT extends AbstractIT {
         mFullPath2Folder = baseFolderPath + FOLDER_PATH;
         mFullPath2File = baseFolderPath + FILE_PATH;
 
-        RemoteOperationResult result = new CreateFolderRemoteOperation(mFullPath2Folder, true).execute(client);
+        RemoteOperationResult result = new CreateFolderRemoteOperation(mFullPath2Folder, true).execute(nextcloudClient);
         assertTrue("Error creating folder" + mFullPath2Folder + ": " + result, result.isSuccess());
 
         File textFile = getFile(ASSETS__TEXT_FILE_NAME);

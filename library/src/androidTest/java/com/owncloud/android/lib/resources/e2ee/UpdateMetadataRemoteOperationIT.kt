@@ -31,7 +31,7 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
 
         // create folder
         val folder = "/" + make(20) + "/"
-        TestCase.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        TestCase.assertTrue(CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess)
         val remoteFolder = ReadFileRemoteOperation(folder).execute(nextcloudClient).resultData
 
         TestCase.assertNotNull(remoteFolder)
@@ -114,7 +114,7 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
 
         // create folder
         val folder = "/" + make(20) + "/"
-        TestCase.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        TestCase.assertTrue(CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess)
         val remoteFolder = ReadFileRemoteOperation(folder).execute(nextcloudClient).resultData
 
         TestCase.assertNotNull(remoteFolder)

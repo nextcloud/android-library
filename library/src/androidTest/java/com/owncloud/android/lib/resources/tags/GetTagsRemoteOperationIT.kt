@@ -106,7 +106,7 @@ class GetTagsRemoteOperationIT : AbstractIT() {
 
         // add colored tag to file
         val tagFolder = "/coloredFolder/"
-        assertTrue(CreateFolderRemoteOperation(tagFolder, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(tagFolder, true).execute(nextcloudClient).isSuccess)
         val folderMetadata = ReadFileRemoteOperation(tagFolder).execute(nextcloudClient)
         assertTrue(
             PutTagRemoteOperation(

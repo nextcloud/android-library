@@ -39,7 +39,7 @@ class CreateShareRemoteOperationIT : AbstractIT() {
     }
 
     private fun createFolder(path: String) {
-        assertTrue(CreateFolderRemoteOperation(path, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess)
     }
 
     private fun createShare(

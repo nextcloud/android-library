@@ -41,7 +41,7 @@ public class FileIT extends AbstractIT {
         String path = "/testFolder/";
 
         // create folder
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         // verify folder
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
@@ -55,10 +55,10 @@ public class FileIT extends AbstractIT {
         String path = "/testFolder/";
 
         // create folder
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         // create folder a second time will fail
-        assertFalse(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertFalse(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(path).execute(client).isSuccess());
@@ -69,7 +69,7 @@ public class FileIT extends AbstractIT {
         String path = "/testFolder/1/2/3/4/5/";
         String top = "/testFolder/";
 
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         // verify folder
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
@@ -85,7 +85,7 @@ public class FileIT extends AbstractIT {
         client.setBaseUri(Uri.parse(uri.toString() + "/remote.php/dav/files/"));
 
         // create folder
-        assertFalse(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertFalse(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         client.setBaseUri(uri);
     }
@@ -94,7 +94,7 @@ public class FileIT extends AbstractIT {
     public void testZeroSharees() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // verify
@@ -117,7 +117,7 @@ public class FileIT extends AbstractIT {
     public void testShareViaLinkSharees() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // share folder
@@ -149,7 +149,7 @@ public class FileIT extends AbstractIT {
     public void testShareToGroupSharees() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         ShareeUser sharee = new ShareeUser("users", "", ShareType.GROUP);
@@ -190,7 +190,7 @@ public class FileIT extends AbstractIT {
     public void testOneSharees() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         ShareeUser sharee = new ShareeUser("user1", "User One", ShareType.USER);
@@ -225,7 +225,7 @@ public class FileIT extends AbstractIT {
     public void testTwoShareesOnParent() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         List<ShareeUser> sharees = new ArrayList<>();
@@ -273,7 +273,7 @@ public class FileIT extends AbstractIT {
     public void testTwoSharees() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
         assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         List<ShareeUser> sharees = new ArrayList<>();
@@ -314,7 +314,7 @@ public class FileIT extends AbstractIT {
     public void testLocalID() {
         // create & verify folder
         String path = "/testFolder/";
-        assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
+        assertTrue(new CreateFolderRemoteOperation(path, true).execute(nextcloudClient).isSuccess());
 
         RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(nextcloudClient);
         assertTrue(result.isSuccess());
