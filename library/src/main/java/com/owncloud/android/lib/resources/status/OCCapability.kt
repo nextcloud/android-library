@@ -64,6 +64,7 @@ class OCCapability {
 
     // Files
     var filesBigFileChunking = CapabilityBooleanType.UNKNOWN
+    var chunkedUploadMaxSize = CHUNKED_UPLOAD_MAX_SIZE_UNKNOWN
     var filesUndelete = CapabilityBooleanType.UNKNOWN
     var filesVersioning = CapabilityBooleanType.UNKNOWN
 
@@ -200,5 +201,6 @@ class OCCapability {
     companion object {
         private const val VERSION_DOT = "."
         const val CLIENT_INTEGRATION_VERSION = 0.1
+        const val CHUNKED_UPLOAD_MAX_SIZE_UNKNOWN = -1L
     }
 }
