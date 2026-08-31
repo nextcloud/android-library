@@ -269,11 +269,11 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        removeOnClient(nextcloudClient);
-        removeOnClient(nextcloudClient2);
+        removeOnClient(client, nextcloudClient);
+        removeOnClient(client2, nextcloudClient2);
     }
 
-    private void removeOnClient(NextcloudClient nextcloudClient) {
+    private void removeOnClient(OwnCloudClient ownCloudClient, NextcloudClient nextcloudClient) {
         final var result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.getLogMessage(context), result.isSuccess());
 
@@ -298,7 +298,7 @@ public abstract class AbstractIT {
                 unlockRemoteFile(remotePath);
             }
 
-            boolean isRemoteFileRemoved = removeRemoteFile(remotePath);
+            boolean isRemoteFileRemoved = removeRemoteFile(ownCloudClient, remotePath);
             assertTrue("Failed to remove " + remotePath, isRemoteFileRemoved);
         }
 
@@ -320,7 +320,7 @@ public abstract class AbstractIT {
         }
     }
 
-    private boolean removeRemoteFile(String path) {
+    private boolean removeRemoteFile(OwnCloudClient client, String path) {
         final var operation = new RemoveFileRemoteOperation(path);
         final var result = operation.execute(client);
         return result.isSuccess();

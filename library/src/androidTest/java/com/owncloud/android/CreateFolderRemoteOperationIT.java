@@ -58,13 +58,13 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     public void testCreateFolder() {
         String remotePath = mFullPath2FolderBase;
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         // Create Subfolder
         remotePath = mFullPath2FolderBase + FOLDER_PATH_BASE;
         mCreatedFolderPaths.add(remotePath);
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue(result.isSuccess());
     }
 
@@ -75,12 +75,12 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     public void testCreateDuplicateFolder() {
         String remotePath = mFullPath2FolderBase + "duplicateFolder";
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         // Create folder again
         mCreatedFolderPaths.add(remotePath);
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertFalse(result.isSuccess());
         assertEquals(FOLDER_ALREADY_EXISTS, result.getCode());
     }
@@ -89,7 +89,7 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     public void testFileID() {
         String remotePath = mFullPath2FolderBase + "/" + RandomStringGenerator.make(TAG_LENGTH);
         mCreatedFolderPaths.add(remotePath);
-        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteOperationResult<RemoteFile> readResult = new ReadFileRemoteOperation(remotePath).execute(nextcloudClient);
@@ -106,31 +106,31 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
     @Test
     public void testCreateFolderSpecialCharactersOnNewVersion() {
         String remotePath = mFullPath2FolderBase + "_<";
-        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_>";
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_:";
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_\"";
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_|";
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_?";
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
 
         remotePath = mFullPath2FolderBase + "_*";
-        result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
+        result = new CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient);
         assertTrue("Remote path: " + remotePath, result.isSuccess());
     }
 

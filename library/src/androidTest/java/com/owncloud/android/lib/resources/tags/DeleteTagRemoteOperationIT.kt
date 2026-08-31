@@ -28,7 +28,7 @@ class DeleteTagRemoteOperationIT : AbstractIT() {
 
         // create a folder
         val folder = "/deleteTagFolder/"
-        assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess)
         val folderMetadata = ReadFileRemoteOperation(folder).execute(nextcloudClient)
         val fileId = folderMetadata.resultData.localId
 

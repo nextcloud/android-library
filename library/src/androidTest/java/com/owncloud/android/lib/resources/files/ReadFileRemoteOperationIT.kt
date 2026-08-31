@@ -24,7 +24,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     fun readRemoteFolder() {
         val remotePath = "/folder/"
 
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
         // use ownCloud client for reference
         var result = ReadFileRemoteOperation(remotePath).execute(client)
@@ -151,7 +151,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     @Test
     fun readEncryptedState() {
         val remotePath = "/testEncryptedFolder/"
-        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(nextcloudClient).isSuccess)
 
         var result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
         val remoteFile = result.resultData

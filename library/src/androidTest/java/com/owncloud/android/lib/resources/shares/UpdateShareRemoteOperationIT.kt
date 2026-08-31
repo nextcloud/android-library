@@ -44,7 +44,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     }
 
     private fun testUpdateNote(note: String) {
-        assertTrue(CreateFolderRemoteOperation("/note/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/note/", true).execute(nextcloudClient).isSuccess)
 
         // share folder to user "admin"
         val createOperationResult =
@@ -82,7 +82,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
 
     @Test
     fun updateMultipleParams() {
-        assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/label/", true).execute(nextcloudClient).isSuccess)
 
         val createOperationResult =
             CreateShareRemoteOperation(
@@ -124,7 +124,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     @Test
     fun updateLabel() {
         val label = "test & test"
-        assertTrue(CreateFolderRemoteOperation("/label/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/label/", true).execute(nextcloudClient).isSuccess)
 
         // share folder via public link
         val createOperationResult =
@@ -161,7 +161,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     @Suppress("MaxLineLength")
     fun invalidPassword() {
         val folder = "/invalidPassword/"
-        assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess)
 
         // share folder via public link
         val createOperationResult =
@@ -213,7 +213,7 @@ class UpdateShareRemoteOperationIT : AbstractIT() {
     @Test
     fun validPassword() {
         val folder = "/validPassword/"
-        assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation(folder, true).execute(nextcloudClient).isSuccess)
 
         // share folder via public link
         val createOperationResult =

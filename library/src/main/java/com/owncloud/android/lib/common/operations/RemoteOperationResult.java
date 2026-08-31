@@ -57,6 +57,7 @@ import java.util.Locale;
 
 import javax.net.ssl.SSLException;
 
+import at.bitfire.dav4jvm.exception.ConflictException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okhttp3.Headers;
 
@@ -315,6 +316,11 @@ public class RemoteOperationResult<T extends Object> implements Serializable {
             } else {
                 mCode = ResultCode.CANNOT_CREATE_FILE;
             }
+        } else if (e instanceof ConflictException) {
+            mCode = RemoteOperationResult.ResultCode.CONFLICT;
+        } else if (e instanceof at.bitfire.dav4jvm.exception.HttpException && 
+            HttpStatus.SC_METHOD_NOT_ALLOWED == ((at.bitfire.dav4jvm.exception.HttpException) e).getCode()) {
+            mCode = ResultCode.FOLDER_ALREADY_EXISTS;
         } else {
             mCode = ResultCode.UNKNOWN_ERROR;
         }

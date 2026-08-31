@@ -17,7 +17,7 @@ class GetRecommendationsRemoteOperationIT : AbstractIT() {
     @Test
     fun getRecommendations() {
         testOnlyOnServer(NextcloudVersion.nextcloud_31)
-        assertTrue(CreateFolderRemoteOperation("/test/", true).execute(client).isSuccess)
+        assertTrue(CreateFolderRemoteOperation("/test/", true).execute(nextcloudClient).isSuccess)
 
         val result = GetRecommendationsRemoteOperation().execute(nextcloudClient).resultData
 
