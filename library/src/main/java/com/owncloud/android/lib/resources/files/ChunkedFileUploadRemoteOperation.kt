@@ -33,6 +33,7 @@ import java.nio.channels.FileChannel
 import java.util.Locale
 import kotlin.math.max
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
@@ -295,11 +296,11 @@ class ChunkedFileUploadRemoteOperation
         )
 
         companion object {
-            val ASSEMBLE_TIME_BASE: Duration = 3.minutes
+            val ASSEMBLE_TIME_BASE: Duration = 1.minutes
 
-            val ASSEMBLE_TIME_PER_GB: Duration = 3.minutes
+            val ASSEMBLE_TIME_PER_GB: Duration = 10.minutes
 
-            val ASSEMBLE_TIME_MAX: Duration = 30.minutes
+            val ASSEMBLE_TIME_MAX: Duration = 1.hours
 
             @VisibleForTesting
             fun calculateAssembleTimeout(file: File): Duration {
