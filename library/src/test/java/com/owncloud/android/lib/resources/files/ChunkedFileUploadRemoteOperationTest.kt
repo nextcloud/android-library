@@ -36,31 +36,31 @@ class ChunkedFileUploadRemoteOperationTest {
 
         // 0b
         Mockito.`when`(file.length()).thenReturn(0L)
-        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase, sut.calculateAssembleTimeout(file))
 
         // 100b
         Mockito.`when`(file.length()).thenReturn(100L)
-        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase, sut.calculateAssembleTimeout(file))
 
         // 1Mb
         Mockito.`when`(file.length()).thenReturn(1 * MB)
-        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase + sut.assembleTimePerGB / 1000, sut.calculateAssembleTimeout(file))
 
-        // 100Mb
+        // 100Mb, the size that used to be capped to the flat minimum
         Mockito.`when`(file.length()).thenReturn(100 * MB)
-        assertEquals(sut.assembleTimeMin, sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase + sut.assembleTimePerGB / 10, sut.calculateAssembleTimeout(file))
 
         // 1Gb
         Mockito.`when`(file.length()).thenReturn(1 * GB)
-        assertEquals(sut.assembleTimePerGB, sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase + sut.assembleTimePerGB, sut.calculateAssembleTimeout(file))
 
         // 2Gb
         Mockito.`when`(file.length()).thenReturn(2 * GB)
-        assertEquals((2 * sut.assembleTimePerGB), sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase + 2 * sut.assembleTimePerGB, sut.calculateAssembleTimeout(file))
 
         // 5Gb
         Mockito.`when`(file.length()).thenReturn(5 * GB)
-        assertEquals((5 * sut.assembleTimePerGB), sut.calculateAssembleTimeout(file))
+        assertEquals(sut.assembleTimeBase + 5 * sut.assembleTimePerGB, sut.calculateAssembleTimeout(file))
 
         // 50Gb
         Mockito.`when`(file.length()).thenReturn(50 * GB)
@@ -69,6 +69,29 @@ class ChunkedFileUploadRemoteOperationTest {
         // 500Gb
         Mockito.`when`(file.length()).thenReturn(500 * GB)
         assertEquals(sut.assembleTimeMax, sut.calculateAssembleTimeout(file))
+    }
+
+    @Test
+    fun assembleTimeoutGrowsWithFileSize() {
+        MockitoAnnotations.openMocks(this)
+        val sut =
+            ChunkedFileUploadRemoteOperation(
+                null,
+                null,
+                null,
+                null,
+                System.currentTimeMillis() / 1000,
+                false
+            )
+
+        val timeouts =
+            listOf(1 * MB, 100 * MB, 500 * MB, 1 * GB, 5 * GB).map { length ->
+                Mockito.`when`(file.length()).thenReturn(length)
+                sut.calculateAssembleTimeout(file)
+            }
+
+        assertEquals(timeouts.sorted(), timeouts)
+        assertEquals(timeouts.distinct().size, timeouts.size)
     }
 
     @Test
