@@ -71,6 +71,9 @@ class ChunkedFileUploadRemoteOperationTest {
             ChunkedFileUploadRemoteOperation.calculateAssembleTimeout(file)
         )
 
+        Mockito.`when`(file.length()).thenReturn(6 * GB)
+        assertEquals(ASSEMBLE_TIME_MAX, ChunkedFileUploadRemoteOperation.calculateAssembleTimeout(file))
+
         // 50Gb
         Mockito.`when`(file.length()).thenReturn(50 * GB)
         assertEquals(ASSEMBLE_TIME_MAX, ChunkedFileUploadRemoteOperation.calculateAssembleTimeout(file))
