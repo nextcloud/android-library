@@ -61,7 +61,7 @@ class ChunkedFileUploadRemoteOperation
         // Assemble timeouts, in milliseconds. The literals are the definition itself, hence the MagicNumber opt-out.
         @Suppress("MagicNumber")
         @JvmField
-        val assembleTimeMin: Int = 30 * 1000 // 30s
+        val assembleTimeBase: Int = 3 * 60 * 1000 // 3min
 
         @Suppress("MagicNumber")
         @JvmField
@@ -69,7 +69,7 @@ class ChunkedFileUploadRemoteOperation
 
         @Suppress("MagicNumber")
         @JvmField
-        val assembleTimePerGB: Int = 3 * 60 * 1000 // 3 min
+        val assembleTimePerGB: Int = 3 * 60 * 1000 // 3min
 
         private lateinit var uploadFolderUri: String
         private lateinit var destinationUri: String
@@ -299,11 +299,16 @@ class ChunkedFileUploadRemoteOperation
             }
         }
 
+        /**
+         * The server answers the assembling MOVE only once every chunk has been merged, so the whole merge has to fit
+         * into the read timeout. Assembling scales with the total size, not with the number of chunks, and the base
+         * covers the fixed cost a small file still pays on slow (object) storage.
+         */
         @VisibleForTesting
         fun calculateAssembleTimeout(file: File): Int {
             val fileSizeInGb = file.length() / BYTES_PER_GB
 
-            return max(assembleTimeMin, min((assembleTimePerGB * fileSizeInGb).toInt(), assembleTimeMax))
+            return min(assembleTimeBase + (assembleTimePerGB * fileSizeInGb).toInt(), assembleTimeMax)
         }
 
         private data class UploadedChunks(
