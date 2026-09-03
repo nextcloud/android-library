@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Åtgärden avbröts av anroparen</string>
     <string name="operation_cancelled_by_the_caller">Åtgärden avbröts av anroparen</string>
     <string name="operation_finished_http_code">Operation avslutad med HTTP-statuskod %1$d (%2$s)</string>
+    <string name="out_of_memory">Inte tillräckligt med minne för att läsa innehållet</string>
     <string name="socket_exception">Socket-fel</string>
     <string name="socket_timeout_exception">Tidsgräns överskriden för socket</string>
     <string name="ssl_exception">SSL-fel</string>
