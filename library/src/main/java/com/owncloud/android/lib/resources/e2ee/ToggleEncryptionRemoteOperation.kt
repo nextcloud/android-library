@@ -6,17 +6,18 @@
  */
 package com.owncloud.android.lib.resources.e2ee
 
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.common.OkHttpMethodBase
 import com.nextcloud.common.SessionTimeOut
 import com.nextcloud.common.defaultSessionTimeOut
-import com.owncloud.android.lib.common.OwnCloudClient
+import com.nextcloud.operations.DeleteMethod
+import com.nextcloud.operations.PutMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation
-import org.apache.commons.httpclient.HttpMethodBase
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.commons.httpclient.HttpStatus
-import org.apache.commons.httpclient.methods.DeleteMethod
-import org.apache.commons.httpclient.methods.PutMethod
 
 class ToggleEncryptionRemoteOperation
     @JvmOverloads
@@ -26,11 +27,10 @@ class ToggleEncryptionRemoteOperation
         private val encryption: Boolean,
         private val sessionTimeOut: SessionTimeOut = defaultSessionTimeOut
     ) : RemoteOperation<Unit>() {
-        @Deprecated("Deprecated in Java")
-        @Suppress("Detekt.TooGenericExceptionCaught", "DEPRECATION")
-        override fun run(client: OwnCloudClient): RemoteOperationResult<Unit> {
+        @Suppress("TooGenericExceptionCaught")
+        override fun run(client: NextcloudClient): RemoteOperationResult<Unit> {
             val folderResult = ReadFolderRemoteOperation(remotePath.orEmpty()).execute(client)
-            if (folderResult.isSuccess && folderResult.getData().size > 1) {
+            if (folderResult.isSuccess && folderResult.resultData.size > 1) {
                 return RemoteOperationResult(false, "Non empty", HttpStatus.SC_FORBIDDEN)
             }
 
@@ -41,15 +41,10 @@ class ToggleEncryptionRemoteOperation
                 }
         }
 
-        private fun toggleEncryption(client: OwnCloudClient): RemoteOperationResult<Unit> {
+        private fun toggleEncryption(client: NextcloudClient): RemoteOperationResult<Unit> {
             val (status, method) = executeWithFallback(client)
 
-            return if (status == HttpStatus.SC_OK) {
-                RemoteOperationResult<Unit>(true, method)
-            } else {
-                client.exhaustResponse(method.getResponseBodyAsStream())
-                RemoteOperationResult<Unit>(false, method)
-            }.also {
+            return RemoteOperationResult<Unit>(status == HttpStatus.SC_OK, method).also {
                 method.releaseConnection()
             }
         }
@@ -58,33 +53,39 @@ class ToggleEncryptionRemoteOperation
          * Tries the v2 endpoint first, falling back to v1 on 404/500.
          * Returns the final status code and the method used.
          */
-        private fun executeWithFallback(client: OwnCloudClient): Pair<Int, HttpMethodBase> {
+        private fun executeWithFallback(client: NextcloudClient): Pair<Int, OkHttpMethodBase> {
+            val timedClient = client.withSessionTimeOut(sessionTimeOut)
+
             val v2Method = buildMethod(client, ENCRYPTED_URL_V2)
-            val v2Status = client.executeMethod(v2Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
+            val v2Status = timedClient.execute(v2Method)
 
             val needsFallback = v2Status == HttpStatus.SC_NOT_FOUND || v2Status == HttpStatus.SC_INTERNAL_SERVER_ERROR
             if (!needsFallback) return v2Status to v2Method
 
             v2Method.releaseConnection()
             val v1Method = buildMethod(client, ENCRYPTED_URL_V1)
-            val v1Status = client.executeMethod(v1Method, sessionTimeOut.readTimeOut, sessionTimeOut.connectionTimeOut)
+            val v1Status = timedClient.execute(v1Method)
             return v1Status to v1Method
         }
 
         private fun buildMethod(
-            client: OwnCloudClient,
+            client: NextcloudClient,
             baseUrl: String
-        ): HttpMethodBase =
-            (
+        ): OkHttpMethodBase {
+            val uri = "${client.baseUri}$baseUrl$localId"
+
+            val method =
                 if (encryption) {
-                    PutMethod("${client.baseUri}$baseUrl$localId")
+                    PutMethod(uri, false, "".toRequestBody(null))
                 } else {
-                    DeleteMethod("${client.baseUri}$baseUrl$localId")
+                    DeleteMethod(uri, false)
                 }
-            ).apply {
-                addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
-                addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
-            }
+
+            method.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE)
+            method.addRequestHeader(CONTENT_TYPE, FORM_URLENCODED)
+
+            return method
+        }
 
         companion object {
             private val TAG = ToggleEncryptionRemoteOperation::class.java.simpleName
