@@ -44,7 +44,7 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
                 remoteFolder!!.localId,
                 remoteFolder.remotePath,
                 true
-            ).execute(client)
+            ).execute(nextcloudClient)
                 .isSuccess
         )
 
@@ -128,7 +128,7 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
                 remoteFolder!!.localId,
                 remoteFolder.remotePath,
                 true
-            ).execute(client)
+            ).execute(nextcloudClient)
                 .isSuccess
         )
 
