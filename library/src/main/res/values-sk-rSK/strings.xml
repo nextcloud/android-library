@@ -22,6 +22,7 @@
     <string name="operation_cancelled">Operácia bola zrušená volajúcim</string>
     <string name="operation_cancelled_by_the_caller">Operácia bola zrušená volajúcim</string>
     <string name="operation_finished_http_code">Operácia skončila so stavovým kódom HTTP %1$d (%2$s)</string>
+    <string name="out_of_memory">Nie je dostatok pamäte na prečítanie obsahu</string>
     <string name="socket_exception">Chyba socketu</string>
     <string name="socket_timeout_exception">Výnimka časového limitu soketu</string>
     <string name="ssl_exception">Chyba SSL</string>
