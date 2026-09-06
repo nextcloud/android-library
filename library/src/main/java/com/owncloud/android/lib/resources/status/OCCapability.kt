@@ -73,6 +73,7 @@ class OCCapability {
 
     var supportsNotificationsV1 = CapabilityBooleanType.UNKNOWN
     var supportsNotificationsV2 = CapabilityBooleanType.UNKNOWN
+    var supportsWebPush = CapabilityBooleanType.UNKNOWN
 
     var externalLinks = CapabilityBooleanType.UNKNOWN
 
