@@ -24,43 +24,76 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
-import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.annotation.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("FS")
 public class WebdavUtils {
-    private static final SimpleDateFormat DATETIME_FORMATS[] = {
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
-            new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US),
-            new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US),
-            new SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
-            new SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US),
-            new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US)
-    };
+    private static final String HTTP_DATE_FORMAT =
+        "EEE, dd MMM yyyy HH:mm:ss zzz";
+
+    private static final String SHARE_EXPIRATION_DATE_FORMAT =
+            "yyyy-MM-dd HH:mm:ss";
+
+    private static final TimeZone UTC =
+            TimeZone.getTimeZone("UTC");
+
+    private static final ThreadLocal<SimpleDateFormat> HTTP_DATE_FORMATTER =
+            ThreadLocal.withInitial(() -> {
+                SimpleDateFormat format =
+                        new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
+                format.setLenient(false);
+                format.setTimeZone(UTC);
+                return format;
+            });
+
+    private static final ThreadLocal<SimpleDateFormat> SHARE_EXPIRATION_FORMATTER =
+            ThreadLocal.withInitial(() -> {
+                SimpleDateFormat format =
+                        new SimpleDateFormat(SHARE_EXPIRATION_DATE_FORMAT, Locale.US);
+                format.setLenient(false);
+                return format;
+            });
+
+    private static @Nullable
+    Date parseStrict(SimpleDateFormat format, String value) {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+
+        ParsePosition position = new ParsePosition(0);
+        Date parsedDate = format.parse(value, position);
+
+        if (parsedDate == null || position.getIndex() != value.length()) {
+            return null;
+        }
+
+        return parsedDate;
+    }
 
     public static @Nullable
     Date parseResponseDate(String date) {
-        Date returnDate;
-        SimpleDateFormat format;
-        for (int i = 0; i < DATETIME_FORMATS.length; ++i) {
-            try {
-                format = DATETIME_FORMATS[i];
-                synchronized (format) {
-                    returnDate = format.parse(date);
-                }
-                return returnDate;
-            } catch (ParseException e) {
-                // this is not the format
-            }
-        }
-        return null;
+        return parseStrict(HTTP_DATE_FORMATTER.get(), date);
+    }
+
+    /**
+     * Parses a Share API expiration date.
+     *
+     * <p>The value has no timezone suffix and is therefore interpreted using
+     * the device default timezone.</p>
+     *
+     * @param date expiration date returned by the Share API
+     * @return parsed date, or {@code null} if invalid
+     */
+    public static @Nullable
+    Date parseShareExpirationDate(String date) {
+        return parseStrict(SHARE_EXPIRATION_FORMATTER.get(), date);
     }
 
     /**
