@@ -24,62 +24,45 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import androidx.annotation.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("FS")
 public class WebdavUtils {
-    private static final String HTTP_DATE_FORMAT =
-        "EEE, dd MMM yyyy HH:mm:ss zzz";
+    private static final DateTimeFormatter HTTP_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern(
+                "EEE, dd MMM uuuu HH:mm:ss zzz", // IMF-fixdate
+                Locale.US
+            ).withResolverStyle(ResolverStyle.STRICT);
 
-    private static final String SHARE_EXPIRATION_DATE_FORMAT =
-            "yyyy-MM-dd HH:mm:ss";
-
-    private static final TimeZone UTC =
-            TimeZone.getTimeZone("UTC");
-
-    private static final ThreadLocal<SimpleDateFormat> HTTP_DATE_FORMATTER =
-            ThreadLocal.withInitial(() -> {
-                SimpleDateFormat format =
-                        new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
-                format.setLenient(false);
-                format.setTimeZone(UTC);
-                return format;
-            });
-
-    private static final ThreadLocal<SimpleDateFormat> SHARE_EXPIRATION_FORMATTER =
-            ThreadLocal.withInitial(() -> {
-                SimpleDateFormat format =
-                        new SimpleDateFormat(SHARE_EXPIRATION_DATE_FORMAT, Locale.US);
-                format.setLenient(false);
-                return format;
-            });
-
-    private static @Nullable
-    Date parseStrict(SimpleDateFormat format, String value) {
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
-
-        ParsePosition position = new ParsePosition(0);
-        Date parsedDate = format.parse(value, position);
-
-        if (parsedDate == null || position.getIndex() != value.length()) {
-            return null;
-        }
-
-        return parsedDate;
-    }
+    private static final DateTimeFormatter SHARE_EXPIRATION_FORMATTER =
+            DateTimeFormatter.ofPattern(
+                "uuuu-MM-dd HH:mm:ss",
+                Locale.US
+            ).withResolverStyle(ResolverStyle.STRICT);
 
     public static @Nullable
     Date parseResponseDate(String date) {
-        return parseStrict(HTTP_DATE_FORMATTER.get(), date);
+        if (date == null || date.isEmpty()) {
+            return null;
+        }
+
+        try {
+            return Date.from(
+                    ZonedDateTime.parse(date, HTTP_DATE_FORMATTER).toInstant()
+            );
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     /**
@@ -93,14 +76,29 @@ public class WebdavUtils {
      */
     public static @Nullable
     Date parseShareExpirationDate(String date) {
-        return parseStrict(SHARE_EXPIRATION_FORMATTER.get(), date);
+        if (date == null || date.isEmpty()) {
+            return null;
+        }
+
+        try {
+            LocalDateTime localDateTime =
+                    LocalDateTime.parse(date, SHARE_EXPIRATION_FORMATTER);
+
+            return Date.from(
+                    localDateTime
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+            );
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     /**
-     * Encodes a path according to URI RFC 2396. 
-     * 
+     * Encodes a path according to URI RFC 2396.
+     *
      * If the received path doesn't start with "/", the method adds it.
-     * 
+     *
      * @param remoteFilePath    Path
      * @return                  Encoded path according to RFC 2396, always starting with "/"
      */
@@ -171,7 +169,7 @@ public class WebdavUtils {
     public static DavPropertyNameSet getFilePropSet() {
         Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
-        
+
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
