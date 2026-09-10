@@ -13,7 +13,6 @@ import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
@@ -123,9 +122,9 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         )
 
         // read metadata
-        val rootMetadata = ReadFolderRemoteOperation("/").execute(client)
+        val rootMetadata = ReadFolderRemoteOperation("/").execute(nextcloudClient)
         val tags =
-            (rootMetadata.data as ArrayList<RemoteFile>)
+            rootMetadata.resultData
                 .find { it.remotePath == tagFolder }
                 ?.tags
         tags?.sortBy { it?.color }
