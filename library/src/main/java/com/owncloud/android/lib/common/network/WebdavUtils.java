@@ -24,12 +24,16 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.Locale;
 
@@ -39,17 +43,38 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings("FS")
 public class WebdavUtils {
     private static final DateTimeFormatter HTTP_DATE_FORMATTER =
-            DateTimeFormatter.ofPattern(
-                "EEE, dd MMM uuuu HH:mm:ss zzz", // IMF-fixdate
-                Locale.US
-            ).withResolverStyle(ResolverStyle.STRICT);
+            DateTimeFormatter
+                    .ofPattern("EEE, dd MMM uuuu HH:mm:ss zzz", Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private static final DateTimeFormatter RFC_850_DATE_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .parseCaseSensitive()
+                    .appendPattern("EEEE, dd-MMM-")
+                    .appendValueReduced(ChronoField.YEAR, 2, 2, 2000)
+                    .appendPattern(" HH:mm:ss zzz")
+                    .toFormatter(Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private static final DateTimeFormatter ASCTIME_DATE_FORMATTER =
+            DateTimeFormatter
+                    .ofPattern("EEE MMM ppd HH:mm:ss uuuu", Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
 
     private static final DateTimeFormatter SHARE_EXPIRATION_FORMATTER =
-            DateTimeFormatter.ofPattern(
-                "uuuu-MM-dd HH:mm:ss",
-                Locale.US
-            ).withResolverStyle(ResolverStyle.STRICT);
+            DateTimeFormatter
+                    .ofPattern("uuuu-MM-dd HH:mm:ss", Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
 
+    /**
+     * Parses an HTTP/WebDAV date in IMF-fixdate format (99% of modern traffic).
+     *
+     * For full RFC complianace, also supports obsolete RFC 850 and ANSI C asctime()
+     * formats.
+     *
+     * @param date HTTP/WebDAV date
+     * @return parsed date, or {@code null} if invalid
+     */
     public static @Nullable
     Date parseResponseDate(String date) {
         if (date == null || date.isEmpty()) {
@@ -57,8 +82,39 @@ public class WebdavUtils {
         }
 
         try {
+            ZonedDateTime parsed =
+                    ZonedDateTime.parse(date, HTTP_DATE_FORMATTER);
+
+            return Date.from(parsed.toInstant());
+        } catch (DateTimeParseException e) {
+            // Try RFC 850 below.
+        }
+
+        try {
+            ZonedDateTime parsed =
+                    ZonedDateTime.parse(date, RFC_850_DATE_FORMATTER);
+
+            // Native date arithmetic protects the 50-year spec calculation from leap day drift
+            Instant fiftyYearsFromNow =
+                    ZonedDateTime.now(ZoneOffset.UTC)
+                            .plusYears(50)
+                            .toInstant();
+
+            if (parsed.toInstant().isAfter(fiftyYearsFromNow)) {
+                parsed = parsed.minusYears(100);
+            }
+
+            return Date.from(parsed.toInstant());
+        } catch (DateTimeParseException e) {
+            // Try ANSI C asctime() below.
+        }
+
+        try {
+            LocalDateTime parsed =
+                    LocalDateTime.parse(date, ASCTIME_DATE_FORMATTER);
+
             return Date.from(
-                    ZonedDateTime.parse(date, HTTP_DATE_FORMATTER).toInstant()
+                    parsed.atOffset(ZoneOffset.UTC).toInstant()
             );
         } catch (DateTimeParseException e) {
             return null;
@@ -81,13 +137,11 @@ public class WebdavUtils {
         }
 
         try {
-            LocalDateTime localDateTime =
+            LocalDateTime parsed =
                     LocalDateTime.parse(date, SHARE_EXPIRATION_FORMATTER);
 
             return Date.from(
-                    localDateTime
-                            .atZone(ZoneId.systemDefault())
-                            .toInstant()
+                    parsed.atZone(ZoneId.systemDefault()).toInstant()
             );
         } catch (DateTimeParseException e) {
             return null;
@@ -169,7 +223,7 @@ public class WebdavUtils {
     public static DavPropertyNameSet getFilePropSet() {
         Namespace ocNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_OC);
         Namespace ncNamespace = Namespace.getNamespace(WebdavEntry.NAMESPACE_NC);
-
+        
         DavPropertyNameSet propSet = new DavPropertyNameSet();
         propSet.add(DavPropertyName.DISPLAYNAME);
         propSet.add(DavPropertyName.GETCONTENTTYPE);
