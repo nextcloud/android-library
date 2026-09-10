@@ -7,6 +7,8 @@
  */
 package com.owncloud.android.lib.common.accounts;
 
+import com.nextcloud.common.NextcloudClient;
+import com.nextcloud.operations.GetMethod;
 import com.owncloud.android.lib.common.ExternalLink;
 import com.owncloud.android.lib.common.ExternalLinkType;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -18,17 +20,17 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * gets external links provided by 'external' app
  */
 
-public class ExternalLinksOperation extends RemoteOperation {
+public class ExternalLinksOperation extends RemoteOperation<List<ExternalLink>> {
 
     private static final String TAG = ExternalLinksOperation.class.getSimpleName();
 
@@ -51,17 +53,17 @@ public class ExternalLinksOperation extends RemoteOperation {
     protected RemoteOperationResult run(OwnCloudClient client) {
         RemoteOperationResult result = null;
         int status = -1;
-        GetMethod get = null;
+        org.apache.commons.httpclient.methods.GetMethod get = null;
         String ocsUrl = client.getBaseUri() + OCS_ROUTE_EXTERNAL_LINKS;
 
         try {
             // check capabilities
             RemoteOperationResult<OCCapability> getCapabilities = new GetCapabilitiesRemoteOperation().execute(client);
-            OCCapability capability = getCapabilities.getResultData();
+            OCCapability capability = (OCCapability) getCapabilities.getSingleData();
 
             if (capability.getExternalLinks().isTrue()) {
 
-                get = new GetMethod(ocsUrl);
+                get = new org.apache.commons.httpclient.methods.GetMethod(ocsUrl);
                 get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
                 get.setQueryString(new NameValuePair[]{new NameValuePair("format", "json")});
                 status = client.executeMethod(get);
@@ -136,6 +138,94 @@ public class ExternalLinksOperation extends RemoteOperation {
 
         } catch (Exception e) {
             result = new RemoteOperationResult(e);
+            Log_OC.e(TAG, "Exception while getting external links ", e);
+        } finally {
+            if (get != null) {
+                get.releaseConnection();
+            }
+        }
+
+        return result;
+    }
+    
+    @Override
+    public RemoteOperationResult<List<ExternalLink>> run(NextcloudClient client) {
+        RemoteOperationResult<List<ExternalLink>> result = null;
+        int status = -1;
+        GetMethod get = null;
+        String ocsUrl = client.getBaseUri() + OCS_ROUTE_EXTERNAL_LINKS + JSON_FORMAT;
+
+        try {
+            // check capabilities
+            RemoteOperationResult capabilitiesResult = new GetCapabilitiesRemoteOperation().execute(client);
+            OCCapability capability = (OCCapability) capabilitiesResult.getData().get(0);
+
+            if (capability.getExternalLinks().isTrue()) {
+                get = new GetMethod(ocsUrl, true);
+                get.addRequestHeader(OCS_API_HEADER, OCS_API_HEADER_VALUE);
+                status = client.execute(get);
+
+                if (isSuccess(status)) {
+                    String response = get.getResponseBodyAsString();
+                    Log_OC.d(TAG, "Successful response: " + response);
+
+                    // parse
+                    JSONArray links = new JSONObject(response).getJSONObject(NODE_OCS).getJSONArray(NODE_DATA);
+
+                    ArrayList<ExternalLink> resultLinks = new ArrayList<>();
+
+                    for (int i = 0; i < links.length(); i++) {
+                        JSONObject link = links.getJSONObject(i);
+
+                        if (link != null) {
+                            int id = link.getInt(NODE_ID);
+                            String iconUrl = link.getString(NODE_ICON);
+                            String language = "";
+                            if (link.has(NODE_LANGUAGE)) {
+                                language = link.getString(NODE_LANGUAGE);
+                            }
+
+                            ExternalLinkType type = switch (link.getString(NODE_TYPE)) {
+                                case "link" -> ExternalLinkType.LINK;
+                                case "settings" -> ExternalLinkType.SETTINGS;
+                                case "quota" -> ExternalLinkType.QUOTA;
+                                default -> ExternalLinkType.UNKNOWN;
+                            };
+
+
+                            String name = link.getString(NODE_NAME);
+                            String url = link.getString(NODE_URL);
+
+                            boolean redirect = false;
+
+                            if (link.has(NODE_REDIRECT)) {
+                                redirect = link.getInt(NODE_REDIRECT) == 1;
+                            }
+
+                            resultLinks.add(new ExternalLink(id, iconUrl, language, type, name, url, redirect));
+                        }
+                    }
+
+                    result = new RemoteOperationResult<>(true, get);
+                    result.setResultData(resultLinks);
+
+                } else {
+                    result = new RemoteOperationResult<>(false, get);
+                    String response = get.getResponseBodyAsString();
+                    Log_OC.e(TAG, "Failed response while getting external links ");
+                    if (response != null) {
+                        Log_OC.e(TAG, "*** status code: " + status + " ; response message: " + response);
+                    } else {
+                        Log_OC.e(TAG, "*** status code: " + status);
+                    }
+                }
+            } else {
+                result = new RemoteOperationResult<>(RemoteOperationResult.ResultCode.NOT_AVAILABLE);
+                Log_OC.d(TAG, "External links disabled");
+            }
+
+        } catch (Exception e) {
+            result = new RemoteOperationResult<>(e);
             Log_OC.e(TAG, "Exception while getting external links ", e);
         } finally {
             if (get != null) {
