@@ -16,6 +16,8 @@ package com.owncloud.android.lib.common.network;
 
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
 import com.nextcloud.common.OkHttpMethodBase;
 
 import org.apache.commons.httpclient.Header;
@@ -29,11 +31,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import androidx.annotation.Nullable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("FS")
 public class WebdavUtils {
+     public static String NAMESPACE_OC = "http://owncloud.org/ns";
+     public static String NAMESPACE_NC = "http://nextcloud.org/ns";
+        
     private static final SimpleDateFormat DATETIME_FORMATS[] = {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
             new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),

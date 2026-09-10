@@ -9,7 +9,6 @@ package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -26,8 +25,7 @@ class CheckEtagRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        val readResult = ReadFileRemoteOperation(remotePath).execute(client)
-        val remoteFile = readResult.data[0] as RemoteFile
+        val remoteFile = ReadFileRemoteOperation(remotePath).execute(nextcloudClient).resultData
         val eTag = remoteFile.etag
 
         var eTagResult = CheckEtagRemoteOperation(remotePath, eTag).execute(client)

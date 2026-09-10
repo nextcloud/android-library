@@ -10,7 +10,6 @@ package com.owncloud.android.lib.resources.comments
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import junit.framework.Assert.assertTrue
 import org.junit.Test
 
@@ -25,8 +24,8 @@ class CommentFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        val readResult = ReadFileRemoteOperation(remotePath).execute(client)
-        val remoteFile = readResult.data.get(0) as RemoteFile
+        val readResult = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        val remoteFile = readResult.resultData
 
         assertTrue(
             CommentFileRemoteOperation("test", remoteFile.localId)

@@ -153,7 +153,7 @@ class WebdavEntry constructor(
             if (prop != null) {
                 val value = prop.value
                 if (value != null) {
-                    contentType = "DIR" // a specific attribute would be better,
+                    contentType = DIR_TYPE // a specific attribute would be better,
                     // but this is enough;
                     // unless while we have no reason to distinguish
                     // MIME types for folders
@@ -613,7 +613,7 @@ class WebdavEntry constructor(
     fun decodedPath(): String = Uri.decode(path)
 
     val isDirectory: Boolean
-        get() = "DIR" == contentType
+        get() = DIR_TYPE == contentType
 
     private fun resetData() {
         permissions = null
@@ -690,6 +690,7 @@ class WebdavEntry constructor(
         const val PROPERTY_DATE_RANGE = "dateRange"
         const val PROPERTY_COLLABORATORS = "collaborators"
         const val COLLABORATORS_SHARE_LABEL = "label"
+        const val DIR_TYPE = "DIR"
         private const val IS_ENCRYPTED = "1"
         private const val CODE_PROP_NOT_FOUND = 404
     }
