@@ -46,7 +46,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
     protected static final String OC_X_OC_CTIME_HEADER = "X-OC-Ctime";
     protected static final String NC_X_NC_WEBDAV_AUTO_MKCOL = "X-NC-WebDAV-Auto-Mkcol";
-    protected static final String NC_X_NC_WEBDAV_AUTO_MKCOL_VALUE = "true";
+    protected static final String NC_X_NC_WEBDAV_AUTO_MKCOL_VALUE = "1";
 
     protected String localPath;
     protected String remotePath;
@@ -86,13 +86,33 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      Long creationTimestamp,
                                      boolean disableRetries) {
         this(localPath,
+            remotePath,
+            mimeType,
+            requiredEtag,
+            lastModificationTimestamp,
+            creationTimestamp,
+            null,
+            disableRetries,
+            false);
+    }
+
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
+                                     String requiredEtag,
+                                     long lastModificationTimestamp,
+                                     Long creationTimestamp,
+                                     boolean disableRetries,
+                                     boolean createCollections) {
+        this(localPath,
                 remotePath,
                 mimeType,
                 requiredEtag,
                 lastModificationTimestamp,
                 creationTimestamp,
                 null,
-                disableRetries);
+                disableRetries,
+                createCollections);
     }
 
     public UploadFileRemoteOperation(String localPath,
