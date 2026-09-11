@@ -32,7 +32,10 @@ import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.util.Locale
 import kotlin.math.max
-import kotlin.math.min
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 @Suppress("LongParameterList")
 class ChunkedFileUploadRemoteOperation
@@ -58,19 +61,6 @@ class ChunkedFileUploadRemoteOperation
             token,
             disableRetries
         ) {
-        // Assemble timeouts, in milliseconds. The literals are the definition itself, hence the MagicNumber opt-out.
-        @Suppress("MagicNumber")
-        @JvmField
-        val assembleTimeMin: Int = 30 * 1000 // 30s
-
-        @Suppress("MagicNumber")
-        @JvmField
-        val assembleTimeMax: Int = 30 * 60 * 1000 // 30min
-
-        @Suppress("MagicNumber")
-        @JvmField
-        val assembleTimePerGB: Int = 3 * 60 * 1000 // 3 min
-
         private lateinit var uploadFolderUri: String
         private lateinit var destinationUri: String
         private var moveMethod: MoveMethod? = null
@@ -215,7 +205,8 @@ class ChunkedFileUploadRemoteOperation
             creationTimestamp?.takeIf { it > 0 }?.let { move.addRequestHeader(OC_X_OC_CTIME_HEADER, it.toString()) }
             token?.let { move.addRequestHeader(E2E_TOKEN, it) }
 
-            val status = client.executeMethod(move, calculateAssembleTimeout(file), DO_NOT_CHANGE_DEFAULT)
+            val readTimeout = calculateAssembleTimeout(file).inWholeMilliseconds.toInt()
+            val status = client.executeMethod(move, readTimeout, DO_NOT_CHANGE_DEFAULT)
 
             return RemoteOperationResult(isSuccess(status), move)
         }
@@ -299,19 +290,25 @@ class ChunkedFileUploadRemoteOperation
             }
         }
 
-        @VisibleForTesting
-        fun calculateAssembleTimeout(file: File): Int {
-            val fileSizeInGb = file.length() / BYTES_PER_GB
-
-            return max(assembleTimeMin, min((assembleTimePerGB * fileSizeInGb).toInt(), assembleTimeMax))
-        }
-
         private data class UploadedChunks(
             val nextByte: Long,
             val lastId: Int
         )
 
         companion object {
+            val ASSEMBLE_TIME_BASE: Duration = 1.minutes
+
+            val ASSEMBLE_TIME_PER_GB: Duration = 10.minutes
+
+            val ASSEMBLE_TIME_MAX: Duration = 1.hours
+
+            @VisibleForTesting
+            fun calculateAssembleTimeout(file: File): Duration {
+                val fileSizeInGb = file.length() / BYTES_PER_GB
+                val timeout = minOf(ASSEMBLE_TIME_BASE + ASSEMBLE_TIME_PER_GB * fileSizeInGb, ASSEMBLE_TIME_MAX)
+                return timeout.inWholeMilliseconds.milliseconds
+            }
+
             const val MIN_CHUNK_SIZE: Long = 10240000
             const val DEFAULT_CHUNK_SIZE: Long = 40960000
             const val SERVER_MAX_CHUNK_SIZE_UNKNOWN: Long = -1
