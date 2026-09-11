@@ -10,6 +10,8 @@ package com.owncloud.android.lib.resources.files
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.utils.Log_OC
 import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -21,6 +23,8 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.TimeUnit
 
 class UploadFileRemoteOperationIT : AbstractIT() {
+    private val capability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).getResultData()
+
     @Test
     fun creationTime() {
         val imageFile = getFile("imageFile.png")
@@ -31,9 +35,53 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     @Test
     fun upload() {
+        val remotePath = "/test.md"
+        val createCollections = false
+        upload(remotePath, createCollections)
+    }
+
+    @Test
+    fun uploadAutoCreateFolderFlat() {
+        if (!capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_32)) {
+            Log_OC.i(TAG, "Ignoring test due to unsupported Nextcloud version")
+            return
+        }
+
+        val remotePath = "/testFolderFlat.md"
+        val createCollections = true
+        upload(remotePath, createCollections)
+    }
+
+    @Test
+    fun uploadAutoCreateFolder() {
+        if (!capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_32)) {
+            Log_OC.i(TAG, "Ignoring test due to unsupported Nextcloud version")
+            return
+        }
+
+        val remotePath = "/someFolder/testInFolder.md"
+        val createCollections = true
+        upload(remotePath, createCollections)
+    }
+
+    @Test
+    fun uploadAutoCreateFolderTree() {
+        if (!capability.version.isNewerOrEqual(NextcloudVersion.nextcloud_32)) {
+            Log_OC.i(TAG, "Ignoring test due to unsupported Nextcloud version")
+            return
+        }
+
+        val remotePath = "/someFolder/someSubfolder/testInSubfolder.md"
+        val createCollections = true
+        upload(remotePath, createCollections)
+    }
+
+    private fun upload(
+        remotePath: String,
+        createCollections: Boolean
+    ) {
         // create file
         val filePath = createFile("text")
-        val remotePath = "/test.md"
 
         val creationTimestamp = getCreationTimestamp(File(filePath))
         val sut =
@@ -44,7 +92,8 @@ class UploadFileRemoteOperationIT : AbstractIT() {
                 "",
                 RANDOM_MTIME,
                 creationTimestamp,
-                true
+                true,
+                createCollections
             )
         val uploadTimestamp = System.currentTimeMillis() / MILLI_TO_SECOND
 
@@ -95,5 +144,6 @@ class UploadFileRemoteOperationIT : AbstractIT() {
 
     companion object {
         const val TIME_OFFSET = 10
+        private val TAG = UploadFileRemoteOperationIT::class.simpleName
     }
 }
