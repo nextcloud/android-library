@@ -93,7 +93,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
             creationTimestamp,
             null,
             disableRetries,
-            false);
+            true);
     }
 
     public UploadFileRemoteOperation(String localPath,
@@ -132,7 +132,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                 mimeType,
                 lastModificationTimestamp,
                 disableRetries,
-                false);
+                true);
     }
 
     public UploadFileRemoteOperation(String localPath,
@@ -174,7 +174,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
             creationTimestamp,
             token,
             disableRetries,
-            false);
+            true);
     }
 
     public UploadFileRemoteOperation(String localPath,
