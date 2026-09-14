@@ -54,9 +54,9 @@ class DeleteTagRemoteOperationIT : AbstractIT() {
         )
 
         // verify the tag is on the folder
-        var rootMetadata = ReadFolderRemoteOperation("/").execute(client)
+        var rootMetadata = ReadFolderRemoteOperation("/").execute(nextcloudClient)
         var folderTags =
-            (rootMetadata.data as ArrayList<RemoteFile>)
+            rootMetadata.resultData
                 .find { it.remotePath == folder }
                 ?.tags
         assertEquals(1, folderTags?.size)
@@ -70,9 +70,9 @@ class DeleteTagRemoteOperationIT : AbstractIT() {
         )
 
         // verify the tag is no longer on the folder
-        rootMetadata = ReadFolderRemoteOperation("/").execute(client)
+        rootMetadata = ReadFolderRemoteOperation("/").execute(nextcloudClient)
         folderTags =
-            (rootMetadata.data as ArrayList<RemoteFile>)
+            rootMetadata.resultData
                 .find { it.remotePath == folder }
                 ?.tags
         assertTrue(folderTags.isNullOrEmpty())

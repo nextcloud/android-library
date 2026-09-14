@@ -72,6 +72,7 @@ public abstract class AbstractIT {
     public static OwnCloudClient client;
     public static OwnCloudClient client2;
     protected static NextcloudClient nextcloudClient;
+    protected static NextcloudClient nextcloudClient2;
     protected static Context context;
     protected static Uri url;
 
@@ -111,6 +112,9 @@ public abstract class AbstractIT {
         String userId = loginName; // for test same as userId
         String credentials = Credentials.basic(loginName, password);
         nextcloudClient = new NextcloudClient(url, userId, credentials, context);
+
+        String credentials2 = Credentials.basic(loginName2, password2);
+        nextcloudClient2 = new NextcloudClient(url, loginName2, credentials2, context);
 
         waitForServer(client, url);
         testConnection();
@@ -262,20 +266,15 @@ public abstract class AbstractIT {
 
     @After
     public void after() {
-        removeOnClient(client);
-        removeOnClient(client2);
+        removeOnClient(nextcloudClient);
+        removeOnClient(nextcloudClient2);
     }
 
-    private void removeOnClient(OwnCloudClient client) {
-        final var result = new ReadFolderRemoteOperation("/").execute(client);
+    private void removeOnClient(NextcloudClient nextcloudClient) {
+        final var result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.getLogMessage(context), result.isSuccess());
 
-        for (Object object : result.getData()) {
-            if (!(object instanceof RemoteFile remoteFile)) {
-                Log_OC.d(TAG, "Skipping removeOnClient: not instance of RemoteFile");
-                continue;
-            }
-
+        for (RemoteFile remoteFile : result.getResultData()) {
             String remotePath = remoteFile.getRemotePath();
 
             if ("/".equals(remotePath) || remoteFile.getMountType() == WebdavEntry.MountType.GROUP) {
@@ -284,7 +283,7 @@ public abstract class AbstractIT {
             }
 
             if (remoteFile.isEncrypted()) {
-                assertTrue(toggleEncryptionRemoteFile(remoteFile));
+                assertTrue(toggleEncryptionRemoteFile(remoteFile, nextcloudClient));
             }
 
             if (remoteFile.isLocked() && remotePath != null) {
@@ -299,9 +298,9 @@ public abstract class AbstractIT {
         Log_OC.d(TAG, "KeyStore file deletion result: " + isKeyStoreDeleted);
     }
 
-    private boolean toggleEncryptionRemoteFile(RemoteFile remoteFile) {
+    private boolean toggleEncryptionRemoteFile(RemoteFile remoteFile, NextcloudClient nextcloudClient) {
         final var operation = new ToggleEncryptionRemoteOperation(remoteFile.getLocalId(), remoteFile.getRemotePath(), false);
-        final var result = operation.execute(client);
+        final var result = operation.execute(nextcloudClient);
         return result.isSuccess();
     }
 

@@ -17,7 +17,7 @@ import com.owncloud.android.AbstractIT;
 import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.ReadFolderRemoteOperation;
+import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation;
 
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class GenerateAppPasswordRemoteOperationIT extends AbstractIT {
 
         client.setCredentials(newOwnCloudCredentials);
 
-        assertTrue(new ReadFolderRemoteOperation("/").execute(client).isSuccess());
+        assertTrue(new ReadFileRemoteOperation("/").execute(client).isSuccess());
 
         // using app password to generate new password should fail
         assertFalse(new GenerateAppPasswordRemoteOperation().execute(client).isSuccess());

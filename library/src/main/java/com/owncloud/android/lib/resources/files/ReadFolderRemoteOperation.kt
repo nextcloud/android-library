@@ -7,7 +7,8 @@
  */
 package com.owncloud.android.lib.resources.files
 
-import com.owncloud.android.lib.common.OwnCloudClient
+import com.nextcloud.common.NextcloudClient
+import com.nextcloud.operations.PropfindMethod
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavUtils
 import com.owncloud.android.lib.common.operations.RemoteOperation
@@ -17,59 +18,65 @@ import com.owncloud.android.lib.resources.files.model.RemoteFile
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.jackrabbit.webdav.DavConstants
 import org.apache.jackrabbit.webdav.MultiStatus
-import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
+import org.apache.jackrabbit.webdav.property.PropfindInfo
+import org.apache.jackrabbit.webdav.xml.DomUtil
+import java.io.ByteArrayOutputStream
 
 class ReadFolderRemoteOperation(
     private val remotePath: String
-) : RemoteOperation<Any>() {
-    @Deprecated("Deprecated in Java")
-    @Suppress("TooGenericExceptionCaught", "DEPRECATION")
-    override fun run(client: OwnCloudClient): RemoteOperationResult<Any> {
-        var query: PropFindMethod? = null
+) : RemoteOperation<List<RemoteFile>>() {
+    @Suppress("TooGenericExceptionCaught")
+    override fun run(client: NextcloudClient): RemoteOperationResult<List<RemoteFile>> {
+        val method =
+            PropfindMethod(client.getFilesDavUri(remotePath), false, buildPropfindRequestBody(), DavConstants.DEPTH_1)
 
         val result =
             try {
-                query =
-                    PropFindMethod(
-                        client.getFilesDavUri(remotePath),
-                        WebdavUtils.getAllPropSet(),
-                        DavConstants.DEPTH_1
-                    )
-                val status = client.executeMethod(query)
+                val status = client.execute(method)
 
-                if (status == HttpStatus.SC_MULTI_STATUS || status == HttpStatus.SC_OK) {
-                    val folderAndFiles = readData(query.responseBodyAsMultiStatus, client)
-                    RemoteOperationResult<Any>(true, query).apply { data = folderAndFiles }
-                } else {
-                    client.exhaustResponse(query.responseBodyAsStream)
-                    RemoteOperationResult(false, query)
+                if (status != HttpStatus.SC_MULTI_STATUS && status != HttpStatus.SC_OK) {
+                    return RemoteOperationResult(false, method)
                 }
-            } catch (e: OutOfMemoryError) {
-                Log_OC.e(TAG, "Not enough memory to read the content of $remotePath", e)
-                RemoteOperationResult(RemoteOperationResult.ResultCode.OUT_OF_MEMORY)
+
+                val document = DomUtil.parseDocument(method.getResponseBodyAsStream())
+                val multiStatus = MultiStatus.createFromXml(document.documentElement)
+                val davUriPath = client.filesDavUri.encodedPath.orEmpty()
+                RemoteOperationResult<List<RemoteFile>>(true, method).apply {
+                    resultData = readData(multiStatus, davUriPath)
+                }
             } catch (e: Exception) {
                 RemoteOperationResult(e)
             } finally {
-                query?.releaseConnection()
+                method.releaseConnection()
             }
 
         return result.also { log(it) }
+    }
+
+    private fun buildPropfindRequestBody(): ByteArray {
+        val propfindInfo = PropfindInfo(DavConstants.PROPFIND_BY_PROPERTY, WebdavUtils.getAllPropSet())
+        val document = DomUtil.createDocument()
+        document.appendChild(propfindInfo.toXml(document))
+
+        return ByteArrayOutputStream().use {
+            DomUtil.transformDocument(document, it)
+            it.toByteArray()
+        }
     }
 
     fun isMultiStatus(status: Int): Boolean = status == HttpStatus.SC_MULTI_STATUS
 
     private fun readData(
         remoteData: MultiStatus,
-        client: OwnCloudClient
-    ): ArrayList<Any> {
+        davUriPath: String
+    ): ArrayList<RemoteFile> {
         val responses = remoteData.responses
-        val davUriPath = client.filesDavUri.encodedPath.orEmpty()
 
         return responses.mapTo(ArrayList(responses.size)) { RemoteFile(WebdavEntry(it, davUriPath)) }
     }
 
     @Suppress("DEPRECATION")
-    private fun log(result: RemoteOperationResult<Any>) {
+    private fun log(result: RemoteOperationResult<List<RemoteFile>>) {
         val message = "Synchronized $remotePath: ${result.logMessage}"
         when {
             result.isSuccess -> Log_OC.i(TAG, message)
