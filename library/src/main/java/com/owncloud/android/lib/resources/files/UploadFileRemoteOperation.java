@@ -45,6 +45,8 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     protected static final String RESULT_ETAG_HEADER = "etag";
     protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
     protected static final String OC_X_OC_CTIME_HEADER = "X-OC-Ctime";
+    protected static final String NC_X_NC_WEBDAV_AUTO_MKCOL = "X-NC-WebDAV-Auto-Mkcol";
+    protected static final String NC_X_NC_WEBDAV_AUTO_MKCOL_VALUE = "1";
 
     protected String localPath;
     protected String remotePath;
@@ -52,6 +54,7 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
     protected long lastModificationTimestamp; // must be in seconds, according to UNIX time
     protected Long creationTimestamp = null;
     protected boolean disableRetries = false;
+    protected boolean createCollections = false;
     PutMethod putMethod = null;
     private String requiredEtag = null;
     String token = null;
@@ -83,13 +86,33 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      Long creationTimestamp,
                                      boolean disableRetries) {
         this(localPath,
+            remotePath,
+            mimeType,
+            requiredEtag,
+            lastModificationTimestamp,
+            creationTimestamp,
+            null,
+            disableRetries,
+            true);
+    }
+
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
+                                     String requiredEtag,
+                                     long lastModificationTimestamp,
+                                     Long creationTimestamp,
+                                     boolean disableRetries,
+                                     boolean createCollections) {
+        this(localPath,
                 remotePath,
                 mimeType,
                 requiredEtag,
                 lastModificationTimestamp,
                 creationTimestamp,
                 null,
-                disableRetries);
+                disableRetries,
+                createCollections);
     }
 
     public UploadFileRemoteOperation(String localPath,
@@ -104,11 +127,26 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      String mimeType,
                                      long lastModificationTimestamp,
                                      boolean disableRetries) {
+        this(localPath,
+                remotePath,
+                mimeType,
+                lastModificationTimestamp,
+                disableRetries,
+                true);
+    }
+
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
+                                     long lastModificationTimestamp,
+                                     boolean disableRetries,
+                                     boolean createCollections) {
         this.localPath = localPath;
         this.remotePath = remotePath;
         this.mimeType = mimeType;
         this.lastModificationTimestamp = lastModificationTimestamp;
         this.disableRetries = disableRetries;
+        this.createCollections = createCollections;
     }
 
     public UploadFileRemoteOperation(String localPath,
@@ -128,10 +166,31 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
                                      Long creationTimestamp,
                                      String token,
                                      boolean disableRetries) {
+        this(localPath,
+            remotePath,
+            mimeType,
+            requiredEtag,
+            lastModificationTimestamp,
+            creationTimestamp,
+            token,
+            disableRetries,
+            true);
+    }
+
+    public UploadFileRemoteOperation(String localPath,
+                                     String remotePath,
+                                     String mimeType,
+                                     String requiredEtag,
+                                     long lastModificationTimestamp,
+                                     Long creationTimestamp,
+                                     String token,
+                                     boolean disableRetries,
+                                     boolean createCollections) {
         this(localPath, remotePath, mimeType, lastModificationTimestamp, disableRetries);
         this.requiredEtag = requiredEtag;
         this.token = token;
         this.creationTimestamp = creationTimestamp;
+        this.createCollections = createCollections;
     }
 
     @Override
@@ -208,6 +267,10 @@ public class UploadFileRemoteOperation extends RemoteOperation<String> {
 
             if (creationTimestamp != null && creationTimestamp > 0) {
                 putMethod.addRequestHeader(OC_X_OC_CTIME_HEADER, String.valueOf(creationTimestamp));
+            }
+
+            if (createCollections) {
+                putMethod.addRequestHeader(NC_X_NC_WEBDAV_AUTO_MKCOL, NC_X_NC_WEBDAV_AUTO_MKCOL_VALUE);
             }
 
             putMethod.setRequestEntity(entity);
