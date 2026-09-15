@@ -7,10 +7,17 @@
 
 package com.nextcloud.common
 
+import com.nextcloud.common.SessionTimeOut.Companion.DEFAULT_CONNECTION_TIME_OUT
+import com.nextcloud.common.SessionTimeOut.Companion.DEFAULT_READ_TIME_OUT
+
 data class SessionTimeOut(
     val readTimeOut: Int,
     val connectionTimeOut: Int
-)
+) {
+    companion object {
+        const val DEFAULT_READ_TIME_OUT = 60_000
+        const val DEFAULT_CONNECTION_TIME_OUT = 15_000
+    }
+}
 
-@Suppress("Detekt.MagicNumber")
-val defaultSessionTimeOut = SessionTimeOut(60000, 15000)
+val defaultSessionTimeOut = SessionTimeOut(DEFAULT_READ_TIME_OUT, DEFAULT_CONNECTION_TIME_OUT)
