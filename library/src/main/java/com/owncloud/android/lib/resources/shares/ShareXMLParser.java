@@ -64,6 +64,7 @@ public class ShareXMLParser {
 	private static final String NODE_SHARE_WITH_DISPLAY_NAME = "share_with_displayname";
 	private static final String NODE_NOTE = "note";
 	private static final String NODE_HIDE_DOWNLOAD = "hide_download";
+	private static final String NODE_SEND_PASSWORD_BY_TALK = "send_password_by_talk";
 	private static final String NODE_UID_OWNER = "uid_owner";
 	private static final String NODE_LABEL = "label";
 	private static final String NODE_HAS_PREVIEW = "has_preview";
@@ -387,6 +388,11 @@ public class ShareXMLParser {
 				case NODE_HIDE_DOWNLOAD:
 					boolean b = TRUE.equalsIgnoreCase(readNode(parser, NODE_HIDE_DOWNLOAD));
 					share.setHideFileDownload(b);
+					break;
+
+				case NODE_SEND_PASSWORD_BY_TALK:
+					share.setSendPasswordByTalk(
+						TRUE.equalsIgnoreCase(readNode(parser, NODE_SEND_PASSWORD_BY_TALK)));
 					break;
 
 				case NODE_UID_OWNER:

@@ -44,6 +44,7 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
     private static final String PARAM_PERMISSIONS = "permissions";
     private static final String PARAM_NOTE = "note";
     private static final String PARAM_HIDE_DOWNLOAD = "hideDownload";
+    private static final String PARAM_SEND_PASSWORD_BY_TALK = "sendPasswordByTalk";
     private static final String PARAM_LABEL = "label";
     private static final String FORMAT_EXPIRATION_DATE = "yyyy-MM-dd";
     private static final String ENTITY_CONTENT_TYPE = "application/json";
@@ -74,6 +75,11 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
      * Permission if file can be downloaded via share link (only for single file)
      */
     private Boolean hideFileDownload;
+
+    /**
+     * Enable or disable video verification via Nextcloud Talk before granting access to the share
+     */
+    private Boolean sendPasswordByTalk;
 
     private String note;
     private String label;
@@ -133,6 +139,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
         this.hideFileDownload = hideFileDownload;
     }
 
+    public void setSendPasswordByTalk(Boolean sendPasswordByTalk) {
+        this.sendPasswordByTalk = sendPasswordByTalk;
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
@@ -169,6 +179,10 @@ public class UpdateShareRemoteOperation extends RemoteOperation {
 
         if (hideFileDownload != null) {
             params.addProperty(PARAM_HIDE_DOWNLOAD, Boolean.toString(hideFileDownload));
+        }
+
+        if (sendPasswordByTalk != null) {
+            params.addProperty(PARAM_SEND_PASSWORD_BY_TALK, Boolean.toString(sendPasswordByTalk));
         }
 
         if (note != null) {
