@@ -92,10 +92,10 @@ public class CreateFolderRemoteOperationIT extends AbstractIT {
         RemoteOperationResult<String> result = new CreateFolderRemoteOperation(remotePath, true).execute(client);
         assertTrue(result.isSuccess());
 
-        RemoteOperationResult readResult = new ReadFileRemoteOperation(remotePath).execute(client);
+        RemoteOperationResult<RemoteFile> readResult = new ReadFileRemoteOperation(remotePath).execute(nextcloudClient);
         assertTrue(readResult.isSuccess());
 
-        String remoteId = ((RemoteFile) readResult.getData().get(0)).getRemoteId();
+        String remoteId = readResult.getResultData().getRemoteId();
         assertEquals(result.getResultData(), remoteId);
     }
 

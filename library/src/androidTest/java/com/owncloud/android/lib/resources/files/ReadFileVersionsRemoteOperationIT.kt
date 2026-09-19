@@ -8,7 +8,6 @@
 package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertEquals
@@ -33,7 +32,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
-        var remoteFile = ReadFileRemoteOperation(filePath).execute(client).data[0] as RemoteFile
+        var remoteFile = ReadFileRemoteOperation(filePath).execute(nextcloudClient).resultData
 
         var sutResult = ReadFileVersionsRemoteOperation(remoteFile.localId).execute(client)
 
@@ -64,7 +63,7 @@ class ReadFileVersionsRemoteOperationIT : AbstractIT() {
 
         assertTrue("Error uploading file $filePath: $uploadResult", uploadResult.isSuccess)
 
-        remoteFile = ReadFileRemoteOperation(filePath).execute(client).data[0] as RemoteFile
+        remoteFile = ReadFileRemoteOperation(filePath).execute(nextcloudClient).resultData
 
         sutResult = ReadFileVersionsRemoteOperation(remoteFile.localId).execute(client)
 

@@ -108,17 +108,17 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         // add colored tag to file
         val tagFolder = "/coloredFolder/"
         assertTrue(CreateFolderRemoteOperation(tagFolder, true).execute(client).isSuccess)
-        val folderMetadata = ReadFileRemoteOperation(tagFolder).execute(client)
+        val folderMetadata = ReadFileRemoteOperation(tagFolder).execute(nextcloudClient)
         assertTrue(
             PutTagRemoteOperation(
                 tag1.id,
-                (folderMetadata.data[0] as RemoteFile).localId
+                folderMetadata.resultData.localId
             ).execute(nextcloudClient).isSuccess
         )
         assertTrue(
             PutTagRemoteOperation(
                 tag2.id,
-                (folderMetadata.data[0] as RemoteFile).localId
+                folderMetadata.resultData.localId
             ).execute(nextcloudClient).isSuccess
         )
 

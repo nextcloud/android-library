@@ -94,6 +94,10 @@ public abstract class AbstractIT {
         String loginName = arguments.getString("TEST_SERVER_USERNAME");
         String password = arguments.getString("TEST_SERVER_PASSWORD");
 
+        // E2E server app checks for official NC client with >=3.13.0,
+        // and blocks all other clients, e.g. 3rd party apps using this lib
+        OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0");
+
         client = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client.setCredentials(new OwnCloudBasicCredentials(loginName, password));
         client.setUserId(loginName); // for test same as userId
@@ -105,8 +109,6 @@ public abstract class AbstractIT {
         client2 = OwnCloudClientFactory.createOwnCloudClient(url, context, true);
         client2.setCredentials(new OwnCloudBasicCredentials(loginName2, password2));
         client2.setUserId(loginName2); // for test same as userId
-
-        OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/1.0.0");
 
         String userId = loginName; // for test same as userId
         String credentials = Credentials.basic(loginName, password);

@@ -1,0 +1,39 @@
+/*
+ * Nextcloud Android Library
+ *
+ * SPDX-FileCopyrightText: 2026 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+ * SPDX-License-Identifier: MIT
+ */
+
+package com.owncloud.android.lib.resources.files.webdav
+
+import at.bitfire.dav4jvm.Property
+import at.bitfire.dav4jvm.PropertyFactory
+import at.bitfire.dav4jvm.XmlUtils
+import at.bitfire.dav4jvm.XmlUtils.NS_WEBDAV
+import com.owncloud.android.lib.common.network.WebdavUtils
+import org.xmlpull.v1.XmlPullParser
+
+class NCCreationDate private constructor(
+    val creationDate: Long
+) : Property {
+    class Factory : PropertyFactory {
+        override fun getName() = NAME
+
+        override fun create(parser: XmlPullParser): NCCreationDate {
+            XmlUtils.readText(parser)?.let { rawDate ->
+                val date = WebdavUtils.parseResponseDate(rawDate)
+                if (date != null) {
+                    return NCCreationDate(date.time / SECOND_IN_MILLIS)
+                }
+            }
+            return NCCreationDate(0)
+        }
+    }
+
+    companion object {
+        @JvmField
+        val NAME = Property.Name(NS_WEBDAV, "creationdate")
+        const val SECOND_IN_MILLIS = 1000
+    }
+}
