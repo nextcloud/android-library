@@ -26,6 +26,7 @@ import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation;
 import com.owncloud.android.lib.resources.status.NextcloudVersion;
 import com.owncloud.android.lib.resources.status.OCCapability;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class FileIT extends AbstractIT {
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
 
         // verify folder
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(path).execute(client).isSuccess());
@@ -71,7 +72,7 @@ public class FileIT extends AbstractIT {
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
 
         // verify folder
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // remove folder
         assertTrue(new RemoveFileRemoteOperation(top).execute(client).isSuccess());
@@ -94,17 +95,17 @@ public class FileIT extends AbstractIT {
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // verify
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        RemoteOperationResult<@NotNull List<? extends @NotNull RemoteFile>> result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
-        RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
+        RemoteFile parentFolder = result.getResultData().get(0);
         assertEquals("/", parentFolder.getRemotePath());
 
-        for (int i = 1; i < result.getData().size(); i++) {
-            RemoteFile child = (RemoteFile) result.getData().get(i);
+        for (int i = 1; i < result.getResultData().size(); i++) {
+            RemoteFile child = (RemoteFile) result.getResultData().get(i);
 
             if (path.equals(child.getRemotePath())) {
                 assertEquals(0, child.getSharees().length);
@@ -117,7 +118,7 @@ public class FileIT extends AbstractIT {
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         // share folder
         assertTrue(new CreateShareRemoteOperation(path,
@@ -129,7 +130,7 @@ public class FileIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         // verify
-        final var result = new ReadFolderRemoteOperation("/").execute(client);
+        final var result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
@@ -149,7 +150,7 @@ public class FileIT extends AbstractIT {
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         ShareeUser sharee = new ShareeUser("users", "", ShareType.GROUP);
 
@@ -169,7 +170,7 @@ public class FileIT extends AbstractIT {
                 .execute(client).isSuccess());
 
         // verify
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
@@ -190,7 +191,7 @@ public class FileIT extends AbstractIT {
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         ShareeUser sharee = new ShareeUser("user1", "User One", ShareType.USER);
 
@@ -204,7 +205,7 @@ public class FileIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         // verify
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
@@ -225,7 +226,7 @@ public class FileIT extends AbstractIT {
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         List<ShareeUser> sharees = new ArrayList<>();
         sharees.add(new ShareeUser("user1", "User One", ShareType.USER));
@@ -249,7 +250,7 @@ public class FileIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         // verify
-        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(client);
+        RemoteOperationResult result = new ReadFolderRemoteOperation("/").execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteFile parentFolder = (RemoteFile) result.getData().get(0);
@@ -273,7 +274,7 @@ public class FileIT extends AbstractIT {
         // create & verify folder
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
-        assertTrue(new ReadFolderRemoteOperation(path).execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation(path).execute(nextcloudClient).isSuccess());
 
         List<ShareeUser> sharees = new ArrayList<>();
         sharees.add(new ShareeUser("user1", "User One", ShareType.USER));
@@ -297,7 +298,7 @@ public class FileIT extends AbstractIT {
                            .execute(client).isSuccess());
 
         // verify
-        RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(client);
+        RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteFile folder = (RemoteFile) result.getData().get(0);
@@ -315,7 +316,7 @@ public class FileIT extends AbstractIT {
         String path = "/testFolder/";
         assertTrue(new CreateFolderRemoteOperation(path, true).execute(client).isSuccess());
 
-        RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(client);
+        RemoteOperationResult result = new ReadFolderRemoteOperation(path).execute(nextcloudClient);
         assertTrue(result.isSuccess());
 
         RemoteFile folder = (RemoteFile) result.getData().get(0);
