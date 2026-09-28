@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.github.bitfireAT:dav4jvm:3.0.2'
     // in transition phase, we use old and new libs
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.14.0'
-    implementation 'androidx.annotation:annotation:1.10.0'
+    implementation 'androidx.annotation:annotation:1.11.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
     implementation "androidx.core:core-ktx:1.19.0"
