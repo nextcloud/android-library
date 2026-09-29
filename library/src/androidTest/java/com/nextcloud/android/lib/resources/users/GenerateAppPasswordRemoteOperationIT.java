@@ -42,7 +42,7 @@ public class GenerateAppPasswordRemoteOperationIT extends AbstractIT {
 
         client.setCredentials(newOwnCloudCredentials);
 
-        assertTrue(new ReadFolderRemoteOperation("/").execute(client).isSuccess());
+        assertTrue(new ReadFolderRemoteOperation("/").execute(nextcloudClient).isSuccess());
 
         // using app password to generate new password should fail
         assertFalse(new GenerateAppPasswordRemoteOperation().execute(client).isSuccess());

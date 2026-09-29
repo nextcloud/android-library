@@ -9,11 +9,19 @@ package com.owncloud.android.lib.resources.files
 
 import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.files.model.RemoteFile
+import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.tags.CreateTagRemoteOperation
 import com.owncloud.android.lib.resources.tags.GetTagsRemoteOperation
+import com.owncloud.android.lib.resources.tags.GetTagsRemoteOperationIT.Companion.TAG_URL
 import com.owncloud.android.lib.resources.tags.PutTagRemoteOperation
+import junit.framework.TestCase
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.jackrabbit.webdav.client.methods.PropPatchMethod
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet
+import org.apache.jackrabbit.webdav.property.DavPropertySet
+import org.apache.jackrabbit.webdav.property.DefaultDavProperty
+import org.apache.jackrabbit.webdav.xml.Namespace
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -24,6 +32,7 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun readRemoteFolderWithContent() {
         val remotePath = "/test/"
 
@@ -37,65 +46,96 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        var result = ReadFolderRemoteOperation(remotePath).execute(client)
+        var result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertEquals(2, result.data.size)
+        assertEquals(2, result.resultData.size)
 
         // tag testing only on NC27+
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
         // Folder
-        var remoteFolder = result.data[0] as RemoteFile
+        var remoteFolder = result.resultData[0]
         assertEquals(remotePath, remoteFolder.remotePath)
-        assertEquals(0, remoteFolder.tags?.size)
+        assertEquals(0, remoteFolder.tags.size)
 
         // File
-        var remoteFile = result.data[1] as RemoteFile
+        var remoteFile = result.resultData[1]
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
-        assertEquals(0, remoteFile.tags?.size)
+        assertEquals(0, remoteFile.tags.size)
 
         // create tag
-        val tag1 = "a" + RandomStringGenerator.make(TAG_LENGTH)
-        val tag2 = "b" + RandomStringGenerator.make(TAG_LENGTH)
-        assertTrue(CreateTagRemoteOperation(tag1).execute(nextcloudClient).isSuccess)
-        assertTrue(CreateTagRemoteOperation(tag2).execute(nextcloudClient).isSuccess)
+        val name1 = "a" + RandomStringGenerator.make(TAG_LENGTH)
+        val color1 = "#001122"
+
+        val name2 = "b" + RandomStringGenerator.make(TAG_LENGTH)
+
+        assertTrue(CreateTagRemoteOperation(name1).execute(nextcloudClient).isSuccess)
+        assertTrue(CreateTagRemoteOperation(name2).execute(nextcloudClient).isSuccess)
 
         // list tags
         val tags = GetTagsRemoteOperation().execute(client).resultData
+        val tag1 = tags.find { it.name == name1 }
+        val tag2 = tags.find { it.name == name2 }
+
+        // add color
+        val newProps = DavPropertySet()
+        newProps.add(
+            DefaultDavProperty(
+                "nc:color",
+                color1.replace("#", ""),
+                Namespace.getNamespace(WebdavEntry.NAMESPACE_NC)
+            )
+        )
+        val propPatchMethod =
+            PropPatchMethod(
+                client2.baseUri.toString() + TAG_URL + tag1?.id,
+                newProps,
+                DavPropertyNameSet()
+            )
+        val propPatchStatus = client2.executeMethod(propPatchMethod)
+        propPatchMethod.releaseConnection()
+        TestCase.assertEquals(HttpStatus.SC_MULTI_STATUS, propPatchStatus)
 
         // add tag
         assertTrue(
             PutTagRemoteOperation(
-                tags[0].id,
+                tag1?.id.orEmpty(),
                 remoteFile.localId
             ).execute(nextcloudClient).isSuccess
         )
         assertTrue(
             PutTagRemoteOperation(
-                tags[1].id,
+                tag2?.id.orEmpty(),
                 remoteFile.localId
             ).execute(nextcloudClient).isSuccess
         )
 
         // check again
-        result = ReadFolderRemoteOperation(remotePath).execute(client)
+        result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertEquals(2, result.data.size)
+        assertEquals(2, result.resultData.size)
 
         // Folder
-        remoteFolder = result.data[0] as RemoteFile
+        remoteFolder = result.resultData[0]
         assertEquals(remotePath, remoteFolder.remotePath)
-        assertEquals(0, remoteFolder.tags?.size)
+        assertEquals(0, remoteFolder.tags.size)
 
         // File
-        remoteFile = result.data[1] as RemoteFile
+        remoteFile = result.resultData[1]
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
-        assertEquals(2, remoteFile.tags?.size)
+        assertEquals(2, remoteFile.tags.size)
 
-        remoteFile.tags?.sortBy { it?.name }
-        assertEquals(tag1, remoteFile.tags?.get(0)?.name)
-        assertEquals(tag2, remoteFile.tags?.get(1)?.name)
+        remoteFile.tags.sortBy { it?.name }
+
+        // tag1
+        val resultTag1 = remoteFile.tags[0]
+        assertEquals(name1, resultTag1?.name)
+        assertEquals(color1, resultTag1?.color)
+
+        // tag2
+        val resultTag2 = remoteFile.tags[1]
+        assertEquals(name2, resultTag2?.name)
     }
 }
