@@ -8,7 +8,6 @@
 package com.owncloud.android.lib.resources.files
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.resources.e2ee.ToggleEncryptionRemoteOperation
 import com.owncloud.android.lib.resources.files.model.GeoLocation
 import com.owncloud.android.lib.resources.files.model.ImageDimension
@@ -23,14 +22,24 @@ import org.junit.Test
 class ReadFileRemoteOperationIT : AbstractIT() {
     @Test
     fun readRemoteFolder() {
-        val remotePath = "/test/"
+        val remotePath = "/folder/"
 
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
-
+        // use ownCloud client for reference
+        var result = ReadFileRemoteOperation(remotePath).execute(client)
         assertTrue(result.isSuccess)
-        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+        val ocClientFile = result.resultData
+        assertEquals(remotePath, ocClientFile.remotePath)
+
+        result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        assertTrue(result.isSuccess)
+        val ncClientFile = result.resultData
+        assertEquals(remotePath, result.resultData.remotePath)
+
+        assertEquals(ocClientFile.modifiedTimestamp, ncClientFile.modifiedTimestamp)
+
+        assertTrue(remoteFilesEqual(ocClientFile, ncClientFile))
     }
 
     @Test
@@ -68,13 +77,13 @@ class ReadFileRemoteOperationIT : AbstractIT() {
             ).execute(client).isSuccess
         )
 
-        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(client)
+        val movieFileResult = ReadFileRemoteOperation(movieFilePath).execute(nextcloudClient)
         assertTrue(movieFileResult.isSuccess)
-        val movieRemoteFile = movieFileResult.data[0] as RemoteFile
+        val movieRemoteFile = movieFileResult.resultData
 
-        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(client)
+        val livePhotoResult = ReadFileRemoteOperation(livePhotoPath).execute(nextcloudClient)
         assertTrue(livePhotoResult.isSuccess)
-        val livePhotoRemoteFile = livePhotoResult.data[0] as RemoteFile
+        val livePhotoRemoteFile = livePhotoResult.resultData
 
         assertEquals(livePhotoRemoteFile.livePhoto, movieRemoteFile.remotePath)
         assertTrue(movieRemoteFile.hidden)
@@ -91,10 +100,18 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
-
+        // use ownCloud client for reference
+        var result = ReadFileRemoteOperation(remotePath).execute(client)
         assertTrue(result.isSuccess)
-        assertEquals(remotePath, (result.data[0] as RemoteFile).remotePath)
+        val ocClientFile = result.resultData
+        assertEquals(remotePath, ocClientFile.remotePath)
+
+        result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        assertTrue(result.isSuccess)
+        val ncClientFile = result.resultData
+        assertEquals(remotePath, result.resultData.remotePath)
+
+        assertTrue(remoteFilesEqual(ocClientFile, ncClientFile))
     }
 
     @Test
@@ -108,10 +125,10 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        val result = ReadFileRemoteOperation(remotePath).execute(client)
+        val result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        val remoteFile = result.data[0] as RemoteFile
+        val remoteFile = result.resultData
 
         @Suppress("Detekt.MagicNumber")
         if (isServerAtLeast(NextcloudVersion.nextcloud_23)) {
@@ -134,15 +151,10 @@ class ReadFileRemoteOperationIT : AbstractIT() {
     @Test
     fun readEncryptedState() {
         val remotePath = "/testEncryptedFolder/"
-
-        // E2E server app checks for official NC client with >=3.13.0,
-        // and blocks all other clients, e.g. 3rd party apps using this lib
-        OwnCloudClientManagerFactory.setUserAgent("Mozilla/5.0 (Android) Nextcloud-android/3.13.0")
-
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
 
-        var result = ReadFileRemoteOperation(remotePath).execute(client)
-        val remoteFile = result.data[0] as RemoteFile
+        var result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        val remoteFile = result.resultData
 
         assertTrue(result.isSuccess)
         assertFalse(remoteFile.isEncrypted)
@@ -159,7 +171,47 @@ class ReadFileRemoteOperationIT : AbstractIT() {
         )
 
         // re-read
-        result = ReadFileRemoteOperation(remotePath).execute(client)
-        assertEquals(true, (result.data[0] as RemoteFile).isEncrypted)
+        result = ReadFileRemoteOperation(remotePath).execute(nextcloudClient)
+        assertEquals(true, result.resultData.isEncrypted)
     }
+
+    private fun remoteFilesEqual(
+        a: RemoteFile,
+        b: RemoteFile
+    ): Boolean =
+        a.remotePath == b.remotePath &&
+            a.mimeType == b.mimeType &&
+            a.length == b.length &&
+            a.creationTimestamp == b.creationTimestamp &&
+            a.modifiedTimestamp == b.modifiedTimestamp &&
+            a.uploadTimestamp == b.uploadTimestamp &&
+            a.etag == b.etag &&
+            a.permissions == b.permissions &&
+            a.localId == b.localId &&
+            a.remoteId == b.remoteId &&
+            a.size == b.size &&
+            a.isFavorite == b.isFavorite &&
+            a.isEncrypted == b.isEncrypted &&
+            a.mountType == b.mountType &&
+            a.ownerId == b.ownerId &&
+            a.ownerDisplayName == b.ownerDisplayName &&
+            a.unreadCommentsCount == b.unreadCommentsCount &&
+            a.isHasPreview == b.isHasPreview &&
+            a.note == b.note &&
+            a.sharees.contentEquals(b.sharees) &&
+            a.richWorkspace == b.richWorkspace &&
+            a.isLocked == b.isLocked &&
+            a.lockType == b.lockType &&
+            a.lockOwner == b.lockOwner &&
+            a.lockOwnerDisplayName == b.lockOwnerDisplayName &&
+            a.lockTimestamp == b.lockTimestamp &&
+            a.lockOwnerEditor == b.lockOwnerEditor &&
+            a.lockTimeout == b.lockTimeout &&
+            a.lockToken == b.lockToken &&
+            a.tags.contentEquals(b.tags) &&
+            a.imageDimension == b.imageDimension &&
+            a.geoLocation == b.geoLocation &&
+            a.hidden == b.hidden &&
+            a.livePhoto == b.livePhoto &&
+            a.fileDownloadLimit == b.fileDownloadLimit
 }

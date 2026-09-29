@@ -14,7 +14,6 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
 import junit.framework.TestCase
 import org.junit.Assert
@@ -33,8 +32,7 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
         // create folder
         val folder = "/" + make(20) + "/"
         TestCase.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
-        val remoteFolder =
-            ReadFileRemoteOperation(folder).execute(client).getSingleData() as RemoteFile?
+        val remoteFolder = ReadFileRemoteOperation(folder).execute(nextcloudClient).resultData
 
         TestCase.assertNotNull(remoteFolder)
 
@@ -117,8 +115,7 @@ class UpdateMetadataRemoteOperationIT : AbstractIT() {
         // create folder
         val folder = "/" + make(20) + "/"
         TestCase.assertTrue(CreateFolderRemoteOperation(folder, true).execute(client).isSuccess)
-        val remoteFolder =
-            ReadFileRemoteOperation(folder).execute(client).getSingleData() as RemoteFile?
+        val remoteFolder = ReadFileRemoteOperation(folder).execute(nextcloudClient).resultData
 
         TestCase.assertNotNull(remoteFolder)
 

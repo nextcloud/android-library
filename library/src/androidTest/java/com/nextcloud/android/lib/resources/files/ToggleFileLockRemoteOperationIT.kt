@@ -11,7 +11,6 @@ import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.UploadFileRemoteOperation
 import com.owncloud.android.lib.resources.files.model.FileLockType
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion.Companion.nextcloud_24
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -34,20 +33,20 @@ class ToggleFileLockRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
         val initialFile =
-            ReadFileRemoteOperation(remotePath).execute(client).singleData as RemoteFile
+            ReadFileRemoteOperation(remotePath).execute(nextcloudClient).resultData
         assertFalse("File shouldn't be locked", initialFile.isLocked)
 
         // lock file
         val lockResult = ToggleFileLockRemoteOperation(toLock = true, remotePath).execute(nextcloudClient)
         assertTrue("File lock failed", lockResult.isSuccess)
-        val lockFile = ReadFileRemoteOperation(remotePath).execute(client).singleData as RemoteFile
+        val lockFile = ReadFileRemoteOperation(remotePath).execute(nextcloudClient).resultData
         assertTrue("File should be locked", lockFile.isLocked)
         assertEquals("Wrong lock type", FileLockType.MANUAL, lockFile.lockType)
 
         // unlock again
         val unlockResult = ToggleFileLockRemoteOperation(toLock = false, remotePath).execute(nextcloudClient)
         assertTrue("File unlock failed", unlockResult.isSuccess)
-        val unlockFile = ReadFileRemoteOperation(remotePath).execute(client).singleData as RemoteFile
+        val unlockFile = ReadFileRemoteOperation(remotePath).execute(nextcloudClient).resultData
         assertFalse("File shouldn't be locked", unlockFile.isLocked)
     }
 }
