@@ -9,7 +9,6 @@ package com.owncloud.android.lib.resources.files
 
 import com.nextcloud.test.RandomStringGenerator
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import com.owncloud.android.lib.resources.tags.CreateTagRemoteOperation
 import com.owncloud.android.lib.resources.tags.GetTagsRemoteOperation
@@ -37,21 +36,21 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
                 .isSuccess
         )
 
-        var result = ReadFolderRemoteOperation(remotePath).execute(client)
+        var result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertEquals(2, result.data.size)
+        assertEquals(2, result.resultData.size)
 
         // tag testing only on NC27+
         testOnlyOnServer(NextcloudVersion.nextcloud_27)
 
         // Folder
-        var remoteFolder = result.data[0] as RemoteFile
+        var remoteFolder = result.resultData[0]
         assertEquals(remotePath, remoteFolder.remotePath)
         assertEquals(0, remoteFolder.tags?.size)
 
         // File
-        var remoteFile = result.data[1] as RemoteFile
+        var remoteFile = result.resultData[1]
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
         assertEquals(0, remoteFile.tags?.size)
 
@@ -79,18 +78,18 @@ class ReadFolderRemoteOperationIT : AbstractIT() {
         )
 
         // check again
-        result = ReadFolderRemoteOperation(remotePath).execute(client)
+        result = ReadFolderRemoteOperation(remotePath).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        assertEquals(2, result.data.size)
+        assertEquals(2, result.resultData.size)
 
         // Folder
-        remoteFolder = result.data[0] as RemoteFile
+        remoteFolder = result.resultData[0]
         assertEquals(remotePath, remoteFolder.remotePath)
         assertEquals(0, remoteFolder.tags?.size)
 
         // File
-        remoteFile = result.data[1] as RemoteFile
+        remoteFile = result.resultData[1]
         assertEquals(remotePath + "1.txt", remoteFile.remotePath)
         assertEquals(2, remoteFile.tags?.size)
 
