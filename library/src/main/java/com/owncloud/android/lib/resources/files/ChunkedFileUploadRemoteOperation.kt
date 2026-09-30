@@ -324,7 +324,7 @@ class ChunkedFileUploadRemoteOperation
                     return if (onWifiConnection) DEFAULT_CHUNK_SIZE else MIN_CHUNK_SIZE
                 }
 
-                return serverMaxChunkSize
+                return serverMaxChunkSize.coerceAtLeast(MIN_CHUNK_SIZE)
             }
 
             private const val ASSEMBLED_FILE_SUFFIX = "/.file"

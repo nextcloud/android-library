@@ -116,6 +116,26 @@ class ChunkedFileUploadRemoteOperationTest {
     }
 
     @Test
+    fun testChunkSize() {
+        val min = ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE
+        val default = ChunkedFileUploadRemoteOperation.DEFAULT_CHUNK_SIZE
+        val unknown = ChunkedFileUploadRemoteOperation.SERVER_MAX_CHUNK_SIZE_UNKNOWN
+
+        // unknown server value falls back to defaults
+        assertEquals(default, ChunkedFileUploadRemoteOperation.chunkSize(true, unknown))
+        assertEquals(min, ChunkedFileUploadRemoteOperation.chunkSize(false, unknown))
+        assertEquals(default, ChunkedFileUploadRemoteOperation.chunkSize(true, 0))
+
+        // misconfigured tiny server value is clamped to the minimum
+        assertEquals(min, ChunkedFileUploadRemoteOperation.chunkSize(true, 10))
+        assertEquals(min, ChunkedFileUploadRemoteOperation.chunkSize(false, min - 1))
+
+        // sane server values are used as-is
+        assertEquals(min, ChunkedFileUploadRemoteOperation.chunkSize(true, min))
+        assertEquals(100 * MB, ChunkedFileUploadRemoteOperation.chunkSize(false, 100 * MB))
+    }
+
+    @Test
     fun testChunking() {
         listOf(1 * MB, 10 * MB, 100 * MB, 1 * GB).forEach { length ->
             checkChunks(length, ChunkedFileUploadRemoteOperation.MIN_CHUNK_SIZE, 0)
