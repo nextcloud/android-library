@@ -18,7 +18,7 @@ buildscript {
         junit_version = '4.13.2'
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.4.0'
+        classpath 'com.android.tools.build:gradle:9.4.1'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.11'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
@@ -65,7 +65,6 @@ dependencies {
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
     api 'com.squareup.okhttp3:okhttp:5.5.0'
     api 'com.github.bitfireAT:dav4jvm:2.2.1'
-    // Retrofit, showcased as an alternative to the GetMethod/OkHttpMethodBase pattern
     api 'com.squareup.retrofit2:retrofit:3.0.0'
     api 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0'
     // in transition phase, we use old and new libs
