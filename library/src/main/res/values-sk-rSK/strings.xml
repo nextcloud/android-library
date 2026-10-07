@@ -32,5 +32,5 @@
     <string name="unexpected_exception">Neočakávaná výnimka</string>
     <string name="unexpected_webdav_exception">Neočakávaná výnimka WebDAV</string>
     <string name="unknown_host_exception">Neznáma výnimka hostiteľa</string>
-    <string name="unrecovered_transport_exception">Neznáma výnimka pri transporte</string>
+    <string name="unrecovered_transport_exception">Nezotavená výnimka pri transporte</string>
 </resources>
