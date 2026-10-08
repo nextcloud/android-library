@@ -123,9 +123,9 @@ class GetTagsRemoteOperationIT : AbstractIT() {
         )
 
         // read metadata
-        val rootMetadata = ReadFolderRemoteOperation("/").execute(client)
+        val rootMetadata = ReadFolderRemoteOperation("/").execute(nextcloudClient)
         val tags =
-            (rootMetadata.data as ArrayList<RemoteFile>)
+            rootMetadata.resultData
                 .find { it.remotePath == tagFolder }
                 ?.tags
         tags?.sortBy { it?.color }
