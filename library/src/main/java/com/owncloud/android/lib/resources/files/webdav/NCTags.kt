@@ -79,16 +79,12 @@ class NCTags private constructor(
             while (!(eventType == XmlPullParser.END_TAG && parser.depth == depth)) {
                 if (eventType != XmlPullParser.TEXT) {
                     when (parser.propertyName().toString()) {
-                        "http://nextcloud.org/ns:id" -> {
-                            id = readText(parser).orEmpty()
-                        }
-
-                        "http://nextcloud.org/ns:name" -> {
+                        "http://nextcloud.org/ns:system-tag" -> {
+                            color = "#" + parser.getAttributeValue("http://nextcloud.org/ns", "color")
+                            id = parser.getAttributeValue("http://owncloud.org/ns", "id")
                             name = readText(parser).orEmpty()
-                        }
 
-                        "http://nextcloud.org/ns:color" -> {
-                            color = readText(parser).orEmpty()
+                            return Tag(id, name, color)
                         }
                     }
                 }
