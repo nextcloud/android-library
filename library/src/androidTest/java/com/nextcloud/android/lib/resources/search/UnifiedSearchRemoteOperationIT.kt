@@ -10,7 +10,6 @@ package com.nextcloud.android.lib.resources.search
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.files.CreateFolderRemoteOperation
 import com.owncloud.android.lib.resources.files.ReadFileRemoteOperation
-import com.owncloud.android.lib.resources.files.model.RemoteFile
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -48,8 +47,8 @@ class UnifiedSearchRemoteOperationIT : AbstractIT() {
         assertTrue(CreateFolderRemoteOperation(remotePath, true).execute(client).isSuccess)
         val remoteFile =
             ReadFileRemoteOperation(remotePath)
-                .execute(client)
-                .data[0] as RemoteFile
+                .execute(nextcloudClient)
+                .resultData
         val fileId = remoteFile.localId
 
         val result = UnifiedSearchRemoteOperation("files", "test").execute(nextcloudClient)
