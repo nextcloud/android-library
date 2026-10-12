@@ -16,7 +16,7 @@
     <string name="malformed_url_exception">Výnimka s chybnou adresou URL</string>
     <string name="message_install_client_cert">Chcete nainštalovať TLS certifikát klienta\?</string>
     <string name="no_network_connection">Bez sieťového pripojenia</string>
-    <string name="notification_channel_name">Pripojenie Nextcloud</string>
+    <string name="notification_channel_name">Pripojenie k Nextcloudu</string>
     <string name="notification_message_select_client_cert">Vybrať klientský certifikát pre %1$s:%2$d</string>
     <string name="notification_title_select_client_cert">Vybrať klientský certifikát</string>
     <string name="operation_cancelled">Operácia bola zrušená volajúcim</string>
