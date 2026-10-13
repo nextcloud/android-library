@@ -236,6 +236,7 @@ class ChunkedFileUploadRemoteOperation
 
                 val put = createPutMethod("$uploadFolderUri/$chunkName")
                 put.addRequestHeader(DESTINATION_HEADER, destinationUri)
+                put.addRequestHeader(OC_TOTAL_LENGTH_HEADER, file.length().toString())
                 token?.let { put.addRequestHeader(E2E_TOKEN, it) }
 
                 val status = client.executeMethod(put)
