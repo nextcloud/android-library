@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.nextcloud.common.DNSCache;
+import com.nextcloud.common.NextcloudClient;
 import com.nextcloud.common.NextcloudUriDelegate;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
 import com.owncloud.android.lib.common.network.AdvancedX509KeyManager;
@@ -67,6 +68,8 @@ public class OwnCloudClient extends HttpClient {
 
     private AdvancedX509KeyManager keyManager;
 
+    private Context context;
+
     /**
      * Constructor
      */
@@ -76,6 +79,7 @@ public class OwnCloudClient extends HttpClient {
         if (baseUri == null) {
         	throw new IllegalArgumentException("Parameter 'baseUri' cannot be NULL");
         }
+        this.context = context;
         this.keyManager = new AdvancedX509KeyManager(context);
         nextcloudUriDelegate = new NextcloudUriDelegate(baseUri);
 
@@ -448,5 +452,19 @@ public class OwnCloudClient extends HttpClient {
 
     public void setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public NextcloudClient toNextcloudClient() {
+        return OwnCloudClientFactory.createNextcloudClient(
+            getBaseUri(),
+            getUserId(),
+            getCredentials().toOkHttpCredentials(),
+            getContext(),
+            isFollowRedirects()
+        );
     }
 }
