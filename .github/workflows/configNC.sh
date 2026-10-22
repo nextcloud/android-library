@@ -50,7 +50,9 @@ cd /var/www/html/apps/external; composer install --no-dev
 php /var/www/html/occ app:enable -f external
 php /var/www/html/occ config:app:set external sites --value="{\"1\":{\"id\":1,\"name\":\"Nextcloud\",\"url\":\"https:\/\/www.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false},\"2\":{\"id\":2,\"name\":\"Forum\",\"url\":\"https:\/\/help.nextcloud.com\",\"lang\":\"\",\"type\":\"link\",\"device\":\"\",\"icon\":\"external.svg\",\"groups\":[],\"redirect\":false}}"
 
-git clone --depth=1 -b $SERVER_VERSION_MAIN https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/
+if [ $1 != 'stable22' ]; then 
+    git clone --depth=1 -b $SERVER_VERSION_MAIN https://github.com/nextcloud/files_lock.git /var/www/html/apps/files_lock/
+fi
 php /var/www/html/occ app:enable -f files_lock
 
 git clone --depth=1 -b $SERVER_VERSION_MASTER https://github.com/nextcloud/groupfolders.git /var/www/html/apps/groupfolders/
@@ -72,13 +74,18 @@ git clone --depth=1 -b $SERVER_VERSION_MASTER https://github.com/nextcloud/photo
 cd /var/www/html/apps/photos; composer install --no-dev
 php /var/www/html/occ app:enable -f photos
 
-git clone --depth=1 -b $SERVER_VERSION_MAIN https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/
-cd /var/www/html/apps/assistant; . ~/.bashrc; make
-php /var/www/html/occ app:enable -f assistant
+if [ $1 != 'stable22' ]; then 
+    git clone --depth=1 -b $SERVER_VERSION_MAIN https://github.com/nextcloud/assistant.git /var/www/html/apps/assistant/
+    cd /var/www/html/apps/assistant; . ~/.bashrc; make
+    php /var/www/html/occ app:enable -f assistant
+fi
 
 php /var/www/html/occ app:enable -f testing
 
-git clone --depth 1 -b $SERVER_VERSION_MASTER https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/
+if [ $1 != 'stable22' ]; then 
+    git clone --depth 1 -b $SERVER_VERSION_MASTER https://github.com/nextcloud/files_downloadlimit.git /var/www/html/apps/files_downloadlimit/
+fi
+
 php /var/www/html/occ app:enable -f files_downloadlimit
 
 git clone --depth 1 -b $SERVER_VERSION_MASTER https://github.com/nextcloud/recommendations.git /var/www/html/apps/recommendations/
