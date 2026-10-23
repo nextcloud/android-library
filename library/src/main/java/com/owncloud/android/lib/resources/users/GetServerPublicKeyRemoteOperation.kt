@@ -16,43 +16,42 @@ import org.apache.commons.httpclient.HttpStatus
 import org.json.JSONObject
 
 class GetServerPublicKeyRemoteOperation : RemoteOperation<String>() {
-    companion object {
-        private val TAG: String = GetPublicKeyRemoteOperation::class.java.simpleName
-        private const val ENDPOINT = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/server-key"
-    }
-
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<String> {
-        var getMethod: GetMethod? = null
-        var result: RemoteOperationResult<String>
-        val user: String = client.userId
+        val getMethod = GetMethod(client.baseUri.toString() + ENDPOINT + JSON_FORMAT, true)
 
-        try {
-            getMethod = GetMethod(client.baseUri.toString() + ENDPOINT + JSON_FORMAT, true)
-
+        return try {
             val status = client.execute(getMethod)
-
-            if (status == HttpStatus.SC_OK) {
-                val response = getMethod.getResponseBodyAsString()
-                val respJSON = JSONObject(response)
-                val serverKey = respJSON.getJSONObject("ocs").getJSONObject("data").getString("public-key")
-
-                result = RemoteOperationResult(true, getMethod)
-                result.setResultData(serverKey)
-            } else {
-                result = RemoteOperationResult(false, getMethod)
+            if (status != HttpStatus.SC_OK) {
+                return RemoteOperationResult(false, getMethod)
             }
+            val serverKey =
+                JSONObject(getMethod.getResponseBodyAsString())
+                    .getJSONObject(NODE_OCS)
+                    .getJSONObject(NODE_DATA)
+                    .getString(NODE_PUBLIC_KEY)
+            RemoteOperationResult<String>(true, getMethod).apply { resultData = serverKey }
         } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(
-                TAG,
-                "Fetching of server public key failed for user " + user + ": " + result.logMessage,
-                result.exception
-            )
+            failure(e, client.userId)
         } finally {
-            getMethod?.releaseConnection()
+            getMethod.releaseConnection()
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun failure(
+        e: Exception,
+        user: String
+    ): RemoteOperationResult<String> =
+        RemoteOperationResult<String>(e).also {
+            Log_OC.e(TAG, "Fetching of server public key failed for user $user: ${it.logMessage}", it.exception)
         }
 
-        return result
+    companion object {
+        private val TAG = GetServerPublicKeyRemoteOperation::class.java.simpleName
+        private const val ENDPOINT = "/ocs/v2.php/apps/end_to_end_encryption/api/v1/server-key"
+        private const val NODE_OCS = "ocs"
+        private const val NODE_DATA = "data"
+        private const val NODE_PUBLIC_KEY = "public-key"
     }
 }
