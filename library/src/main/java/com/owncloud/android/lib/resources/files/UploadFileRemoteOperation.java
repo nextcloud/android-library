@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 
 public class UploadFileRemoteOperation extends RemoteOperation<String> {
-    private static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
+    protected static final String OC_TOTAL_LENGTH_HEADER = "OC-Total-Length";
     private static final String IF_MATCH_HEADER = "If-Match";
     protected static final String RESULT_ETAG_HEADER = "etag";
     protected static final String OC_X_OC_MTIME_HEADER = "X-OC-Mtime";
