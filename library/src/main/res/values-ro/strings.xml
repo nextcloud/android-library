@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Contul există deja la crearea unuia nou</string>
+    <string name="account_not_the_same">Autentificat cu alt cont decât cel care se actualizează</string>
+    <string name="bad_oc_version">Pe server nu s-a găsit nicio versiune Nextcloud validă</string>
+    <string name="connect_timeout_exception">Excepție: conexiunea a expirat</string>
+    <string name="exception_using_account">Excepție la utilizarea contului</string>
+    <string name="file_locked">Fișierul este blocat în prezent de alt utilizator sau proces</string>
+    <string name="file_not_found">Fișierul local nu există</string>
+    <string name="http_violation">Încălcare a protocolului HTTP</string>
+    <string name="instance_not_configured">Serverul Nextcloud nu este configurat!</string>
+    <string name="invalid_character_in_name">Numele fișierului conține un caracter nepermis</string>
+    <string name="json_exception">Excepție JSON</string>
+    <string name="local_storage_full">Stocarea locală este plină</string>
+    <string name="local_storage_not_moved">Eroare la mutarea fișierului în dosarul final</string>
+    <string name="malformed_url_exception">Excepție: URL formatat greșit</string>
+    <string name="message_install_client_cert">Vrei să instalezi un certificat de client TLS\?</string>
+    <string name="no_network_connection">Nu există conexiune la rețea</string>
+    <string name="notification_channel_name">Conexiune Nextcloud</string>
+    <string name="notification_message_select_client_cert">Selectează certificatul de client pentru %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Selectează certificatul de client</string>
+    <string name="operation_cancelled">Operațiune anulată de apelant</string>
+    <string name="operation_cancelled_by_the_caller">Operațiune anulată de apelant</string>
+    <string name="operation_finished_http_code">Operațiunea s-a încheiat cu codul de stare HTTP %1$d (%2$s)</string>
+    <string name="out_of_memory">Memorie insuficientă pentru citirea conținutului</string>
+    <string name="socket_exception">Excepție de socket</string>
+    <string name="socket_timeout_exception">Excepție: timpul de așteptare al socketului a expirat</string>
+    <string name="ssl_exception">Excepție SSL</string>
+    <string name="ssl_recoverable_exception">Excepție SSL recuperabilă</string>
+    <string name="sync_conflict">Conflict de sincronizare</string>
+    <string name="title_no_client_cert">Nu s-a găsit niciun certificat de client</string>
+    <string name="unexpected_exception">Excepție neașteptată</string>
+    <string name="unexpected_webdav_exception">Excepție WebDAV neașteptată</string>
+    <string name="unknown_host_exception">Excepție: gazdă necunoscută</string>
+    <string name="unrecovered_transport_exception">Excepție de transport nerecuperată</string>
+</resources>
