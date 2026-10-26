@@ -310,6 +310,7 @@
             <trusting group="commons-codec"/>
             <trusting group="commons-io"/>
             <trusting group="org.apache.bcel" name="bcel" version="6.12.0"/>
+            <trusting group="org.apache.bcel" name="bcel" version="6.13.0"/>
             <trusting group="org.apache.commons"/>
          </trusted-key>
          <trusted-key id="FA77DCFEF2EE6EB2DEBEDD2C012579464D01C06A" group="org.apache" name="apache"/>
