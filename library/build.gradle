@@ -19,7 +19,7 @@ buildscript {
         junit_version = '4.13.2'
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.4.1'
+        classpath 'com.android.tools.build:gradle:9.5.0'
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${rootProject.ext.kotlin_version}"
         classpath "org.jetbrains.kotlin:kotlin-serialization:${rootProject.ext.kotlin_version}"
