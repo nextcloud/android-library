@@ -20,7 +20,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:9.4.1'
-        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.11'
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${rootProject.ext.kotlin_version}"
         classpath "org.jetbrains.kotlin:kotlin-serialization:${rootProject.ext.kotlin_version}"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8"
@@ -66,7 +66,7 @@ dependencies {
     implementation 'org.apache.jackrabbit:jackrabbit-webdav:2.13.5'
     api 'com.squareup.okhttp3:okhttp:5.5.1'
     // in transition phase, we use old and new libs
-    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'com.google.code.gson:gson:2.15.0'
     implementation 'androidx.annotation:annotation:1.11.0'
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
