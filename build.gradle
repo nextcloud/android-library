@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Common Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2023 Unpublished <unpublished@gmx.net>
  * SPDX-FileCopyrightText: 2022 Tobias Kaminsky <tobias@kaminsky.me>
@@ -28,17 +29,11 @@ subprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = "https://jitpack.io"
-            content {
-                includeGroup "com.github.bitfireAT"
-            }
-        }
     }
 }
 
 tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }
 
 tasks.register('installGitHooks', Copy) {

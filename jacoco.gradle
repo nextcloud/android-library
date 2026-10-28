@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Common Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-License-Identifier: MIT
@@ -9,34 +10,19 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = "$jacoco_version"
-}
-
-// Force Jacoco Version
-
-subprojects {
-    configurations.all {
-        resolutionStrategy {
-            eachDependency { details ->
-                if ('org.jacoco' == details.requested.group) {
-                    details.useVersion "$jacocoVersion"
-                }
-            }
-        }
-    }
+    toolVersion = "${rootProject.ext.jacoco_version}"
 }
 
 project.afterEvaluate { project ->
 
-    tasks.withType(Test) {
+    tasks.withType(Test).configureEach {
         jacoco.includeNoLocationClasses = true
         jacoco.excludes = ['jdk.internal.*']
     }
 
-    final flavor = "Gplay"
     final buildType = "Debug"
-    final variant = "$flavor${buildType.capitalize()}"
-    final taskName = "jacocoTest${variant.capitalize()}UnitTestReport"
+    final variant = buildType.toLowerCase()
+    final taskName = "jacocoTest${buildType}UnitTestReport"
 
     task "$taskName"(type: JacocoReport, dependsOn: "test${buildType.capitalize()}UnitTest") {
 
@@ -99,19 +85,16 @@ project.afterEvaluate { project ->
                 /* INSERT ANY OTHER JUNK YOU WANT FILTERED OUT HERE */
         ]
 
-        final androidKotlinTree = fileTree(dir: "${project.buildDir}/tmp/kotlin-classes/${variant}", excludes: fileFilter)
-        final kotlinTree = fileTree(dir: "${project.buildDir}/classes/kotlin/main", excludes: fileFilter)
-        final javacTree = fileTree(dir: "${project.buildDir}/intermediates/javac/${variant}/classes", excludes: fileFilter)
+        final kotlinTree = fileTree(dir: project.layout.buildDirectory.dir("intermediates/built_in_kotlinc/${variant}/compile${buildType}Kotlin/classes"), excludes: fileFilter)
+        final javacTree = fileTree(dir: project.layout.buildDirectory.dir("intermediates/javac/${variant}/compile${buildType}JavaWithJavac/classes"), excludes: fileFilter)
 
         final mainSrc = "${project.projectDir}/src/main/java"
-        final productFlavorSrc = "${project.projectDir}/src/${flavor}/java"
-        final buildTypeSrc = "${project.projectDir}/src/${buildType}/java"
+        final buildTypeSrc = "${project.projectDir}/src/${variant}/java"
 
-        sourceDirectories.setFrom files([mainSrc, productFlavorSrc, buildTypeSrc])
-        classDirectories.setFrom files([androidKotlinTree, kotlinTree, javacTree])
-        executionData.setFrom fileTree(dir: project.buildDir, includes: [
-                "jacoco/test${variant.capitalize()}UnitTest.exec",
-                "outputs/unit_test_code_coverage/${variant}UnitTest/test${variant.capitalize()}UnitTest.exec",
+        sourceDirectories.setFrom files([mainSrc, buildTypeSrc])
+        classDirectories.setFrom files([kotlinTree, javacTree])
+        executionData.setFrom fileTree(dir: project.layout.buildDirectory, includes: [
+                "outputs/unit_test_code_coverage/${variant}UnitTest/test${buildType}UnitTest.exec"
         ])
     }
 }
