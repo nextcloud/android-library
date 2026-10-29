@@ -9,7 +9,7 @@ package com.owncloud.android.lib.resources.e2ee
 
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory
-import com.owncloud.android.lib.resources.users.GetPublicKeyRemoteOperation
+import com.owncloud.android.lib.resources.users.GetCertificateRemoteOperation
 import com.owncloud.android.lib.resources.users.SendCSRRemoteOperation
 import junit.framework.TestCase
 import junit.framework.TestCase.assertTrue
@@ -44,7 +44,7 @@ class SendCSRRemoteOperationIT : AbstractIT() {
         assertTrue(result.isSuccess)
 
         // verify public key
-        result = GetPublicKeyRemoteOperation(client.userId).execute(nextcloudClient)
+        result = GetCertificateRemoteOperation(client.userId).execute(nextcloudClient)
         assertTrue(result.isSuccess)
         TestCase.assertNotNull(result.resultData)
     }
