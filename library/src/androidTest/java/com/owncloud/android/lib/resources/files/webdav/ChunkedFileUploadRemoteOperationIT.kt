@@ -16,6 +16,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode
 import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation
 import com.owncloud.android.lib.resources.files.FileUtils
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase
 import junit.framework.TestCase.assertNotNull
 import org.apache.commons.httpclient.HttpStatus
@@ -133,6 +134,9 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
 
     @Test
     fun uploadExceedingQuotaIsRejectedBeforeAnyChunkIsStored() {
+        // server checks OC-Total-Length against quota on chunk PUT only since NC29
+        testOnlyOnServer(NextcloudVersion.nextcloud_29)
+
         val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
         val uploadFolderUri = "${client.uploadUri}/${client.userId}/${FileUtils.md5Sum(File(filePath))}"
         val sut =
@@ -185,11 +189,18 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         try {
             client.executeMethod(propFind)
             assertTrue(propFind.succeeded())
-            return propFind.responseBodyAsMultiStatus.responses.size - UPLOAD_FOLDER_ENTRY
+            // the upload folder itself and the virtual ".file" are listed too, count only chunks
+            val uploadPath = requireNotNull(client.uploadUri.path)
+            return propFind.responseBodyAsMultiStatus.responses
+                .map { WebdavEntry(it, uploadPath) }
+                .count { !it.isDirectory && it.name?.isChunkName() == true }
         } finally {
             propFind.releaseConnection()
         }
     }
+
+    private fun String.isChunkName(): Boolean =
+        length == ChunkedFileUploadRemoteOperation.CHUNK_NAME_LENGTH && all(Char::isDigit)
 
     private fun genLargeUpload(onWifiConnection: Boolean): ChunkedFileUploadRemoteOperation {
         // create file
@@ -222,6 +233,5 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         const val MAX_TRIES = 30
         const val QUOTA_SMALLER_THAN_FILE = "1 MB"
         const val QUOTA_UNLIMITED = "none"
-        const val UPLOAD_FOLDER_ENTRY = 1
     }
 }
