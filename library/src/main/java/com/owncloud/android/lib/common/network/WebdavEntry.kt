@@ -114,8 +114,11 @@ class WebdavEntry constructor(
         val ncNamespace = Namespace.getNamespace(NAMESPACE_NC)
         if (ms.status.isNotEmpty()) {
             uri = ms.href
-            path =
-                uri!!.split(splitElement.toRegex(), limit = 2).toTypedArray()[1].replace("//", "/")
+            val normalizedUri = normalizePercentEncoding(uri!!)
+            val normalizedBase = normalizePercentEncoding(splitElement)
+            val baseIndex = normalizedUri.indexOf(normalizedBase)
+            require(normalizedBase.isNotEmpty() && baseIndex >= 0) { "DAV href does not contain the base path" }
+            path = uri!!.substring(baseIndex + splitElement.length).replace("//", "/")
             var status = ms.status[0].statusCode
             if (status == CODE_PROP_NOT_FOUND && ms.status.size > 1) {
                 status = ms.status[1].statusCode
@@ -633,6 +636,12 @@ class WebdavEntry constructor(
     }
 
     companion object {
+        private val PERCENT_ENCODED_BYTE = Regex("%[0-9a-fA-F]{2}")
+
+        // Only hexadecimal digits in escapes are case-insensitive (RFC 3986, section 6.2.2.1).
+        private fun normalizePercentEncoding(value: String): String =
+            PERCENT_ENCODED_BYTE.replace(value) { it.value.uppercase() }
+
         private val TAG = WebdavEntry::class.java.simpleName
         const val NAMESPACE_OC = "http://owncloud.org/ns"
         const val NAMESPACE_NC = "http://nextcloud.org/ns"
