@@ -256,34 +256,41 @@ public class WebdavUtils {
     }
 
     /**
+     * Normalizes an ETag.
      *
-     * @param rawEtag
-     * @return
+     * @param rawEtag the raw ETag value from the HTTP response
+     * @return the normalized ETag, or an empty string if {@code rawEtag} is
+     *         {@code null} or empty
      */
     public static String parseEtag(String rawEtag) {
-        if (rawEtag == null || rawEtag.length() == 0) {
+        if (rawEtag == null || rawEtag.isEmpty()) {
             return "";
         }
-        if (rawEtag.endsWith("-gzip")) {
-            rawEtag = rawEtag.substring(0, rawEtag.length() - 5);
+
+        // https://github.com/owncloud/client/issues/3946
+        if (rawEtag.startsWith("W/")) {
+            rawEtag = rawEtag.substring(2);
         }
+
+        // Remove any surrounding quotes.
         if (rawEtag.length() >= 2 && rawEtag.startsWith("\"") && rawEtag.endsWith("\"")) {
             rawEtag = rawEtag.substring(1, rawEtag.length() - 1);
         }
+
+        // https://github.com/owncloud/client/issues/1195
+        if (rawEtag.endsWith("-gzip")) {
+            rawEtag = rawEtag.substring(0, rawEtag.length() - 5);
+        }
+
         return rawEtag;
     }
 
     public static String getEtagFromResponse(HttpMethod method) {
         Header eTag = method.getResponseHeader("OC-ETag");
         if (eTag == null) {
-            eTag = method.getResponseHeader("oc-etag");
-        }
-        if (eTag == null) {
             eTag = method.getResponseHeader("ETag");
         }
-        if (eTag == null) {
-            eTag = method.getResponseHeader("etag");
-        }
+
         String result = "";
         if (eTag != null) {
             result = parseEtag(eTag.getValue());
@@ -294,14 +301,9 @@ public class WebdavUtils {
     public static String getEtagFromResponse(OkHttpMethodBase method) {
         String eTag = method.getResponseHeader("OC-ETag");
         if (eTag == null) {
-            eTag = method.getResponseHeader("oc-etag");
+            eTag = method.getResponseHeader("Etag");
         }
-        if (eTag == null) {
-            eTag = method.getResponseHeader("ETag");
-        }
-        if (eTag == null) {
-            eTag = method.getResponseHeader("etag");
-        }
+
         String result = "";
         if (eTag != null) {
             result = parseEtag(eTag);
