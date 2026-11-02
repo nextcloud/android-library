@@ -63,6 +63,7 @@ class ChunkedFileUploadRemoteOperation
         ) {
         private lateinit var uploadFolderUri: String
         private lateinit var destinationUri: String
+
         @Volatile
         private var moveMethod: MoveMethod? = null
 
