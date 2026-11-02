@@ -18,7 +18,6 @@ import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation
 import com.owncloud.android.lib.resources.files.FileUtils
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase
-import junit.framework.TestCase.assertNotNull
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.httpclient.methods.PutMethod
 import org.apache.commons.httpclient.methods.StringRequestEntity
@@ -48,27 +47,29 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
 
     @Test
     fun cancel() {
-        val sut = genLargeUpload(false)
+        val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
+        val sut =
+            ChunkedFileUploadRemoteOperation(
+                filePath,
+                "/bigFile.md",
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                System.currentTimeMillis() / MILLI_TO_SECOND,
+                false,
+                true
+            )
 
-        var uploadResult: RemoteOperationResult<String>? = null
-        Thread {
-            uploadResult = sut.execute(client)
-        }.start()
+        sut.addDataTransferProgressListener { _, _, _, _ -> sut.cancel(ResultCode.CANCELLED) }
 
-        shortSleep()
-        sut.cancel(ResultCode.CANCELLED)
+        try {
+            val uploadResult = sut.execute(client)
 
-        for (i in 1..MAX_TRIES) {
-            shortSleep()
-
-            if (uploadResult != null) {
-                break
-            }
+            TestCase.assertFalse(uploadResult.isSuccess)
+            TestCase.assertSame(ResultCode.CANCELLED, uploadResult.code)
+        } finally {
+            deleteUploadFolder(uploadFolderUri(filePath))
         }
-
-        assertNotNull(uploadResult)
-        TestCase.assertFalse(uploadResult?.isSuccess == true)
-        TestCase.assertSame(ResultCode.CANCELLED, uploadResult?.code)
     }
 
     @Test
@@ -138,7 +139,8 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         testOnlyOnServer(NextcloudVersion.nextcloud_29)
 
         val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
-        val uploadFolderUri = "${client.uploadUri}/${client.userId}/${FileUtils.md5Sum(File(filePath))}"
+        val uploadFolderUri = uploadFolderUri(filePath)
+        deleteUploadFolder(uploadFolderUri)
         val sut =
             ChunkedFileUploadRemoteOperation(
                 filePath,
@@ -159,10 +161,17 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
             assertEquals(0, storedChunkCount(uploadFolderUri))
         } finally {
             setQuota(QUOTA_UNLIMITED)
-            DeleteMethod(uploadFolderUri).also {
-                client.executeMethod(it)
-                it.releaseConnection()
-            }
+            deleteUploadFolder(uploadFolderUri)
+        }
+    }
+
+    private fun uploadFolderUri(filePath: String): String =
+        "${client.uploadUri}/${client.userId}/${FileUtils.md5Sum(File(filePath))}"
+
+    private fun deleteUploadFolder(uploadFolderUri: String) {
+        DeleteMethod(uploadFolderUri).also {
+            client.executeMethod(it)
+            it.releaseConnection()
         }
     }
 
