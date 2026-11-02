@@ -2,6 +2,7 @@
  * Nextcloud Android Library
  *
  * SPDX-FileCopyrightText: 2023-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-License-Identifier: MIT
  */
@@ -10,14 +11,24 @@ package com.owncloud.android.lib.resources.files.webdav
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.common.network.WebdavEntry
 import com.owncloud.android.lib.common.network.WebdavUtils
+import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode
 import com.owncloud.android.lib.resources.files.ChunkedFileUploadRemoteOperation
+import com.owncloud.android.lib.resources.files.FileUtils
+import com.owncloud.android.lib.resources.status.NextcloudVersion
 import junit.framework.TestCase
-import junit.framework.TestCase.assertNotNull
+import org.apache.commons.httpclient.HttpStatus
+import org.apache.commons.httpclient.methods.PutMethod
+import org.apache.commons.httpclient.methods.StringRequestEntity
+import org.apache.jackrabbit.webdav.DavConstants
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod
 import org.apache.jackrabbit.webdav.client.methods.PropFindMethod
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
+import java.net.URLEncoder
 
 class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
     @Test
@@ -36,27 +47,29 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
 
     @Test
     fun cancel() {
-        val sut = genLargeUpload(false)
+        val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
+        val sut =
+            ChunkedFileUploadRemoteOperation(
+                filePath,
+                "/bigFile.md",
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                System.currentTimeMillis() / MILLI_TO_SECOND,
+                false,
+                true
+            )
 
-        var uploadResult: RemoteOperationResult<String>? = null
-        Thread {
-            uploadResult = sut.execute(client)
-        }.start()
+        sut.addDataTransferProgressListener { _, _, _, _ -> sut.cancel(ResultCode.CANCELLED) }
 
-        shortSleep()
-        sut.cancel(ResultCode.CANCELLED)
+        try {
+            val uploadResult = sut.execute(client)
 
-        for (i in 1..MAX_TRIES) {
-            shortSleep()
-
-            if (uploadResult != null) {
-                break
-            }
+            TestCase.assertFalse(uploadResult.isSuccess)
+            TestCase.assertSame(ResultCode.CANCELLED, uploadResult.code)
+        } finally {
+            deleteUploadFolder(uploadFolderUri(filePath))
         }
-
-        assertNotNull(uploadResult)
-        TestCase.assertFalse(uploadResult?.isSuccess == true)
-        TestCase.assertSame(ResultCode.CANCELLED, uploadResult?.code)
     }
 
     @Test
@@ -120,6 +133,84 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
         assert(File(filePath).length() == getRemoteSize(remotePath))
     }
 
+    @Test
+    fun uploadExceedingQuotaIsRejectedBeforeAnyChunkIsStored() {
+        // server checks OC-Total-Length against quota on chunk PUT only since NC29
+        testOnlyOnServer(NextcloudVersion.nextcloud_29)
+
+        val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
+        val uploadFolderUri = uploadFolderUri(filePath)
+        deleteUploadFolder(uploadFolderUri)
+        val sut =
+            ChunkedFileUploadRemoteOperation(
+                filePath,
+                "/bigFile.md",
+                "text/markdown",
+                "",
+                RANDOM_MTIME,
+                System.currentTimeMillis() / MILLI_TO_SECOND,
+                false,
+                true
+            )
+
+        setQuota(QUOTA_SMALLER_THAN_FILE)
+        try {
+            val uploadResult = sut.execute(client)
+
+            assertEquals(ResultCode.QUOTA_EXCEEDED, uploadResult.code)
+            assertEquals(0, storedChunkCount(uploadFolderUri))
+        } finally {
+            setQuota(QUOTA_UNLIMITED)
+            deleteUploadFolder(uploadFolderUri)
+        }
+    }
+
+    private fun uploadFolderUri(filePath: String): String =
+        "${client.uploadUri}/${client.userId}/${FileUtils.md5Sum(File(filePath))}"
+
+    private fun deleteUploadFolder(uploadFolderUri: String) {
+        DeleteMethod(uploadFolderUri).also {
+            client.executeMethod(it)
+            it.releaseConnection()
+        }
+    }
+
+    private fun setQuota(quota: String) {
+        val method = PutMethod("${client2.baseUri}/ocs/v2.php/cloud/users/${client.userId}")
+        method.addRequestHeader(RemoteOperation.OCS_API_HEADER, RemoteOperation.OCS_API_HEADER_VALUE)
+        method.requestEntity =
+            StringRequestEntity(
+                "key=quota&value=${URLEncoder.encode(quota, Charsets.UTF_8.name())}",
+                "application/x-www-form-urlencoded",
+                Charsets.UTF_8.name()
+            )
+
+        try {
+            assertEquals(HttpStatus.SC_OK, client2.executeMethod(method))
+        } finally {
+            method.releaseConnection()
+        }
+    }
+
+    private fun storedChunkCount(uploadFolderUri: String): Int {
+        val propFind = PropFindMethod(uploadFolderUri, WebdavUtils.getChunksPropSet(), DavConstants.DEPTH_1)
+
+        try {
+            client.executeMethod(propFind)
+            assertTrue(propFind.succeeded())
+            // the upload folder itself and the virtual ".file" are listed too, count only chunks
+            val uploadPath = requireNotNull(client.uploadUri.path)
+            return propFind.responseBodyAsMultiStatus.responses
+                .map { WebdavEntry(it, uploadPath) }
+                .count { !it.isDirectory && it.name?.isChunkName() == true }
+        } finally {
+            propFind.releaseConnection()
+        }
+    }
+
+    private fun String.isChunkName(): Boolean =
+        length == ChunkedFileUploadRemoteOperation.CHUNK_NAME_LENGTH && all(Char::isDigit)
+
     private fun genLargeUpload(onWifiConnection: Boolean): ChunkedFileUploadRemoteOperation {
         // create file
         val filePath = createFile("chunkedFile.txt", BIG_FILE_ITERATION)
@@ -149,5 +240,7 @@ class ChunkedFileUploadRemoteOperationIT : AbstractIT() {
     companion object {
         const val BIG_FILE_ITERATION = 1000000
         const val MAX_TRIES = 30
+        const val QUOTA_SMALLER_THAN_FILE = "1 MB"
+        const val QUOTA_UNLIMITED = "none"
     }
 }
