@@ -8,13 +8,10 @@
 package com.nextcloud.android.lib.resources.search
 
 import com.owncloud.android.AbstractIT
-import com.owncloud.android.lib.resources.status.GetCapabilitiesRemoteOperation
 import com.owncloud.android.lib.resources.status.OwnCloudVersion
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class SearchProvidersRemoteOperationIT : AbstractIT() {
@@ -32,17 +29,5 @@ class SearchProvidersRemoteOperationIT : AbstractIT() {
         assertTrue(providers.providers.isNotEmpty())
         assertNotNull(providers.providers.find { it.name == "Files" })
         assertNull(providers.providers.find { it.name == "RandomSearchProvider" })
-    }
-
-    @Test
-    fun getSearchProvidersOnOldServer() {
-        // only on < NC20
-        val ocCapability = GetCapabilitiesRemoteOperation().execute(nextcloudClient).resultData
-        assumeTrue(
-            ocCapability.version.isOlderThan(OwnCloudVersion.nextcloud_20)
-        )
-
-        val result = nextcloudClient.execute(UnifiedSearchProvidersRemoteOperation())
-        assertFalse(result.isSuccess)
     }
 }

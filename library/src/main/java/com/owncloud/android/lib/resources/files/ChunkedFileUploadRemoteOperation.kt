@@ -63,6 +63,8 @@ class ChunkedFileUploadRemoteOperation
         ) {
         private lateinit var uploadFolderUri: String
         private lateinit var destinationUri: String
+
+        @Volatile
         private var moveMethod: MoveMethod? = null
 
         @JvmOverloads
@@ -201,6 +203,10 @@ class ChunkedFileUploadRemoteOperation
             val move = MoveMethod(uploadFolderUri + ASSEMBLED_FILE_SUFFIX, destinationUri, true)
             moveMethod = move
 
+            if (cancellationRequested.get()) {
+                move.abort()
+            }
+
             move.addRequestHeader(OC_X_OC_MTIME_HEADER, lastModificationTimestamp.toString())
             creationTimestamp?.takeIf { it > 0 }?.let { move.addRequestHeader(OC_X_OC_CTIME_HEADER, it.toString()) }
             token?.let { move.addRequestHeader(E2E_TOKEN, it) }
@@ -236,6 +242,7 @@ class ChunkedFileUploadRemoteOperation
 
                 val put = createPutMethod("$uploadFolderUri/$chunkName")
                 put.addRequestHeader(DESTINATION_HEADER, destinationUri)
+                put.addRequestHeader(OC_TOTAL_LENGTH_HEADER, file.length().toString())
                 token?.let { put.addRequestHeader(E2E_TOKEN, it) }
 
                 val status = client.executeMethod(put)
@@ -266,6 +273,11 @@ class ChunkedFileUploadRemoteOperation
             }
 
             return put
+        }
+
+        override fun cancel(reason: RemoteOperationResult.ResultCode?) {
+            super.cancel(reason)
+            moveMethod?.abort()
         }
 
         private fun cancelledOrFailed(e: Exception): RemoteOperationResult<String> =
