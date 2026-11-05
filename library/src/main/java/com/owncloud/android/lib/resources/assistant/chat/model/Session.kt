@@ -12,7 +12,7 @@ data class Session(
     val messageTaskId: Long?,
     val titleTaskId: Long?,
     val sessionTitle: String?,
-    val sessionAgencyPendingActions: List<AgencyAction>?
+    val sessionAgencyPendingActions: Any?
 )
 
 data class SessionTask(

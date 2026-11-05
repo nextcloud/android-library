@@ -17,16 +17,11 @@ import com.owncloud.android.lib.resources.assistant.chat.model.SessionTask
 import org.apache.commons.httpclient.HttpStatus
 
 class GenerateSessionRemoteOperation(
-    private val sessionId: String,
-    private val agencyConfirm: Boolean? = null
+    private val sessionId: String
 ) : RemoteOperation<SessionTask>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<SessionTask> {
-        val agencyConfirmParam =
-            agencyConfirm
-                ?.let { confirmed -> "&agencyConfirm=" + if (confirmed) AGENCY_CONFIRM else AGENCY_REJECT }
-                .orEmpty()
-        val url = client.baseUri.toString() + "$BASE_URL/generate?sessionId=$sessionId$agencyConfirmParam"
+        val url = client.baseUri.toString() + "$BASE_URL/generate?sessionId=$sessionId"
         val getMethod = GetMethod(url, true)
         val status = getMethod.execute(client)
 
@@ -52,7 +47,5 @@ class GenerateSessionRemoteOperation(
     companion object {
         private const val TAG = "GenerateRemoteOperation"
         private const val BASE_URL = "/ocs/v2.php/apps/assistant/chat"
-        private const val AGENCY_CONFIRM = 1
-        private const val AGENCY_REJECT = 0
     }
 }
