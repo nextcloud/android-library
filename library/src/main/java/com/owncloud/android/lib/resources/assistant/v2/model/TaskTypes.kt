@@ -24,14 +24,13 @@ data class TaskTypeData(
     val outputShapeEnumValues: Map<String, List<EnumValue>>? = null,
     val optionalOutputShapeEnumValues: Map<String, List<EnumValue>>? = null
 ) {
-    private val chatTaskName = "Chat"
-    private val translateTaskName = "Translate"
+    fun isChat(): Boolean = (id == CHAT_TASK_TYPE_ID)
 
-    fun isChat(): Boolean = (name == chatTaskName)
-
-    fun isTranslate(): Boolean = (name == translateTaskName)
+    fun isTranslate(): Boolean = (id == TRANSLATE_TASK_TYPE_ID)
 
     companion object {
+        const val CHAT_TASK_TYPE_ID = "core:text2text:chat"
+        const val TRANSLATE_TASK_TYPE_ID = "core:text2text:translate"
         private const val CONVERSATION_LIST_ID = "ConversationList"
         val conversationList =
             TaskTypeData(
