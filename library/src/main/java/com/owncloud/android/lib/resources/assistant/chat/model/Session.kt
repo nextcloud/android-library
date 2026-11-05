@@ -9,11 +9,10 @@
 package com.owncloud.android.lib.resources.assistant.chat.model
 
 data class Session(
-    val messageTaskId: Int?,
-    val titleTaskId: Int?,
-    val sessionTitle: String,
-    val sessionAgencyPendingActions: Any?,
-    val taskId: Long
+    val messageTaskId: Long?,
+    val titleTaskId: Long?,
+    val sessionTitle: String?,
+    val sessionAgencyPendingActions: List<AgencyAction>?
 )
 
 data class SessionTask(

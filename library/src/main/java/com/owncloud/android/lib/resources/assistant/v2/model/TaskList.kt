@@ -21,12 +21,12 @@ data class Task(
     val input: TaskInput?,
     val output: TaskOutput?,
     val completionExpectedAt: Int? = null,
-    var progress: Int? = null,
+    var progress: Double? = null,
     val lastUpdated: Int? = null,
     val scheduledAt: Int? = null,
     val endedAt: Int? = null
 ) {
-    fun isTranslate(): Boolean = (type == "core:text2text:translate")
+    fun isTranslate(): Boolean = (type == TaskTypeData.TRANSLATE_TASK_TYPE_ID)
 }
 
 data class TaskInput(
