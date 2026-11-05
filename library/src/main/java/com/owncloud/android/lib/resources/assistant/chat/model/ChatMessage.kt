@@ -20,6 +20,5 @@ data class ChatMessage(
     @SerializedName("ocp_task_id")
     val ocpTaskId: Any?,
     val sources: String,
-    val attachments: List<Any?>,
-    val sessionAgencyPendingActions: List<AgencyAction>? = null
+    val attachments: List<Any?>
 )
