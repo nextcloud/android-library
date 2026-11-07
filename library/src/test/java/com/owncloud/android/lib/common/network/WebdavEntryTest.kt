@@ -12,12 +12,97 @@ import com.owncloud.android.lib.resources.files.model.FileLockType
 import org.apache.jackrabbit.webdav.MultiStatus
 import org.apache.jackrabbit.webdav.xml.DomUtil
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.w3c.dom.Element
 import java.io.ByteArrayInputStream
 
 class WebdavEntryTest {
+    @Test
+    fun testPercentEncodingHexCaseInBasePath() {
+        val upperBase = "/remote.php/dav/files/%E6%B5%8B%E8%AF%95/"
+        val lowerBase = "/remote.php/dav/files/%e6%b5%8b%e8%af%95/"
+        val mixedBase = "/remote.php/dav/files/%e6%B5%8b%E8%aF%95/"
+
+        for (base in listOf(upperBase, lowerBase, mixedBase)) {
+            for (hrefBase in listOf(upperBase, lowerBase, mixedBase)) {
+                assertEquals("", entryWithHref(hrefBase, base).path)
+                assertEquals("Photo.JPG", entryWithHref(hrefBase + "Photo.JPG", base).path)
+            }
+        }
+    }
+
+    @Test
+    fun testLiteralBasePathWithRegexMetacharacters() {
+        val base = "/remote.php/dav/files/test[1]+(work)/"
+        assertEquals("test.md", entryWithHref(base + "test.md", base).path)
+    }
+
+    @Test
+    fun testPreservesEncodedRelativePath() {
+        val base = "/remote.php/dav/files/%E6%B5%8B/"
+        val relativePath = "Photo%2fName%25+%e6%b5%8b.JPG"
+        assertEquals(relativePath, entryWithHref(base.lowercase() + relativePath, base).path)
+    }
+
+    @Test
+    fun testAbsoluteHref() {
+        val base = "/remote.php/dav/files/%E6%B5%8B/"
+        assertEquals("test.md", entryWithHref("https://example.org" + base.lowercase() + "test.md", base).path)
+    }
+
+    @Test
+    fun testRootWithoutTrailingBaseSeparator() {
+        val base = "/remote.php/dav/files/%E6%B5%8B"
+        assertEquals("/", entryWithHref(base.lowercase() + "/", base).path)
+    }
+
+    @Test
+    fun testLegacyWebdavAndUploadPaths() {
+        assertEquals("test.md", entryWithHref("/remote.php/webdav/test.md", "/remote.php/webdav/").path)
+        assertEquals(
+            "uploads/test/test.md",
+            entryWithHref("/remote.php/dav/uploads/test//test.md", "/remote.php/dav/").path
+        )
+    }
+
+    @Test
+    fun testRejectsDifferentPathCase() {
+        assertThrows(IllegalArgumentException::class.java) {
+            entryWithHref("/remote.php/dav/files/Test/test.md", "/remote.php/dav/files/test/")
+        }
+    }
+
+    @Test
+    fun testDoesNotDecodeEncodedSeparators() {
+        assertThrows(IllegalArgumentException::class.java) {
+            entryWithHref("/remote.php/dav/files/test%2Fother/test.md", "/remote.php/dav/files/test/other/")
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            entryWithHref("/remote.php/dav/files/test%252f/test.md", "/remote.php/dav/files/test%252F/")
+        }
+    }
+
+    @Test
+    fun testRejectsEmptyBasePath() {
+        assertThrows(IllegalArgumentException::class.java) {
+            entryWithHref("/remote.php/dav/files/test/test.md", "")
+        }
+    }
+
+    @Test
+    fun testRejectsRegexWildcardMatch() {
+        assertThrows(IllegalArgumentException::class.java) {
+            entryWithHref("/remoteXphp/dav/files/test/test.md", "/remote.php/dav/files/test/")
+        }
+    }
+
+    private fun entryWithHref(
+        href: String,
+        base: String
+    ): WebdavEntry = WebdavEntry(getMultiStatus(href).responses[0], base)
+
     companion object {
         private const val EXAMPLE_MULTI_STATUS = """<?xml version="1.0"?>
         <d:multistatus xmlns:d="DAV:" xmlns:nc="http://nextcloud.org/ns" xmlns:oc="http://owncloud.org/ns">
@@ -67,15 +152,17 @@ class WebdavEntryTest {
         </d:multistatus>
         """
 
-        private fun getElement(): Element {
+        private fun getElement(href: String): Element {
+            val xml = EXAMPLE_MULTI_STATUS.replace("/remote.php/dav/files/test/test.md", href)
             val document =
                 DomUtil.parseDocument(
-                    ByteArrayInputStream(EXAMPLE_MULTI_STATUS.toByteArray())
+                    ByteArrayInputStream(xml.toByteArray())
                 )
             return document.documentElement
         }
 
-        private fun getMultiStatus(): MultiStatus = MultiStatus.createFromXml(getElement())
+        private fun getMultiStatus(href: String = "/remote.php/dav/files/test/test.md"): MultiStatus =
+            MultiStatus.createFromXml(getElement(href))
     }
 
     @Test
