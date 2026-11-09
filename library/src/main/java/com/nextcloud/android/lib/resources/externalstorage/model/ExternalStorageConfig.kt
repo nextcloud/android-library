@@ -16,6 +16,5 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ExternalStorageConfig(
-    val authMechanism: String,
-    val userProvided: Boolean = false
+    val authMechanism: String
 )
