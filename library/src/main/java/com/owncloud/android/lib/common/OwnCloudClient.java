@@ -20,6 +20,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.nextcloud.common.CustomHeaders;
 import com.nextcloud.common.DNSCache;
 import com.nextcloud.common.NextcloudUriDelegate;
 import com.owncloud.android.lib.common.accounts.AccountUtils;
@@ -189,6 +190,7 @@ public class OwnCloudClient extends HttpClient {
 //	        logCookiesAtState("before");
             method.setFollowRedirects(false);
 
+            CustomHeaders.applyTo(method);
             int status = super.executeMethod(method);
 
             if (status >= 500 && status < 600 && DNSCache.isIPV6First(hostname)) {
@@ -270,6 +272,7 @@ public class OwnCloudClient extends HttpClient {
                     destination.setValue(redirectedDestination);
                     method.setRequestHeader(destination);
                 }
+                CustomHeaders.applyTo(method);
                 status = super.executeMethod(method);
                 result.addStatus(status);
                 redirectionsCount++;

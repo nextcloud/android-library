@@ -94,6 +94,7 @@ class NextcloudClient private constructor(
                 .hostnameVerifier { _: String?, _: SSLSession? -> true }
                 .fastFallback(true)
                 .proxy(proxy)
+                .addNetworkInterceptor(CustomHeadersInterceptor)
                 .build()
         }
     }
