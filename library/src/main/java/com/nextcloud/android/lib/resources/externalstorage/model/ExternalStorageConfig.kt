@@ -10,11 +10,9 @@ package com.nextcloud.android.lib.resources.externalstorage.model
 import kotlinx.serialization.Serializable
 
 /**
- * Subset of the mount's `config` object. [authMechanism] is the auth identifier (e.g.
- * `password::password`); [userProvided] is only sent by the server when the user must supply
- * credentials themselves, hence the `false` default.
+ * Subset of the mount's `config` object.
  */
 @Serializable
 data class ExternalStorageConfig(
-    val authMechanism: String
+    val authMechanism: AuthMechanism
 )
