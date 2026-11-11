@@ -8,6 +8,9 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class CreateConversation(
     val session: Conversation
 )
