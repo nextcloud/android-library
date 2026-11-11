@@ -8,7 +8,9 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -16,16 +18,17 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlin.time.toJavaInstant
 
+@Serializable
 data class Conversation(
     val id: Long,
-    @SerializedName("user_id")
+    @SerialName("user_id")
     val userId: String,
-    val title: String?,
+    val title: String? = null,
     val timestamp: Long,
-    @SerializedName("agency_conversation_token")
-    val agencyConversationToken: String,
-    @SerializedName("agency_pending_actions")
-    val agencyPendingActions: Any?
+    @SerialName("agency_conversation_token")
+    val agencyConversationToken: String? = null,
+    @SerialName("agency_pending_actions")
+    val agencyPendingActions: JsonElement? = null
 ) {
     companion object {
         private const val TITLE_PRESENTATION_TIME_PATTERN = "MMMM dd, yyyy HH:mm"

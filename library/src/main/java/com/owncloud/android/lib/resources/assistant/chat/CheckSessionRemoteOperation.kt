@@ -13,6 +13,7 @@ import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
+import com.owncloud.android.lib.ocs.ocsJson
 import com.owncloud.android.lib.resources.assistant.chat.model.Session
 import org.apache.commons.httpclient.HttpStatus
 
@@ -31,7 +32,7 @@ class CheckSessionRemoteOperation(
         return try {
             if (status == HttpStatus.SC_OK) {
                 val responseBody = getMethod.getResponseBodyAsString()
-                val jsonResponse = gson.fromJson(responseBody, Session::class.java)
+                val jsonResponse = ocsJson.decodeFromString<Session>(responseBody)
 
                 val result = RemoteOperationResult<Session>(true, getMethod)
                 result.resultData = jsonResponse

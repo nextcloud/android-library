@@ -9,15 +9,18 @@
 package com.owncloud.android.lib.resources.assistant.v1.model
 
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TaskTypes(
     var types: List<TaskType>
 )
 
+@Serializable
 data class TaskType(
-    val id: String?,
+    val id: String? = null,
     val name: String,
-    val description: String?
+    val description: String? = null
 )
 
 fun TaskTypes.toV2(): List<TaskTypeData> =

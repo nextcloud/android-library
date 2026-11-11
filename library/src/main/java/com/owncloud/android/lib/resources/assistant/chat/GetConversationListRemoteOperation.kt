@@ -8,12 +8,12 @@
 
 package com.owncloud.android.lib.resources.assistant.chat
 
-import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
+import com.owncloud.android.lib.ocs.ocsJson
 import com.owncloud.android.lib.resources.assistant.chat.model.Conversation
 import org.apache.commons.httpclient.HttpStatus
 
@@ -26,8 +26,7 @@ class GetConversationListRemoteOperation : RemoteOperation<List<Conversation>>()
         return try {
             if (status == HttpStatus.SC_OK) {
                 val responseBody = getMethod.getResponseBodyAsString()
-                val type = object : TypeToken<List<Conversation>>() {}.type
-                val conversationList: List<Conversation> = gson.fromJson(responseBody, type)
+                val conversationList = ocsJson.decodeFromString<List<Conversation>>(responseBody)
 
                 val result = RemoteOperationResult<List<Conversation>>(true, getMethod)
                 result.resultData = conversationList

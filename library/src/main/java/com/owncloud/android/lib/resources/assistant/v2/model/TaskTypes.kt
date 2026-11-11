@@ -8,30 +8,45 @@
 
 package com.owncloud.android.lib.resources.assistant.v2.model
 
+import com.owncloud.android.lib.resources.assistant.EmptyArrayAsObjectSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.JsonObject
+
+@Serializable
 data class TaskTypes(
     val types: Map<String, TaskTypeData>
 )
 
+@Serializable
 data class TaskTypeData(
-    val id: String?,
+    val id: String? = null,
     val name: String,
-    val description: String?,
+    val description: String? = null,
+    @Serializable(with = ShapeMapSerializer::class)
     val inputShape: Map<String, Shape>,
+    @Serializable(with = ShapeMapSerializer::class)
     val outputShape: Map<String, Shape>,
-    val optionalInputShapeDefaults: Map<String, Any>? = null,
+    @Serializable(with = ShapeDefaultsSerializer::class)
+    val optionalInputShapeDefaults: JsonObject? = null,
+    @Serializable(with = EnumValuesMapSerializer::class)
     val optionalInputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    @Serializable(with = EnumValuesMapSerializer::class)
     val inputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    @Serializable(with = EnumValuesMapSerializer::class)
     val outputShapeEnumValues: Map<String, List<EnumValue>>? = null,
+    @Serializable(with = EnumValuesMapSerializer::class)
     val optionalOutputShapeEnumValues: Map<String, List<EnumValue>>? = null
 ) {
-    private val chatTaskName = "Chat"
-    private val translateTaskName = "Translate"
+    fun isChat(): Boolean = (id == CHAT_TASK_TYPE_ID)
 
-    fun isChat(): Boolean = (name == chatTaskName)
-
-    fun isTranslate(): Boolean = (name == translateTaskName)
+    fun isTranslate(): Boolean = (id == TRANSLATE_TASK_TYPE_ID)
 
     companion object {
+        const val CHAT_TASK_TYPE_ID = "core:text2text:chat"
+        const val TRANSLATE_TASK_TYPE_ID = "core:text2text:translate"
         private const val CONVERSATION_LIST_ID = "ConversationList"
         val conversationList =
             TaskTypeData(
@@ -44,13 +59,26 @@ data class TaskTypeData(
     }
 }
 
+@Serializable
 data class EnumValue(
     val name: String,
     val value: String
 )
 
+@Serializable
 data class Shape(
     val name: String,
     val description: String,
     val type: String
 )
+
+internal object ShapeMapSerializer :
+    EmptyArrayAsObjectSerializer<Map<String, Shape>>(MapSerializer(String.serializer(), Shape.serializer()))
+
+internal object EnumValuesMapSerializer :
+    EmptyArrayAsObjectSerializer<Map<String, List<EnumValue>>>(
+        MapSerializer(String.serializer(), ListSerializer(EnumValue.serializer()))
+    )
+
+internal object ShapeDefaultsSerializer :
+    EmptyArrayAsObjectSerializer<JsonObject>(JsonObject.serializer())
