@@ -8,6 +8,9 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ChatMessageRequest(
     val sessionId: String,
     val role: String,
@@ -15,14 +18,4 @@ data class ChatMessageRequest(
     val timestamp: Long,
     val attachments: List<String>? = null,
     val firstHumanMessage: Boolean = false
-) {
-    val bodyMap =
-        hashMapOf(
-            "sessionId" to sessionId,
-            "role" to role,
-            "content" to content,
-            "timestamp" to timestamp,
-            "firstHumanMessage" to firstHumanMessage,
-            "attachments" to attachments
-        )
-}
+)

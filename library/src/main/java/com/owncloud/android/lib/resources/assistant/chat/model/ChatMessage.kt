@@ -8,17 +8,20 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
+@Serializable
 data class ChatMessage(
     val id: Long,
-    @SerializedName("session_id")
+    @SerialName("session_id")
     val sessionId: Long,
     val role: String,
     val content: String,
     val timestamp: Long,
-    @SerializedName("ocp_task_id")
-    val ocpTaskId: Any?,
-    val sources: String,
-    val attachments: List<Any?>
+    @SerialName("ocp_task_id")
+    val ocpTaskId: Long? = null,
+    val sources: String? = null,
+    val attachments: List<JsonElement> = emptyList()
 )

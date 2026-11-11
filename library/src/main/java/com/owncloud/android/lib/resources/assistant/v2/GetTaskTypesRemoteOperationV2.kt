@@ -8,15 +8,16 @@
 
 package com.owncloud.android.lib.resources.assistant.v2
 
-import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.ServerResponse
+import com.owncloud.android.lib.ocs.OcsKotlinResponse
+import com.owncloud.android.lib.ocs.ocsJson
 import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypeData
-import com.owncloud.android.lib.resources.assistant.v2.model.TaskTypes
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import org.apache.commons.httpclient.HttpStatus
 
 /**
@@ -58,21 +59,20 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
                 GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val response =
-                    getServerResponse(
-                        getMethod,
-                        object : TypeToken<ServerResponse<TaskTypes>>() {}
-                    )
+                val response = getMethod.getResponseBodyAsString()
+                val types =
+                    ocsJson
+                        .decodeFromString<OcsKotlinResponse<Map<String, JsonElement>>>(response)
+                        .ocs
+                        .data[TYPES_KEY] as? JsonObject
 
                 val taskTypeList =
-                    response
-                        ?.ocs
-                        ?.data
-                        ?.types
-                        ?.map { (key, value) -> value.copy(id = value.id ?: key) }
-                        ?.filter { taskType ->
+                    types
+                        .orEmpty()
+                        .mapNotNull { (key, value) -> decodeTaskType(key, value) }
+                        .filter { taskType ->
                             isSingleTextInputOutput(taskType) || taskType.isChat() || taskType.isTranslate()
-                        }?.sortedByDescending { it.isChat() }
+                        }.sortedByDescending { it.isChat() }
 
                 result = RemoteOperationResult(true, getMethod)
                 result.resultData = taskTypeList
@@ -92,6 +92,19 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
         return result
     }
 
+    @Suppress("TooGenericExceptionCaught")
+    private fun decodeTaskType(
+        key: String,
+        value: JsonElement
+    ): TaskTypeData? =
+        try {
+            val taskType = ocsJson.decodeFromJsonElement(TaskTypeData.serializer(), value)
+            taskType.copy(id = taskType.id ?: key)
+        } catch (e: Exception) {
+            Log_OC.w(TAG, "Skipping task type $key: ${e.message}")
+            null
+        }
+
     private fun isSingleTextInputOutput(taskType: TaskTypeData): Boolean {
         val inputShape = taskType.inputShape
         val outputShape = taskType.outputShape
@@ -110,5 +123,6 @@ class GetTaskTypesRemoteOperationV2 : OCSRemoteOperation<List<TaskTypeData>>() {
     companion object {
         private val TAG = GetTaskTypesRemoteOperationV2::class.java.simpleName
         private const val DIRECT_ENDPOINT = "/ocs/v2.php/taskprocessing/tasktypes"
+        private const val TYPES_KEY = "types"
     }
 }

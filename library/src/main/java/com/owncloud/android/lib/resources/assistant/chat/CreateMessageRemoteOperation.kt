@@ -8,13 +8,14 @@
 
 package com.owncloud.android.lib.resources.assistant.chat
 
-import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.PutMethod
 import com.owncloud.android.lib.common.operations.RemoteOperation
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
+import com.owncloud.android.lib.ocs.ocsJson
 import com.owncloud.android.lib.resources.assistant.chat.model.ChatMessage
+import com.owncloud.android.lib.resources.assistant.assistantRequestJson
 import com.owncloud.android.lib.resources.assistant.chat.model.ChatMessageRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -25,7 +26,7 @@ class CreateMessageRemoteOperation(
 ) : RemoteOperation<ChatMessage>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<ChatMessage> {
-        val json = gson.toJson(messageRequest.bodyMap)
+        val json = assistantRequestJson.encodeToString(messageRequest)
         val requestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
 
         val putMethod = PutMethod(client.baseUri.toString() + "$BASE_URL/new_message", true, requestBody)
@@ -34,8 +35,7 @@ class CreateMessageRemoteOperation(
         return try {
             if (status == HttpStatus.SC_OK) {
                 val responseBody = putMethod.getResponseBodyAsString()
-                val type = object : TypeToken<ChatMessage>() {}.type
-                val response: ChatMessage = gson.fromJson(responseBody, type)
+                val response = ocsJson.decodeFromString<ChatMessage>(responseBody)
                 val result: RemoteOperationResult<ChatMessage> = RemoteOperationResult(true, putMethod)
                 result.resultData = response
                 result
