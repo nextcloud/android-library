@@ -13,8 +13,9 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
 
-internal open class EmptyArrayAsObjectSerializer<T : Any>(serializer: KSerializer<T>) :
-    JsonTransformingSerializer<T>(serializer) {
+internal open class EmptyArrayAsObjectSerializer<T : Any>(
+    serializer: KSerializer<T>
+) : JsonTransformingSerializer<T>(serializer) {
     override fun transformDeserialize(element: JsonElement): JsonElement =
         if (element is JsonArray && element.isEmpty()) JsonObject(emptyMap()) else element
 }
