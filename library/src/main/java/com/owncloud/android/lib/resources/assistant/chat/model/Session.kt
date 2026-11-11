@@ -8,13 +8,18 @@
 
 package com.owncloud.android.lib.resources.assistant.chat.model
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+
+@Serializable
 data class Session(
-    val messageTaskId: Long?,
-    val titleTaskId: Long?,
-    val sessionTitle: String?,
-    val sessionAgencyPendingActions: Any?
+    val messageTaskId: Long? = null,
+    val titleTaskId: Long? = null,
+    val sessionTitle: String? = null,
+    val sessionAgencyPendingActions: JsonElement? = null
 )
 
+@Serializable
 data class SessionTask(
     val taskId: Long
 )

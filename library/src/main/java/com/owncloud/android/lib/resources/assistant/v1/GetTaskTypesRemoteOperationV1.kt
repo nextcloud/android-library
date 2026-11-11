@@ -8,12 +8,12 @@
 
 package com.owncloud.android.lib.resources.assistant.v1
 
-import com.google.gson.reflect.TypeToken
 import com.nextcloud.common.NextcloudClient
 import com.nextcloud.operations.GetMethod
 import com.owncloud.android.lib.common.operations.RemoteOperationResult
 import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.ServerResponse
+import com.owncloud.android.lib.ocs.OcsKotlinResponse
+import com.owncloud.android.lib.ocs.ocsJson
 import com.owncloud.android.lib.resources.OCSRemoteOperation
 import com.owncloud.android.lib.resources.assistant.v1.model.TaskTypes
 import org.apache.commons.httpclient.HttpStatus
@@ -28,11 +28,11 @@ class GetTaskTypesRemoteOperationV1 : OCSRemoteOperation<TaskTypes>() {
                 GetMethod(client.baseUri.toString() + DIRECT_ENDPOINT + JSON_FORMAT, true)
             val status = client.execute(getMethod)
             if (status == HttpStatus.SC_OK) {
-                val taskTypes: TaskTypes? =
-                    getServerResponse(
-                        getMethod,
-                        object : TypeToken<ServerResponse<TaskTypes>>() {}
-                    )?.ocs?.data
+                val taskTypes =
+                    ocsJson
+                        .decodeFromString<OcsKotlinResponse<TaskTypes>>(getMethod.getResponseBodyAsString())
+                        .ocs
+                        .data
                 result = RemoteOperationResult(true, getMethod)
                 result.setResultData(taskTypes)
             } else {

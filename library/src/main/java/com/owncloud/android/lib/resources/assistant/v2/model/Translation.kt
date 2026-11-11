@@ -10,6 +10,9 @@ package com.owncloud.android.lib.resources.assistant.v2.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.doubleOrNull
 
 data class TranslationLanguage(
     val name: String,
@@ -51,7 +54,7 @@ fun TaskTypeData.toTranslationLanguages(): TranslationLanguages {
 }
 
 fun TaskTypeData.toTranslationModel(): TranslationModel? {
-    val model = optionalInputShapeDefaults?.get("model") as? String
-    val maxTokens = optionalInputShapeDefaults?.get("max_tokens") as? Double
+    val model = (optionalInputShapeDefaults?.get("model") as? JsonPrimitive)?.contentOrNull
+    val maxTokens = (optionalInputShapeDefaults?.get("max_tokens") as? JsonPrimitive)?.doubleOrNull
     return if (model != null && maxTokens != null) TranslationModel(model, maxTokens) else null
 }
