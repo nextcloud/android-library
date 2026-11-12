@@ -41,6 +41,9 @@ abstract class OkHttpMethodBase(
     private val requestBuilder: Request.Builder = Request.Builder()
     private var request: Request? = null
 
+    var networkException: IOException? = null
+        private set
+
     @Throws(IllegalStateException::class)
     private fun buildQueryParameter(): HttpUrl {
         val httpBuilder =
@@ -122,6 +125,7 @@ abstract class OkHttpMethodBase(
         try {
             response = nextcloudClient.client.newCall(request).execute()
         } catch (ex: IOException) {
+            networkException = ex
             return UNKNOWN_STATUS_CODE
         }
 
