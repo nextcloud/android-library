@@ -7,7 +7,7 @@
 
 package com.nextcloud.android.lib.resources.teams.get.folder
 
-import com.nextcloud.android.lib.resources.teams.post.team.CreateTeamRemoteOperation
+import com.nextcloud.android.lib.resources.teams.createTestTeam
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.apache.commons.httpclient.HttpStatus
@@ -25,12 +25,9 @@ class GetTeamFolderRemoteOperationIT : AbstractIT() {
 
     @Test
     fun getTeamFolder() {
-        val created =
-            CreateTeamRemoteOperation(TEAM_NAME + System.currentTimeMillis(), true)
-                .execute(nextcloudClient)
-        assertTrue(created.isSuccess)
+        val team = nextcloudClient.createTestTeam(createTeamFolder = true)
 
-        val result = GetTeamFolderRemoteOperation(created.resultData.id).execute(nextcloudClient)
+        val result = GetTeamFolderRemoteOperation(team.id).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertTrue(result.resultData.mountPoint.isNotEmpty())
@@ -38,18 +35,11 @@ class GetTeamFolderRemoteOperationIT : AbstractIT() {
 
     @Test
     fun getTeamFolderWithoutFolder() {
-        val created =
-            CreateTeamRemoteOperation(TEAM_NAME + System.currentTimeMillis(), false)
-                .execute(nextcloudClient)
-        assertTrue(created.isSuccess)
+        val team = nextcloudClient.createTestTeam()
 
-        val result = GetTeamFolderRemoteOperation(created.resultData.id).execute(nextcloudClient)
+        val result = GetTeamFolderRemoteOperation(team.id).execute(nextcloudClient)
 
         assertFalse(result.isSuccess)
         assertEquals(HttpStatus.SC_NOT_FOUND, result.httpCode)
-    }
-
-    companion object {
-        private const val TEAM_NAME = "Team "
     }
 }

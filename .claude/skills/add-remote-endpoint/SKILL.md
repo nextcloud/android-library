@@ -135,5 +135,5 @@ Present the result for review. After the human agrees, run the CI checks once
 ./gradlew :library:lint
 ```
 
-Check lines are ≤ 120 by hand (spotless can't always run locally — see AGENTS.md). Then review the
+All three must pass (spotless runs locally, like in CI). Then review the
 diff against the "Definition of done" checklist in AGENTS.md and remove anything unrelated.
