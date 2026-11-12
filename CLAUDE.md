@@ -40,8 +40,8 @@ thresholds that gate CI. Follow it for any endpoint work. The canonical referenc
   `TooGenericExceptionCaught` active (needs `@Suppress` on `run()`), `ThrowsCount: max 2`.
   `OcsKotlinRemoteOperation` already satisfies these — never hand-write `run()` in an operation.
 - **Line length 120** (`.editorconfig`); import ordering is disabled — don't reorder imports.
-- **`:library:spotlessKotlinCheck` currently fails at configuration time** (a spotbugs/AGP issue,
-  not your code). Verify Kotlin formatting by hand against the 120-char limit and the AGENTS.md patterns.
+- **`:library:spotlessKotlinCheck`** (ktlint) runs locally; run it with detekt and lint at the end and
+  make sure it passes, as CI does.
 - **`RemoteOperationResult.logMessage`** is a deprecated Java accessor — suppress at the call site
   only (`@Suppress("DEPRECATION")` on the `failure(...)` helper), never globally.
 

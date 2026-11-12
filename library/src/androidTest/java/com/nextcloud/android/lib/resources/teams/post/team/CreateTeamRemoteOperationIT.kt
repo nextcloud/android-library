@@ -8,6 +8,7 @@
 package com.nextcloud.android.lib.resources.teams.post.team
 
 import com.nextcloud.android.lib.resources.teams.model.TeamRole
+import com.nextcloud.android.lib.resources.teams.uniqueTeamName
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertEquals
@@ -23,7 +24,7 @@ class CreateTeamRemoteOperationIT : AbstractIT() {
 
     @Test
     fun createTeam() {
-        val name = TEAM_NAME + System.currentTimeMillis()
+        val name = uniqueTeamName()
 
         val result = CreateTeamRemoteOperation(name, false).execute(nextcloudClient)
 
@@ -33,9 +34,5 @@ class CreateTeamRemoteOperationIT : AbstractIT() {
         assertEquals(name, team.displayName)
         assertTrue(team.url.isNotEmpty())
         assertEquals(TeamRole.OWNER, team.role)
-    }
-
-    companion object {
-        private const val TEAM_NAME = "Team "
     }
 }

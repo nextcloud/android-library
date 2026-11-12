@@ -278,9 +278,8 @@ CI runs three checks in parallel — **`detekt`, `spotlessKotlinCheck`, and `lin
     `OcsKotlinRemoteOperation`; another reason not to hand-write `run()`.
   - `MagicNumber` (enums are not ignored), `LongParameterList` (6), `TooManyFunctions` (15).
 - **Line length: 120** (`.editorconfig`). Import ordering is disabled — do not reorder imports to "fix" lint.
-- **Formatting** is ktlint via spotless. `:library:spotlessKotlinCheck` may fail at *configuration*
-  time locally (a spotbugs/AGP incompatibility unrelated to your code); it still runs in CI, so
-  verify formatting by hand against the 120-char limit and the patterns above when it can't run.
+- **Formatting** is ktlint via spotless. `:library:spotlessKotlinCheck` runs locally and must pass
+  before you finish, exactly as in CI.
 
 ## Nextcloud Contribution Policy
 

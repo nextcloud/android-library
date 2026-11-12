@@ -7,10 +7,10 @@
 
 package com.nextcloud.android.lib.resources.teams.post.members
 
+import com.nextcloud.android.lib.resources.teams.createTestTeam
 import com.nextcloud.android.lib.resources.teams.get.members.GetTeamMembersRemoteOperation
 import com.nextcloud.android.lib.resources.teams.model.TeamMemberType
 import com.nextcloud.android.lib.resources.teams.post.members.model.NewTeamMember
-import com.nextcloud.android.lib.resources.teams.post.team.CreateTeamRemoteOperation
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertTrue
@@ -25,22 +25,17 @@ class AddTeamMembersRemoteOperationIT : AbstractIT() {
 
     @Test
     fun addMembers() {
-        val created =
-            CreateTeamRemoteOperation(TEAM_NAME + System.currentTimeMillis(), false)
-                .execute(nextcloudClient)
-        assertTrue(created.isSuccess)
-        val teamId = created.resultData.id
+        val team = nextcloudClient.createTestTeam()
         val members = listOf(NewTeamMember(MEMBER_USER_ID, TeamMemberType.USER))
 
-        val result = AddTeamMembersRemoteOperation(teamId, members).execute(nextcloudClient)
+        val result = AddTeamMembersRemoteOperation(team.id, members).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
-        val teamMembers = GetTeamMembersRemoteOperation(teamId).execute(nextcloudClient)
+        val teamMembers = GetTeamMembersRemoteOperation(team.id).execute(nextcloudClient)
         assertTrue(teamMembers.resultData.any { it.userId == MEMBER_USER_ID })
     }
 
     companion object {
-        private const val TEAM_NAME = "Team "
         private const val MEMBER_USER_ID = "user1"
     }
 }

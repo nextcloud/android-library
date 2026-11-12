@@ -7,7 +7,7 @@
 
 package com.nextcloud.android.lib.resources.teams.get.resources
 
-import com.nextcloud.android.lib.resources.teams.post.team.CreateTeamRemoteOperation
+import com.nextcloud.android.lib.resources.teams.createTestTeam
 import com.owncloud.android.AbstractIT
 import com.owncloud.android.lib.resources.status.NextcloudVersion
 import org.junit.Assert.assertNotNull
@@ -23,18 +23,11 @@ class GetTeamResourcesRemoteOperationIT : AbstractIT() {
 
     @Test
     fun getResources() {
-        val created =
-            CreateTeamRemoteOperation(TEAM_NAME + System.currentTimeMillis(), false)
-                .execute(nextcloudClient)
-        assertTrue(created.isSuccess)
+        val team = nextcloudClient.createTestTeam()
 
-        val result = GetTeamResourcesRemoteOperation(created.resultData.id).execute(nextcloudClient)
+        val result = GetTeamResourcesRemoteOperation(team.id).execute(nextcloudClient)
 
         assertTrue(result.isSuccess)
         assertNotNull(result.resultData)
-    }
-
-    companion object {
-        private const val TEAM_NAME = "Team "
     }
 }
