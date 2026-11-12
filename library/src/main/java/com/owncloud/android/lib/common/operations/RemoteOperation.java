@@ -88,8 +88,10 @@ public abstract class RemoteOperation<T> implements Runnable {
      */
     @Deprecated
     protected RemoteOperationResult<T> run(OwnCloudClient client) {
-        Log_OC.d(this, "Not used anymore");
-        throw new UnsupportedOperationException("Not used anymore");
+        Log_OC.w(this, "Only temporary! Please upgrade to NextcloudClient!");
+        NextcloudClient nextcloudClient = client.toNextcloudClient();
+
+        return run(nextcloudClient);
     }
 
     public RemoteOperationResult<T> run(NextcloudClient client) {
