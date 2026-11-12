@@ -30,7 +30,7 @@ abstract class OcsKotlinRemoteOperation<T> : RemoteOperation<T>() {
         val method = createMethod(client.baseUri.toString())
         return try {
             val status = client.execute(method)
-            method.networkException?.let { return failure(it) }
+            method.networkException?.let { throw it }
             if (status != HttpStatus.SC_OK) {
                 Log_OC.e(tag, "Failed with status code: $status")
                 return RemoteOperationResult(false, method)
