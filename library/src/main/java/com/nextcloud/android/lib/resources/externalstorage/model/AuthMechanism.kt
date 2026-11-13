@@ -7,14 +7,6 @@
 
 package com.nextcloud.android.lib.resources.externalstorage.model
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-
 /**
  * Auth mechanisms registered by External Storage app.
  * Represents the way an external storage mount is authenticated.
@@ -24,7 +16,6 @@ import kotlinx.serialization.encoding.Encoder
  * PasswordGlobal --> The admin provides the credentials and the user finds the share already mounted
  * etc...
  */
-@Serializable(with = AuthMechanismSerializer::class)
 enum class AuthMechanism(
     val identifier: String
 ) {
@@ -50,16 +41,4 @@ enum class AuthMechanism(
         fun fromIdentifier(identifier: String): AuthMechanism =
             entries.firstOrNull { it != Unknown && it.identifier == identifier } ?: Unknown
     }
-}
-
-object AuthMechanismSerializer : KSerializer<AuthMechanism> {
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("AuthMechanism", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): AuthMechanism = AuthMechanism.fromIdentifier(decoder.decodeString())
-
-    override fun serialize(
-        encoder: Encoder,
-        value: AuthMechanism
-    ) = encoder.encodeString(value.identifier)
 }
