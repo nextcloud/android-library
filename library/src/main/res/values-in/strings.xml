@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+    <string name="account_not_new">Akun sudah ada saat mencoba membuat akun baru</string>
+    <string name="account_not_the_same">Autentikasi dilakukan dengan akun yang berbeda dari akun yang sedang diperbarui</string>
+    <string name="bad_oc_version">Tidak ditemukan versi Nextcloud yang valid di server</string>
+    <string name="connect_timeout_exception">Eksepsi batas waktu koneksi</string>
+    <string name="exception_using_account">Eksepsi saat menggunakan akun</string>
+    <string name="file_locked">Berkas sedang dikunci oleh pengguna atau proses lain</string>
+    <string name="file_not_found">Berkas lokal tidak ada</string>
+    <string name="http_violation">Pelanggaran HTTP</string>
+    <string name="instance_not_configured">Server Nextcloud belum dikonfigurasi!</string>
+    <string name="invalid_character_in_name">Nama berkas mengandung karakter yang dilarang</string>
+    <string name="json_exception">Eksepsi JSON</string>
+    <string name="local_storage_full">Penyimpanan lokal penuh</string>
+    <string name="local_storage_not_moved">Terjadi kesalahan saat memindahkan berkas ke direktori akhir</string>
+    <string name="malformed_url_exception">Eksepsi URL yang tidak valid</string>
+    <string name="message_install_client_cert">Apakah Anda ingin memasang sertifikat klien TLS\?</string>
+    <string name="no_network_connection">Tidak ada koneksi jaringan</string>
+    <string name="notification_channel_name">Koneksi Nextcloud</string>
+    <string name="notification_message_select_client_cert">Pilih sertifikat klien untuk %1$s:%2$d</string>
+    <string name="notification_title_select_client_cert">Pilih sertifikat klien</string>
+    <string name="operation_cancelled">Operasi dibatalkan oleh pemanggil</string>
+    <string name="operation_cancelled_by_the_caller">Operasi dibatalkan oleh pemanggil</string>
+    <string name="operation_finished_http_code">Operasi selesai dengan kode status HTTP %1$d (%2$s)</string>
+    <string name="out_of_memory">Memori tidak cukup untuk membaca konten</string>
+    <string name="socket_exception">Eksepsi soket</string>
+    <string name="socket_timeout_exception">Eksepsi batas waktu soket</string>
+    <string name="ssl_exception">Eksepsi SSL</string>
+    <string name="ssl_recoverable_exception">Eksepsi SSL yang dapat dipulihkan</string>
+    <string name="sync_conflict">Konflik sinkronisasi</string>
+    <string name="title_no_client_cert">Sertifikat klien tidak ditemukan</string>
+    <string name="unexpected_exception">Eksepsi tak terduga</string>
+    <string name="unexpected_webdav_exception">Eksepsi WebDAV tak terduga</string>
+    <string name="unknown_host_exception">Eksepsi host tidak dikenal</string>
+    <string name="unrecovered_transport_exception">Eksepsi transport yang tidak dapat dipulihkan</string>
+</resources>
