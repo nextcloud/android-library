@@ -24,7 +24,7 @@ import kotlinx.serialization.encoding.Encoder
  * PasswordGlobal --> The admin provides the credentials and the user finds the share already mounted
  * etc...
  */
-@Serializable
+@Serializable(with = AuthMechanismSerializer::class)
 enum class AuthMechanism(
     val identifier: String
 ) {
@@ -50,4 +50,16 @@ enum class AuthMechanism(
         fun fromIdentifier(identifier: String): AuthMechanism =
             entries.firstOrNull { it != Unknown && it.identifier == identifier } ?: Unknown
     }
+}
+
+object AuthMechanismSerializer : KSerializer<AuthMechanism> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("AuthMechanism", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): AuthMechanism = AuthMechanism.fromIdentifier(decoder.decodeString())
+
+    override fun serialize(
+        encoder: Encoder,
+        value: AuthMechanism
+    ) = encoder.encodeString(value.identifier)
 }
