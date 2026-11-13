@@ -27,20 +27,41 @@ Material Design concerns. Everything is request → response → typed result.
 ## Project Structure: AI Agent Handling Guidelines
 
 - **Legacy package (`owncloud`):** `library/src/main/java/com/owncloud/android/lib/`
-  - Shared OCS types live here: `com.owncloud.android.lib.ocs` — `OcsResponse<T>` / `Ocs<T>`
-    envelope, `ocsJson` (the strict shared `Json`), `SEPARATOR` (`"/"`).
+  - Shared OCS types live here: `com.owncloud.android.lib.ocs` — `OcsKotlinResponse<T>` /
+    `OcsKotlin<T>` envelope, `ocsJson` (the strict shared `Json`), `SEPARATOR` (`"/"`).
 - **Modern package (`nextcloud`):** `library/src/main/java/com/nextcloud/android/lib/`
-  - Remote operations: `…/resources/<feature>/`
-  - Wire models/enums: `…/resources/<feature>/model/`
+  - Remote operations: `…/resources/<feature>/<verb>/<subfeature>/`
+  - Wire models/enums: next to the operation that uses them (see [Package structure](#package-structure))
+- **Base class for OCS operations:** `com.nextcloud.operations.OcsKotlinRemoteOperation<T>`
 - **Canonical reference implementation:**
-  `library/src/main/java/com/nextcloud/android/lib/resources/governance/`
-- **Tests:**
-  - Unit tests: `library/src/test/java/…`
-  - Instrumented / integration tests (real API calls): `library/src/androidTest/java/…`
+  `library/src/main/java/com/nextcloud/android/lib/resources/teams/`
+  - `resources/governance/` predates the base class. Do not copy its hand-written `run()` bodies.
+- **Tests:** instrumented / integration tests (real API calls): `library/src/androidTest/java/…`
 
-**Before writing anything, read an existing endpoint and copy its shape.** Copy the *architecture*,
+**Before writing anything, read `resources/teams/` and copy its shape.** Copy the *architecture*,
 not the text. Do not invent new patterns unless a requirement genuinely cannot be met with the
 existing one.
+
+## Scope: build only what the flow needs
+
+Endpoints are added for a concrete client flow (an issue, a screen list, a user story), not to mirror
+every call a server or web-frontend API file exposes.
+
+1. Write down the flow's steps (e.g. "see my teams", "create a team", "open the team folder").
+2. Map each step to the **one** server call that serves it. Read the server controller to confirm the
+   route, the HTTP method, the request body and the exact response shape.
+3. Implement only those calls and only the model fields and helpers those steps use.
+4. Skip admin-only endpoints, other apps' APIs, WebDAV calls the library already has, and anything
+   "nice to have". Mention possible follow-ups to the human instead of implementing them.
+
+Example — the Teams flow (list teams, create team, see what's shared, manage members, open settings,
+open team folder, open Talk chat) needs exactly six operations: `GetTeams`, `GetTeamMembers`,
+`GetTeamResources`, `GetTeamFolder`, `CreateTeam`, `AddTeamMembers`. Favourites, tab order, dashboard
+previews, join/leave/delete and folder linking were deliberately left out.
+
+**Stay inside the feature.** An endpoint task does not change CI workflows (`.github/`),
+`NextcloudVersion`, or other shared files as a side effect. If the feature genuinely needs such a
+change, ask the human first.
 
 ## General Guidance
 
@@ -72,175 +93,193 @@ existing one.
 - The compiler plugin is already applied in `library/build.gradle`
   (`org.jetbrains.kotlin.plugin.serialization`). Every model that crosses the wire is `@Serializable`.
 - Enum wire values use `@SerialName`.
-- Decode with the shared strict parser, never a new `Json { }`:
-
-```kotlin
-import com.owncloud.android.lib.ocs.OcsResponse   // { "ocs": { "data": T } } envelope
-import com.owncloud.android.lib.ocs.ocsJson        // Json { ignoreUnknownKeys = true }
-
-val response = ocsJson.decodeFromString<OcsResponse<EntityLabels>>(method.getResponseBodyAsString())
-val data = response.ocs.data
-```
+- Never create a new `Json { }`. `OcsKotlinRemoteOperation` decodes and encodes with the shared strict
+  `ocsJson` through its `decode(...)` and `jsonBody(...)` helpers.
+- Request bodies are dedicated `internal @Serializable` request classes (`CreateTeamRequest`), never
+  hand-built JSON strings or maps. Do **not** give request fields default values: `ocsJson` does not
+  encode defaults, so a defaulted field silently disappears from the body.
+- Response model fields that the server always sends are required. Give a default (or make nullable)
+  only when the server can omit the field or send `null`.
 
 `ocsJson` is strict on purpose (fail fast): unknown keys are ignored, but a missing/mismatched
 required field throws instead of yielding a half-populated object.
 
 ## Package structure
 
-New endpoints live under `com.nextcloud.android.lib.resources.<feature>`. **Models used by remote
-operations go in a `<feature>.model` subpackage** — never beside the operations, never in an unrelated
-package. Reusable, cross-endpoint types (the OCS envelope, `ocsJson`, `SEPARATOR`) live in
-`com.owncloud.android.lib.ocs`.
+New endpoints live under `com.nextcloud.android.lib.resources.<feature>`. Inside a feature,
+operations are grouped **by HTTP verb, then by sub-feature**, and every model lives in the
+**narrowest package that uses it**:
 
 ```
-resources/governance/
- ├── GetEntityLabelsRemoteOperation.kt      # operations
- ├── SetLabelRemoteOperation.kt
- ├── …
- └── model/                                 # data classes + enums
-     ├── EntityLabels.kt
-     ├── HoldLabelInfo.kt
-     ├── LabelType.kt
-     └── …
+resources/teams/
+ ├── model/                                   # shared: used by more than one inner package
+ │   ├── Team.kt                              #   (GetTeams + CreateTeam)
+ │   ├── TeamMember.kt                        #   (Team.initiator + GetTeamMembers)
+ │   ├── TeamMemberType.kt
+ │   └── TeamRole.kt
+ ├── get/
+ │   ├── team/GetTeamsRemoteOperation.kt
+ │   ├── members/GetTeamMembersRemoteOperation.kt
+ │   ├── folder/
+ │   │   ├── GetTeamFolderRemoteOperation.kt
+ │   │   └── model/TeamFolder.kt              # only used by GetTeamFolder
+ │   └── resources/
+ │       ├── GetTeamResourcesRemoteOperation.kt
+ │       └── model/
+ │           ├── TeamResource.kt
+ │           ├── TeamResourceProvider.kt
+ │           └── TeamResourcesResponse.kt     # internal wrapper, unwrapped in parse()
+ └── post/
+     ├── team/
+     │   ├── CreateTeamRemoteOperation.kt
+     │   └── model/CreateTeamRequest.kt
+     └── members/
+         ├── AddTeamMembersRemoteOperation.kt
+         └── model/
+             ├── AddTeamMemberRequest.kt
+             ├── AddTeamMembersRequest.kt
+             └── NewTeamMember.kt
 ```
 
-Create dedicated `Request` / `Response` / model / enum classes when appropriate. Do not reuse
-unrelated models just to avoid a new file, and do not expose internal models as API contracts.
+Rules:
+
+- Verb packages: `get`, `post`, `put`, `delete`. Sub-feature packages are short nouns (`team`,
+  `members`, `folder`, `resources`).
+- A model used by **one** sub-feature goes in `<feature>/<verb>/<subfeature>/model/`.
+- A model used by **more than one** inner package goes in `<feature>/model/`. Never put every model
+  into one big `<feature>/model` package "just in case".
+- Request bodies and response wrappers that exist only to match the wire format are `internal`.
+  Expose clean public types (`List<TeamResource>`, not `TeamResourcesResponse`).
+- Small derived helpers that encode server semantics belong on the model as computed properties
+  (`Team.isMember`, `TeamMember.role`, `TeamMemberType.fromShareType(...)`) so every client app does
+  not re-implement them. Only add the ones the flow uses.
+- Reusable cross-feature types (the OCS envelope, `ocsJson`, `SEPARATOR`) stay in
+  `com.owncloud.android.lib.ocs`.
 
 ## Remote operation pattern
 
-Every operation extends `OCSRemoteOperation<T>` and follows this exact shape (this is
-`GetAvailableHoldLabelsRemoteOperation`, the canonical template):
+Every OCS operation extends **`com.nextcloud.operations.OcsKotlinRemoteOperation<T>`**. The base class
+owns the whole call: execute, non-200 guard, decode of the `{ "ocs": { "data": … } }` envelope,
+`RemoteOperationResult` creation, the single `catch` + logging (tagged with the subclass name) and
+`releaseConnection()`. A subclass only says **what to send** and **how to read the answer**:
+
+| Member | Purpose |
+|---|---|
+| `createMethod(baseUrl)` | Build the `GetMethod` / `PostMethod` / `PutMethod` / `DeleteMethod` with the full URL. |
+| `parse(body)` | Turn the response body into `T` (usually one `decode(...)` call). |
+| `decode(body, serializer)` | Helper: decode `ocs.data` with `ocsJson`. |
+| `jsonBody(value, serializer)` | Helper: encode a request object as an `application/json` body. |
+
+GET returning a model (`GetTeamFolderRemoteOperation`):
 
 ```kotlin
-package com.nextcloud.android.lib.resources.governance
+class GetTeamFolderRemoteOperation(
+    private val teamId: String
+) : OcsKotlinRemoteOperation<TeamFolder>() {
+    override fun createMethod(baseUrl: String) =
+        GetMethod(baseUrl + ENDPOINT + SEPARATOR + teamId + FOLDER + JSON_FORMAT, true)
 
-import com.nextcloud.android.lib.resources.governance.model.HoldLabelInfo
-import com.nextcloud.common.NextcloudClient
-import com.nextcloud.operations.GetMethod
-import com.owncloud.android.lib.common.operations.RemoteOperationResult
-import com.owncloud.android.lib.common.utils.Log_OC
-import com.owncloud.android.lib.ocs.OcsResponse
-import com.owncloud.android.lib.ocs.SEPARATOR
-import com.owncloud.android.lib.ocs.ocsJson
-import com.owncloud.android.lib.resources.OCSRemoteOperation
-import org.apache.commons.httpclient.HttpStatus
-
-class GetAvailableHoldLabelsRemoteOperation(
-    private val entityType: String,
-    private val entityId: Long
-) : OCSRemoteOperation<List<HoldLabelInfo>>() {
-    @Suppress("TooGenericExceptionCaught")
-    override fun run(client: NextcloudClient): RemoteOperationResult<List<HoldLabelInfo>> {
-        val getMethod =
-            GetMethod(
-                client.baseUri.toString() + ENDPOINT + entityType + SEPARATOR + entityId +
-                    HOLD_AVAILABLE + JSON_FORMAT,
-                true
-            )
-        return try {
-            val status = client.execute(getMethod)
-            if (status != HttpStatus.SC_OK) {
-                return RemoteOperationResult(false, getMethod)   // guard clause — fail fast
-            }
-            val response = ocsJson.decodeFromString<OcsResponse<List<HoldLabelInfo>>>(
-                getMethod.getResponseBodyAsString()
-            )
-            val data = response.ocs.data
-            RemoteOperationResult<List<HoldLabelInfo>>(true, getMethod).apply { resultData = data }
-        } catch (e: Exception) {
-            failure(e)
-        } finally {
-            getMethod.releaseConnection()
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    private fun failure(e: Exception): RemoteOperationResult<List<HoldLabelInfo>> =
-        RemoteOperationResult<List<HoldLabelInfo>>(e).also {
-            Log_OC.e(TAG, "Get available hold labels failed: " + it.logMessage, it.exception)
-        }
+    override fun parse(body: String) = decode(body, TeamFolder.serializer())
 
     companion object {
-        private val TAG = GetAvailableHoldLabelsRemoteOperation::class.java.simpleName
-        private const val ENDPOINT = "/ocs/v2.php/apps/governance/v1/labels/"
-        private const val HOLD_AVAILABLE = "/hold/available"
+        private const val ENDPOINT = "/ocs/v2.php/apps/circles/teams"
+        private const val FOLDER = "/folder"
     }
 }
 ```
 
-Why it is written this way — keep all of it:
+Variations:
+
+- **List response:** `decode(body, ListSerializer(TeamMember.serializer()))`.
+- **Wrapped response** (`{ "resources": [...] }`): decode the internal wrapper and unwrap it —
+  `decode(body, TeamResourcesResponse.serializer()).resources`.
+- **Request body:**
+
+  ```kotlin
+  override fun createMethod(baseUrl: String) =
+      PostMethod(
+          baseUrl + ENDPOINT + JSON_FORMAT,
+          true,
+          jsonBody(CreateTeamRequest(name, createTeamFolder), CreateTeamRequest.serializer())
+      )
+  ```
+
+- **No useful response data:** type the operation `OcsKotlinRemoteOperation<Void>` and
+  `override fun parse(body: String): Void? = null`. Don't decode a loosely shaped response just to
+  throw it away.
+
+Do **not** override `run()` and do not copy the base class body into an operation. If an endpoint needs
+something the base class cannot express (e.g. a different success status), extend the base class in
+one place so every operation benefits — do not fork the call logic.
+
+Why the base class is written the way it is (keep this when changing it):
 
 - **Fail fast, read top to bottom.** A guard clause returns early on non-OK status. No nested
   `if/else`, no `else` branch.
-- **Return count ≤ 2.** The structure has exactly two `return` keywords: the guard `return` and the
-  outer `return try`. The success value and `failure(e)` are *expressions* of the `try`/`catch`, not
-  extra returns. Do not add a third `return` (detekt `ReturnCount: max: 2`).
-- **One catch.** Catch `Exception` once and delegate to `failure(...)`; do not stack
-  `catch (IOException)` + `catch (Exception)`. Add `@Suppress("TooGenericExceptionCaught")` on `run()`.
-  Split into a specific catch only when an exception genuinely needs different handling.
+- **Return count ≤ 2.** Exactly two `return` keywords: the guard `return` and the outer `return try`
+  (detekt `ReturnCount: max: 2`).
+- **One catch.** `catch (e: Exception)` once, delegated to `failure(e)`, with
+  `@Suppress("TooGenericExceptionCaught")` on `run()`.
 - **`finally { method.releaseConnection() }`** always runs, including on the early `return`.
-- **Property access**, not setters: `apply { resultData = data }` — `RemoteOperationResult` exposes
-  `resultData` as a Kotlin property. Use a `set…()` method only when Java interop / an existing API
-  contract forces it.
-- **`failure(...)` helper** carries `@Suppress("DEPRECATION")` because `RemoteOperationResult.logMessage`
-  is a deprecated Java accessor. Suppress at the usage only — never globally.
+- **Property access**, not setters: `apply { resultData = data }`.
+- **`failure(...)`** carries `@Suppress("DEPRECATION")` because `RemoteOperationResult.logMessage` is a
+  deprecated Java accessor. Suppress at the usage only — never globally.
 
 ## Constants — no hardcoded strings
 
 - Path separators: reuse the shared `com.owncloud.android.lib.ocs.SEPARATOR` (`"/"`). Never inline `"/"`.
 - Endpoint base paths and per-endpoint path segments: `private const val` in the operation's
-  `companion object` (`ENDPOINT`, `HOLD_AVAILABLE`, …).
-- The same applies to parameter keys, headers, and repeated log/event strings.
+  `companion object` (`ENDPOINT`, `FOLDER`, `MEMBERS`, …). `JSON_FORMAT` is inherited.
+- The same applies to parameter keys, headers, and repeated strings.
+- Enum wire values that are numbers (detekt `MagicNumber` does not ignore enums): declare them as
+  file-level `private const val`s and pass those to the enum entries (see `TeamMemberType`).
 
-## Class design
+## Class design and comments
 
-Class names describe responsibility (`GetAvailableHoldLabelsRemoteOperation`). **Do not add class-level
-KDoc that just restates the name.** Comment only non-obvious business logic, deliberate decisions, or
-external limitations.
+Class names describe responsibility (`GetTeamFolderRemoteOperation`). **Do not add comments or KDoc**
+to new code — names, types and small functions carry the meaning. Explain non-obvious server behaviour
+(e.g. "fails with 404 when no team folder exists") to the human in your summary, not in the source.
 
 ## Testing
 
-### Unit tests
+Endpoints are verified with **integration tests only**. Do **not** add JSON-parsing unit tests for
+operations or models.
 
-Small, isolated tests with no live server. Add them beside the existing ones in
-`library/src/test/java/com/nextcloud/android/lib/resources/<feature>/`, mirroring the governance
-parsing tests — feed a sample OCS JSON string through `ocsJson.decodeFromString<OcsResponse<…>>(json)`
-and assert the decoded fields.
-
-```bash
-./gradlew :library:testDebugUnitTest --tests "com.nextcloud.android.lib.resources.<feature>.*"
-```
-
-### Integration / end-to-end tests
-
-Also add an integration test that makes the actual API call**. Add an instrumented test under
-`library/src/androidTest/java/com/nextcloud/android/lib/resources/<feature>/` that runs the operation
-against a live Nextcloud server and asserts the `RemoteOperationResult` (`isSuccess`, `resultData`,
-error codes). Mirror the existing `*IT` tests for server setup and teardown.
+- One `*IT` class per operation, named after it (`GetTeamFolderRemoteOperationIT`), in the **same
+  package layout** under `library/src/androidTest/java/…/resources/<feature>/<verb>/<subfeature>/`.
+- Extend `AbstractIT` and run the operation against the live server with `nextcloudClient`; assert
+  `isSuccess`, the relevant `resultData` fields and, for expected failures, `httpCode`.
+- Each test creates the data it needs through the library's own operations (e.g.
+  `CreateTeamRemoteOperation` before `GetTeamMembersRemoteOperation`); use unique names
+  (`"Team " + System.currentTimeMillis()`).
+- Gate on server version with `testOnlyOnServer(NextcloudVersion.nextcloud_XX)` using an existing
+  constant.
+- `client` / `nextcloudClient` are the **non-admin** `test` user on CI; `client2` is admin. Endpoints
+  that need admin must use `client2`.
+- The CI server only has the apps installed by `.github/workflows/configNC.sh`. If a test needs an app
+  that is not there, tell the human — don't edit the workflow as part of the endpoint task.
 
 ## Build & verify
 
 CI runs three checks in parallel — **`detekt`, `spotlessKotlinCheck`, and `lint`** (see
-`.github/workflows/check.yml`). Run the same ones locally, plus compile and tests, before finishing.
-All must pass.
+`.github/workflows/check.yml`). Compile main and test sources while working; run the static checks
+**once, at the end**, after the human has reviewed the result and agreed — not after every iteration.
 
 ```bash
-./gradlew :library:compileDebugKotlin                                   # compiles
-./gradlew :library:testDebugUnitTest --tests "com.<pkg>.*"             # unit tests for your package
-./gradlew :library:detekt                                              # static analysis (see thresholds below)
-./gradlew :library:spotlessKotlinCheck                                 # ktlint formatting
-./gradlew :library:lint                                                # Android lint
+./gradlew :library:compileDebugKotlin                 # main sources
+./gradlew :library:compileDebugAndroidTestKotlin      # integration tests
+./gradlew :library:detekt                             # static analysis (see thresholds below)
+./gradlew :library:spotlessKotlinCheck                # ktlint formatting
+./gradlew :library:lint                               # Android lint
 ```
 
 - **detekt** config: `library/detekt.yml`. The rules that bite endpoint code:
-  - `ReturnCount: max: 2` — a `run()` may contain at most **two** `return` keywords.
-  - `TooGenericExceptionCaught: active` — catching `Exception` requires `@Suppress("TooGenericExceptionCaught")`.
-  - `ThrowsCount: max: 2`.
+  - `ReturnCount: max: 2`, `TooGenericExceptionCaught: active`, `ThrowsCount: max: 2` — handled by
+    `OcsKotlinRemoteOperation`; another reason not to hand-write `run()`.
+  - `MagicNumber` (enums are not ignored), `LongParameterList` (6), `TooManyFunctions` (15).
 - **Line length: 120** (`.editorconfig`). Import ordering is disabled — do not reorder imports to "fix" lint.
-- **Formatting** is ktlint via spotless. `:library:spotlessKotlinCheck` may fail at *configuration*
-  time locally (a spotbugs/AGP incompatibility unrelated to your code); it still runs in CI, so
-  verify formatting by hand against the 120-char limit and the patterns above when it can't run.
+- **Formatting** is ktlint via spotless. `:library:spotlessKotlinCheck` runs locally and must pass
+  before you finish, exactly as in CI.
 
 ## Nextcloud Contribution Policy
 
@@ -267,33 +306,34 @@ Follow the
 
 - Only commit or push **when asked**. If you are on the default branch, create a branch first.
 - Sign commits (`git commit -s`) and follow Conventional Commits v1.0.0 (e.g.
-  `feat(governance): add hold-label endpoint`).
+  `feat(teams): add team folder endpoint`).
 - Reference the relevant issue in the PR body (e.g. "Closes #123").
 
 ## Definition of done
 
-- [ ] No Gson introduced; all wire models `@Serializable`, decoded via `ocsJson` + `OcsResponse<T>`.
+- [ ] Only the calls the client flow needs; each one verified against the server controller.
+- [ ] Operations extend `OcsKotlinRemoteOperation<T>`; no hand-written `run()`.
+- [ ] Layout is `<feature>/<verb>/<subfeature>/`; each model in the narrowest package that uses it,
+      shared ones in `<feature>/model/`.
+- [ ] No Gson; all wire models `@Serializable`; request classes `internal` with no default values.
 - [ ] No new Java classes.
-- [ ] Models/enums under `<feature>.model`; reusable types in `com.owncloud.android.lib.ocs`.
-- [ ] `run()` is a guard-clause + single `return try/catch/finally`; ≤ 2 returns; no nested if/else.
-- [ ] Exactly one `catch (e: Exception)` → `failure(e)`, with `@Suppress("TooGenericExceptionCaught")`.
 - [ ] No hardcoded `"/"` or endpoint strings; constants used.
-- [ ] `resultData = data` (property), not a setter, unless interop demands otherwise.
-- [ ] No name-restating class comments.
+- [ ] No comments or KDoc in new code; license header with your own name.
 - [ ] Lines ≤ 120.
-- [ ] Unit tests **and** an integration test (`*IT`) added.
-- [ ] `compileDebugKotlin`, `testDebugUnitTest`, `detekt`, `spotlessKotlinCheck`, and `lint` all pass.
+- [ ] One `*IT` per operation, mirroring the package layout; no parsing unit tests.
+- [ ] No changes to workflows, `NextcloudVersion` or other shared files unless the human asked.
+- [ ] Compiles (`compileDebugKotlin`, `compileDebugAndroidTestKotlin`); `detekt`,
+      `spotlessKotlinCheck` and `lint` run once at the end and pass.
 - [ ] Diff is minimal and focused — no drive-by changes.
 
 ## Workflow
 
-1. Open the closest existing endpoint in `resources/governance/` and mirror it.
-2. Add request/response/model/enum classes under `<feature>.model`.
-3. Add endpoint path constants to the companion object.
-4. Implement the operation using the template above.
-5. Add unit tests next to the existing governance parsing tests
-   (`library/src/test/java/com/nextcloud/android/lib/resources/<feature>/`).
-6. Add an integration test (`*IT`) under
-   `library/src/androidTest/java/com/nextcloud/android/lib/resources/<feature>/`.
-7. Run the CI checks: compile + tests + `detekt` + `spotlessKotlinCheck` + `lint`.
-8. Review the diff; remove anything unrelated.
+1. Write down the client flow and map each step to one server call (see [Scope](#scope-build-only-what-the-flow-needs)).
+2. Read the server controller for each call: route, verb, body, response shape.
+3. Decide the package of every model: one user → `<verb>/<subfeature>/model/`, several → `<feature>/model/`.
+4. Add the models (`@Serializable`; request/wrapper classes `internal`).
+5. Add each operation on top of `OcsKotlinRemoteOperation<T>`: `createMethod`, `parse`, companion constants.
+6. Add one `*IT` per operation in the mirrored `androidTest` package.
+7. Compile main + androidTest sources; present the result to the human for review.
+8. After review, run `detekt`, `spotlessKotlinCheck` and `lint` once; fix what they report.
+9. Review the diff; remove anything unrelated.
