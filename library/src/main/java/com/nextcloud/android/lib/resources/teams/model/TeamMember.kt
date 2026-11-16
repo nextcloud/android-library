@@ -27,7 +27,11 @@ data class TeamMember(
     val isPendingRequest: Boolean
         get() = status == STATUS_REQUESTING
 
+    val isInvited: Boolean
+        get() = status == STATUS_INVITED
+
     companion object {
         const val STATUS_REQUESTING = "Requesting"
+        const val STATUS_INVITED = "Invited"
     }
 }
