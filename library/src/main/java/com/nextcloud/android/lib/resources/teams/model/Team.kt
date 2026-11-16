@@ -20,10 +20,13 @@ data class Team(
     val initiator: TeamMember? = null
 ) {
     val isMember: Boolean
-        get() = initiator != null && !isPendingRequest
+        get() = initiator != null && !isPendingRequest && !isInvitation
 
     val isPendingRequest: Boolean
         get() = initiator?.isPendingRequest == true
+
+    val isInvitation: Boolean
+        get() = initiator?.isInvited == true
 
     val role: TeamRole?
         get() = initiator?.takeIf { isMember }?.role
