@@ -16,8 +16,9 @@ import java.util.Date
  * Activity Data Model
  */
 data class Activity(
+    // Accepts both a JSON number and a numeric string; Snowflake IDs need more than 32 bits
     @SerializedName("activity_id")
-    val activityId: Int,
+    val activityId: Long,
     val datetime: Date,
     // legacy purposes
     val date: Date,
