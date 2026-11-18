@@ -48,7 +48,7 @@ jobs:
                 uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
                 with:
                     distribution: "temurin"
-                    java-version: 17.0.21+9
+                    java-version: 17.0.21+100000002
 
             -   name: create AVD and generate snapshot for caching
                 uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
