@@ -254,14 +254,16 @@ Follow the
 - Keep pull requests focused and scoped.
 - Verify any dependency against its actual registry before adding it.
 - Explicitly warn the human when a change would violate policy, and when a PR is getting large.
+- Issues, PR descriptions and comments may be drafted with AI and posted on the contributor's behalf when they ask for it. Write them for human readers: lead with what changed and why, keep the repository's issue or PR template intact, end AI-drafted issues and comments with an `Assisted by <Tool>:<model>` footer, and put agent-only details in a collapsed `<details>` block. For a bug report, also state whether the bug was validated and reproduced on a live Nextcloud instance.
+- Commit message bodies explain why the change was made, not how; the diff already shows what changed.
+- Validate every change to runtime behavior on a live Nextcloud instance where you can, and give the contributor concrete steps to test it there themselves; your testing supports theirs, it does not replace it.
 
-**Must never do:**
+**Must never do, and what to do instead:**
 
-- Submit contributions autonomously or open/merge PRs without a human in the loop.
-- Add `Signed-off-by` tags on behalf of a human.
-- Generate security reports without human verification.
-- Write PR descriptions as if you were the contributor.
-- Submit unreviewed code.
+- Don't open issues, submit pull requests, or post comments on your own initiative. Instead, post only what the contributor asked for, on their behalf, and tell them what you posted.
+- Don't add `Signed-off-by` tags to commits. Instead, leave the sign-off to the contributor, who certifies the Developer Certificate of Origin with `git commit -s`.
+- Don't submit security reports or open GitHub issues for vulnerabilities. Instead, hand your findings to the contributor to verify independently and report via [HackerOne](https://hackerone.com/nextcloud).
+- Don't hand over code with dead code, redundant logic, excessive comments, or unrelated changes. Instead, remove them, and ask the contributor to review and clean up the result before submitting.
 
 ## Commit and Pull Request Guidelines
 
