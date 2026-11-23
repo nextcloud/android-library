@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2018-2023 Tobias Kaminsky <tobias@kaminsky.me>
  * SPDX-FileCopyrightText: 2025 TSI-mc <surinder.kumar@t-systems.com>
@@ -13,8 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
+import android.Manifest;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -89,6 +92,7 @@ public abstract class AbstractIT {
         IOException {
         Bundle arguments = InstrumentationRegistry.getArguments();
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        grantLocalNetworkPermission();
 
         url = Uri.parse(arguments.getString("TEST_SERVER_URL"));
         String loginName = arguments.getString("TEST_SERVER_USERNAME");
@@ -114,6 +118,16 @@ public abstract class AbstractIT {
 
         waitForServer(client, url);
         testConnection();
+    }
+
+    private static void grantLocalNetworkPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.CINNAMON_BUN) {
+            return;
+        }
+
+        InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation()
+            .grantRuntimePermission(context.getPackageName(), Manifest.permission.ACCESS_LOCAL_NETWORK);
     }
 
     private static void waitForServer(OwnCloudClient client, Uri baseUrl) {

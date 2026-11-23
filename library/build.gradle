@@ -134,7 +134,7 @@ android {
         htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
         htmlReport = true
         warningsAsErrors = true
-        targetSdk 36
+        targetSdk 37
     }
 
     defaultConfig {
@@ -164,7 +164,7 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
-        targetSdk 36
+        targetSdk 37
     }
 
     packagingOptions {
