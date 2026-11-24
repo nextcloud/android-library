@@ -1,6 +1,7 @@
 /*
  * Nextcloud Android Library
  *
+ * SPDX-FileCopyrightText: 2026 Alper Ozturk <alper.ozturk@nextcloud.com>
  * SPDX-FileCopyrightText: 2022-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
  * SPDX-License-Identifier: MIT
@@ -27,46 +28,38 @@ class ToggleFileLockRemoteOperation(
 ) : RemoteOperation<Void>() {
     @Suppress("TooGenericExceptionCaught")
     override fun run(client: NextcloudClient): RemoteOperationResult<Void> {
-        var method: OkHttpMethodBase? = null
-        var result: RemoteOperationResult<Void>?
+        val method = createMethod(client.getFilesDavUri(filePath))
 
-        try {
-            // remote request
-            val uri = client.getFilesDavUri(filePath)
-            method =
-                when (toLock) {
-                    true -> LockMethod(uri, false)
-                    false -> UnlockMethod(uri, false)
-                }
-            method.addRequestHeader(HEADER_USER_LOCK, HEADER_USER_LOCK_VALUE)
+        return try {
+            val status = client.execute(method)
 
-            val status: Int = client.execute(method)
-            if (isSuccess(status)) {
-                result = RemoteOperationResult(true, method)
-            } else {
-                result = RemoteOperationResult(false, method)
-                method.releaseConnection()
-            }
+            RemoteOperationResult(isSuccess(status), method)
         } catch (e: Exception) {
-            result = RemoteOperationResult(e)
-            Log_OC.e(TAG, "Lock toggle failed: " + result.logMessage, result.exception)
+            failure(e)
         } finally {
-            method?.releaseConnection()
+            method.releaseConnection()
         }
-
-        return result!!
     }
+
+    private fun createMethod(uri: String): OkHttpMethodBase {
+        val method = if (toLock) LockMethod(uri, false) else UnlockMethod(uri, false)
+
+        return method.apply { addRequestHeader(HEADER_USER_LOCK, HEADER_USER_LOCK_VALUE) }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun failure(e: Exception): RemoteOperationResult<Void> =
+        RemoteOperationResult<Void>(e).also {
+            Log_OC.e(TAG, "Lock toggle failed: ${it.logMessage}", it.exception)
+        }
 
     private fun isSuccess(status: Int): Boolean =
         when (status) {
             HttpStatus.SC_OK -> true
 
-            HttpStatus.SC_LOCKED -> toLock
-
-            // treat "already locked" as success when trying to lock
+            // used for "already unlocked" when trying to unlock
             HttpStatus.SC_PRECONDITION_FAILED -> !toLock
 
-            // used for "already unlocked" when trying to unlock
             else -> false
         }
 

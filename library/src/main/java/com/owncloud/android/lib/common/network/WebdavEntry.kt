@@ -279,7 +279,7 @@ class WebdavEntry constructor(
             mountType =
                 if (prop != null) {
                     when (prop.value) {
-                        "external" -> {
+                        "external", "external-session" -> {
                             MountType.EXTERNAL
                         }
 
