@@ -61,12 +61,9 @@ class ToggleFileLockRemoteOperation(
         when (status) {
             HttpStatus.SC_OK -> true
 
-            HttpStatus.SC_LOCKED -> toLock
-
-            // treat "already locked" as success when trying to lock
+            // used for "already unlocked" when trying to unlock
             HttpStatus.SC_PRECONDITION_FAILED -> !toLock
 
-            // used for "already unlocked" when trying to unlock
             else -> false
         }
 
