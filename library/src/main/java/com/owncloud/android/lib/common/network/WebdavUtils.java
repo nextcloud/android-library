@@ -24,8 +24,16 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.Locale;
 
@@ -34,40 +42,117 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("FS")
 public class WebdavUtils {
-    private static final SimpleDateFormat DATETIME_FORMATS[] = {
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US),
-            new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", Locale.US),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US),
-            new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US),
-            new SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
-            new SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US),
-            new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US)
-    };
+    private static final DateTimeFormatter HTTP_DATE_FORMATTER =
+            DateTimeFormatter
+                    .ofPattern("EEE, dd MMM uuuu HH:mm:ss zzz", Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
 
+    private static final DateTimeFormatter RFC_850_DATE_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .parseCaseSensitive()
+                    .appendPattern("EEEE, dd-MMM-")
+                    .appendValueReduced(ChronoField.YEAR, 2, 2, 2000)
+                    .appendPattern(" HH:mm:ss zzz")
+                    .toFormatter(Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private static final DateTimeFormatter ASCTIME_DATE_FORMATTER =
+            DateTimeFormatter
+                    .ofPattern("EEE MMM ppd HH:mm:ss uuuu", Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    private static final DateTimeFormatter SHARE_EXPIRATION_FORMATTER =
+            DateTimeFormatter
+                    .ofPattern("uuuu-MM-dd HH:mm:ss", Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    /**
+     * Parses an HTTP/WebDAV date in IMF-fixdate format (99% of modern traffic).
+     *
+     * For full RFC complianace, also supports obsolete RFC 850 and ANSI C asctime()
+     * formats.
+     *
+     * @param date HTTP/WebDAV date
+     * @return parsed date, or {@code null} if invalid
+     */
     public static @Nullable
     Date parseResponseDate(String date) {
-        Date returnDate;
-        SimpleDateFormat format;
-        for (int i = 0; i < DATETIME_FORMATS.length; ++i) {
-            try {
-                format = DATETIME_FORMATS[i];
-                synchronized (format) {
-                    returnDate = format.parse(date);
-                }
-                return returnDate;
-            } catch (ParseException e) {
-                // this is not the format
-            }
+        if (date == null || date.isEmpty()) {
+            return null;
         }
-        return null;
+
+        try {
+            ZonedDateTime parsed =
+                    ZonedDateTime.parse(date, HTTP_DATE_FORMATTER);
+
+            return Date.from(parsed.toInstant());
+        } catch (DateTimeParseException e) {
+            // Try RFC 850 below.
+        }
+
+        try {
+            ZonedDateTime parsed =
+                    ZonedDateTime.parse(date, RFC_850_DATE_FORMATTER);
+
+            // Native date arithmetic protects the 50-year spec calculation from leap day drift
+            Instant fiftyYearsFromNow =
+                    ZonedDateTime.now(ZoneOffset.UTC)
+                            .plusYears(50)
+                            .toInstant();
+
+            if (parsed.toInstant().isAfter(fiftyYearsFromNow)) {
+                parsed = parsed.minusYears(100);
+            }
+
+            return Date.from(parsed.toInstant());
+        } catch (DateTimeParseException e) {
+            // Try ANSI C asctime() below.
+        }
+
+        try {
+            LocalDateTime parsed =
+                    LocalDateTime.parse(date, ASCTIME_DATE_FORMATTER);
+
+            return Date.from(
+                    parsed.atOffset(ZoneOffset.UTC).toInstant()
+            );
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     /**
-     * Encodes a path according to URI RFC 2396. 
-     * 
+     * Parses a Share API expiration date.
+     *
+     * <p>The value has no timezone suffix and is therefore interpreted using
+     * the device default timezone.</p>
+     *
+     * @param date expiration date returned by the Share API
+     * @return parsed date, or {@code null} if invalid
+     */
+    public static @Nullable
+    Date parseShareExpirationDate(String date) {
+        if (date == null || date.isEmpty()) {
+            return null;
+        }
+
+        try {
+            LocalDateTime parsed =
+                    LocalDateTime.parse(date, SHARE_EXPIRATION_FORMATTER);
+
+            return Date.from(
+                    parsed.atZone(ZoneId.systemDefault()).toInstant()
+            );
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Encodes a path according to URI RFC 2396.
+     *
      * If the received path doesn't start with "/", the method adds it.
-     * 
+     *
      * @param remoteFilePath    Path
      * @return                  Encoded path according to RFC 2396, always starting with "/"
      */
