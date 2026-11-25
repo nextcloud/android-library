@@ -70,6 +70,11 @@ public class GetActivitiesRemoteOperation extends RemoteOperation {
         this.lastGiven = lastGiven;
     }
     
+    /**
+     * @deprecated an int cannot hold all activity IDs, use {@link #GetActivitiesRemoteOperation(long, long)}
+     * with a fileId of -1 instead
+     */
+    @Deprecated
     public GetActivitiesRemoteOperation(int lastGiven) {
         this.lastGiven = lastGiven;
     }

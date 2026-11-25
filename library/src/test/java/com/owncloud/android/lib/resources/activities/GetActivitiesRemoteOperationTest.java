@@ -44,6 +44,22 @@ public class GetActivitiesRemoteOperationTest {
     }
 
     @Test
+    public void testParseActivityIdsBeyondInt() {
+        String activities = "{\"ocs\":{\"meta\":{\"status\":\"ok\",\"statuscode\":200,\"message\":\"OK\"}," +
+                "\"data\":[{\"activity_id\":130000000000000123,\"user\":\"test\"}," +
+                "{\"activity_id\":\"130000000000000124\",\"user\":\"test\"}," +
+                "{\"activity_id\":\"42\",\"user\":\"test\"}]}}";
+
+        GetActivitiesRemoteOperation sut = new GetActivitiesRemoteOperation();
+        ArrayList<Activity> activityList = sut.parseResult(activities);
+
+        assertEquals(3, activityList.size());
+        assertEquals(130000000000000123L, activityList.get(0).getActivityId());
+        assertEquals(130000000000000124L, activityList.get(1).getActivityId());
+        assertEquals(42L, activityList.get(2).getActivityId());
+    }
+
+    @Test
     public void testEmptyString() {
         String activities = "";
 
