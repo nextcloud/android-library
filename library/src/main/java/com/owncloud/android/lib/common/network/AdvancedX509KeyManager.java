@@ -324,10 +324,16 @@ public class AdvancedX509KeyManager
     * @return keychain alias to use for this connection
     */
    private String chooseAlias(String[] keyTypes, Principal[] issuers, @NonNull Socket socket) {
-      // Determine connection parameters
+      // Only a TLS peer hostname, never a reverse-DNS result, may select a manual certificate.
       String hostname = socket.getInetAddress().getHostName();
       int port = socket.getPort();
-      return chooseAlias(keyTypes, issuers, hostname, port);
+      if (socket instanceof javax.net.ssl.SSLSocket) {
+         javax.net.ssl.SSLSession session = ((javax.net.ssl.SSLSocket) socket).getHandshakeSession();
+         if (session != null && session.getPeerHost() != null) {
+            return chooseAlias(keyTypes, issuers, session.getPeerHost(), port);
+         }
+      }
+      return chooseKeyChainAlias(keyTypes, issuers, hostname, port);
    }
 
    /**
@@ -339,6 +345,15 @@ public class AdvancedX509KeyManager
     * @return keychain alias to use for this connection
     */
    private String chooseAlias(String[] keyTypes, Principal[] issuers, @NonNull String hostname, int port) {
+      // A configured manual identity takes precedence over Android KeyChain. A damaged identity
+      // deliberately does not fall back to the system certificate picker.
+      if (ManualClientCertificateStore.isConfigured(context, hostname, port)) {
+         return ManualClientCertificateStore.aliasFor(hostname, port);
+      }
+      return chooseKeyChainAlias(keyTypes, issuers, hostname, port);
+   }
+
+   private String chooseKeyChainAlias(String[] keyTypes, Principal[] issuers, String hostname, int port) {
       // Select certificate for one connection at a time. This is important if multiple connections to the same host
       // are started in a short time and avoids prompting the user with multiple dialogs for the same host.
       synchronized (AdvancedX509KeyManager.class) {
@@ -405,6 +420,14 @@ public class AdvancedX509KeyManager
    @Override
    public X509Certificate[] getCertificateChain(@NonNull String alias) {
       Log_OC.d(TAG, "getCertificateChain(alias=" + alias + ")");
+      if (alias.startsWith(ManualClientCertificateStore.ALIAS_PREFIX)) {
+         try {
+            return ManualClientCertificateStore.getCertificateChain(context, alias);
+         } catch (Exception e) {
+            Log_OC.e(TAG, "Unable to load manual client certificate chain", e);
+            return null;
+         }
+      }
       AKMAlias akmAlias = new AKMAlias(alias);
       if (akmAlias.getType() == KEYCHAIN) {
          try {
@@ -430,6 +453,14 @@ public class AdvancedX509KeyManager
    @Override
    public PrivateKey getPrivateKey(@NonNull String alias) {
       Log_OC.d(TAG, "getPrivateKey(alias=" + alias + ")");
+      if (alias.startsWith(ManualClientCertificateStore.ALIAS_PREFIX)) {
+         try {
+            return ManualClientCertificateStore.getPrivateKey(context, alias);
+         } catch (Exception e) {
+            Log_OC.e(TAG, "Unable to load manual client private key", e);
+            return null;
+         }
+      }
       AKMAlias akmAlias = new AKMAlias(alias);
       if (akmAlias.getType() == KEYCHAIN) {
          try {
