@@ -16,6 +16,21 @@ import org.junit.Test
 class ExternalLinksOperationIT : AbstractIT() {
     @Test
     fun retrieveExternalLinks() {
+        val result = ExternalLinksOperation().execute(nextcloudClient)
+        assertTrue(result.isSuccess)
+
+        val data = result.resultData
+        assertEquals(2, data.size)
+
+        assertEquals("Nextcloud", data[0].name)
+        assertEquals("https://www.nextcloud.com", data[0].url)
+
+        assertEquals("Forum", data[1].name)
+        assertEquals("https://help.nextcloud.com", data[1].url)
+    }
+
+    @Test
+    fun retrieveExternalLinksOld() {
         val result = ExternalLinksOperation().execute(client)
         assertTrue(result.isSuccess)
 
