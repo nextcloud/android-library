@@ -154,7 +154,7 @@ class ReadFileRemoteOperationIT : AbstractIT() {
                 remoteFile.localId,
                 remotePath,
                 true
-            ).execute(client)
+            ).execute(nextcloudClient)
                 .isSuccess
         )
 
