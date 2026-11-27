@@ -20,7 +20,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:9.5.1'
-        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.13'
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.5.15'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${rootProject.ext.kotlin_version}"
         classpath "org.jetbrains.kotlin:kotlin-serialization:${rootProject.ext.kotlin_version}"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8"
